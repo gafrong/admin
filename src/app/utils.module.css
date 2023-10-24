@@ -1,7 +1,7 @@
 .sidebar {
     margin: 0;
     padding: 0;
-    width: 120px;
+    width: 110px;
     background-color: #e7d2d2;
     position: fixed;
     height: 100%;
@@ -17,13 +17,14 @@
 }
 
 .sidebar a:hover:not(.active) {
-    background-color: #eee;
+    background-color: #ccc;
     /* color: white; */
 }
 
 .content {
     margin-left: 140px;
-    padding: 1px 0px;
+    padding: 0px;
+    padding-top: 60px;
     height: 1000px;
 }
 
