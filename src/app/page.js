@@ -1,13 +1,22 @@
-import Today from "@/components/Today";
-import DailySales from "@/components/DailySales";
+"use client";
+
+import Login from "@/components/Login";
+import useUserStore from "@/store/zustand";
+import { Divide } from "lucide-react";
+
 export default function Home() {
-    const isUserLoggedIn = true;
+    const user = useUserStore((state) => state.user);
+    const isAuthenticated = useUserStore((state) => state.isAuthenticated);
     return (
-        <main className="min-h-screen">
-            <h1 className={isUserLoggedIn && " pl-5 pt-5"}>
-                <Today />
-                <DailySales className="mt-10" />
-            </h1>
+        <main className="min-h-screen ml-[-120px] grid place-items-center">
+            {isAuthenticated ? (
+                <div>
+                    <p>You are logged in</p>
+                </div>
+            ) : (
+                <Login />
+            )}
+            {user && <p>{user?.email}</p>}
         </main>
     );
 }

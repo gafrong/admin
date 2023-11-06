@@ -2,85 +2,39 @@
 
 import "./globals.css";
 import styles from "./utils.module.css";
-import Link from "next/link";
-import { FiHome, FiVideo, FiGift, FiShoppingCart, FiUsers, FiMessageCircle, FiBarChart2, FiLayout } from "react-icons/fi";
 import Navbar from '@/components/Navbar'
-const list = "block text-black p-5";
+import Link from "next/link"; 
+import Sidebar from '@/components/Sidebar'
+import useUserStore from "../store/zustand";
+import NextAuthProvider from './provider';
+import { useRouter } from "next/navigation";
 
 export default function RootLayout({ children }) {
-    const isUserLoggedIn = true;
+    const user = useUserStore((state) => state.user);
+    const token = useUserStore((state) => state.token);
+    const isAuthenticated = useUserStore((state) => state.isAuthenticated);
+
+    const router = useRouter();
+
+    if (!isAuthenticated) {
+        router?.push('/')
+    }
+    
     return (
         <html>
             <head />
             <body>
                 <Navbar/>
-                <div
-                    className={`m-0 mt-16 p-0 w-34 fixed h-full overflow-auto border-r border-slate-300`}
-                >
-                    {isUserLoggedIn && (
-                        <>
-                            <Link
-                                className="block text-black p-5 hover:bg-slate-200"
-                                href="/dashboard"
-                            >
-                                <div className="flex flex-row">
-                                    <FiHome className="mr-2 mt-1"/> <div>Dashboard</div>
-                                </div> 
-                            </Link>
-
-                            <Link
-                                className="block text-black p-5 hover:bg-slate-200"
-                                href="/videos"
-                            >
-                                <div className="flex flex-row">
-                                    <FiVideo className="mr-2 mt-1"/><div>Videos</div>
-                                </div>
-                            </Link>
-
-                            <Link
-                                className="block text-black p-5 hover:bg-slate-200"
-                                href="/products"
-                            >
-                            <div className="flex flex-row">
-                                <FiGift className="mr-2 mt-1"/>Product
-                            </div>
-                            </Link>
-                            <Link
-                                className="block text-black p-5 hover:bg-slate-200"
-                                href="/orders"
-                            >
-                                <div className="flex flex-row">
-                                    <FiShoppingCart className="mr-2 mt-1"/>Orders
-                                </div>
-                            </Link>
-                            <Link
-                                className="block text-black p-5 hover:bg-slate-200"
-                                href="/clients"
-                            >
-                            <div className="flex flex-row">
-                                <FiUsers className="mr-2 mt-1"/>Clients
-                            </div>
-                            </Link>
-                            <Link
-                                className="block text-black p-5 hover:bg-slate-200"
-                                href="/messages"
-                            >
-                            <div className="flex flex-row">
-                                <FiMessageCircle  className="mr-2 mt-1"/><div>Message</div>
-                            </div>
-                            </Link>
-                            <Link
-                                className="block text-black p-5 hover:bg-slate-200"
-                                href="/statistics"
-                            >
-                            <div className="flex flex-row">
-                                <FiBarChart2  className="mr-2 mt-1"/>Statistics
-                            </div>
-                            </Link>
-                        </>
-                    )}
-                </div>
-                <div className={styles.content}>{children}</div>
+                {user && (
+                    <div
+                        className={`m-0 mt-16 p-0 w-34 fixed h-full overflow-auto border-r border-slate-300`}
+                    >                    
+                        <Sidebar/>
+                    </div>
+                )}
+                <NextAuthProvider>
+                    <div className={styles.content}>{children}</div>
+                </NextAuthProvider>
             </body>
         </html>
     );
