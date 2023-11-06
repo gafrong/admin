@@ -1,18 +1,39 @@
+"use client";
+
 import React from "react";
 import Image from "next/image";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import useUserStore from "@/store/zustand";
+import awsURL from '@/assets/common/awsUrl';
+import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { Button } from "@/components/ui/button";
 
 export default function Page() {
+    const user = useUserStore((state) => state.user);
+    const isAuthenticated = useUserStore((state) => state.isAuthenticated);
+    const clearUser = useUserStore((state) => state.clearUser);
+    const avatar = awsURL + user?.image;
+    const router = useRouter();
+    const handleLogout = () => {
+        router.push('/');
+        clearUser();
+    }
     return (
         <div className="pl-5 pt-5">
-            <Avatar className="w-[100px] h-[100px]">
-                <AvatarImage src="https://github.com/shadcn.png" />
-                <AvatarFallback>CN</AvatarFallback>
-            </Avatar>
-            <div>Channel Store</div>
-            <div>@channel_official</div>
-            <div>test@mail.com</div>
-            <div>Lorem ipsum dolor sit amet consectetur adipisicing elit. Repudiandae id, distinctio officia doloremque cumque fuga. Et autem sapiente distinctio, quia aliquid, voluptatibus facilis, reiciendis placeat ex minus nesciunt impedit obcaecati?</div>
+            {isAuthenticated && (
+                <>
+                    <Avatar className="w-[100px] h-[100px]">
+                    <AvatarImage src={avatar} />
+                    <AvatarFallback>CN</AvatarFallback>
+                    </Avatar>
+                    <div>{user?.name}</div>
+                    <div>@{user?.username}</div>
+                    <div>{user?.email}</div>
+                    <div>{user?.brandDescription}</div>
+                    <Button onClick={handleLogout}>Logout</Button>
+                </>
+            )}
         </div>
     );
 }

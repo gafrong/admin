@@ -1,0 +1,10 @@
+.durationContainer {
+    margin-top: 20px;
+    margin-right: 10px;
+    border: 1px solid #999;
+    border-radius: 5px;
+    padding: 10px;
+}
+.startDateContainer{
+    flex-direction: row;
+}
