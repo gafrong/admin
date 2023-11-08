@@ -25,7 +25,7 @@ export default function RootLayout({ children }) {
             <head />
             <body>
                 <Navbar/>
-                {user && (
+                {user?.verified && (
                     <div
                         className={`m-0 mt-16 p-0 w-34 fixed h-full overflow-auto border-r border-slate-300`}
                     >                    
