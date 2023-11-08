@@ -3,6 +3,7 @@
 import Login from "@/components/Login";
 import useUserStore from "@/store/zustand";
 import { Divide } from "lucide-react";
+import Link from "next/link";
 
 export default function Home() {
     const user = useUserStore((state) => state.user);
@@ -14,7 +15,9 @@ export default function Home() {
                     <p>You are logged in</p>
                 </div>
             ) : (
-                <Login />
+                <div>
+                    <Login />
+                </div>
             )}
             {user && <p>{user?.email}</p>}
         </main>

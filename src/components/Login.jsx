@@ -5,6 +5,7 @@ import axios from "axios";
 import baseURL from '@/assets/common/baseUrl';
 import useUserStore from '@/store/zustand';
 import { useRouter } from 'next/navigation';
+import Link from "next/link";
 const Login = () => {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
@@ -111,12 +112,12 @@ const Login = () => {
 
                 <p className="mt-10 text-center text-sm text-gray-500">
                     판매자 입점을 원하세요?{" "}
-                    <a
+                    <Link
                         href="/partner-register"
                         className="font-semibold leading-6 text-indigo-600 hover:text-indigo-500"
                     >
                         판매자 회원가입
-                    </a>
+                    </Link>
                 </p>
             </div>
         </div>
