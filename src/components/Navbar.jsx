@@ -21,7 +21,7 @@ const Navbar = () => {
                 />
             </Link>
             <div className="flex flex-row mt-5 mr-5">
-                {user ? 
+                {user?.verified ? 
                     <>
                         <Link href="/profile">
                             <Avatar className="mr-5 w-[30px] h-[30px]">
@@ -39,9 +39,9 @@ const Navbar = () => {
                     </>
                 :  ( 
                     <>
-                        <Link href="/">
+                        {/* <Link href="/">
                             login
-                        </Link>
+                        </Link> */}
                     </> 
                 )}
             </div>
