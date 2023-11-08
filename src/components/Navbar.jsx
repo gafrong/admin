@@ -22,22 +22,28 @@ const Navbar = () => {
             </Link>
             <div className="flex flex-row mt-5 mr-5">
                 {user ? 
-                <Link href="/profile">
-                    <Avatar className="mr-5 w-[30px] h-[30px]">
-                        <AvatarImage src={avatar} />
-                        <AvatarFallback>CN</AvatarFallback>
-                    </Avatar>
-                </Link>
-                :   <Link href="/">
-                        login
-                    </Link> 
-                }
-                <Link href="#">
-                    <FiBell className="mr-5 mt-1"/>
-                </Link>
-                <Link href="/setting">
-                    <FiSettings className="mt-1"/>
-                </Link>
+                    <>
+                        <Link href="/profile">
+                            <Avatar className="mr-5 w-[30px] h-[30px]">
+                                <AvatarImage src={avatar} />
+                                <AvatarFallback>CN</AvatarFallback>
+                            </Avatar>
+                        </Link>
+
+                        <Link href="#">
+                            <FiBell className="mr-5 mt-1"/>
+                        </Link>
+                        <Link href="/setting">
+                            <FiSettings className="mt-1"/>
+                        </Link>
+                    </>
+                :  ( 
+                    <>
+                        <Link href="/">
+                            login
+                        </Link>
+                    </> 
+                )}
             </div>
         </div>
     )
