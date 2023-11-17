@@ -6,6 +6,7 @@ import 'react-step-progress/dist/index.css';
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { FiCamera } from "react-icons/fi";
 
+
 const Onboardingtrack = () => {
     var brandCheck;
     var usernameCheck;
@@ -23,6 +24,23 @@ const Onboardingtrack = () => {
             return true
         } else {
             return false
+        }
+    }
+
+    const handleProfileImageChange = (e) => {
+        const file = e.target.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onloadend = () => {
+                if(reader.result){
+                    console.log('IMG', reader.result)
+                    setProfileImage(reader.result);
+                } else {
+                    console.log('Error reading file. ')
+                }
+            };
+
+            reader.readAsDataURL(file);
         }
     }
 
@@ -47,18 +65,16 @@ const Onboardingtrack = () => {
     }
 
     const step1Content = 
-        <div className="mt-20 ml-20">
-            <h1 className="mt-20 font-bold mb-5">상점 정보 입력</h1>
+        <div className="mt-20 ml-10 mr-10 bg-slate-50 p-10">
+            <h1 className="mt-0 font-bold mb-5">상점 정보 입력</h1>
             <div className="flex flex-row mb-5">
                 <div className="ml-3.5 text-sm font-medium">상점 대표 이미지: </div>
 
-                <Avatar className="w-[140px] h-[140px] ml-[20px] mt-[20px]">
-                    <AvatarImage src={profileImage} />
-                    <AvatarFallback>CN</AvatarFallback>
-                </Avatar>
-                <label htmlFor="upload" className="cursor-pointer bg-slate-800 text-white py-2 px-2 width-[33px] rounded-full self-end absolute ml-[230px]">
+                <img key={profileImage} src={profileImage} alt="Profile" style={{ width: '140px', height: '140px',borderRadius: '50%' }} />
+
+                <label htmlFor="upload" className="cursor-pointer bg-slate-800 text-white py-2 px-2 width-[33px] rounded-full self-end absolute ml-[210px]">
                     <FiCamera />
-                    <input id="upload" type="file" className="hidden" />
+                    <input id="upload" type="file" className="hidden" accept="image/*" onChange={handleProfileImageChange} />
                 </label>
             </div>
             <div className="flex flex-row">
