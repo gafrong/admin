@@ -11,7 +11,27 @@ const Onboardingtrack = () => {
     var usernameCheck;
     var phoneCheck;
     var emailCheck;
+    var banknameCheck;
+    var bankaccountCheck;
 
+    // validators
+    const step1Validator = () => {
+        if( brandCheck?.length > 0 && usernameCheck?.length > 0 && phoneCheck?.length > 0 && emailCheck?.length > 0){
+            return true
+        } else {
+            return false
+        }
+    }
+
+    const step2Validator = () => {
+        if( banknameCheck?.length > 0 && bankaccountCheck?.length > 0) { 
+            return true
+        } else {
+            return false
+        }
+    }
+
+    // step 1 contents
     const srcDefaultImage = "https://voutiq-app.s3.ap-northeast-2.amazonaws.com/000SiteImages/profile.png";
     const imageMimeType = /image\/(png|jpg|jpeg)/i;
     const regex = { imageMimeType };
@@ -26,21 +46,13 @@ const Onboardingtrack = () => {
     const [phone, setPhone] = useState('');
     const [email, setEmail] = useState('');
 
-    const step1Validator = () => {
-        if( brandCheck?.length > 0 && usernameCheck?.length > 0 && phoneCheck?.length > 0 && emailCheck?.length > 0){
-            return true
-        } else {
-            return false
-        }
-    }
-
     const handleProfileImageChange = (e) => {
         const fileTarget = e.target.files[0];
         if (!isValidImage(fileTarget)) {
             alert("Not an image");
             return;
         }
-          setFile(fileTarget);
+        setFile(fileTarget);
     }
 
     useEffect(() => {
@@ -86,7 +98,7 @@ const Onboardingtrack = () => {
         setEmail(e.target.value);
     }
 
-    const step1Content = (
+    const Step1Content = ({handleProfileImageChange, handleBrandChange, handleUsernameChange, handleEmailChange, handlePhoneChange}) => (
         <div className="mt-20 ml-10 mr-10 bg-slate-50 p-10">
             <h1 className="mt-0 font-bold mb-5">상점 정보 입력</h1>
             <div className="flex flex-row mb-5">
@@ -182,36 +194,77 @@ const Onboardingtrack = () => {
         </div>
     );
 
-    const step2Content = 
-    <div className="mt-20 ml-10 mr-10 bg-slate-50 p-10">
+    // step 2 contents
+    const [bankName, setBankName] = useState('');
+    const [bankAccount, setBankAccount] = useState('');
+    const [bankUserName, setBankUserName] = useState('');
+
+    const handleBankChange = (e) => {
+        console.log('check', e.target.value)
+        banknameCheck = e.target.value;
+        setBankName(e.target.value);
+    }
+
+    const handleBankAccountChange = (e) => {
+        bankaccountCheck = e.target.value;
+        setBankAccount(e.target.value);
+    }
+
+    const Step2Content = ({ handleBankChange, handleBankAccountChange }) => (
+        <div className="mt-20 ml-10 mr-10 bg-slate-50 p-10">
             <h1 className="mt-0 font-bold mb-5">은행 정보 입력</h1>
             <div className="flex flex-row mb-5">
 
             </div>
             <div className="flex flex-row">
                 <label
-                    htmlFor="brand"
+                    htmlFor="bank"
                     className="block text-sm font-medium leading-6 text-gray-900 m-3.5"
                 >
-                    브랜드 / 상점 이름:
+                    은행명:
                 </label>
                 <div className="mt-2">
                     <input
-                        onChange={handleBrandChange}
-                        id="brand"
-                        name="text"
+                        onChange={handleBankChange}
+                        id="bank"
+                        name="bank"
                         type="text"
-                        placeholder="예) Banana Republic"
+                        placeholder="예) 하나은행"
                         required
                         className="block w-[250px] rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-black sm:text-sm sm:leading-6 pl-3"
                     />
                 </div>
-                <div className="ml-5 mt-5 text-xs text-slate-400">(상점 또는 브랜드의 이름을 작성하세요)</div>
+                <div className="ml-5 mt-5 text-xs text-slate-400">(은행명을 입력하세요)</div>
             </div>
-         
-        </div>;
-    const step3Content = <h1 className="mt-20">Step 3 content</h1>;
-    const step4Content = <h1 className="mt-20">Step 4 content</h1>;
+
+            <div className="flex flex-row">
+                <label
+                    htmlFor="bankaccount"
+                    className="block text-sm font-medium leading-6 text-gray-900 m-3.5"
+                >
+                    계좌번호:
+                </label>
+                <div className="mt-2">
+                    <input
+                        onChange={handleBankAccountChange}
+                        id="bankaccount"
+                        name="bankaccount"
+                        type="number"
+                        placeholder="1980428761235"
+                        required
+                        className="block w-[250px] rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-black sm:text-sm sm:leading-6 pl-3"
+                    />
+                </div>
+                <div className="ml-5 mt-5 text-xs text-slate-400">(은행 계좌번호를 번호만 입력하세요)</div>
+            </div>         
+        </div>
+    );
+
+    // step 3 contents
+    const Step3Content = () => ( 
+        <h1 className="mt-20">Step 3 content</h1> 
+    );
+    const Step4Content = () => (<h1 className="mt-20">Step 4 content</h1>);
 
 
     const onFormSubmit = () => {
@@ -229,28 +282,38 @@ const Onboardingtrack = () => {
                 steps={[
                     {
                         label: '브랜드 정보',
-                        subtitle: "10%",
+                        subtitle: "",
                         name: 'step 1',
-                        content: step1Content,
+                        content: <Step1Content
+                            handleProfileImageChange={handleProfileImageChange} 
+                            handleBrandChange={handleBrandChange} 
+                            handleUsernameChange={handleUsernameChange} 
+                            handleEmailChange={handleEmailChange} 
+                            handlePhoneChange={handlePhoneChange}
+                        />,
                         validator: step1Validator,
                     },
                     {
                         label: '은행 정보',
-                        subtitle: "10%",
-                        name: 'step 1',
-                        content: step2Content
+                        subtitle: "",
+                        name: 'step 2',
+                        content: <Step2Content
+                            handleBankChange={handleBankChange}
+                            handleBankAccountChange={handleBankAccountChange}
+                        />,
+                        validator: step2Validator,
                     },
                     {
                         label: '사업자 정보',
-                        subtitle: "10%",
-                        name: 'step 1',
-                        content: step3Content
+                        subtitle: "",
+                        name: 'step 3',
+                        content: <Step3Content/>
                     },
                     {
                         label: '확인',
-                        subtitle: "10%",
-                        name: 'step 1',
-                        content: step4Content
+                        subtitle: "",
+                        name: 'step 4',
+                        content: <Step4Content/>
                     }
                 ]}
             />
