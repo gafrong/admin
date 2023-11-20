@@ -11,16 +11,16 @@ const Onboardingtrack = () => {
     var usernameCheck;
     var phoneCheck;
     var emailCheck;
-    const srcDefaultImage = "https://voutiq-app.s3.ap-northeast-2.amazonaws.com/000SiteImages/profile.png";
 
+    const srcDefaultImage = "https://voutiq-app.s3.ap-northeast-2.amazonaws.com/000SiteImages/profile.png";
     const imageMimeType = /image\/(png|jpg|jpeg)/i;
     const regex = { imageMimeType };
 
     const [file, setFile] = useState(null);
-    const [srcProfileImage, setSrcProfileImage] = useState(srcDefaultImage);
     const isValidImage = (file) => file.type.match(regex.imageMimeType);
-    
+    const [stepProgressBarKey, setStepProgressBarKey] = useState(Date.now());
     const [profileImage, setProfileImage] = useState(srcDefaultImage);
+
     const [brand, setBrand] = useState('');
     const [username, setUsername] = useState('');
     const [phone, setPhone] = useState('');
@@ -53,6 +53,7 @@ const Onboardingtrack = () => {
                 const { result } = e.target;
                 if (result && !isCancel) {
                     setProfileImage(result);
+                    setStepProgressBarKey(Date.now());
                 }
             };
             fileReader.readAsDataURL(file);
@@ -85,13 +86,13 @@ const Onboardingtrack = () => {
         setEmail(e.target.value);
     }
 
-    const step1Content = 
+    const step1Content = (
         <div className="mt-20 ml-10 mr-10 bg-slate-50 p-10">
             <h1 className="mt-0 font-bold mb-5">상점 정보 입력</h1>
             <div className="flex flex-row mb-5">
                 <div className="ml-3.5 text-sm font-medium">상점 대표 이미지: </div>
 
-                <img key={profileImage} src={profileImage} alt="Profile" style={{ width: '140px', height: '140px',borderRadius: '50%' }} />
+                <img src={profileImage} alt="Profile" style={{ width: '140px', height: '140px',borderRadius: '50%' }} />
 
                 <label htmlFor="upload" className="cursor-pointer bg-slate-800 text-white py-2 px-2 width-[33px] rounded-full self-end absolute ml-[210px]">
                     <FiCamera />
@@ -178,7 +179,9 @@ const Onboardingtrack = () => {
                 </div>
                 <div className="ml-5 mt-5 text-xs text-slate-400">(띄어쓰기 없이 숫자만 적으세요.)</div>
             </div>
-        </div>;
+        </div>
+    );
+
     const step2Content = 
     <div className="mt-20 ml-10 mr-10 bg-slate-50 p-10">
             <h1 className="mt-0 font-bold mb-5">은행 정보 입력</h1>
@@ -210,8 +213,6 @@ const Onboardingtrack = () => {
     const step3Content = <h1 className="mt-20">Step 3 content</h1>;
     const step4Content = <h1 className="mt-20">Step 4 content</h1>;
 
-    
-
 
     const onFormSubmit = () => {
         console.log('testing!!')
@@ -220,6 +221,7 @@ const Onboardingtrack = () => {
         <main className="mr-[140px]">
             <h1 className="font-bold text-xl">회원가입 진행</h1>
             <StepProgressBar
+                key={stepProgressBarKey} 
                 startingStep={0}
                 onSubmit={onFormSubmit}
                 nextBtnName="다음"
