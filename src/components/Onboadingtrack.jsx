@@ -1,19 +1,26 @@
 "use client";
 
-import React, {useState} from "react";
+import React, {useState, useEffect} from "react";
 import StepProgressBar from 'react-step-progress';
 import 'react-step-progress/dist/index.css';
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { FiCamera } from "react-icons/fi";
-
 
 const Onboardingtrack = () => {
     var brandCheck;
     var usernameCheck;
     var phoneCheck;
     var emailCheck;
+    const srcDefaultImage = "https://voutiq-app.s3.ap-northeast-2.amazonaws.com/000SiteImages/profile.png";
 
-    const [profileImage, setProfileImage] = useState("https://voutiq-app.s3.ap-northeast-2.amazonaws.com/000SiteImages/profile.png")
+    const imageMimeType = /image\/(png|jpg|jpeg)/i;
+    const regex = { imageMimeType };
+
+    const [file, setFile] = useState(null);
+    const [srcProfileImage, setSrcProfileImage] = useState(srcDefaultImage);
+    const isValidImage = (file) => file.type.match(regex.imageMimeType);
+    
+    const [profileImage, setProfileImage] = useState(srcDefaultImage);
     const [brand, setBrand] = useState('');
     const [username, setUsername] = useState('');
     const [phone, setPhone] = useState('');
@@ -28,21 +35,35 @@ const Onboardingtrack = () => {
     }
 
     const handleProfileImageChange = (e) => {
-        const file = e.target.files[0];
+        const fileTarget = e.target.files[0];
+        if (!isValidImage(fileTarget)) {
+            alert("Not an image");
+            return;
+        }
+          setFile(fileTarget);
+    }
+
+    useEffect(() => {
+        let fileReader,
+          isCancel = false;
+        const isLoading = 1;
         if (file) {
-            const reader = new FileReader();
-            reader.onloadend = () => {
-                if(reader.result){
-                    console.log('IMG', reader.result)
-                    setProfileImage(reader.result);
-                } else {
-                    console.log('Error reading file. ')
+            fileReader = new FileReader();
+            fileReader.onload = (e) => {
+                const { result } = e.target;
+                if (result && !isCancel) {
+                    setProfileImage(result);
                 }
             };
-
-            reader.readAsDataURL(file);
+            fileReader.readAsDataURL(file);
         }
-    }
+        return () => {
+            isCancel = true;
+            if (fileReader?.readyState === isLoading) {
+                fileReader.abort();
+            }
+        };
+    }, [file]);
 
     const handleBrandChange = (e) => {
         brandCheck = e.target.value;
@@ -74,7 +95,7 @@ const Onboardingtrack = () => {
 
                 <label htmlFor="upload" className="cursor-pointer bg-slate-800 text-white py-2 px-2 width-[33px] rounded-full self-end absolute ml-[210px]">
                     <FiCamera />
-                    <input id="upload" type="file" className="hidden" accept="image/*" onChange={handleProfileImageChange} />
+                    <input id="upload" type="file" className="hidden" accept="image/*, .png, .jpg, .jpeg" onChange={handleProfileImageChange} />
                 </label>
             </div>
             <div className="flex flex-row">
@@ -158,7 +179,34 @@ const Onboardingtrack = () => {
                 <div className="ml-5 mt-5 text-xs text-slate-400">(띄어쓰기 없이 숫자만 적으세요.)</div>
             </div>
         </div>;
-    const step2Content = <h1 className="mt-20">Step 2 content</h1>;
+    const step2Content = 
+    <div className="mt-20 ml-10 mr-10 bg-slate-50 p-10">
+            <h1 className="mt-0 font-bold mb-5">은행 정보 입력</h1>
+            <div className="flex flex-row mb-5">
+
+            </div>
+            <div className="flex flex-row">
+                <label
+                    htmlFor="brand"
+                    className="block text-sm font-medium leading-6 text-gray-900 m-3.5"
+                >
+                    브랜드 / 상점 이름:
+                </label>
+                <div className="mt-2">
+                    <input
+                        onChange={handleBrandChange}
+                        id="brand"
+                        name="text"
+                        type="text"
+                        placeholder="예) Banana Republic"
+                        required
+                        className="block w-[250px] rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-black sm:text-sm sm:leading-6 pl-3"
+                    />
+                </div>
+                <div className="ml-5 mt-5 text-xs text-slate-400">(상점 또는 브랜드의 이름을 작성하세요)</div>
+            </div>
+         
+        </div>;
     const step3Content = <h1 className="mt-20">Step 3 content</h1>;
     const step4Content = <h1 className="mt-20">Step 4 content</h1>;
 

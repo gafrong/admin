@@ -16,9 +16,9 @@ export default function RootLayout({ children }) {
 
     const router = useRouter();
 
-    if (!isAuthenticated) {
-        router?.push('/')
-    }
+    // if (!isAuthenticated) {
+    //     router?.push('/')
+    // }
     
     return (
         <html>
