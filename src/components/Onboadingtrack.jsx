@@ -31,7 +31,7 @@ const Onboardingtrack = () => {
         }
     }
 
-    // step 1 contents
+// step 1 contents
     const srcDefaultImage = "https://voutiq-app.s3.ap-northeast-2.amazonaws.com/000SiteImages/profile.png";
     const imageMimeType = /image\/(png|jpg|jpeg)/i;
     const regex = { imageMimeType };
@@ -41,6 +41,7 @@ const Onboardingtrack = () => {
     const [stepProgressBarKey, setStepProgressBarKey] = useState(Date.now());
     const [profileImage, setProfileImage] = useState(srcDefaultImage);
 
+    const [ startStep, setStartStep ] = useState(0);
     const [brand, setBrand] = useState('');
     const [username, setUsername] = useState('');
     const [phone, setPhone] = useState('');
@@ -194,7 +195,7 @@ const Onboardingtrack = () => {
         </div>
     );
 
-    // step 2 contents
+// step 2 contents
     const [bankName, setBankName] = useState('');
     const [bankAccount, setBankAccount] = useState('');
     const [bankUserName, setBankUserName] = useState('');
@@ -260,10 +261,72 @@ const Onboardingtrack = () => {
         </div>
     );
 
-    // step 3 contents
-    const Step3Content = () => ( 
-        <h1 className="mt-20">Step 3 content</h1> 
-    );
+// step 3 contents
+    const [ businessDocument, setBusinessDocument] = useState('');
+    const [ document, setDocument ] = useState('');
+    const [ stepKey, setStepKey] = useState(0);
+    const [ isSelected, setIsSelected ] = useState(false);
+
+    const handleDocumentUpload = (e) => {
+        const fileDocument = e.target.files[0];
+        if (!isValidImage(fileDocument)) {
+            alert("Not an image");
+            return;
+        }
+        console.log('check handle')
+        setDocument(fileDocument);
+
+    }
+
+    useEffect(() => {
+        let fileReader,
+          isCancel = false;
+        const isLoading = 1;
+        if (document) {
+            fileReader = new FileReader();
+            fileReader.onload = (e) => {
+                const { result } = e.target;
+                if (result && !isCancel) {
+                    setBusinessDocument(result);
+                    setIsSelected(true)
+                    console.log('hello')
+                    setStartStep(2);
+                    setStepProgressBarKey(Date.now());
+                }
+            };
+            fileReader.readAsDataURL(document);
+        }
+        return () => {
+            isCancel = true;
+            if (fileReader?.readyState === isLoading) {
+                fileReader.abort();
+            }
+        };
+    }, [document]);    
+
+    const Step3Content = () => {
+        return (
+            <div className="mt-20 ml-10 mr-10 bg-slate-50 p-10">
+                <h1 className="mt-0 font-bold mb-5">사업자 등록증 업로드</h1>
+                <div className="flex flex-row mb-5">
+                    <div className="ml-3.5 text-sm font-medium">사업자 등록증: </div>
+
+                    <img src={businessDocument} alt="사업자등록증" style={{ width: '140px', height: '140px',borderRadius: '5px' }} />
+
+                    <label htmlFor="document" className="cursor-pointer bg-slate-800 text-white py-2 px-2 width-[33px] rounded-full self-end absolute ml-[210px]">
+                        <FiCamera />
+                        <input id="document" type="file" className="hidden" accept="image/*, .png, .jpg, .jpeg" onChange={handleDocumentUpload} />
+                    </label>
+                    {isSelected ? (
+                            <div className="mt-5">
+                            </div>
+                        ) : (
+                            <p className="mt-5 text-xs">(동영상 파일은 .mp4, .mov, .avi로 가능하며 사이즈는 50mb 이하로 업로드 가능합니다.)</p>
+                        )}
+                </div>
+            </div>
+        )
+    };
     const Step4Content = () => (<h1 className="mt-20">Step 4 content</h1>);
 
 
@@ -275,7 +338,7 @@ const Onboardingtrack = () => {
             <h1 className="font-bold text-xl">회원가입 진행</h1>
             <StepProgressBar
                 key={stepProgressBarKey} 
-                startingStep={0}
+                startingStep={startStep}
                 onSubmit={onFormSubmit}
                 nextBtnName="다음"
                 previousBtnName="이전"
@@ -307,7 +370,10 @@ const Onboardingtrack = () => {
                         label: '사업자 정보',
                         subtitle: "",
                         name: 'step 3',
-                        content: <Step3Content/>
+                        content: <Step3Content
+                            businessDocument={businessDocument}
+                            isSelected={isSelected}
+                        />
                     },
                     {
                         label: '확인',
