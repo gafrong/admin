@@ -12,6 +12,19 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 
+const ButtonSorting = ({ column, children }) => {
+  return (
+    <Button
+      variant="ghost"
+      onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+      className="px-0"
+    >
+      {children}
+      <ArrowUpDown className="ml-2 h-4 w-4" />
+    </Button>
+  );
+};
+
 const CellHeaderCheckbox = ({ table }) => (
   <Checkbox
     checked={
@@ -31,21 +44,13 @@ const CellRowCheckbox = ({ row }) => (
   />
 );
 
-const CellText = ({ row }) => (
+const CellStatus = ({ row }) => (
   <div className="capitalize">{row.getValue("status")}</div>
 );
 
-const CellHeaderEmail = ({ column }) => {
-  return (
-    <Button
-      variant="ghost"
-      onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-    >
-      Email
-      <ArrowUpDown className="ml-2 h-4 w-4" />
-    </Button>
-  );
-};
+const CellHeaderDate = ({ column }) => (
+  <ButtonSorting column={column}>Date</ButtonSorting>
+);
 
 const CellEmail = ({ row }) => (
   <div className="lowercase">{row.getValue("email")}</div>
@@ -101,11 +106,11 @@ export const columns = [
   {
     accessorKey: "status",
     header: "Status",
-    cell: CellText,
+    cell: CellStatus,
   },
   {
     accessorKey: "email",
-    header: CellHeaderEmail,
+    header: CellHeaderDate,
     cell: CellEmail,
   },
   {
