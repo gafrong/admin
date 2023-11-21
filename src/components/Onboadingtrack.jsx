@@ -15,21 +15,12 @@ const Onboardingtrack = () => {
     var bankaccountCheck;
 
     // validators
-    const step1Validator = () => {
-        if( brandCheck?.length > 0 && usernameCheck?.length > 0 && phoneCheck?.length > 0 && emailCheck?.length > 0){
-            return true
-        } else {
-            return false
-        }
-    }
+    const step1Validator = () => 
+        ( brandCheck?.length && usernameCheck?.length && phoneCheck?.length && emailCheck?.length)
 
-    const step2Validator = () => {
-        if( banknameCheck?.length > 0 && bankaccountCheck?.length > 0) { 
-            return true
-        } else {
-            return false
-        }
-    }
+    const step2Validator = () => 
+        ( banknameCheck?.length && bankaccountCheck?.length) 
+    
 
 // step 1 contents
     const srcDefaultImage = "https://voutiq-app.s3.ap-northeast-2.amazonaws.com/000SiteImages/profile.png";
@@ -262,7 +253,7 @@ const Onboardingtrack = () => {
     );
 
 // step 3 contents
-    const [ businessDocument, setBusinessDocument] = useState('');
+    const [ businessDocument, setBusinessDocument] = useState('https://voutiq-app.s3.ap-northeast-2.amazonaws.com/000SiteImages/docs.jpg');
     const [ document, setDocument ] = useState('');
     const [ stepKey, setStepKey] = useState(0);
     const [ isSelected, setIsSelected ] = useState(false);
@@ -273,7 +264,6 @@ const Onboardingtrack = () => {
             alert("Not an image");
             return;
         }
-        console.log('check handle')
         setDocument(fileDocument);
 
     }
@@ -311,9 +301,9 @@ const Onboardingtrack = () => {
                 <div className="flex flex-row mb-5">
                     <div className="ml-3.5 text-sm font-medium">사업자 등록증: </div>
 
-                    <img src={businessDocument} alt="사업자등록증" style={{ width: '140px', height: '140px',borderRadius: '5px' }} />
+                    <img src={businessDocument} alt="사업자등록증" style={{ width: '140px', height: '140px', borderRadius: '10px', marginLeft: '20px', marginTop: '10px', marginRight: '20px'}} />
 
-                    <label htmlFor="document" className="cursor-pointer bg-slate-800 text-white py-2 px-2 width-[33px] rounded-full self-end absolute ml-[210px]">
+                    <label htmlFor="document" className="cursor-pointer bg-slate-800 text-white py-2 px-2 width-[33px] rounded-full self-end absolute ml-[240px] mb-[-15px]">
                         <FiCamera />
                         <input id="document" type="file" className="hidden" accept="image/*, .png, .jpg, .jpeg" onChange={handleDocumentUpload} />
                     </label>
@@ -321,13 +311,59 @@ const Onboardingtrack = () => {
                             <div className="mt-5">
                             </div>
                         ) : (
-                            <p className="mt-5 text-xs">(동영상 파일은 .mp4, .mov, .avi로 가능하며 사이즈는 50mb 이하로 업로드 가능합니다.)</p>
+                            <p className="mt-5 text-xs">(파일은 .png, .jpg, .jpeg로 업로드해주세요.)</p>
                         )}
                 </div>
             </div>
         )
     };
-    const Step4Content = () => (<h1 className="mt-20">Step 4 content</h1>);
+
+// step 4 content    
+    const Step4Content = () => {
+        return (
+            <div className="mt-20 ml-10 mr-10 bg-slate-50 p-10">
+                <h1 className="mt-0 font-bold mb-5">입력 내용 확인</h1>
+                <div className="flex flex-row mb-5">
+                    <div className="ml-6 text-sm font-medium">상점 대표 이미지: </div>
+                    <img src={profileImage} alt="Profile" style={{ width: '140px', height: '140px',borderRadius: '50%' }}/>
+                </div>
+                <div className="ml-6 mb-10">
+                    <p className="text-sm font-medium">브랜드 정보: </p>
+                    <div className="ml-20 flex flex-row">
+                        <p className="text-sm font-medium">브랜드 / 사업자명: </p>
+                        <p className="text-sm font-medium ml-2">{brand}</p>
+                    </div>
+                    <div className="ml-20 flex flex-row">
+                        <p className="text-sm font-medium">사용자명: </p>
+                        <p className="text-sm font-medium ml-2">{username}</p>
+                    </div>
+                    <div className="ml-20 flex flex-row">
+                        <p className="text-sm font-medium">이메일: </p>
+                        <p className="text-sm font-medium ml-2">{email}</p>
+                    </div>
+                    <div className="ml-20 flex flex-row">
+                        <p className="text-sm font-medium">연락처: </p>
+                        <p className="text-sm font-medium ml-2">{phone}</p>
+                    </div>
+                </div>
+                <div className="ml-6 mb-10">
+                    <p className="text-sm font-medium">은행 정보: </p>
+                    <div className="ml-20 flex flex-row">
+                        <p className="text-sm font-medium">은행: </p>
+                        <p className="text-sm font-medium ml-2">{bankName}</p>
+                    </div>
+                    <div className="ml-20 flex flex-row">
+                        <p className="text-sm font-medium">계좌: </p>
+                        <p className="text-sm font-medium ml-2">{bankAccount}</p>
+                    </div>
+                </div>
+                <div className="flex flex-row mb-5 ml-6">
+                    <div className="text-sm font-medium">사업자 등록증: </div>
+                    <img src={businessDocument} alt="사업자등록증" style={{ width: '140px', height: '140px', borderRadius: '10px', marginLeft: '20px', marginTop: '10px', marginRight: '20px'}} />
+                </div>
+            </div>
+        )
+    };
 
 
     const onFormSubmit = () => {
