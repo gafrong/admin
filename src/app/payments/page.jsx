@@ -19,8 +19,9 @@ async function getData() {
   const data = await fs.readFile(
     path.join(process.cwd(), "src/app/payments/data.json")
   )
+
   const tasks = JSON.parse(data.toString())
-  return tasks
+return tasks
   // return z.array(taskSchema).parse(tasks)
 }
 
