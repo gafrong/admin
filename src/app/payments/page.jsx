@@ -1,6 +1,8 @@
 import { DataTable } from "./data-table"
 import { columns } from "./columns";
 import { data } from "./data";
+import { promises as fs } from "fs"
+import path from "path"
 // async function getData() {
 //   // Fetch data from your API here.
 //   return [
@@ -26,7 +28,7 @@ return tasks
 }
 
 export default async function DemoPage() {
-  // const data = await getData()
+  const data = await getData()
 
   return (
     <div className="container mx-auto py-10">
