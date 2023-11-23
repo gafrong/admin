@@ -13,6 +13,7 @@ const Onboardingtrack = () => {
     var emailCheck;
     var banknameCheck;
     var bankaccountCheck;
+    var bankusernameCheck;
 
     // validators
     const step1Validator = () => 
@@ -202,6 +203,11 @@ const Onboardingtrack = () => {
         setBankAccount(e.target.value);
     }
 
+    const handleBankUserChange = (e) => {
+        bankusernameCheck = e.target.value;
+        setBankUserName(e.target.value);
+    }
+
     const Step2Content = ({ handleBankChange, handleBankAccountChange }) => (
         <div className="mt-20 ml-10 mr-10 bg-slate-50 p-10">
             <h1 className="mt-0 font-bold mb-5">은행 정보 입력</h1>
@@ -248,7 +254,27 @@ const Onboardingtrack = () => {
                     />
                 </div>
                 <div className="ml-5 mt-5 text-xs text-slate-400">(은행 계좌번호를 번호만 입력하세요)</div>
-            </div>         
+            </div>  
+            <div className="flex flex-row">
+                <label
+                    htmlFor="bank"
+                    className="block text-sm font-medium leading-6 text-gray-900 m-3.5"
+                >
+                    소유자명:
+                </label>
+                <div className="mt-2">
+                    <input
+                        onChange={handleBankUserChange}
+                        id="username"
+                        name="username"
+                        type="text"
+                        placeholder="예) 홍길동"
+                        required
+                        className="block w-[250px] rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-black sm:text-sm sm:leading-6 pl-3"
+                    />
+                </div>
+                <div className="ml-5 mt-5 text-xs text-slate-400">(계좌 소유자명을 입력하세요)</div>
+            </div>       
         </div>
     );
 
@@ -324,40 +350,44 @@ const Onboardingtrack = () => {
             <div className="mt-20 ml-10 mr-10 bg-slate-50 p-10">
                 <h1 className="mt-0 font-bold mb-5">입력 내용 확인</h1>
                 <div className="flex flex-row mb-5">
-                    <div className="ml-6 text-sm font-medium">상점 대표 이미지: </div>
+                    <div className="ml-10 text-sm font-medium">상점 대표 이미지: </div>
                     <img src={profileImage} alt="Profile" style={{ width: '140px', height: '140px',borderRadius: '50%' }}/>
                 </div>
-                <div className="ml-6 mb-10">
+                <div className="ml-10 mb-10">
                     <p className="text-sm font-medium">브랜드 정보: </p>
-                    <div className="ml-20 flex flex-row">
+                    <div className="ml-24 flex flex-row">
                         <p className="text-sm font-medium">브랜드 / 사업자명: </p>
                         <p className="text-sm font-medium ml-2">{brand}</p>
                     </div>
-                    <div className="ml-20 flex flex-row">
+                    <div className="ml-24 flex flex-row">
                         <p className="text-sm font-medium">사용자명: </p>
                         <p className="text-sm font-medium ml-2">{username}</p>
                     </div>
-                    <div className="ml-20 flex flex-row">
+                    <div className="ml-24 flex flex-row">
                         <p className="text-sm font-medium">이메일: </p>
                         <p className="text-sm font-medium ml-2">{email}</p>
                     </div>
-                    <div className="ml-20 flex flex-row">
+                    <div className="ml-24 flex flex-row">
                         <p className="text-sm font-medium">연락처: </p>
                         <p className="text-sm font-medium ml-2">{phone}</p>
                     </div>
                 </div>
-                <div className="ml-6 mb-10">
+                <div className="ml-10 mb-10">
                     <p className="text-sm font-medium">은행 정보: </p>
-                    <div className="ml-20 flex flex-row">
+                    <div className="ml-24 flex flex-row">
                         <p className="text-sm font-medium">은행: </p>
                         <p className="text-sm font-medium ml-2">{bankName}</p>
                     </div>
-                    <div className="ml-20 flex flex-row">
+                    <div className="ml-24 flex flex-row">
                         <p className="text-sm font-medium">계좌: </p>
                         <p className="text-sm font-medium ml-2">{bankAccount}</p>
                     </div>
+                    <div className="ml-24 flex flex-row">
+                        <p className="text-sm font-medium">소유자: </p>
+                        <p className="text-sm font-medium ml-2">{bankUserName}</p>
+                    </div>
                 </div>
-                <div className="flex flex-row mb-5 ml-6">
+                <div className="flex flex-row mb-5 ml-10">
                     <div className="text-sm font-medium">사업자 등록증: </div>
                     <img src={businessDocument} alt="사업자등록증" style={{ width: '140px', height: '140px', borderRadius: '10px', marginLeft: '20px', marginTop: '10px', marginRight: '20px'}} />
                 </div>
@@ -369,6 +399,7 @@ const Onboardingtrack = () => {
     const onFormSubmit = () => {
         console.log('testing!!')
     }
+
     return (
         <main className="mr-[140px]">
             <h1 className="font-bold text-xl">회원가입 진행</h1>
