@@ -4,6 +4,7 @@ const nextConfig = {
         domains: [
             "voutiq-app.s3.ap-northeast-2.amazonaws.com",
             "d22veplpbtt1aw.cloudfront.net",
+            "loremflickr.com"
         ],
     },
 };
