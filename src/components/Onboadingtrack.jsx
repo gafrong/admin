@@ -5,10 +5,21 @@ import StepProgressBar from 'react-step-progress';
 import 'react-step-progress/dist/index.css';
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { FiCamera } from "react-icons/fi";
+import useUserStore from "@/store/zustand";
+import axios from "axios";
+import baseURL from "@/assets/common/baseUrl";
+import { useRouter } from 'next/navigation';
+import { Button } from "@/components/ui/button";
+import LoadingSpinner from "./LoadingSpinner";
 
 const Onboardingtrack = () => {
+    const user = useUserStore((state) => state.user);
+    const token = useUserStore((state) => state.token);
+    const userId = user?._id;
+    const router = useRouter();
+    const [loading, setLoading] = useState(false);
+
     var brandCheck;
-    var usernameCheck;
     var phoneCheck;
     var emailCheck;
     var banknameCheck;
@@ -17,7 +28,7 @@ const Onboardingtrack = () => {
 
     // validators
     const step1Validator = () => 
-        ( brandCheck?.length && usernameCheck?.length && phoneCheck?.length && emailCheck?.length)
+        ( brandCheck?.length && phoneCheck?.length && emailCheck?.length)
 
     const step2Validator = () => 
         ( banknameCheck?.length && bankaccountCheck?.length) 
@@ -35,7 +46,6 @@ const Onboardingtrack = () => {
 
     const [ startStep, setStartStep ] = useState(0);
     const [brand, setBrand] = useState('');
-    const [username, setUsername] = useState('');
     const [phone, setPhone] = useState('');
     const [email, setEmail] = useState('');
 
@@ -76,11 +86,6 @@ const Onboardingtrack = () => {
         setBrand(e.target.value);
     }
 
-    const handleUsernameChange = (e) => {
-        usernameCheck = e.target.value;
-        setUsername(e.target.value);
-    }
-
     const handlePhoneChange = (e) => {
         phoneCheck = e.target.value;
         setPhone(e.target.value);
@@ -91,7 +96,7 @@ const Onboardingtrack = () => {
         setEmail(e.target.value);
     }
 
-    const Step1Content = ({handleProfileImageChange, handleBrandChange, handleUsernameChange, handleEmailChange, handlePhoneChange}) => (
+    const Step1Content = ({handleProfileImageChange, handleBrandChange, handleEmailChange, handlePhoneChange}) => (
         <div className="mt-20 ml-10 mr-10 bg-slate-50 p-10">
             <h1 className="mt-0 font-bold mb-5">상점 정보 입력</h1>
             <div className="flex flex-row mb-5">
@@ -101,7 +106,7 @@ const Onboardingtrack = () => {
 
                 <label htmlFor="upload" className="cursor-pointer bg-slate-800 text-white py-2 px-2 width-[33px] rounded-full self-end absolute ml-[210px]">
                     <FiCamera />
-                    <input id="upload" type="file" className="hidden" accept="image/*, .png, .jpg, .jpeg" onChange={handleProfileImageChange} />
+                    <input id="upload" type="file" name="image" className="hidden" accept="image/*, .png, .jpg, .jpeg" onChange={handleProfileImageChange} />
                 </label>
             </div>
             <div className="flex flex-row">
@@ -124,26 +129,7 @@ const Onboardingtrack = () => {
                 </div>
                 <div className="ml-5 mt-5 text-xs text-slate-400">(상점 또는 브랜드의 이름을 작성하세요)</div>
             </div>
-            <div className="flex flex-row">
-                <label
-                    htmlFor="brand"
-                    className="block text-sm font-medium leading-6 text-gray-900 m-3.5 ml-[50px]"
-                >
-                    사용자 이름:
-                </label>
-                <div className="mt-2">
-                    <input
-                        onChange={handleUsernameChange}
-                        id="username"
-                        name="text"
-                        type="text"
-                        placeholder="예) banana_repulic"
-                        required
-                        className="block w-[250px] rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-black sm:text-sm sm:leading-6 pl-3"
-                    />
-                </div>
-                <div className="ml-5 mt-5 text-xs text-slate-400">(띄어쓰기 없이 영문 또는 숫자 조합으로 작성하세요.)</div>
-            </div>
+
             <div className="flex flex-row">
                 <label
                     htmlFor="email"
@@ -331,7 +317,7 @@ const Onboardingtrack = () => {
 
                     <label htmlFor="document" className="cursor-pointer bg-slate-800 text-white py-2 px-2 width-[33px] rounded-full self-end absolute ml-[240px] mb-[-15px]">
                         <FiCamera />
-                        <input id="document" type="file" className="hidden" accept="image/*, .png, .jpg, .jpeg" onChange={handleDocumentUpload} />
+                        <input id="document" type="file" name="image" className="hidden" accept="image/*, .png, .jpg, .jpeg" onChange={handleDocumentUpload} />
                     </label>
                     {isSelected ? (
                             <div className="mt-5">
@@ -358,10 +344,6 @@ const Onboardingtrack = () => {
                     <div className="ml-24 flex flex-row">
                         <p className="text-sm font-medium">브랜드 / 사업자명: </p>
                         <p className="text-sm font-medium ml-2">{brand}</p>
-                    </div>
-                    <div className="ml-24 flex flex-row">
-                        <p className="text-sm font-medium">사용자명: </p>
-                        <p className="text-sm font-medium ml-2">{username}</p>
                     </div>
                     <div className="ml-24 flex flex-row">
                         <p className="text-sm font-medium">이메일: </p>
@@ -397,12 +379,39 @@ const Onboardingtrack = () => {
 
 
     const onFormSubmit = () => {
-        console.log('testing!!')
+        setLoading(true);
+
+        const formData = new FormData();
+        formData.append("brandName", brand);
+        formData.append("email", email);
+        formData.append("phone", phone);
+        formData.append("bankName", bankName);
+        formData.append("bankAccount", bankAccount);
+        formData.append("bankOwner", bankUserName);
+        formData.append("image", file);
+        formData.append("image", document)
+        formData.append("userId", userId);
+
+        axios.post(`${baseURL}vendor/create`, formData, {
+            headers: { 
+                'Content-Type': 'multipart/form-data', 
+                'Authorization': `Bearer ${token}` 
+            }
+            })
+            .then((res) => {
+                router.push('/welcome');
+                setLoading(false);
+            })
+            .catch((error)=> {
+                setLoading(false);
+                console.log('Error', error)
+            })
     }
 
     return (
         <main className="mr-[140px]">
             <h1 className="font-bold text-xl">회원가입 진행</h1>
+            {!loading ?
             <StepProgressBar
                 key={stepProgressBarKey} 
                 startingStep={startStep}
@@ -417,7 +426,6 @@ const Onboardingtrack = () => {
                         content: <Step1Content
                             handleProfileImageChange={handleProfileImageChange} 
                             handleBrandChange={handleBrandChange} 
-                            handleUsernameChange={handleUsernameChange} 
                             handleEmailChange={handleEmailChange} 
                             handlePhoneChange={handlePhoneChange}
                         />,
@@ -450,7 +458,7 @@ const Onboardingtrack = () => {
                     }
                 ]}
             />
-
+            :<LoadingSpinner/>}
         </main>
     );
 }
