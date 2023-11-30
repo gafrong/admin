@@ -12,7 +12,7 @@ export default function Page() {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        console.log("hello");
+  
         if (!email || !password) {
             setError("정확히 입력해주세요");
             return;

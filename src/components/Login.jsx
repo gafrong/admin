@@ -37,7 +37,9 @@ const Login = () => {
 console.log('user data', userData)
             setUser(userData, token);
             if(userData.verified){
-                router.push('/profile');
+                router.push('/dashboard');
+            } else if (userData.submitted) {
+                router.push('/welcome');
             } else {
                 router.push('/onboarding');
             }
