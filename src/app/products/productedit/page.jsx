@@ -18,9 +18,9 @@ import {
 export default function Page() {
     const user = useUserStore((state) => state.user);
     const [ products, setProducts ] = useState([]);
-    console.log('USER', user)
+
     const vendorId = user?._id;
-    console.log('products', products)
+
     const getVendorProduct = async () => {
         try {
             const response = await axios.get(`${baseURL}products/admin/${vendorId}`);
@@ -35,6 +35,10 @@ export default function Page() {
             getVendorProduct()
         }
     }, [vendorId])
+
+    const handleEditProduct = (product) => {
+        console.log('checking handle edit product', product)
+    }
     return (
         <div className="pl-5 pt-5">
             <h1>Product Edit Page</h1>
@@ -57,7 +61,7 @@ export default function Page() {
                             <div className="pl-5 mt-2">{product.name}</div>
                         </TableCell>
                         <TableCell>
-                            <button className="ml-5 p-4 pt-1 pb-1 border rounded-sm">edit</button>
+                            <Link href={`/products/productedit/${product.id}`} className="ml-5 p-4 pt-1 pb-1 border rounded-sm">edit</Link>
                         </TableCell>
                     </TableBody>
               

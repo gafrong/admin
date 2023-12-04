@@ -20,6 +20,8 @@ export default function Page() {
         from: new Date(2023, 0, 20),
         to: addDays(new Date(2023, 0, 20), 20),
     })
+
+    console.log('DATE SHOW', date)
     const handleQuery = () => {
         console.log('DATE', date);
     }
