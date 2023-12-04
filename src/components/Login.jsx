@@ -34,7 +34,7 @@ const Login = () => {
             const data = response.data;
             const userData = data.user;
             const token = data.token;
-console.log('user data', userData)
+
             setUser(userData, token);
             if(userData.verified){
                 router.push('/dashboard');
