@@ -89,7 +89,7 @@ export function DataTable({ columns, data }) {
               table.getColumn("productGroup")?.setFilterValue(value)
             }
             className="h-10 w-[150px] lg:w-[250px] px-4"
-            placeholder="Search productGroup..."
+            placeholder="Search product details..."
           />
 
           <DataTableViewOptions table={table} />
