@@ -61,7 +61,7 @@ export default function Page() {
                             <div className="pl-5 mt-2">{product.name}</div>
                         </TableCell>
                         <TableCell>
-                            <Link href={`/products/productedit/${product.id}`} className="ml-5 p-4 pt-1 pb-1 border rounded-sm">edit</Link>
+                            <Link className="ml-5 p-4 pt-1 pb-1 border rounded-sm" onClick={()=>handleEditProduct(product)}>edit</Link>
                         </TableCell>
                     </TableBody>
               
