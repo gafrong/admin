@@ -179,7 +179,6 @@ const Onboardingtrack = () => {
     const [bankUserName, setBankUserName] = useState('');
 
     const handleBankChange = (e) => {
-        console.log('check', e.target.value)
         banknameCheck = e.target.value;
         setBankName(e.target.value);
     }
@@ -291,7 +290,6 @@ const Onboardingtrack = () => {
                 if (result && !isCancel) {
                     setBusinessDocument(result);
                     setIsSelected(true)
-                    console.log('hello')
                     setStartStep(2);
                     setStepProgressBarKey(Date.now());
                 }
@@ -458,7 +456,7 @@ const Onboardingtrack = () => {
                     }
                 ]}
             />
-            :<LoadingSpinner/>}
+            : <LoadingSpinner/>}
         </main>
     );
 }
