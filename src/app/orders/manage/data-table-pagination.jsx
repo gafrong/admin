@@ -102,7 +102,6 @@ export const TableFooter = ({ table }) => {
 
         <ButtonGotoNextPage table={table} />
 
-        <span className="border">current: {PageIndexCurrent}</span>
       </div>
     </div>
   );
