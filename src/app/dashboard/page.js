@@ -22,26 +22,29 @@ export default function Page() {
     const token = useUserStore((state) => state.token);
     const [loading, setLoading] = useState(false);
     const [totalSales, setTotalSales] = useState({});
+    const today = totalSales?.totalDailySale;
+    const yday = totalSales?.totalPreviousDaySale;
+    const twoDaysAgo = totalSales?.totalDayBeforeYesterdaySale;
+    const threeDaysAgo = totalSales?.totalPrevious3DaySale;
+    const fourDaysAgo = totalSales?.totalPrevious4DaySale;
+    const fiveDaysAgo = totalSales?.totalPrevious5DaySale;
+    const sixDaysAgo = totalSales?.totalPrevious6DaySale;
+    const weeklySale = totalSales?.totalWeeklySale;
+    const monthlySale = totalSales?.totalMonthlySale;
     const stats = [
         {
             name: "오늘 매출",
-            value:
-                totalSales?.totalDailySale?.[0]?.totalPaidSale.toLocaleString() ??
-                0,
+            value: today?.[0]?.totalPaidSale.toLocaleString() ?? 0,
             index: 0,
         },
         {
             name: "주 매출",
-            value:
-                totalSales?.totalWeeklySale?.[0]?.totalPaidSale.toLocaleString() ??
-                0,
+            value: weeklySale?.[0]?.totalPaidSale.toLocaleString() ?? 0,
             index: 1,
         },
         {
             name: "월 매출",
-            value:
-                totalSales?.totalMonthlySale?.[0]?.totalPaidSale.toLocaleString() ??
-                0,
+            value: monthlySale?.[0]?.totalPaidSale.toLocaleString() ?? 0,
             index: 2,
         },
         {
@@ -51,6 +54,7 @@ export default function Page() {
             index: 3,
         },
     ];
+
     useEffect(() => {
         axios
             .get(`${baseURL}orders/seller/${userId}/totalSales`, {
@@ -110,6 +114,80 @@ export default function Page() {
                                     "polygon(100% 38.5%, 82.6% 100%, 60.2% 37.7%, 52.4% 32.1%, 47.5% 41.8%, 45.2% 65.6%, 27.5% 23.4%, 0.1% 35.3%, 17.9% 0%, 27.7% 23.4%, 76.2% 2.5%, 74.2% 56%, 100% 38.5%)",
                             }}
                         />
+                    </div>
+                </div>
+                {/* 7 days sale */}
+                <div className="space-y-16 py-16 xl:space-y-20">
+                    <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+                        <div className="mx-auto max-w-2xl lg:mx-0 lg:max-w-none">
+                            <div className="flex items-center justify-between">
+                                <h2 className="text-base font-semibold leading-7 text-gray-900">
+                                    매출 추의
+                                </h2>
+                            </div>
+                            <table className="min-w-full mt-8 border border-gray-200 divide-y divide-gray-200">
+                                <thead>
+                                    <tr>
+                                        <th
+                                            scope="col"
+                                            className="py-3 px-6 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                                        >
+                                            Type
+                                        </th>
+                                        <th
+                                            scope="col"
+                                            className="py-3 px-6 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                                        >
+                                            Today
+                                        </th>
+                                        <th
+                                            scope="col"
+                                            className="py-3 px-6 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                                        >
+                                            This Month
+                                        </th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td className="py-4 px-6 border-b border-gray-200">
+                                            Revenue
+                                        </td>
+                                        <td className="py-4 px-6 border-b border-gray-200">
+                                            {today?.totalPaidSale || 0}
+                                        </td>
+                                        <td className="py-4 px-6 border-b border-gray-200">
+                                            {monthlySale?.[0].totalPaidSale ||
+                                                0}
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td className="py-4 px-6 border-b border-gray-200">
+                                            Payment
+                                        </td>
+                                        <td className="py-4 px-6 border-b border-gray-200">
+                                            {today?.totalPaidSale || 0}
+                                        </td>
+                                        <td className="py-4 px-6 border-b border-gray-200">
+                                            {monthlySale?.[0].totalPaidSale ||
+                                                0}
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td className="py-4 px-6 border-b border-gray-200">
+                                            Canceled
+                                        </td>
+                                        <td className="py-4 px-6 border-b border-gray-200">
+                                            {today?.totalCanceled || 0}
+                                        </td>
+                                        <td className="py-4 px-6 border-b border-gray-200">
+                                            {totalSales?.totalCanceled?.[0]
+                                                .totalPaidSaleCancelled || 0}
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
                     </div>
                 </div>
 
