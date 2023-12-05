@@ -13,6 +13,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 
 import Image from "next/image";
+import { cn } from "@/lib/utils";
 
 // Table components
 // ----------------
@@ -38,12 +39,12 @@ const filterProductGroup = (row, id, value) => {
 };
 
 // General sorting button, add to any column to make it sortable
-const ButtonSorting = ({ column, children }) => {
+const ButtonSorting = ({ column, children, className }) => {
   return (
     <Button
       variant="ghost"
       onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-      className="px-0"
+      className={cn("px-0", className)}
     >
       {children}
       <ArrowUpDown className="ml-2 h-4 w-4" />
@@ -146,10 +147,20 @@ const CellAmount = ({ row }) => {
   return <div className="text-right font-medium">{formatted}</div>;
 };
 
-const HeaderAmount = () => <button className="text-right">Payment</button>;
+const HeaderAmount = ({ column }) => (
+  <div className="flex">
+    <ButtonSorting className="ml-auto" column={column}>
+      Payment
+    </ButtonSorting>
+  </div>
+);
 
 // Price
-const HeaderPrice = () => <div className="text-right">Price</div>;
+const HeaderPrice = ({ column }) => <div className="flex">
+<ButtonSorting className="ml-auto" column={column}>
+Price
+</ButtonSorting>
+</div>
 
 const CellPrice = ({ row }) => {
   const amount = parseFloat(row.getValue("price"));
