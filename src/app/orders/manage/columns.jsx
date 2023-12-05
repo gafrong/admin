@@ -17,6 +17,21 @@ import Image from "next/image";
 // Table components
 // ----------------
 
+// Filters
+// -------
+const filterProductGroup = (row, id, value) => {
+  // console.log({ row: row.getValue(id), id: id, value: value });
+  const productGroup = row.getValue(id);
+  // const arr = [productAdjective1, productAdjective2, productAdjective3, productDescription]
+return true;
+  return (
+productGroup.productAdjective1?.toLowerCase().includes(value?.toLowerCase()) ||
+productGroup.productAdjective2?.toLowerCase().includes(value?.toLowerCase()) ||
+productGroup.productAdjective3?.toLowerCase().includes(value?.toLowerCase()) ||
+productGroup.productDescription?.toLowerCase().includes(value?.toLowerCase())
+  );
+};
+
 // General sorting button, add to any column to make it sortable
 const ButtonSorting = ({ column, children }) => {
   return (
@@ -40,29 +55,33 @@ const CellDate = ({ row }) => (
 );
 
 // Product Description
-const CellProductDescription = ({ row }) => (
-  <div className="flex flex-col space-y-2 max-w-sm">
-    {/* <div className="flex space-x-4">
-      <img className="w-16 h-16" src={row.getValue("productImage")} />
-    </div> */}
-    <div>{row.getValue("productGroup").productDescription}</div>
-
-    <div>color: {row.getValue("productGroup").productAdjective1}</div>
-    <div>{row.getValue("productGroup").productAdjective2}</div>
-    <div>{row.getValue("productGroup").productAdjective3}</div>
-  </div>
-);
+const CellProductDescription = ({ row }) => {
+  const {
+    productAdjective1,
+    productAdjective2,
+    productAdjective3,
+    productDescription,
+  } = row.getValue("productGroup");
+  return (
+    <div className="flex flex-col space-y-2 max-w-sm">
+      <div>{productDescription}</div>
+      <div>color: {productAdjective1}</div>
+      <div>{productAdjective2}</div>
+      <div>{productAdjective3}</div>
+    </div>
+  );
+};
 
 // select all rows in table
 const HeaderSelectAll = ({ table }) => (
-    <Checkbox
-      checked={
-        table.getIsAllPageRowsSelected() ||
-        (table.getIsSomePageRowsSelected() && "indeterminate")
-      }
-      onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
-      aria-label="Select all"
-    />
+  <Checkbox
+    checked={
+      table.getIsAllPageRowsSelected() ||
+      (table.getIsSomePageRowsSelected() && "indeterminate")
+    }
+    onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
+    aria-label="Select all"
+  />
 );
 
 // Select
@@ -134,7 +153,7 @@ const CellAmount = ({ row }) => {
   return <div className="text-right font-medium">{formatted}</div>;
 };
 
-const HeaderAmount = () => <div className="text-right">Payment</div>;
+const HeaderAmount = () => <button className="text-right">Payment</button>;
 
 // Price
 const HeaderPrice = () => <div className="text-right">Price</div>;
@@ -190,7 +209,8 @@ export const columns = [
   {
     accessorKey: "status",
     cell: CellStatus,
-    filterFn: (row, id, value) => value.includes(row.getValue(id)),
+    // filterFn: (row, id, value) =>
+    //   row.getValue(id)?.toLowerCase().includes(value.toLowerCase()),
     header: "Status",
   },
   {
@@ -220,6 +240,7 @@ export const columns = [
     cell: CellProductDescription,
     header: "Product",
     visibilityLabel: "Product Details",
+    filterFn: filterProductGroup,
   },
   {
     accessorKey: "quantity",
