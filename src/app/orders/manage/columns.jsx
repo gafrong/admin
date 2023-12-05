@@ -20,15 +20,20 @@ import Image from "next/image";
 // Filters
 // -------
 const filterProductGroup = (row, id, value) => {
-  // console.log({ row: row.getValue(id), id: id, value: value });
   const productGroup = row.getValue(id);
-  // const arr = [productAdjective1, productAdjective2, productAdjective3, productDescription]
-return true;
   return (
-productGroup.productAdjective1?.toLowerCase().includes(value?.toLowerCase()) ||
-productGroup.productAdjective2?.toLowerCase().includes(value?.toLowerCase()) ||
-productGroup.productAdjective3?.toLowerCase().includes(value?.toLowerCase()) ||
-productGroup.productDescription?.toLowerCase().includes(value?.toLowerCase())
+    productGroup.productAdjective1
+      ?.toLowerCase()
+      .includes(value?.toLowerCase()) ||
+    productGroup.productAdjective2
+      ?.toLowerCase()
+      .includes(value?.toLowerCase()) ||
+    productGroup.productAdjective3
+      ?.toLowerCase()
+      .includes(value?.toLowerCase()) ||
+    productGroup.productDescription
+      ?.toLowerCase()
+      .includes(value?.toLowerCase())
   );
 };
 
@@ -92,18 +97,6 @@ const CellSelectCheckbox = ({ row }) => (
     aria-label="Select row"
   />
 );
-
-// not used. checkbox with status underneath
-// const CellSelect = ({ row }) => (
-//   <div className="flex flex-col space-y-4">
-//     <Checkbox
-//       checked={row.getIsSelected()}
-//       onCheckedChange={(value) => row.toggleSelected(!!value)}
-//       aria-label="Select row"
-//     />
-//     <div className="capitalize whitespace-nowrap">{row.original.status}</div>
-//   </div>
-// );
 
 // Status
 const CellStatus = ({ row }) => (
