@@ -3,7 +3,7 @@ import { columns } from "./columns";
 import { promises as fs } from "fs";
 import path from "path";
 
-// Simulate a database read for products.  
+// Simulate a database read for products.
 // Replace with a fetch call from mongodb in prod.
 async function getData() {
   const data = await fs.readFile(
@@ -18,9 +18,11 @@ async function getData() {
 
 export default async function DemoPage() {
   const data = await getData();
-
   return (
     <div className="container-off mx-aut-offo py-10-off pl-5 pt-10 pr-2">
+      <h1 className="scroll-m-20 text-4xl font-extrabold tracking-tight lg:text-5xl pb-8">
+        Manage Orders
+      </h1>
       <DataTable columns={columns} data={data} />
     </div>
   );

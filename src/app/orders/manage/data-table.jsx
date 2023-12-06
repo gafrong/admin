@@ -10,8 +10,6 @@ import {
   useReactTable,
 } from "@tanstack/react-table";
 
-import { Button } from "@/components/ui/button";
-
 import {
   Table,
   TableBody,
@@ -20,34 +18,25 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { DataTableToolbar } from "./data-table-toolbar";
+import { DataTableToolbarFilter } from "./data-table-toolbar-filter";
+import { TableFooter } from "./data-table-pagination";
 
-const TableFooter = ({ table }) => (
-  <div className="flex items-center justify-end space-x-2 py-4">
-    <div className="flex-1 text-sm text-muted-foreground">
-      {table.getFilteredSelectedRowModel().rows.length} of{" "}
-      {table.getFilteredRowModel().rows.length} row(s) selected.
-    </div>
-    <div className="space-x-2">
-      <Button
-        variant="outline"
-        size="sm"
-        onClick={() => table.previousPage()}
-        disabled={!table.getCanPreviousPage()}
-      >
-        Previous
-      </Button>
-      <Button
-        variant="outline"
-        size="sm"
-        onClick={() => table.nextPage()}
-        disabled={!table.getCanNextPage()}
-      >
-        Next
-      </Button>
-    </div>
-  </div>
-);
+import { DataTableViewOptions } from "./data-table-view-options";
+import { DebouncedInput } from "./example/debounced-input";
+
+// fuzzy global filter. Disabled for now
+// const fuzzyFilter = (row, columnId, value, addMeta) => {
+//   // Rank the item
+//   const itemRank = rankItem(row.getValue(columnId), value);
+
+//   // Store the itemRank info
+//   addMeta({
+//     itemRank,
+//   });
+
+//   // Return if the item should be filtered in/out
+//   return itemRank.passed;
+// };
 
 export const EmptyTableRows = ({ columns }) => (
   <TableRow>
@@ -63,6 +52,8 @@ export function DataTable({ columns, data }) {
   const [columnVisibility, setColumnVisibility] = React.useState({});
   const [rowSelection, setRowSelection] = React.useState({});
 
+  //
+  const [globalFilter, setGlobalFilter] = React.useState("");
   const table = useReactTable({
     data,
     columns,
@@ -74,6 +65,8 @@ export function DataTable({ columns, data }) {
     getFilteredRowModel: getFilteredRowModel(),
     onColumnVisibilityChange: setColumnVisibility,
     onRowSelectionChange: setRowSelection,
+    // onGlobalFilterChange: setGlobalFilter,
+    // globalFilterFn: fuzzyFilter,
     state: {
       sorting,
       columnFilters,
@@ -87,7 +80,20 @@ export function DataTable({ columns, data }) {
       {/* old dropdown was here */}
 
       <div className="space-y-4">
-        <DataTableToolbar table={table} />
+        <DataTableToolbarFilter table={table} />
+        <div className="flex justify-between p4">
+
+          <DebouncedInput
+            value={table.getColumn("productGroup")?.getFilterValue() ?? ""}
+            onChange={(value) =>
+              table.getColumn("productGroup")?.setFilterValue(value)
+            }
+            className="h-10 w-[150px] lg:w-[250px] px-4"
+            placeholder="Search product details..."
+          />
+
+          <DataTableViewOptions table={table} />
+        </div>
 
         <div className="rounded-md border">
           <Table>

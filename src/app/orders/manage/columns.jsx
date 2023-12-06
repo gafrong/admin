@@ -13,17 +13,38 @@ import {
 } from "@/components/ui/dropdown-menu";
 
 import Image from "next/image";
+import { cn } from "@/lib/utils";
 
 // Table components
 // ----------------
 
+// Filters
+// -------
+const filterProductGroup = (row, id, value) => {
+  const productGroup = row.getValue(id);
+  return (
+    productGroup.productAdjective1
+      ?.toLowerCase()
+      .includes(value?.toLowerCase()) ||
+    productGroup.productAdjective2
+      ?.toLowerCase()
+      .includes(value?.toLowerCase()) ||
+    productGroup.productAdjective3
+      ?.toLowerCase()
+      .includes(value?.toLowerCase()) ||
+    productGroup.productDescription
+      ?.toLowerCase()
+      .includes(value?.toLowerCase())
+  );
+};
+
 // General sorting button, add to any column to make it sortable
-const ButtonSorting = ({ column, children }) => {
+const ButtonSorting = ({ column, children, className }) => {
   return (
     <Button
       variant="ghost"
       onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-      className="px-0"
+      className={cn("px-0", className)}
     >
       {children}
       <ArrowUpDown className="ml-2 h-4 w-4" />
@@ -40,29 +61,33 @@ const CellDate = ({ row }) => (
 );
 
 // Product Description
-const CellProductDescription = ({ row }) => (
-  <div className="flex flex-col space-y-2 max-w-sm">
-    {/* <div className="flex space-x-4">
-      <img className="w-16 h-16" src={row.getValue("productImage")} />
-    </div> */}
-    <div>{row.getValue("productGroup").productDescription}</div>
-
-    <div>color: {row.getValue("productGroup").productAdjective1}</div>
-    <div>{row.getValue("productGroup").productAdjective2}</div>
-    <div>{row.getValue("productGroup").productAdjective3}</div>
-  </div>
-);
+const CellProductDescription = ({ row }) => {
+  const {
+    productAdjective1,
+    productAdjective2,
+    productAdjective3,
+    productDescription,
+  } = row.getValue("productGroup");
+  return (
+    <div className="flex flex-col space-y-2 max-w-sm">
+      <div>{productDescription}</div>
+      <div>color: {productAdjective1}</div>
+      <div>{productAdjective2}</div>
+      <div>{productAdjective3}</div>
+    </div>
+  );
+};
 
 // select all rows in table
 const HeaderSelectAll = ({ table }) => (
-    <Checkbox
-      checked={
-        table.getIsAllPageRowsSelected() ||
-        (table.getIsSomePageRowsSelected() && "indeterminate")
-      }
-      onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
-      aria-label="Select all"
-    />
+  <Checkbox
+    checked={
+      table.getIsAllPageRowsSelected() ||
+      (table.getIsSomePageRowsSelected() && "indeterminate")
+    }
+    onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
+    aria-label="Select all"
+  />
 );
 
 // Select
@@ -73,18 +98,6 @@ const CellSelectCheckbox = ({ row }) => (
     aria-label="Select row"
   />
 );
-
-// not used. checkbox with status underneath
-// const CellSelect = ({ row }) => (
-//   <div className="flex flex-col space-y-4">
-//     <Checkbox
-//       checked={row.getIsSelected()}
-//       onCheckedChange={(value) => row.toggleSelected(!!value)}
-//       aria-label="Select row"
-//     />
-//     <div className="capitalize whitespace-nowrap">{row.original.status}</div>
-//   </div>
-// );
 
 // Status
 const CellStatus = ({ row }) => (
@@ -134,10 +147,20 @@ const CellAmount = ({ row }) => {
   return <div className="text-right font-medium">{formatted}</div>;
 };
 
-const HeaderAmount = () => <div className="text-right">Payment</div>;
+const HeaderAmount = ({ column }) => (
+  <div className="flex">
+    <ButtonSorting className="ml-auto" column={column}>
+      Payment
+    </ButtonSorting>
+  </div>
+);
 
 // Price
-const HeaderPrice = () => <div className="text-right">Price</div>;
+const HeaderPrice = ({ column }) => <div className="flex">
+<ButtonSorting className="ml-auto" column={column}>
+Price
+</ButtonSorting>
+</div>
 
 const CellPrice = ({ row }) => {
   const amount = parseFloat(row.getValue("price"));
@@ -190,7 +213,8 @@ export const columns = [
   {
     accessorKey: "status",
     cell: CellStatus,
-    filterFn: (row, id, value) => value.includes(row.getValue(id)),
+    // filterFn: (row, id, value) =>
+    //   row.getValue(id)?.toLowerCase().includes(value.toLowerCase()),
     header: "Status",
   },
   {
@@ -220,6 +244,7 @@ export const columns = [
     cell: CellProductDescription,
     header: "Product",
     visibilityLabel: "Product Details",
+    filterFn: filterProductGroup,
   },
   {
     accessorKey: "quantity",
