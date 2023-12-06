@@ -54,8 +54,21 @@ const Elipsis = () => (
 //   </div>
 // );
 
+// show the correct number of pagination buttons and page numbers on the buttons according to number of pages and current page
 const getDisplayedButtons = (currentPage, PageIndexLast) => {
   let ButtonGroup = [-2, -1, 0, 1, 2];
+  if (PageIndexLast === 0) {
+    return [0];
+  }
+  if (PageIndexLast === 1) {
+    return [0, 1];
+  }
+  if (PageIndexLast === 2) {
+    return [0, 1, 2];
+  }
+  if (PageIndexLast === 3) {
+    return [0, 1, 2, 3];
+  }
   currentPage === 3 && (ButtonGroup = [-3, -2, -1, 0, 1, 2]);
   currentPage === 2 && (ButtonGroup = [-2, -1, 0, 1, 2]);
   currentPage === 1 && (ButtonGroup = [-1, 0, 1, 2, 3]);
@@ -68,7 +81,7 @@ const getDisplayedButtons = (currentPage, PageIndexLast) => {
   return ButtonGroup;
 };
 
-export const TableFooter = ({ table }) => {
+export const DataTablePagination = ({ table }) => {
   const { pageIndex } = table.getState().pagination;
   const PageIndexCurrent = pageIndex;
 
