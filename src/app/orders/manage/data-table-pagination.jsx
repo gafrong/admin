@@ -47,6 +47,13 @@ const Elipsis = () => (
   </div>
 );
 
+// const CountProductsSelected = ({ table }) => (
+//   <div className="flex-1 text-sm text-muted-foreground">
+//     {table.getFilteredSelectedRowModel().rows.length} of{" "}
+//     {table.getFilteredRowModel().rows.length} products(s) selected.
+//   </div>
+// );
+
 const getDisplayedButtons = (currentPage, PageIndexLast) => {
   let ButtonGroup = [-2, -1, 0, 1, 2];
   currentPage === 3 && (ButtonGroup = [-3, -2, -1, 0, 1, 2]);
@@ -69,11 +76,8 @@ export const TableFooter = ({ table }) => {
   const PageIndexFirst = 0;
   let ButtonGroup = getDisplayedButtons(PageIndexCurrent, PageIndexLast);
   return (
-    <div className="flex items-center justify-end space-x-2 py-4">
-      {/* <div className="flex-1 text-sm text-muted-foreground">
-        {table.getFilteredSelectedRowModel().rows.length} of{" "}
-        {table.getFilteredRowModel().rows.length} products(s) selected.
-      </div> */}
+    <div className="flex items-center justify-center space-x-2 py-4">
+      {/* <CountProductsSelected  table={table}/> */}
       <div className="flex space-x-2">
         <ButtonGotoPreviousPage table={table} />
 
@@ -101,7 +105,6 @@ export const TableFooter = ({ table }) => {
         )}
 
         <ButtonGotoNextPage table={table} />
-
       </div>
     </div>
   );
