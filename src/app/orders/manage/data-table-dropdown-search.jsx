@@ -14,7 +14,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 
 export function DataTableDropdownSearch({ searchColumn, setSearchColumn }) {
-  // const [searchColumn, setSearchColumn] = React.useState("name");
+
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
