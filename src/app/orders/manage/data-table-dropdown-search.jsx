@@ -1,7 +1,7 @@
 "use client";
 
 import { DropdownMenuTrigger } from "@radix-ui/react-dropdown-menu";
-import { MixerHorizontalIcon } from "@radix-ui/react-icons";
+import { MagnifyingGlassIcon } from "@radix-ui/react-icons";
 
 import { Button } from "@/components/ui/button";
 
@@ -19,7 +19,7 @@ export function DataTableDropdownSearch({ searchColumn, setSearchColumn }) {
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
         <Button variant="outline" className="hidden mr-4 h-10 md:flex">
-          <MixerHorizontalIcon className="mr-2 h-4 w-4" />
+          <MagnifyingGlassIcon className="mr-2 h-4 w-4" />
           Search
         </Button>
       </DropdownMenuTrigger>
@@ -47,4 +47,3 @@ export function DataTableDropdownSearch({ searchColumn, setSearchColumn }) {
     </DropdownMenu>
   );
 }
-
