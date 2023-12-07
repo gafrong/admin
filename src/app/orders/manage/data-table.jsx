@@ -18,7 +18,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { DataTableToolbarFilter } from "./data-table-toolbar-filter";
+import { DataTableToolbarFilter } from "./data-table-order-filter";
 import { DataTablePagination } from "./data-table-pagination";
 
 import { DataTableViewOptions } from "./data-table-view-options";
@@ -54,7 +54,7 @@ export function DataTable({ columns, data }) {
   const [rowSelection, setRowSelection] = React.useState({});
   const [searchColumn, setSearchColumn] = React.useState("name");
   // const [globalFilter, setGlobalFilter] = React.useState("");
-  
+
   const table = useReactTable({
     data,
     columns,
@@ -75,7 +75,7 @@ export function DataTable({ columns, data }) {
       rowSelection,
     },
   });
-
+  
   return (
     <div className="w-full">
       {/* old dropdown was here */}
