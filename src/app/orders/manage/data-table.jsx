@@ -18,11 +18,12 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { DataTableToolbarFilter } from "./data-table-toolbar-filter";
-import { TableFooter } from "./data-table-pagination";
+import { DataTableToolbarFilter } from "./data-table-order-filter";
+import { DataTablePagination } from "./data-table-pagination";
 
 import { DataTableViewOptions } from "./data-table-view-options";
 import { DebouncedInput } from "./example/debounced-input";
+import { DataTableDropdownSearch } from "./data-table-dropdown-search";
 
 // fuzzy global filter. Disabled for now
 // const fuzzyFilter = (row, columnId, value, addMeta) => {
@@ -51,9 +52,9 @@ export function DataTable({ columns, data }) {
   const [columnFilters, setColumnFilters] = React.useState([]);
   const [columnVisibility, setColumnVisibility] = React.useState({});
   const [rowSelection, setRowSelection] = React.useState({});
+  const [searchColumn, setSearchColumn] = React.useState("name");
+  // const [globalFilter, setGlobalFilter] = React.useState("");
 
-  //
-  const [globalFilter, setGlobalFilter] = React.useState("");
   const table = useReactTable({
     data,
     columns,
@@ -75,6 +76,12 @@ export function DataTable({ columns, data }) {
     },
   });
 
+  const handleSearchDropdown = (value) => {
+    table.getColumn("orderNumber")?.setFilterValue("");
+    table.getColumn("name")?.setFilterValue("");
+    setSearchColumn(value);
+  };
+
   return (
     <div className="w-full">
       {/* old dropdown was here */}
@@ -82,15 +89,32 @@ export function DataTable({ columns, data }) {
       <div className="space-y-4">
         <DataTableToolbarFilter table={table} />
         <div className="flex justify-between p4">
-
-          <DebouncedInput
-            value={table.getColumn("productGroup")?.getFilterValue() ?? ""}
-            onChange={(value) =>
-              table.getColumn("productGroup")?.setFilterValue(value)
-            }
-            className="h-10 w-[150px] lg:w-[250px] px-4"
-            placeholder="Search product details..."
+          <DataTableDropdownSearch
+            searchColumn={searchColumn}
+            setSearchColumn={handleSearchDropdown}
           />
+
+          {searchColumn === "orderNumber" && (
+            <DebouncedInput
+              value={table.getColumn("orderNumber")?.getFilterValue() ?? ""}
+              onChange={(value) =>
+                table.getColumn("orderNumber")?.setFilterValue(value)
+              }
+              className="h-10 w-[150px] lg:w-[250px] px-4"
+              placeholder="Search Order Number..."
+            />
+          )}
+
+          {searchColumn === "name" && (
+            <DebouncedInput
+              value={table.getColumn("name")?.getFilterValue() ?? ""}
+              onChange={(value) =>
+                table.getColumn("name")?.setFilterValue(value)
+              }
+              className="h-10 w-[150px] lg:w-[250px] px-4"
+              placeholder="Search User..."
+            />
+          )}
 
           <DataTableViewOptions table={table} />
         </div>
@@ -139,7 +163,7 @@ export function DataTable({ columns, data }) {
           </Table>
         </div>
 
-        <TableFooter table={table} />
+        <DataTablePagination table={table} />
       </div>
     </div>
   );
