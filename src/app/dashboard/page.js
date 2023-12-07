@@ -154,11 +154,12 @@ export default function Page() {
                                             Revenue
                                         </td>
                                         <td className="py-4 px-6 border-b border-gray-200">
-                                            {today?.totalPaidSale || 0}
+                                            {today?.totalPaidSale || 0}원
                                         </td>
                                         <td className="py-4 px-6 border-b border-gray-200">
-                                            {monthlySale?.[0].totalPaidSale ||
+                                            {monthlySale?.[0]?.totalPaidSale ||
                                                 0}
+                                            원
                                         </td>
                                     </tr>
                                     <tr>
@@ -166,11 +167,12 @@ export default function Page() {
                                             Payment
                                         </td>
                                         <td className="py-4 px-6 border-b border-gray-200">
-                                            {today?.totalPaidSale || 0}
+                                            {today?.totalPaidSale || 0}원
                                         </td>
                                         <td className="py-4 px-6 border-b border-gray-200">
-                                            {monthlySale?.[0].totalPaidSale ||
+                                            {monthlySale?.[0]?.totalPaidSale ||
                                                 0}
+                                            원
                                         </td>
                                     </tr>
                                     <tr>
@@ -178,11 +180,13 @@ export default function Page() {
                                             Canceled
                                         </td>
                                         <td className="py-4 px-6 border-b border-gray-200">
-                                            {today?.totalCanceled || 0}
+                                            {today?.totalCanceled || 0}원
                                         </td>
                                         <td className="py-4 px-6 border-b border-gray-200">
-                                            {totalSales?.totalCanceled?.[0]
-                                                .totalPaidSaleCancelled || 0}
+                                            {totalSales
+                                                ?.totalCanceledLast30Days?.[0]
+                                                ?.totalPaidSaleCancelled || 0}
+                                            원
                                         </td>
                                     </tr>
                                 </tbody>
