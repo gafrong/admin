@@ -23,6 +23,7 @@ import { DataTablePagination } from "./data-table-pagination";
 
 import { DataTableViewOptions } from "./data-table-view-options";
 import { DebouncedInput } from "./example/debounced-input";
+import { DataTableDropdownSearch } from "./data-table-dropdown-search";
 
 // fuzzy global filter. Disabled for now
 // const fuzzyFilter = (row, columnId, value, addMeta) => {
@@ -51,9 +52,9 @@ export function DataTable({ columns, data }) {
   const [columnFilters, setColumnFilters] = React.useState([]);
   const [columnVisibility, setColumnVisibility] = React.useState({});
   const [rowSelection, setRowSelection] = React.useState({});
-
-  //
-  const [globalFilter, setGlobalFilter] = React.useState("");
+  const [searchColumn, setSearchColumn] = React.useState("name");
+  // const [globalFilter, setGlobalFilter] = React.useState("");
+  
   const table = useReactTable({
     data,
     columns,
@@ -82,15 +83,32 @@ export function DataTable({ columns, data }) {
       <div className="space-y-4">
         <DataTableToolbarFilter table={table} />
         <div className="flex justify-between p4">
-
-          <DebouncedInput
-            value={table.getColumn("orderNumber")?.getFilterValue() ?? ""}
-            onChange={(value) =>
-              table.getColumn("orderNumber")?.setFilterValue(value)
-            }
-            className="h-10 w-[150px] lg:w-[250px] px-4"
-            placeholder="Search Order Number..."
+          <DataTableDropdownSearch
+            searchColumn={searchColumn}
+            setSearchColumn={setSearchColumn}
           />
+
+          {searchColumn === "orderNumber" && (
+            <DebouncedInput
+              value={table.getColumn("orderNumber")?.getFilterValue() ?? ""}
+              onChange={(value) =>
+                table.getColumn("orderNumber")?.setFilterValue(value)
+              }
+              className="h-10 w-[150px] lg:w-[250px] px-4"
+              placeholder="Search Order Number..."
+            />
+          )}
+
+          {searchColumn === "name" && (
+            <DebouncedInput
+              value={table.getColumn("name")?.getFilterValue() ?? ""}
+              onChange={(value) =>
+                table.getColumn("name")?.setFilterValue(value)
+              }
+              className="h-10 w-[150px] lg:w-[250px] px-4"
+              placeholder="Search User..."
+            />
+          )}
 
           <DataTableViewOptions table={table} />
         </div>
