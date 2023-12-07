@@ -5,7 +5,7 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { statuses } from "./data/data";
 
 export function DataTableToolbarFilter({ table }) {
-  const [value, setValue] = React.useState("all");
+  const [value, setValue] = React.useState("All");
   const column = table.getColumn("status");
 
   const handleValueChange = (value) => {
@@ -17,7 +17,7 @@ export function DataTableToolbarFilter({ table }) {
   return (
     <RadioGroup
       className="flex flex-wrap gap-8 border w-full p-4 rounded-md md:w-full md:grid-cols-2"
-      defaultValue="Ordered"
+      defaultValue="All"
       onValueChange={handleValueChange}
     >
       {statuses.map((status) => (

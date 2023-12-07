@@ -38,6 +38,20 @@ const filterProductGroup = (row, id, value) => {
   );
 };
 
+// "name": "대호 엄","orderNumber": 1873917702819,
+const filterOrderNumber = (row, id, value) => {
+  return (
+    row.getValue(id).toString().includes(value) 
+  );
+};
+
+// "name": "대호 엄","orderNumber": 1873917702819,
+const filterName = (row, id, value) => {
+  return (
+    row.getValue(id).includes(value) 
+  );
+};
+
 // General sorting button, add to any column to make it sortable
 const ButtonSorting = ({ column, children, className }) => {
   return (
@@ -227,11 +241,14 @@ export const columns = [
     accessorKey: "orderNumber",
     header: "Order #",
     visibilityLabel: "Order Number",
+    filterFn: filterOrderNumber,
+    
   },
   {
     accessorKey: "name",
     cell: CellName,
     header: HeaderName,
+    filterFn: filterName,
   },
   {
     accessorKey: "productImage",
@@ -244,7 +261,7 @@ export const columns = [
     cell: CellProductDescription,
     header: "Product",
     visibilityLabel: "Product Details",
-    filterFn: filterProductGroup,
+    filterFn: filterProductGroup,    
   },
   {
     accessorKey: "quantity",
