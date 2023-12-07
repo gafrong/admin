@@ -19,7 +19,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { DataTableToolbarFilter } from "./data-table-toolbar-filter";
-import { TableFooter } from "./data-table-pagination";
+import { DataTablePagination } from "./data-table-pagination";
 
 import { DataTableViewOptions } from "./data-table-view-options";
 import { DebouncedInput } from "./example/debounced-input";
@@ -84,12 +84,12 @@ export function DataTable({ columns, data }) {
         <div className="flex justify-between p4">
 
           <DebouncedInput
-            value={table.getColumn("productGroup")?.getFilterValue() ?? ""}
+            value={table.getColumn("orderNumber")?.getFilterValue() ?? ""}
             onChange={(value) =>
-              table.getColumn("productGroup")?.setFilterValue(value)
+              table.getColumn("orderNumber")?.setFilterValue(value)
             }
             className="h-10 w-[150px] lg:w-[250px] px-4"
-            placeholder="Search product details..."
+            placeholder="Search Order Number..."
           />
 
           <DataTableViewOptions table={table} />
@@ -139,7 +139,7 @@ export function DataTable({ columns, data }) {
           </Table>
         </div>
 
-        <TableFooter table={table} />
+        <DataTablePagination table={table} />
       </div>
     </div>
   );
