@@ -75,7 +75,13 @@ export function DataTable({ columns, data }) {
       rowSelection,
     },
   });
-  
+
+  const handleSearchDropdown = (value) => {
+    table.getColumn("orderNumber")?.setFilterValue("");
+    table.getColumn("name")?.setFilterValue("");
+    setSearchColumn(value);
+  };
+
   return (
     <div className="w-full">
       {/* old dropdown was here */}
@@ -85,7 +91,7 @@ export function DataTable({ columns, data }) {
         <div className="flex justify-between p4">
           <DataTableDropdownSearch
             searchColumn={searchColumn}
-            setSearchColumn={setSearchColumn}
+            setSearchColumn={handleSearchDropdown}
           />
 
           {searchColumn === "orderNumber" && (
