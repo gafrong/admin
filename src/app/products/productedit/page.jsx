@@ -14,11 +14,12 @@ import {
     TableHeader,
     TableRow,
 } from "@/components/ui/table"
+import { useRouter } from "next/navigation";
 
 export default function Page() {
     const user = useUserStore((state) => state.user);
     const [ products, setProducts ] = useState([]);
-
+    const router = useRouter();
     const vendorId = user?._id;
 
     const getVendorProduct = async () => {
@@ -37,8 +38,11 @@ export default function Page() {
     }, [vendorId])
 
     const handleEditProduct = (product) => {
+
         console.log('checking handle edit product', product)
-    }
+        router.push('/products/productdetail', product);
+    };
+
     return (
         <div className="pl-5 pt-5">
             <h1>Product Edit Page</h1>
@@ -61,7 +65,7 @@ export default function Page() {
                             <div className="pl-5 mt-2">{product.name}</div>
                         </TableCell>
                         <TableCell>
-                            <Link className="ml-5 p-4 pt-1 pb-1 border rounded-sm" onClick={()=>handleEditProduct(product)}>edit</Link>
+                            <button className="ml-5 p-4 pt-1 pb-1 border rounded-sm" onClick={()=>handleEditProduct(product)}>edit</button>
                         </TableCell>
                     </TableBody>
               

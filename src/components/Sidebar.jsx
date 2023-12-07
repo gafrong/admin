@@ -60,27 +60,9 @@ const Sidebar = () => {
                         </div>
                     </AccordionTrigger>
                     <AccordionContent>
-                    <Link href="/orders/manage" className="flex flex-col pl-3 pt-3 pb-3 hover:bg-slate-200">
+                        <Link href="/orders/manage" className="flex flex-col pl-3 pt-3 pb-3 hover:bg-slate-200">
                             Manage
                         </Link>
-                        {/* <Link href="/orders/search" className="flex flex-col pl-3 pt-3 pb-3 hover:bg-slate-200">
-                            Search
-                        </Link>
-                        <Link href="/orders/productready" className="flex flex-col pl-3 pt-3 pb-3 hover:bg-slate-200">
-                            Initial Order
-                        </Link>
-                        <Link href="/orders/deliverymgmt" className="flex flex-col pl-3 pt-3 pb-3 hover:bg-slate-200">
-                            Delivery Status
-                        </Link>
-                        <Link href="/orders/orderconfirmmgmt" className="flex flex-col pl-3 pt-3 pb-3 hover:bg-slate-200">
-                            Paid Products
-                        </Link>
-                        <Link href="/orders/cancelorders" className="flex flex-col pl-3 pt-3 pb-3 hover:bg-slate-200">
-                            Canceled Orders
-                        </Link>
-                        <Link href="/orders/refund" className="flex flex-col pl-3 pt-3 pb-3 hover:bg-slate-200">
-                            Returns
-                        </Link> */}
                     </AccordionContent>
                 </AccordionItem>
             </Accordion>
