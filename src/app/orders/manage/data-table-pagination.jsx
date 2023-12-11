@@ -1,12 +1,10 @@
 "use client";
 
 import * as React from "react";
-
 import { Button } from "@/components/ui/button";
-
 import { CaretLeftIcon, CaretRightIcon } from "@radix-ui/react-icons";
 
-const ButtonGotoPage = ({ table, pageIndex, isActive = false }) => (
+const ButtonGotoPage = ({ table, pageIndex, isActive }) => (
   <Button
     variant={isActive ? "" : "outline"}
     size="sm"
@@ -16,7 +14,7 @@ const ButtonGotoPage = ({ table, pageIndex, isActive = false }) => (
   </Button>
 );
 
-const ButtonGotoPreviousPage = ({ table }) => (
+const ChevronGotoPreviousPage = ({ table }) => (
   <Button
     variant="outline"
     size="sm"
@@ -27,7 +25,7 @@ const ButtonGotoPreviousPage = ({ table }) => (
   </Button>
 );
 
-const ButtonGotoNextPage = ({ table }) => (
+const ChevronGotoNextPage = ({ table }) => (
   <Button
     variant="outline"
     size="sm"
@@ -56,45 +54,37 @@ const Elipsis = () => (
 
 // show the correct number of pagination buttons and page numbers on the buttons according to number of pages and current page
 const getDisplayedButtons = (pageIndexCurrent, pageIndexLast) => {
-  let defaultButtonGroup = [-2, -1, 0, 1, 2];
-  let buttonGroup = defaultButtonGroup;
-
-  // if there are less than 4 pages, show available buttons
-  // ------------------------------------
-  pageIndexLast === 0 && (buttonGroup = [0]);
-  pageIndexLast === 1 && (buttonGroup = [0, 1]);
-  pageIndexLast === 2 && (buttonGroup = [0, 1, 2]);
-  pageIndexLast === 3 && (buttonGroup = [0, 1, 2, 3]);
-  if (pageIndexLast < 4) {
-    return buttonGroup;
-  }
-
-  // handle early pages
-  // ------------------------------------
-  pageIndexCurrent === 3 && (buttonGroup = [-3, -2, -1, 0, 1, 2]);
-  pageIndexCurrent === 2 && (buttonGroup = [-2, -1, 0, 1, 2]);
-  pageIndexCurrent === 1 && (buttonGroup = [-1, 0, 1, 2, 3]);
-  pageIndexCurrent === 0 && (buttonGroup = [0, 1, 2, 3, 4]);
-
-  // handle last pages
-  // ------------------------------------
+  const defaultDisplayedButtons = [-2, -1, 0, 1, 2];
   const pagesToLastPage = pageIndexLast - pageIndexCurrent;
-  pagesToLastPage === 0 && (buttonGroup = [-4, -3, -2, -1, 0]);
-  pagesToLastPage === 1 && (buttonGroup = [-3, -2, -1, 0, 1]);
-  pagesToLastPage === 2 && (buttonGroup = [-2, -1, 0, 1, 2]);
-  pagesToLastPage === 3 && (buttonGroup = [-1, 0, 1, 2, 3]);
 
-  return buttonGroup;
+  const displayedButtons =
+    // handle early pages
+    pageIndexCurrent === 3 ? [-3, -2, -1, 0, 1, 2]
+    : pageIndexCurrent === 2 ? [-2, -1, 0, 1, 2]
+    : pageIndexCurrent === 1 ? [-1, 0, 1, 2, 3]
+    : pageIndexCurrent === 0 ? [0, 1, 2, 3, 4]
+      // handle last pages
+    : pagesToLastPage === 0 ? [1, 1, -4, -3, -2, -1, 0, 1]
+    : pagesToLastPage === 1 ? [-3, -2, -1, 0, 1]
+    : pagesToLastPage === 2 ? [-2, -1, 0, 1, 2]
+    : pagesToLastPage === 3 ? [-1, 0, 1, 2, 3]
+      // if there are less than 4 pages, show all available buttons
+    : pageIndexLast === 0 ? [0]
+    : pageIndexLast === 1 ? [0, 1]
+    : pageIndexLast === 2 ? [0, 1, 2]
+    : pageIndexLast === 3 ? [0, 1, 2, 3]
+    : defaultDisplayedButtons;
+  return displayedButtons;
 };
 
-const JumpToFirstPage = ({ table, pageIndexFirst }) => (
+const ButtonJumpToFirstPage = ({ table, pageIndexFirst }) => (
   <>
     <ButtonGotoPage table={table} pageIndex={pageIndexFirst} />
     <Elipsis />
   </>
 );
 
-const JumpToLastPage = ({ table, pageIndexLast }) => (
+const ButtonJumpToLastPage = ({ table, pageIndexLast }) => (
   <>
     <Elipsis />
     <ButtonGotoPage table={table} pageIndex={pageIndexLast} />
@@ -109,28 +99,26 @@ export const DataTablePagination = ({ table }) => {
 
   const getValidPages = (offset) => {
     const pageNumber = pageIndexCurrent + offset;
-    return pageNumber >= 0 && pageNumber < pageIndexLast;
+    return pageNumber >= 0 && pageNumber <= pageIndexLast;
   };
 
   let displayedButtons = getDisplayedButtons(
     pageIndexCurrent,
-    pageIndexLast
+    pageIndexLast,
   ).filter(getValidPages);
 
   const isPagesShown = pageIndexLast !== -1;
 
   if (!isPagesShown) return null;
-
   return (
     <div className="flex items-center justify-center space-x-2 py-4">
       {/* <CountProductsSelected  table={table}/> */}
       <div className="flex space-x-2">
 
-        {/* left chevron */}
-        <ButtonGotoPreviousPage table={table} />
+        <ChevronGotoPreviousPage table={table} />
 
         {pageIndexCurrent > 3 && (
-          <JumpToFirstPage table={table} pageIndexFirst={pageIndexFirst} />
+          <ButtonJumpToFirstPage table={table} pageIndexFirst={pageIndexFirst} />
         )}
         {displayedButtons.map((i) => (
           <ButtonGotoPage
@@ -141,12 +129,10 @@ export const DataTablePagination = ({ table }) => {
           />
         ))}
         {pageIndexCurrent < pageIndexLast - 3 && (
-          <JumpToLastPage table={table} pageIndexLast={pageIndexLast} />
+          <ButtonJumpToLastPage table={table} pageIndexLast={pageIndexLast} />
         )}
 
-        {/* right chevron */}
-        <ButtonGotoNextPage table={table} />
-
+        <ChevronGotoNextPage table={table} />
       </div>
     </div>
   );
