@@ -8,25 +8,12 @@ import { Switch } from "@/components/ui/switch"
 import Image from 'next/image'
 
 export default function Page({searchParams}) {
-    const router = useRouter();
-    const data = router
-    const product = searchParams;
-    const [editedProduct, setEditedProduct] = useState({ ...searchParams });
-    
-    // checking delivery fee boolean
-    const deliveryFeeValue = editedProduct.deliveryFee;
-    const booleanDeliveryFee = deliveryFeeValue === 'true' ? true : false;
+    const parsedProduct = JSON.parse(decodeURIComponent(searchParams.product));
 
-    // checking discount fee boolean
-    const onSaleValue = editedProduct.onSale;
-    const booleanOnSale = onSaleValue === 'true' ? true : false;
-
-    const displayValue = editedProduct.display;
-    const booleanDisplayProduct = displayValue === 'true' ? true : false;
-
-    const [deliveryFeeOn, setDeliveryFeeOn] = useState(booleanDeliveryFee);
-    const [onSale, setOnSale] = useState(booleanOnSale);
-    const [displayProduct, setDisplayProduct] = useState(booleanDisplayProduct);
+    const [editedProduct, setEditedProduct] = useState({ ...parsedProduct });
+    const [deliveryFeeOn, setDeliveryFeeOn] = useState(parsedProduct.deliveryFee);
+    const [onSale, setOnSale] = useState(parsedProduct.onSale);
+    const [displayProduct, setDisplayProduct] = useState(parsedProduct.display);
  
     const handleInputChange = (e, field) => {
         const inputValue = e.target.value;
@@ -69,10 +56,10 @@ export default function Page({searchParams}) {
         setDisplayProduct((prevValue) => !prevValue);
     }
 
-    console.log('DATA', searchParams)
+    console.log('parsed PRODUCT', parsedProduct)
     return (
         <div className={`p-10 ${displayProduct ? '' : 'bg-gray-300'}`}>
-            <img src={awsURL+product.image} alt={product.name} style={{opacity: displayProduct ? 1 : 0.5}}/>
+            <img src={awsURL+editedProduct.image} alt={editedProduct.name} style={{opacity: displayProduct ? 1 : 0.5}}/>
             <div className="pt-5 flex">
                 <p className='mr-2'>Name: </p> 
                 <Input
@@ -142,15 +129,15 @@ export default function Page({searchParams}) {
                     onCheckedChange={handleDisplayProductChange}
                 />
             </div>
-            <div className="pt-5">
-                <p>카테고리: {product.category}</p>
-                <p>드롭상품: {product.dropProduct}</p>
-                <p>할인판매: {product.onSale}</p>
-                <p>색옵션: {product.colorOptions}</p>
-                <p>옵션 1: {product.subOption1}</p>
-                <p>옵션 2: {product.subOption2}</p>
-                <p>옵션 3: {product.subOption3}</p>
-            </div>
+            {/* <div className="pt-5">
+                <p>카테고리: {parsedProduct.category}</p>
+                <p>드롭상품: {parsedProduct.dropProduct}</p>
+                <p>할인판매: {parsedProduct.onSale}</p>
+                <p>색옵션: {parsedProduct.colorOptions}</p>
+                <p>옵션 1: {parsedProduct.subOption1}</p>
+                <p>옵션 2: {parsedProduct.subOption2}</p>
+                <p>옵션 3: {parsedProduct.subOption3}</p>
+            </div> */}
         </div>
     );
 }
