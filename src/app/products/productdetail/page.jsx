@@ -5,7 +5,7 @@ import awsURL from "@/assets/common/awsUrl";
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Switch } from "@/components/ui/switch"
-
+import Image from 'next/image'
 
 export default function Page({searchParams}) {
     const router = useRouter();
@@ -71,8 +71,8 @@ export default function Page({searchParams}) {
 
     console.log('DATA', searchParams)
     return (
-        <div className="p-10">
-            <img src={awsURL+product.image} alt={product.name} />
+        <div className={`p-10 ${displayProduct ? '' : 'bg-gray-300'}`}>
+            <img src={awsURL+product.image} alt={product.name} style={{opacity: displayProduct ? 1 : 0.5}}/>
             <div className="pt-5 flex">
                 <p className='mr-2'>Name: </p> 
                 <Input
@@ -146,7 +146,6 @@ export default function Page({searchParams}) {
                 <p>카테고리: {product.category}</p>
                 <p>드롭상품: {product.dropProduct}</p>
                 <p>할인판매: {product.onSale}</p>
-                <p>판매중: {product.display}</p>
                 <p>색옵션: {product.colorOptions}</p>
                 <p>옵션 1: {product.subOption1}</p>
                 <p>옵션 2: {product.subOption2}</p>
