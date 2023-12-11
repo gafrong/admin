@@ -57,7 +57,7 @@ export default function Page() {
                         </TableHeader>
                 {products?.length > 0 && (
                     products.map((product, index) => (
-        
+                        
                         <TableBody key={index}>
                             {console.log('PROD', product)}
                             <TableCell>
@@ -70,7 +70,7 @@ export default function Page() {
                                 <Link
                                     href={{
                                         pathname: "/products/productdetail",
-                                        query: product
+                                        query: {product: JSON.stringify(product) }
                                     }}
                                 >edit</Link>
                             </TableCell>
