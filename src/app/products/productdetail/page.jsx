@@ -14,16 +14,19 @@ export default function Page({searchParams}) {
     const [editedProduct, setEditedProduct] = useState({ ...searchParams });
     
     // checking delivery fee boolean
-    const deliveryFeeValue = 'false';
+    const deliveryFeeValue = editedProduct.deliveryFee;
     const booleanDeliveryFee = deliveryFeeValue === 'true' ? true : false;
 
     // checking discount fee boolean
-    const onSaleValue = 'false';
+    const onSaleValue = editedProduct.onSale;
     const booleanOnSale = onSaleValue === 'true' ? true : false;
+
+    const displayValue = editedProduct.display;
+    const booleanDisplayProduct = displayValue === 'true' ? true : false;
 
     const [deliveryFeeOn, setDeliveryFeeOn] = useState(booleanDeliveryFee);
     const [onSale, setOnSale] = useState(booleanOnSale);
-
+    const [displayProduct, setDisplayProduct] = useState(booleanDisplayProduct);
  
     const handleInputChange = (e, field) => {
         const inputValue = e.target.value;
@@ -59,6 +62,11 @@ export default function Page({searchParams}) {
             onSale: updatedDiscountValue,
             discount: updatedDiscountValue ? prevProduct.discount : 0,
         }))
+    }
+
+    const handleDisplayProductChange = () => {
+        console.log('show product')
+        setDisplayProduct((prevValue) => !prevValue);
     }
 
     console.log('DATA', searchParams)
@@ -125,6 +133,13 @@ export default function Page({searchParams}) {
                 <Switch
                     checked={onSale}
                     onCheckedChange={handleDiscountChange}
+                />
+            </div>
+            <div className="pt-5 flex w-1/2 items-center">
+                <p className='w-24'>상품 공개:</p>  
+                <Switch
+                    checked={displayProduct}
+                    onCheckedChange={handleDisplayProductChange}
                 />
             </div>
             <div className="pt-5">
