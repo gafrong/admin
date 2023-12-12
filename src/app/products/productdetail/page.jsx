@@ -6,6 +6,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { Switch } from "@/components/ui/switch"
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
 import { Button } from '@/components/ui/button';
+import { HexColorPicker } from "react-colorful";
 
 export default function Page({searchParams}) {
     const parsedProduct = JSON.parse(decodeURIComponent(searchParams.product));
@@ -15,6 +16,7 @@ export default function Page({searchParams}) {
     const [onSale, setOnSale] = useState(parsedProduct.onSale);
     const [displayProduct, setDisplayProduct] = useState(parsedProduct.display);
     const [selectedParentCategoryId, setSelectedParentCategoryId] = useState(null);
+    const [color, setColor] = useState(parsedProduct.colorOptions?.hexColor);
 
     const parentCategories = [
         {id: '642d1f4406159dd4f0519464', name: '의류'},
@@ -274,6 +276,16 @@ export default function Page({searchParams}) {
                         </DropdownMenuContent>
                     </DropdownMenu>
                 </div>
+            </div>
+            <div className="pt-5 flex">
+                <p className='mr-4'>상품색:</p>
+                <HexColorPicker color={color} onChange={setColor} />
+                <p className='ml-4'>{color}</p>
+            </div>
+
+            <div className="pt-5 flex">
+                <p className='mr-2'>사이즈:</p>
+                <p className='ml-4'>{color}</p>
             </div>
             {/* <div className="pt-5">
                 <p>카테고리: {parsedProduct.category}</p>
