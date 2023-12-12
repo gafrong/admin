@@ -88,39 +88,45 @@ export default function Page({searchParams}) {
                 />
                 <p className='ml-2'>원</p>
             </div>
-            <div className="pt-5 flex w-1/3 items-center">
-                <p className='w-16'>배송비:</p>    
-                <Input
-                    type="text"
-                    value={editedProduct.deliveryFeeAmount}
-                    onChange={(e) => handleInputChange(e, "deliveryFeeAmount")}
-                    className="w-24"
-                />
-                <p className='ml-2'>원</p>
+            <div className='flex'>
+                <div className="pt-5 flex w-1/3 items-center">
+                    <p className='w-24'>배송비 적용:</p>  
+                    <Switch
+                        checked={deliveryFeeOn}
+                        onCheckedChange={handleFeeChange}
+                    />
+                </div>
+                {deliveryFeeOn ?
+                    <div className="pt-5 flex w-1/3 items-center">
+                        <p className='w-16'>배송비:</p>    
+                        <Input
+                            type="text"
+                            value={editedProduct.deliveryFeeAmount}
+                            onChange={(e) => handleInputChange(e, "deliveryFeeAmount")}
+                            className="w-24"
+                        />
+                        <p className='ml-2'>원</p>
+                    </div> : null }
             </div>
-            <div className="pt-5 flex w-1/2 items-center">
-                <p className='w-24'>배송비 적용:</p>  
-                <Switch
-                    checked={deliveryFeeOn}
-                    onCheckedChange={handleFeeChange}
-                />
-            </div>
-            <div className="pt-5 flex w-1/3 items-center">
-                <p className='w-16'>할인률:</p>    
-                <Input
-                    type="text"
-                    value={editedProduct.discount}
-                    onChange={(e) => handleInputChange(e, "discount")}
-                    className="w-24"
-                />
-                <p className='ml-2'>%</p>
-            </div>
-            <div className="pt-5 flex w-1/2 items-center">
-                <p className='w-24'>할인률 적용:</p>  
-                <Switch
-                    checked={onSale}
-                    onCheckedChange={handleDiscountChange}
-                />
+            <div className='flex'>
+                <div className="pt-5 flex w-1/3 items-center">
+                    <p className='w-24'>할인률 적용:</p>  
+                    <Switch
+                        checked={onSale}
+                        onCheckedChange={handleDiscountChange}
+                    />
+                </div>
+                {onSale ?  
+                    <div className="pt-5 flex w-1/3 items-center">
+                        <p className='w-16'>할인률:</p>    
+                        <Input
+                            type="text"
+                            value={editedProduct.discount}
+                            onChange={(e) => handleInputChange(e, "discount")}
+                            className="w-24"
+                        />
+                        <p className='ml-2'>%</p>
+                    </div> : null}
             </div>
             <div className="pt-5 flex w-1/2 items-center">
                 <p className='w-24'>상품 공개:</p>  
