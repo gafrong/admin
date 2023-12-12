@@ -48,13 +48,13 @@ export default function Page() {
             <div className="pl-5 pt-5">
                 <h1>Product Edit Page</h1>
                 <Table>
-                        <TableHeader>
-                            <TableRow>
-                                <TableHead className="w-[60px]">Product</TableHead>
-                                <TableHead className="w-[300px]">Title</TableHead>
-                                <TableHead>Edit</TableHead>
-                            </TableRow>
-                        </TableHeader>
+                    <TableHeader>
+                        <TableRow>
+                            <TableHead className="w-[60px]">Product</TableHead>
+                            <TableHead className="w-[300px]">Title</TableHead>
+                            <TableHead>Edit</TableHead>
+                        </TableRow>
+                    </TableHeader>
                 {products?.length > 0 && (
                     products.map((product, index) => (
                         

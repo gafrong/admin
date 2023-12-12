@@ -12,6 +12,7 @@ import baseURL from "@/assets/common/baseUrl";
 import awsURL from "@/assets/common/awsUrl";
 import useUserStore from "@/store/zustand";
 import LoadingSpinner from "@/components/LoadingSpinner";
+import { v4 as uuidv4 } from "uuid";
 
 function classNames(...classes) {
     return classes.filter(Boolean).join(" ");
@@ -87,7 +88,7 @@ export default function Page() {
                             <dl className="mx-auto grid max-w-7xl grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 lg:px-2 xl:px-0">
                                 {stats.map((stat, statIdx) => (
                                     <div
-                                        key={stat.index}
+                                        key={uuidv4()}
                                         className={classNames(
                                             statIdx % 2 === 1
                                                 ? "sm:border-l"
@@ -225,7 +226,7 @@ export default function Page() {
                                 >
                                     {totalSales?.latestBuyers?.map((client) => (
                                         <li
-                                            key={client.id}
+                                            key={uuidv4()}
                                             className="overflow-hidden rounded-xl border border-gray-200"
                                         >
                                             <div className="flex items-center gap-x-4 border-b border-gray-900/5 bg-gray-50 p-6">
