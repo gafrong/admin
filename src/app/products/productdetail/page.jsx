@@ -1,6 +1,5 @@
 "use client";
 import { useState, useEffect } from 'react';
-import { useRouter } from "next/navigation";
 import awsURL from "@/assets/common/awsUrl";
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
@@ -15,7 +14,6 @@ export default function Page({searchParams}) {
     const [deliveryFeeOn, setDeliveryFeeOn] = useState(parsedProduct.deliveryFee);
     const [onSale, setOnSale] = useState(parsedProduct.onSale);
     const [displayProduct, setDisplayProduct] = useState(parsedProduct.display);
-    const [mainCategory, setMainCategory] = useState('test');
     const [selectedParentCategoryId, setSelectedParentCategoryId] = useState(null);
 
     const parentCategories = [
