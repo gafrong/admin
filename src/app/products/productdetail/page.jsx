@@ -19,7 +19,9 @@ export default function Page({searchParams}) {
     const [color, setColor] = useState(parsedProduct.colorOptions?.hexColor);
     const [productColor, setProductColor] = useState(parsedProduct.colorOptions?.productColor);
     const [sizes, setSizes] = useState(parsedProduct.colorOptions?.sizes);
-
+    const [subOption1, setSubOption1] = useState(parsedProduct.subOption1);
+    const [subOption2, setSubOption2] = useState(parsedProduct.subOption2);
+    const [subOption3, setSubOption3] = useState(parsedProduct.subOption3);
 
     const parentCategories = [
         {id: '642d1f4406159dd4f0519464', name: '의류'},
@@ -306,11 +308,11 @@ export default function Page({searchParams}) {
             </div>  
             {sizes.length > 0 ?              
                 <div className="pt-5 flex mt-5">
-                    <p className='mr-2'>사이즈:</p>
+                    <p className='mr-8'>사이즈:</p>
                     <div className='flex flex-col'>
                         {sizes.map((size) => (
                             <div key={size._id} className='flex mr-4'>
-                                <p className='w-40 mb-6'>{size.size}</p>
+                                <p className='w-40 mb-6 mt-2'>{size.size}</p>
                                 <p className='mr-2 mt-2'>재고:</p>
                                 <Input
                                     type="text"
@@ -324,18 +326,54 @@ export default function Page({searchParams}) {
                 </div>
             : null }
             <div className="pt-5 flex">
-                <p className='mr-2'>사이즈:</p>
-                <p className='ml-4'>{color}</p>
+                <p className='mr-10'>{subOption1.title}: </p>
+                <div className='flex flex-col'>
+                    {subOption1.options.map((option) => (
+                        <div key={option._id} className='flex mr-4'>
+                            <p className='w-40 mb-6 mt-2'>{option.name}</p>
+                            <Input
+                                type="text"
+                                value={option.value}
+                                onChange={(e) => handleStockInputChange(e, option._id)} 
+                                className="w-20"
+                            /> 
+                        </div>
+                    ))}
+                </div>
             </div>
-            {/* <div className="pt-5">
-                <p>카테고리: {parsedProduct.category}</p>
-                <p>드롭상품: {parsedProduct.dropProduct}</p>
-                <p>할인판매: {parsedProduct.onSale}</p>
-                <p>색옵션: {parsedProduct.colorOptions}</p>
-                <p>옵션 1: {parsedProduct.subOption1}</p>
-                <p>옵션 2: {parsedProduct.subOption2}</p>
-                <p>옵션 3: {parsedProduct.subOption3}</p>
-            </div> */}
+            <div className="pt-5 flex">
+                <p className='mr-10'>{subOption2.title}: </p>
+                <div className='flex flex-col'>
+                    {subOption2.options.map((option) => (
+                        <div key={option._id} className='flex mr-4'>
+                            <p className='w-40 mb-6 mt-2'>{option.name}</p>
+                            <Input
+                                type="text"
+                                value={option.value}
+                                onChange={(e) => handleStockInputChange(e, option._id)} 
+                                className="w-20"
+                            /> 
+                        </div>
+                    ))}
+                </div>
+            </div>
+            <div className="pt-5 flex">
+                <p className='mr-10'>{subOption3.title}: </p>
+                <div className='flex flex-col'>
+                    {subOption3.options.map((option) => (
+                        <div key={option._id} className='flex mr-4'>
+                            <p className='w-40 mb-6 mt-2'>{option.name}</p>
+                            <Input
+                                type="text"
+                                value={option.value}
+                                onChange={(e) => handleStockInputChange(e, option._id)} 
+                                className="w-20"
+                            /> 
+                        </div>
+                    ))}
+                </div>
+            </div>
+
         </div>
     );
 }
