@@ -379,7 +379,9 @@ export default function Page({searchParams}) {
                 </div>
             </div>
             : null }
-
+            <div className='flex items-center justify-center pb-80 mt-12'>
+                <Button className="mt-8 w-full">제품 편집</Button>
+            </div>
         </div>
     );
 }
