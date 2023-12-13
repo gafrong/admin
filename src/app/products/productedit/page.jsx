@@ -59,7 +59,6 @@ export default function Page() {
                     products.map((product, index) => (
                         
                         <TableBody key={index}>
-                            {console.log('PROD', product)}
                             <TableCell>
                                 <img src={awsURL+product.image} alt={`Product ${index}`} className="w-12 h-12 rounded-sm" />
                             </TableCell>

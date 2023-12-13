@@ -17,7 +17,7 @@ export default function Page({searchParams}) {
     const [displayProduct, setDisplayProduct] = useState(parsedProduct.display);
     const [selectedParentCategoryId, setSelectedParentCategoryId] = useState(null);
     const [color, setColor] = useState(parsedProduct.colorOptions?.hexColor);
-
+    const [productColor, setProductColor] = useState(parsedProduct.colorOptions?.productColor)
     const parentCategories = [
         {id: '642d1f4406159dd4f0519464', name: '의류'},
         {id: '642d21d606159dd4f0519466', name: '슈즈'},
@@ -94,10 +94,8 @@ export default function Page({searchParams}) {
     }
 
     const handleSubCategoryChange = (categoryId) => {
-        console.log('cat id', categoryId)
         const selectedSubCategory = subCategories.find((category)=> category.id === categoryId);
         setSubCategory(selectedSubCategory);
-        console.log('checking', selectedSubCategory)
     }
 
     useEffect(() => {
@@ -119,8 +117,6 @@ export default function Page({searchParams}) {
           setSubCategories([]);
         }
     }, [selectedParentCategory]);
-
-    console.log('sub cats', subCategories);
 
     const handleInputChange = (e, field) => {
         const inputValue = e.target.value;
@@ -158,6 +154,10 @@ export default function Page({searchParams}) {
 
     const handleDisplayProductChange = () => {
         setDisplayProduct((prevValue) => !prevValue);
+    }
+
+    const handleColorInputChange = (e) => {
+        setProductColor(e.target.value);
     }
 
     console.log('parsed PRODUCT', parsedProduct)
@@ -278,11 +278,24 @@ export default function Page({searchParams}) {
                 </div>
             </div>
             <div className="pt-5 flex">
-                <p className='mr-4'>상품색:</p>
-                <HexColorPicker color={color} onChange={setColor} />
+                <div className="pt-5 flex w-1/3 items-center">
+                    <p className='mr-4'>제품색:</p>
+                    <HexColorPicker color={color} onChange={setColor} />
+                </div>
+                <div className="pt-5 flex w-1/3 items-center">
+                    <p className='w-16'>색명:</p>    
+                    <Input
+                        type="text"
+                        value={productColor}
+                        onChange={handleColorInputChange}
+                        className="w-24"
+                    />
+                </div> 
+            </div>                
+            <div className="pt-5 flex">
+                <p className='mr-2'>사이즈:</p>
                 <p className='ml-4'>{color}</p>
             </div>
-
             <div className="pt-5 flex">
                 <p className='mr-2'>사이즈:</p>
                 <p className='ml-4'>{color}</p>
