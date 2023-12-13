@@ -17,7 +17,10 @@ export default function Page({searchParams}) {
     const [displayProduct, setDisplayProduct] = useState(parsedProduct.display);
     const [selectedParentCategoryId, setSelectedParentCategoryId] = useState(null);
     const [color, setColor] = useState(parsedProduct.colorOptions?.hexColor);
-    const [productColor, setProductColor] = useState(parsedProduct.colorOptions?.productColor)
+    const [productColor, setProductColor] = useState(parsedProduct.colorOptions?.productColor);
+    const [sizes, setSizes] = useState(parsedProduct.colorOptions?.sizes);
+
+
     const parentCategories = [
         {id: '642d1f4406159dd4f0519464', name: '의류'},
         {id: '642d21d606159dd4f0519466', name: '슈즈'},
@@ -160,6 +163,15 @@ export default function Page({searchParams}) {
         setProductColor(e.target.value);
     }
 
+    const handleStockInputChange = (e, sizeId) => {
+        const newStockValue = e.target.value;
+        setSizes((prevSizes) =>
+            prevSizes.map((size) =>
+                size._id === sizeId ? { ...size, stock: newStockValue } : size
+            )
+        );
+    }
+
     console.log('parsed PRODUCT', parsedProduct)
     return (
         <div className={`p-10 ${displayProduct ? '' : 'bg-gray-300'}`}>
@@ -193,7 +205,7 @@ export default function Page({searchParams}) {
                 <p className='ml-2'>원</p>
             </div>
             <div className='flex'>
-                <div className="pt-5 flex w-1/3 items-center">
+                <div className="pt-5 flex w-1/2 items-center">
                     <p className='w-24'>배송비 적용:</p>  
                     <Switch
                         checked={deliveryFeeOn}
@@ -201,7 +213,7 @@ export default function Page({searchParams}) {
                     />
                 </div>
                 {deliveryFeeOn ?
-                    <div className="pt-5 flex w-1/3 items-center">
+                    <div className="pt-5 flex w-1/2 items-center">
                         <p className='w-16'>배송비:</p>    
                         <Input
                             type="text"
@@ -213,7 +225,7 @@ export default function Page({searchParams}) {
                     </div> : null }
             </div>
             <div className='flex'>
-                <div className="pt-5 flex w-1/3 items-center">
+                <div className="pt-5 flex w-1/2 items-center">
                     <p className='w-24'>할인률 적용:</p>  
                     <Switch
                         checked={onSale}
@@ -221,7 +233,7 @@ export default function Page({searchParams}) {
                     />
                 </div>
                 {onSale ?  
-                    <div className="pt-5 flex w-1/3 items-center">
+                    <div className="pt-5 flex w-1/2 items-center">
                         <p className='w-16'>할인률:</p>    
                         <Input
                             type="text"
@@ -240,7 +252,7 @@ export default function Page({searchParams}) {
                 />
             </div>
             <div className='flex'>
-                <div className="pt-5 flex w-1/3 items-center">
+                <div className="pt-5 flex w-1/2 items-center">
                     <p className='w-24'>메인 카테고리:</p>  
                     <DropdownMenu>
                         <DropdownMenuTrigger asChild>
@@ -258,7 +270,7 @@ export default function Page({searchParams}) {
                         </DropdownMenuContent>
                     </DropdownMenu>
                 </div>
-                <div className="pt-5 flex w-1/3 items-center">
+                <div className="pt-5 flex w-1/2 items-center">
                     <p className='w-24'>상세 카테고리:</p>  
                     <DropdownMenu>
                         <DropdownMenuTrigger asChild>
@@ -278,11 +290,11 @@ export default function Page({searchParams}) {
                 </div>
             </div>
             <div className="pt-5 flex">
-                <div className="pt-5 flex w-1/3 items-center">
+                <div className="pt-5 flex w-1/2 items-center">
                     <p className='mr-4'>제품색:</p>
                     <HexColorPicker color={color} onChange={setColor} />
                 </div>
-                <div className="pt-5 flex w-1/3 items-center">
+                <div className="pt-5 flex w-1/2 items-center">
                     <p className='w-16'>색명:</p>    
                     <Input
                         type="text"
@@ -291,11 +303,26 @@ export default function Page({searchParams}) {
                         className="w-24"
                     />
                 </div> 
-            </div>                
-            <div className="pt-5 flex">
-                <p className='mr-2'>사이즈:</p>
-                <p className='ml-4'>{color}</p>
-            </div>
+            </div>  
+            {sizes.length > 0 ?              
+                <div className="pt-5 flex mt-5">
+                    <p className='mr-2'>사이즈:</p>
+                    <div className='flex flex-col'>
+                        {sizes.map((size) => (
+                            <div key={size._id} className='flex mr-4'>
+                                <p className='w-40 mb-6'>{size.size}</p>
+                                <p className='mr-2 mt-2'>재고:</p>
+                                <Input
+                                    type="text"
+                                    value={size.stock}
+                                    onChange={(e) => handleStockInputChange(e, size._id)} 
+                                    className="w-20"
+                                /> <p className='ml-2 mt-2'>개</p>
+                            </div>
+                        ))}
+                    </div>
+                </div>
+            : null }
             <div className="pt-5 flex">
                 <p className='mr-2'>사이즈:</p>
                 <p className='ml-4'>{color}</p>
