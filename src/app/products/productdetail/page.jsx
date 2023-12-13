@@ -325,38 +325,43 @@ export default function Page({searchParams}) {
                     </div>
                 </div>
             : null }
-            <div className="pt-5 flex">
-                <p className='mr-10'>{subOption1.title}: </p>
-                <div className='flex flex-col'>
-                    {subOption1.options.map((option) => (
-                        <div key={option._id} className='flex mr-4'>
-                            <p className='w-40 mb-6 mt-2'>{option.name}</p>
-                            <Input
-                                type="text"
-                                value={option.value}
-                                onChange={(e) => handleStockInputChange(e, option._id)} 
-                                className="w-20"
-                            /> 
-                        </div>
-                    ))}
+            {subOption1.options?.length>0 ?
+                <div className="pt-5 flex">
+                    <p className='mr-10'>{subOption1.title}: </p>
+                    <div className='flex flex-col'>
+                        {subOption1.options.map((option) => (
+                            <div key={option._id} className='flex mr-4'>
+                                <p className='w-40 mb-6 mt-2'>{option.name}</p>
+                                <Input
+                                    type="text"
+                                    value={option.value}
+                                    onChange={(e) => handleStockInputChange(e, option._id)} 
+                                    className="w-20"
+                                /> 
+                            </div>
+                        ))}
+                    </div>
                 </div>
-            </div>
-            <div className="pt-5 flex">
-                <p className='mr-10'>{subOption2.title}: </p>
-                <div className='flex flex-col'>
-                    {subOption2.options.map((option) => (
-                        <div key={option._id} className='flex mr-4'>
-                            <p className='w-40 mb-6 mt-2'>{option.name}</p>
-                            <Input
-                                type="text"
-                                value={option.value}
-                                onChange={(e) => handleStockInputChange(e, option._id)} 
-                                className="w-20"
-                            /> 
-                        </div>
-                    ))}
+            : null }
+            {subOption2.options?.length>0 ?
+                <div className="pt-5 flex">
+                    <p className='mr-10'>{subOption2.title}: </p>
+                    <div className='flex flex-col'>
+                        {subOption2.options.map((option) => (
+                            <div key={option._id} className='flex mr-4'>
+                                <p className='w-40 mb-6 mt-2'>{option.name}</p>
+                                <Input
+                                    type="text"
+                                    value={option.value}
+                                    onChange={(e) => handleStockInputChange(e, option._id)} 
+                                    className="w-20"
+                                /> 
+                            </div>
+                        ))}
+                    </div>
                 </div>
-            </div>
+            : null }
+            {subOption3.options?.length>0 ?
             <div className="pt-5 flex">
                 <p className='mr-10'>{subOption3.title}: </p>
                 <div className='flex flex-col'>
@@ -373,6 +378,7 @@ export default function Page({searchParams}) {
                     ))}
                 </div>
             </div>
+            : null }
 
         </div>
     );
