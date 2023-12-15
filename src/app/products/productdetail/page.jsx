@@ -14,6 +14,7 @@ export default function Page({searchParams}) {
     const [editedProduct, setEditedProduct] = useState({ ...parsedProduct });
     const [deliveryFeeOn, setDeliveryFeeOn] = useState(parsedProduct.deliveryFee);
     const [onSale, setOnSale] = useState(parsedProduct.onSale);
+    const [soldout, setSoldout] = useState(parsedProduct.soldout);
     const [displayProduct, setDisplayProduct] = useState(parsedProduct.display);
     const [selectedParentCategoryId, setSelectedParentCategoryId] = useState(null);
     const [color, setColor] = useState(parsedProduct.colorOptions?.hexColor);
@@ -161,6 +162,10 @@ export default function Page({searchParams}) {
         setDisplayProduct((prevValue) => !prevValue);
     }
 
+    const handleSoldoutProductChange = () => {
+        setSoldout((prevValue) => !prevValue);
+    }
+
     const handleColorInputChange = (e) => {
         setProductColor(e.target.value);
     }
@@ -174,7 +179,14 @@ export default function Page({searchParams}) {
         );
     }
 
+    const handleSubmit = () => {
+        console.log('edit save!')
+        console.log('name', editedProduct.name)
+        console.log('price', editedProduct.price)
+    }
+
     console.log('parsed PRODUCT', parsedProduct)
+    console.log('EDITED PROD', editedProduct)
     return (
         <div className={`p-10 ${displayProduct ? '' : 'bg-gray-300'}`}>
             <img src={awsURL+editedProduct.image} alt={editedProduct.name} style={{opacity: displayProduct ? 1 : 0.5}}/>
@@ -251,6 +263,13 @@ export default function Page({searchParams}) {
                 <Switch
                     checked={displayProduct}
                     onCheckedChange={handleDisplayProductChange}
+                />
+            </div>
+            <div className="pt-5 flex w-1/2 items-center">
+                <p className='w-24'>품절:</p>  
+                <Switch
+                    checked={soldout}
+                    onCheckedChange={handleSoldoutProductChange}
                 />
             </div>
             <div className='flex'>
@@ -379,8 +398,8 @@ export default function Page({searchParams}) {
                 </div>
             </div>
             : null }
-            <div className='flex items-center justify-center pb-80 mt-12'>
-                <Button className="mt-8 w-full">제품 편집</Button>
+            <div className='flex pb-80 mt-12'>
+                <Button className="mt-8 w-60" onClick={handleSubmit}>편집 저장</Button>
             </div>
         </div>
     );
