@@ -163,8 +163,13 @@ export default function Page({searchParams}) {
     }
 
     const handleSoldoutProductChange = () => {
-        setSoldout((prevValue) => !prevValue);
-    }
+        const updatedSoldout = !soldout;
+        setSoldout(updatedSoldout);
+        setEditedProduct((prevProduct) => ({
+            ...prevProduct,
+            soldout: updatedSoldout,
+        }));
+    };    
 
     const handleColorInputChange = (e) => {
         setProductColor(e.target.value);
@@ -180,9 +185,9 @@ export default function Page({searchParams}) {
     }
 
     const handleSubmit = () => {
-        console.log('edit save!')
         console.log('name', editedProduct.name)
         console.log('price', editedProduct.price)
+        console.log('soldout', editedProduct.soldout)
     }
 
     console.log('parsed PRODUCT', parsedProduct)
@@ -266,7 +271,8 @@ export default function Page({searchParams}) {
                 />
             </div>
             <div className="pt-5 flex w-1/2 items-center">
-                <p className='w-24'>품절:</p>  
+
+                <p className={`w-24 ${soldout ? 'text-red-600': ''}`}>품절:</p>  
                 <Switch
                     checked={soldout}
                     onCheckedChange={handleSoldoutProductChange}
