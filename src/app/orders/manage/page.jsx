@@ -7,8 +7,8 @@ import path from "path";
 // Replace with a fetch call from mongodb in prod.
 async function getData() {
   const data = await fs.readFile(
-    // 100 or 1000 or 10,000 products:
-    path.join(process.cwd(), "src/mocks/data-1000.json")
+    // 70, 100 or 1,000 or 10,000 products:
+    path.join(process.cwd(), "src/mocks/data-60.json")
     // path.join(process.cwd(), "src/mocks/data-100.json")
   );
 
@@ -19,7 +19,7 @@ async function getData() {
 export default async function DemoPage() {
   const data = await getData();
   return (
-    <div className="container-off mx-aut-offo py-10-off pl-5 pt-10 pr-2">
+    <div className="py-10 pl-5 pr-2">
       <h1 className="scroll-m-20 text-2xl font-extrabold tracking-tight lg:text-2xl pb-8">
         Manage Orders
       </h1>
