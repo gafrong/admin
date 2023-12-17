@@ -36,7 +36,7 @@ const ChevronGotoNextPage = ({ table }) => (
   </Button>
 );
 
-const Elipsis = () => (
+const PageGap = () => (
   <div
     className="inline-flex items-center justify-center text-sm font-medium disabled:pointer-events-none disabled:opacity-50 bg-background hover:text-accent-foreground h-9 px-3
   "
@@ -88,7 +88,7 @@ const ButtonJumpToFirstPage = ({
   const firstButtonGroupOffset = displayedButtonOffsets.slice(0, 1)[0];
   const firstButtonGroupIndex = firstButtonGroupOffset + pageIndexCurrent;
   const showJumpToFirstPageButton = firstButtonGroupIndex > 0;
-  const showElipsis = firstButtonGroupIndex > 1;
+  const showPageGap = firstButtonGroupIndex > 1;
   if (!showJumpToFirstPageButton) return null;
   return (
     <>
@@ -99,7 +99,7 @@ const ButtonJumpToFirstPage = ({
           isActive={isActive}
         />
       )}
-      {showElipsis && <Elipsis />}
+      {showPageGap && <PageGap />}
     </>
   );
 };
@@ -114,11 +114,11 @@ const ButtonJumpToLastPage = ({
   const lastButtonGroupOffset = displayedButtons.slice(-1)[0]; // last
   const lastButtonGroupIndex = lastButtonGroupOffset + pageIndexCurrent;
   const showJumpToLastPageButton = lastButtonGroupIndex !== pageIndexLast;
-  const showElipsis = lastButtonGroupIndex !== pageIndexLast - 1;
+  const showPageGap = lastButtonGroupIndex !== pageIndexLast - 1;
   if (!showJumpToLastPageButton) return null;
   return (
     <>
-      {showElipsis && <Elipsis />}
+      {showPageGap && <PageGap />}
 
       {showJumpToLastPageButton && (
         <ButtonGotoPage
