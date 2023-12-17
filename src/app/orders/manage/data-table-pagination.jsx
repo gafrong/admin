@@ -59,15 +59,11 @@ const getDisplayedButtonOffsets = (pageIndexCurrent, pageIndexLast) => {
 
   const displayedButtonOffsets =
     // handle first pages
-    pageIndexCurrent === 3 ? [-3, -2, -1, 0, 1, 2]
-    : pageIndexCurrent === 2 ? [-2, -1, 0, 1, 2]
-    : pageIndexCurrent === 1 ? [-1, 0, 1, 2, 3]
+    pageIndexCurrent === 1 ? [-1, 0, 1, 2, 3]
     : pageIndexCurrent === 0 ? [0, 1, 2, 3, 4]
       // handle last pages
     : pagesToLastPage === 0 ? [-4, -3, -2, -1, 0]
     : pagesToLastPage === 1 ? [-3, -2, -1, 0, 1]
-    : pagesToLastPage === 2 ? [-2, -1, 0, 1, 2]
-    : pagesToLastPage === 3 ? [-2, -1, 0, 1, 2, 3]
     : defaultDisplayedButtonOffsets;
 
   const getValidPages = (offset) => {
@@ -149,6 +145,7 @@ export const DataTablePagination = ({ table }) => {
     <div className="flex flex-col lg:flex-row gap-5 items-center justify-center space-x-2 py-4">
       <CountProductsSelected table={table} />
       <div className="flex space-x-2">
+        
         <ChevronGotoPreviousPage table={table} />
 
         <ButtonJumpToFirstPage
@@ -175,7 +172,9 @@ export const DataTablePagination = ({ table }) => {
           pageIndexLast={pageIndexLast}
           table={table}
         />
+
         <ChevronGotoNextPage table={table} />
+
       </div>
     </div>
   );
