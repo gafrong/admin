@@ -22,7 +22,7 @@ import { DataTableToolbarFilter } from "./data-table-order-filter";
 import { DataTablePagination } from "./data-table-pagination";
 
 import { DataTableViewOptions } from "./data-table-view-options";
-import { DebouncedInput } from "./example/debounced-input";
+import { DebouncedInput } from "../../../components/ui/debounced-input";
 import { DataTableDropdownSearch } from "./data-table-dropdown-search";
 
 // fuzzy global filter. Disabled for now
