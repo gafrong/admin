@@ -41,7 +41,7 @@ const PageGap = () => (
     className="inline-flex items-center justify-center text-sm font-medium disabled:pointer-events-none disabled:opacity-50 bg-background hover:text-accent-foreground h-9 px-3
   "
   >
-    <span className="w-99999 h-5 select-none">...</span>
+    <span className="w-5 h-5 select-none">...</span>
   </div>
 );
 
@@ -51,6 +51,11 @@ const CountProductsSelected = ({ table }) => (
     {table.getFilteredRowModel().rows.length} products(s) selected.
   </div>
 );
+
+const getValidPages = (offset) => {
+  const pageNumber = pageIndexCurrent + offset;
+  return pageNumber >= 0 && pageNumber <= pageIndexLast;
+};
 
 // show the correct number of pagination buttons and page numbers on the buttons according to number of pages and current page
 const getDisplayedButtonOffsets = (pageIndexCurrent, pageIndexLast) => {
@@ -66,11 +71,6 @@ const getDisplayedButtonOffsets = (pageIndexCurrent, pageIndexLast) => {
     : pagesToLastPage === 1 ? [-3, -2, -1, 0, 1]
     : defaultDisplayedButtonOffsets;
 
-  const getValidPages = (offset) => {
-    const pageNumber = pageIndexCurrent + offset;
-    return pageNumber >= 0 && pageNumber <= pageIndexLast;
-  };
-
   return displayedButtonOffsets.filter(getValidPages);
 };
 
@@ -81,21 +81,21 @@ const ButtonJumpToFirstPage = ({
   pageIndexFirst,
   table,
 }) => {
-  const firstButtonGroupOffset = displayedButtonOffsets.slice(0, 1)[0];
-  const firstButtonGroupIndex = firstButtonGroupOffset + pageIndexCurrent;
-  const showJumpToFirstPageButton = firstButtonGroupIndex > 0;
-  const showPageGap = firstButtonGroupIndex > 1;
-  if (!showJumpToFirstPageButton) return null;
+  const offsetFirstButtonGroup = displayedButtonOffsets.slice(0, 1)[0];
+  const pageIndexFirstButtonGroup = offsetFirstButtonGroup + pageIndexCurrent;
+  const isJumpToFirstPageButtonShown = pageIndexFirstButtonGroup > 0;
+  const isPageGapShown = pageIndexFirstButtonGroup > 1;
+  if (!isJumpToFirstPageButtonShown) return null;
   return (
     <>
-      {showJumpToFirstPageButton && (
+      {isJumpToFirstPageButtonShown && (
         <ButtonGotoPage
           table={table}
           pageIndex={pageIndexFirst}
           isActive={isActive}
         />
       )}
-      {showPageGap && <PageGap />}
+      {isPageGapShown && <PageGap />}
     </>
   );
 };
@@ -107,16 +107,15 @@ const ButtonJumpToLastPage = ({
   pageIndexLast,
   table,
 }) => {
-  const lastButtonGroupOffset = displayedButtons.slice(-1)[0]; // last
-  const lastButtonGroupIndex = lastButtonGroupOffset + pageIndexCurrent;
-  const showJumpToLastPageButton = lastButtonGroupIndex !== pageIndexLast;
-  const showPageGap = lastButtonGroupIndex !== pageIndexLast - 1;
-  if (!showJumpToLastPageButton) return null;
+  const offsetLastButtonGroup = displayedButtons.slice(-1)[0];
+  const pageIndexLastButtonGroup = offsetLastButtonGroup + pageIndexCurrent;
+  const isJumpToLastPageButtonShown = pageIndexLastButtonGroup !== pageIndexLast;
+  const isPageGapShown = pageIndexLastButtonGroup !== pageIndexLast - 1;
+  if (!isJumpToLastPageButtonShown) return null;
   return (
     <>
-      {showPageGap && <PageGap />}
-
-      {showJumpToLastPageButton && (
+      {isPageGapShown && <PageGap />}
+      {isJumpToLastPageButtonShown && (
         <ButtonGotoPage
           table={table}
           pageIndex={pageIndexLast}
@@ -138,14 +137,14 @@ export const DataTablePagination = ({ table }) => {
     pageIndexLast,
   );
 
-  const isPagesShown = pageIndexLast !== -1;
+  const isPageAvailable = pageIndexLast !== -1;
 
-  if (!isPagesShown) return null;
+  if (!isPageAvailable) return null;
   return (
     <div className="flex flex-col lg:flex-row gap-5 items-center justify-center space-x-2 py-4">
       <CountProductsSelected table={table} />
       <div className="flex space-x-2">
-        
+
         <ChevronGotoPreviousPage table={table} />
 
         <ButtonJumpToFirstPage
