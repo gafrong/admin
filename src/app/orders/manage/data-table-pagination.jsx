@@ -52,10 +52,6 @@ const CountProductsSelected = ({ table }) => (
   </div>
 );
 
-const getValidPages = (offset) => {
-  const pageNumber = pageIndexCurrent + offset;
-  return pageNumber >= 0 && pageNumber <= pageIndexLast;
-};
 
 // show the correct number of pagination buttons and page numbers on the buttons according to number of pages and current page
 const getDisplayedButtonOffsets = (pageIndexCurrent, pageIndexLast) => {
@@ -70,6 +66,11 @@ const getDisplayedButtonOffsets = (pageIndexCurrent, pageIndexLast) => {
     : pagesToLastPage === 0 ? [-4, -3, -2, -1, 0]
     : pagesToLastPage === 1 ? [-3, -2, -1, 0, 1]
     : defaultDisplayedButtonOffsets;
+
+    const getValidPages = (offset) => {
+      const pageNumber = pageIndexCurrent + offset;
+      return pageNumber >= 0 && pageNumber <= pageIndexLast;
+    };
 
   return displayedButtonOffsets.filter(getValidPages);
 };
