@@ -6,33 +6,33 @@ import { CaretLeftIcon, CaretRightIcon } from "@radix-ui/react-icons";
 
 const ButtonGotoPage = ({ table, pageIndex, isActive }) => (
   <Button
-    variant={isActive ? "" : "outline"}
-    size="sm"
     onClick={() => table.setPageIndex(pageIndex)}
+    size="sm"
+    variant={isActive ? "" : "outline"}
   >
-    <span className="w-5 h-5 select-none">{pageIndex + 1}</span>
+    <span className="min-w-[20px] block h-5 select-none">{pageIndex + 1}</span>
   </Button>
 );
 
 const ChevronGotoPreviousPage = ({ table }) => (
   <Button
-    variant="outline"
-    size="sm"
-    onClick={() => table.previousPage()}
     disabled={!table.getCanPreviousPage()}
+    onClick={() => table.previousPage()}
+    size="sm"
+    variant="outline"
   >
-    <CaretLeftIcon className="w-5 h-5 select-none" />
+    <CaretLeftIcon className="min-w-[20px] h-5 select-none" />
   </Button>
 );
 
 const ChevronGotoNextPage = ({ table }) => (
   <Button
-    variant="outline"
-    size="sm"
-    onClick={() => table.nextPage()}
     disabled={!table.getCanNextPage()}
+    onClick={() => table.nextPage()}
+    size="sm"
+    variant="outline"
   >
-    <CaretRightIcon className="w-5 h-5 select-none" />
+    <CaretRightIcon className="min-w-[20px] h-5 select-none" />
   </Button>
 );
 
@@ -41,7 +41,7 @@ const PageGap = () => (
     className="inline-flex items-center justify-center text-sm font-medium disabled:pointer-events-none disabled:opacity-50 bg-background hover:text-accent-foreground h-9 px-3
   "
   >
-    <span className="w-5 h-5 select-none">...</span>
+    <span className="min-w-[20px] h-5 select-none">...</span>
   </div>
 );
 
@@ -144,7 +144,7 @@ export const DataTablePagination = ({ table }) => {
   return (
     <div className="flex flex-col lg:flex-row gap-5 items-center justify-center space-x-2 py-4">
       <CountProductsSelected table={table} />
-      <div className="flex space-x-2">
+      <div className="flex gap-2">
 
         <ChevronGotoPreviousPage table={table} />
 
