@@ -1,126 +1,180 @@
 "use client";
 
 import * as React from "react";
-
 import { Button } from "@/components/ui/button";
-
 import { CaretLeftIcon, CaretRightIcon } from "@radix-ui/react-icons";
 
-const ButtonGotoPage = ({ table, pageIndex, isActive = false }) => (
+const ButtonGotoPage = ({ table, pageIndex, isActive }) => (
   <Button
-    variant={isActive ? "" : "outline"}
-    size="sm"
     onClick={() => table.setPageIndex(pageIndex)}
+    size="sm"
+    variant={isActive ? "" : "outline"}
   >
-    <span className="w-5 h-5">{pageIndex + 1}</span>
+    <span className="min-w-[20px] block h-5 select-none">{pageIndex + 1}</span>
   </Button>
 );
 
-const ButtonGotoPreviousPage = ({ table }) => (
+const ChevronGotoPreviousPage = ({ table }) => (
   <Button
-    variant="outline"
-    size="sm"
-    onClick={() => table.previousPage()}
     disabled={!table.getCanPreviousPage()}
-  >
-    <CaretLeftIcon className="w-5 h-5" />
-  </Button>
-);
-
-const ButtonGotoNextPage = ({ table }) => (
-  <Button
-    variant="outline"
+    onClick={() => table.previousPage()}
     size="sm"
-    onClick={() => table.nextPage()}
-    disabled={!table.getCanNextPage()}
+    variant="outline"
   >
-    <CaretRightIcon className="w-5 h-5" />
+    <CaretLeftIcon className="min-w-[20px] h-5 select-none" />
   </Button>
 );
 
-const Elipsis = () => (
+const ChevronGotoNextPage = ({ table }) => (
+  <Button
+    disabled={!table.getCanNextPage()}
+    onClick={() => table.nextPage()}
+    size="sm"
+    variant="outline"
+  >
+    <CaretRightIcon className="min-w-[20px] h-5 select-none" />
+  </Button>
+);
+
+const PageGap = () => (
   <div
-    className="inline-flex items-center justify-center whitespace-nowrap text-sm font-medium disabled:pointer-events-none disabled:opacity-50 bg-background hover:text-accent-foreground h-9 px-3
+    className="inline-flex items-center justify-center text-sm font-medium disabled:pointer-events-none disabled:opacity-50 bg-background hover:text-accent-foreground h-9 px-3
   "
   >
-    <span className="w-99999 h-5 border-off border-red-500-off">...</span>
+    <span className="min-w-[20px] h-5 select-none">...</span>
   </div>
 );
 
-// const CountProductsSelected = ({ table }) => (
-//   <div className="flex-1 text-sm text-muted-foreground">
-//     {table.getFilteredSelectedRowModel().rows.length} of{" "}
-//     {table.getFilteredRowModel().rows.length} products(s) selected.
-//   </div>
-// );
+const CountProductsSelected = ({ table }) => (
+  <div className="flex-1 text-sm text-muted-foreground">
+    {table.getFilteredSelectedRowModel().rows.length} of{" "}
+    {table.getFilteredRowModel().rows.length} products(s) selected.
+  </div>
+);
+
 
 // show the correct number of pagination buttons and page numbers on the buttons according to number of pages and current page
-const getDisplayedButtons = (currentPage, PageIndexLast) => {
-  let ButtonGroup = [-2, -1, 0, 1, 2];
+const getDisplayedButtonOffsets = (pageIndexCurrent, pageIndexLast) => {
+  const defaultDisplayedButtonOffsets = [-2, -1, 0, 1, 2];
+  const pagesToLastPage = pageIndexLast - pageIndexCurrent;
 
-  // if there are less than 4 pages, show available buttons
-  // ------------------------------------
-  PageIndexLast === 0 && (ButtonGroup = [0]);
-  PageIndexLast === 1 && (ButtonGroup = [0, 1]);
-  PageIndexLast === 2 && (ButtonGroup = [0, 1, 2]);
-  PageIndexLast === 3 && (ButtonGroup = [0, 1, 2, 3]);
-  if(PageIndexLast < 4) {
-    return ButtonGroup
-  }
+  const displayedButtonOffsets =
+    // handle first pages
+    pageIndexCurrent === 1 ? [-1, 0, 1, 2, 3]
+    : pageIndexCurrent === 0 ? [0, 1, 2, 3, 4]
+      // handle last pages
+    : pagesToLastPage === 0 ? [-4, -3, -2, -1, 0]
+    : pagesToLastPage === 1 ? [-3, -2, -1, 0, 1]
+    : defaultDisplayedButtonOffsets;
 
-  // handle early pages
-  // ------------------------------------
-  currentPage === 3 && (ButtonGroup = [-3, -2, -1, 0, 1, 2]);
-  currentPage === 2 && (ButtonGroup = [-2, -1, 0, 1, 2]);
-  currentPage === 1 && (ButtonGroup = [-1, 0, 1, 2, 3]);
-  currentPage === 0 && (ButtonGroup = [0, 1, 2, 3, 4]);
+    const getValidPages = (offset) => {
+      const pageNumber = pageIndexCurrent + offset;
+      return pageNumber >= 0 && pageNumber <= pageIndexLast;
+    };
 
-  // handle last pages
-  // ------------------------------------
-  PageIndexLast - currentPage === 0 && (ButtonGroup = [-4, -3, -2, -1, 0]);
-  PageIndexLast - currentPage === 1 && (ButtonGroup = [-3, -2, -1, 0, 1]);
-  PageIndexLast - currentPage === 2 && (ButtonGroup = [-2, -1, 0, 1, 2]);
-  PageIndexLast - currentPage === 3 && (ButtonGroup = [-1, 0, 1, 2, 3]);
+  return displayedButtonOffsets.filter(getValidPages);
+};
 
-  return ButtonGroup;
+const ButtonJumpToFirstPage = ({
+  displayedButtonOffsets,
+  isActive,
+  pageIndexCurrent,
+  pageIndexFirst,
+  table,
+}) => {
+  const offsetFirstButtonGroup = displayedButtonOffsets.slice(0, 1)[0];
+  const pageIndexFirstButtonGroup = offsetFirstButtonGroup + pageIndexCurrent;
+  const isJumpToFirstPageButtonShown = pageIndexFirstButtonGroup > 0;
+  const isPageGapShown = pageIndexFirstButtonGroup > 1;
+  if (!isJumpToFirstPageButtonShown) return null;
+  return (
+    <>
+      {isJumpToFirstPageButtonShown && (
+        <ButtonGotoPage
+          table={table}
+          pageIndex={pageIndexFirst}
+          isActive={isActive}
+        />
+      )}
+      {isPageGapShown && <PageGap />}
+    </>
+  );
+};
+
+const ButtonJumpToLastPage = ({
+  displayedButtons,
+  isActive,
+  pageIndexCurrent,
+  pageIndexLast,
+  table,
+}) => {
+  const offsetLastButtonGroup = displayedButtons.slice(-1)[0];
+  const pageIndexLastButtonGroup = offsetLastButtonGroup + pageIndexCurrent;
+  const isJumpToLastPageButtonShown = pageIndexLastButtonGroup !== pageIndexLast;
+  const isPageGapShown = pageIndexLastButtonGroup !== pageIndexLast - 1;
+  if (!isJumpToLastPageButtonShown) return null;
+  return (
+    <>
+      {isPageGapShown && <PageGap />}
+      {isJumpToLastPageButtonShown && (
+        <ButtonGotoPage
+          table={table}
+          pageIndex={pageIndexLast}
+          isActive={isActive}
+        />
+      )}
+    </>
+  );
 };
 
 export const DataTablePagination = ({ table }) => {
   const { pageIndex } = table.getState().pagination;
-  const PageIndexCurrent = pageIndex;
-  const PageIndexLast = table.getPageCount() - 1;
-  const PageIndexFirst = 0;
-  let ButtonGroup = getDisplayedButtons(PageIndexCurrent, PageIndexLast);
+  const pageIndexCurrent = pageIndex;
+  const pageIndexLast = table.getPageCount() - 1;
+  const pageIndexFirst = 0;
+
+  const displayedButtonOffsets = getDisplayedButtonOffsets(
+    pageIndexCurrent,
+    pageIndexLast,
+  );
+
+  const isPageAvailable = pageIndexLast !== -1;
+
+  if (!isPageAvailable) return null;
   return (
-    <div className="flex items-center justify-center space-x-2 py-4">
-      {/* <CountProductsSelected  table={table}/> */}
-      <div className="flex space-x-2">
-        <ButtonGotoPreviousPage table={table} />
+    <div className="flex flex-col lg:flex-row gap-5 items-center justify-center space-x-2 py-4">
+      <CountProductsSelected table={table} />
+      <div className="flex gap-2">
 
-        {PageIndexCurrent > 3 && (
-          <>
-            <ButtonGotoPage table={table} pageIndex={PageIndexFirst} />
-            <Elipsis />
-          </>
-        )}
+        <ChevronGotoPreviousPage table={table} />
 
-        {ButtonGroup.map((i) => (
+        <ButtonJumpToFirstPage
+          displayedButtonOffsets={displayedButtonOffsets}
+          isActive={pageIndexFirst === pageIndexCurrent}
+          pageIndexCurrent={pageIndexCurrent}
+          pageIndexFirst={pageIndexFirst}
+          table={table}
+        />
+
+        {displayedButtonOffsets.map((i) => (
           <ButtonGotoPage
             table={table}
             key={"button-group-" + i}
             pageIndex={pageIndex + i}
-            isActive={pageIndex + i === PageIndexCurrent}
+            isActive={pageIndex + i === pageIndexCurrent}
           />
         ))}
 
-        {PageIndexCurrent < PageIndexLast - 3 && (
-          <>
-            <Elipsis />
-            <ButtonGotoPage table={table} pageIndex={PageIndexLast} />
-          </>
-        )}
+        <ButtonJumpToLastPage
+          displayedButtons={displayedButtonOffsets}
+          isActive={pageIndexLast === pageIndexCurrent}
+          pageIndexCurrent={pageIndexCurrent}
+          pageIndexLast={pageIndexLast}
+          table={table}
+        />
 
-        <ButtonGotoNextPage table={table} />
+        <ChevronGotoNextPage table={table} />
+
       </div>
     </div>
   );
