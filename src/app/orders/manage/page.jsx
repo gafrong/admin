@@ -8,7 +8,7 @@ import path from "path";
 async function getData() {
   const data = await fs.readFile(
     // 70, 100 or 1,000 or 10,000 products:
-    path.join(process.cwd(), "src/mocks/data-60.json")
+    path.join(process.cwd(), "src/mocks/data-100.json")
     // path.join(process.cwd(), "src/mocks/data-100.json")
   );
 
