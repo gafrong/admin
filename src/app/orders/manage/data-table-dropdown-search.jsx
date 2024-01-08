@@ -1,24 +1,21 @@
-"use client";
+'use client'
 
-import { DropdownMenuTrigger } from "@radix-ui/react-dropdown-menu";
-import { MagnifyingGlassIcon } from "@radix-ui/react-icons";
-
-import { Button } from "@/components/ui/button";
-
+import { Button } from '@/components/ui/button'
 import {
   DropdownMenu,
   DropdownMenuCheckboxItem,
   DropdownMenuContent,
   DropdownMenuLabel,
   DropdownMenuSeparator,
-} from "@/components/ui/dropdown-menu";
+} from '@/components/ui/dropdown-menu'
+import { DropdownMenuTrigger } from '@radix-ui/react-dropdown-menu'
+import { MagnifyingGlassIcon } from '@radix-ui/react-icons'
 
 export function DataTableDropdownSearch({ searchColumn, setSearchColumn }) {
-
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button variant="outline" className="hidden mr-4 h-10 md:flex">
+        <Button variant="outline" className="mr-4 hidden h-10 md:flex">
           <MagnifyingGlassIcon className="mr-2 h-4 w-4" />
           Search
         </Button>
@@ -30,20 +27,20 @@ export function DataTableDropdownSearch({ searchColumn, setSearchColumn }) {
 
         <DropdownMenuCheckboxItem
           className="capitalize"
-          checked={searchColumn === "name"}
-          onCheckedChange={() => setSearchColumn("name")}
+          checked={searchColumn === 'name'}
+          onCheckedChange={() => setSearchColumn('name')}
         >
           User Name
         </DropdownMenuCheckboxItem>
 
         <DropdownMenuCheckboxItem
           className="capitalize"
-          checked={searchColumn === "orderNumber"}
-          onCheckedChange={() => setSearchColumn("orderNumber")}
+          checked={searchColumn === 'orderNumber'}
+          onCheckedChange={() => setSearchColumn('orderNumber')}
         >
           Order Number
         </DropdownMenuCheckboxItem>
       </DropdownMenuContent>
     </DropdownMenu>
-  );
+  )
 }

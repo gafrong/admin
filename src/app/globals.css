@@ -81,5 +81,5 @@ button:active {
 
 :root {
   /* over-ride focus ring color to match chrome */
-  --ring: 210, 100%, 40%
+  --ring: 210, 100%, 40%;
 }
