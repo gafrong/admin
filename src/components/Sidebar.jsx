@@ -19,7 +19,7 @@ const Sidebar = () => {
                 </div> 
             </Link>
             <Accordion type="single" collapsible>
-                <AccordionItem value="item-1" className="block text-black pl-5">
+                <AccordionItem value="item-1" className="block text-black pl-5 pr-2">
                     <AccordionTrigger >
                         <div className="flex flex-row">
                             <FiVideo className="mr-2 mt-1"/> <div>Videos</div>
@@ -36,7 +36,7 @@ const Sidebar = () => {
                 </AccordionItem>
             </Accordion>
             <Accordion type="single" collapsible>
-                <AccordionItem value="item-1" className="block text-black pl-5">
+                <AccordionItem value="item-1" className="block text-black pl-5 pr-2">
                     <AccordionTrigger >
                         <div className="flex flex-row">
                             <FiGift className="mr-2 mt-1"/> <div>Products</div>
@@ -53,7 +53,7 @@ const Sidebar = () => {
                 </AccordionItem>
             </Accordion>
             <Accordion type="single" collapsible>
-                <AccordionItem value="item-1" className="block text-black pl-5">
+                <AccordionItem value="item-1" className="block text-black pl-5 pr-2">
                     <AccordionTrigger >
                         <div className="flex flex-row">
                             <FiShoppingCart className="mr-2 mt-1"/> <div>Orders</div>
@@ -67,7 +67,7 @@ const Sidebar = () => {
                 </AccordionItem>
             </Accordion>
             <Accordion type="single" collapsible>
-                <AccordionItem value="item-1" className="block text-black pl-5">
+                <AccordionItem value="item-1" className="block text-black pl-5 pr-2">
                     <AccordionTrigger >
                         <div className="flex flex-row">
                             <FiUsers className="mr-2 mt-1"/> <div>Clients</div>
@@ -84,7 +84,7 @@ const Sidebar = () => {
                 </AccordionItem>
             </Accordion>
             <Accordion type="single" collapsible>
-                <AccordionItem value="item-1" className="block text-black pl-5">
+                <AccordionItem value="item-1" className="block text-black pl-5 pr-2">
                     <AccordionTrigger >
                         <div className="flex flex-row">
                             <FiMessageCircle className="mr-2 mt-1"/> <div>Message</div>
@@ -101,7 +101,7 @@ const Sidebar = () => {
                 </AccordionItem>
             </Accordion>
             <Accordion type="single" collapsible>
-                <AccordionItem value="item-1" className="block text-black pl-5">
+                <AccordionItem value="item-1" className="block text-black pl-5 pr-2">
                     <AccordionTrigger >
                         <div className="flex flex-row">
                             <FiBarChart2 className="mr-2 mt-1"/> <div>Statistics</div>

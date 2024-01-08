@@ -22,7 +22,7 @@ import { DataTableToolbarFilter } from "./data-table-order-filter";
 import { DataTablePagination } from "./data-table-pagination";
 
 import { DataTableViewOptions } from "./data-table-view-options";
-import { DebouncedInput } from "./example/debounced-input";
+import { DebouncedInput } from "../../../components/ui/debounced-input";
 import { DataTableDropdownSearch } from "./data-table-dropdown-search";
 
 // fuzzy global filter. Disabled for now
@@ -82,6 +82,14 @@ export function DataTable({ columns, data }) {
     setSearchColumn(value);
   };
 
+  const handleOrderNumberChange = (value) => {
+    table.getColumn("orderNumber")?.setFilterValue(value);
+  };
+
+  const handleNameChange = (value) => {
+    table.getColumn("name")?.setFilterValue(value);
+  };
+
   return (
     <div className="w-full">
       {/* old dropdown was here */}
@@ -97,9 +105,7 @@ export function DataTable({ columns, data }) {
           {searchColumn === "orderNumber" && (
             <DebouncedInput
               value={table.getColumn("orderNumber")?.getFilterValue() ?? ""}
-              onChange={(value) =>
-                table.getColumn("orderNumber")?.setFilterValue(value)
-              }
+              onChange={handleOrderNumberChange}
               className="h-10 w-[150px] lg:w-[250px] px-4"
               placeholder="Search Order Number..."
             />
@@ -108,9 +114,7 @@ export function DataTable({ columns, data }) {
           {searchColumn === "name" && (
             <DebouncedInput
               value={table.getColumn("name")?.getFilterValue() ?? ""}
-              onChange={(value) =>
-                table.getColumn("name")?.setFilterValue(value)
-              }
+              onChange={handleNameChange}
               className="h-10 w-[150px] lg:w-[250px] px-4"
               placeholder="Search User..."
             />
