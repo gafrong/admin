@@ -54,7 +54,7 @@ export default function Page() {
     }
   }, [userId])
 
-    const changeHandler = (e) => {
+    const pickVideo = (e) => {
         const file = e.target.files[0];
         const video = videoRef.current;
         
@@ -96,7 +96,8 @@ export default function Page() {
 
   const handleSubmit = () => {
     console.log('checking')
-
+        const formData = new FormData();
+        
         formData.append('description', description);
         formData.append(
             "videoItems",
@@ -105,6 +106,7 @@ export default function Page() {
                 : [videoProductIds]
         );
         formData.append("image", thumbnail);
+        console.log('selected file', selectedFile)
         // formData.append('File', selectedFile);
         
         // axios call
@@ -139,11 +141,11 @@ export default function Page() {
               </Label>
             </div>
             <input
-              type="file"
-              accept="video/*"
-              onChange={changeHandler}
-              id="video"
-              className="hidden"
+                type="file"
+                accept="video/*"
+                onChange={pickVideo}
+                id="video"
+                className="hidden"
             />
           </div>
           {/* {thumbnail && <img src={thumbnail} alt="Video Thumbnail"  className={styles.thumbnail}/>} */}
