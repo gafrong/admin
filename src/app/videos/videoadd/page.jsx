@@ -70,7 +70,14 @@ export default function Page() {
 
                 const image = canvas.toDataURL('image/png');
 
-                setThumbnail(image);
+                axios.post(`${baseURL}videos/upload-base64-image`, {base64Image})
+                    .then(response => {
+                        console.log('Returned Img URL', response.data.imageUrl) 
+                        setThumbnail(response.data.imageUrl);
+                    })
+                    .catch(error => {
+                        console.log('Error uploading image:', error.response ? error.response.data : error.message);
+                    })
             }
         }
         
@@ -97,7 +104,7 @@ export default function Page() {
                 ? videoProductIds
                 : [videoProductIds]
         );
-        formData.append("image", videoImage);
+        formData.append("image", thumbnail);
         // formData.append('File', selectedFile);
         
         // axios call
