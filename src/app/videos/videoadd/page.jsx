@@ -35,6 +35,7 @@ export default function Page() {
     const [ videoProducts, setVideoProducts ] = useState([]);
     const [ videoProductIds, setVideoProductIds ] = useState([]);
     const [ description, setDescription ] = useState('');
+    const [selectedProducts, setSelectedProducts] = useState([]);
     const user = useUserStore((state) => state.user);
     console.log('video product IDs', videoProductIds)
     const userId = user?._id;
@@ -93,13 +94,19 @@ export default function Page() {
         console.log('checking')
 
         formData.append('description', description);
-        formData.append('videoItems', videoProductIds);
+        formData.append(
+            "videoItems",
+            Array.isArray(videoProductIds)
+                ? videoProductIds
+                : [videoProductIds]
+        );
+        formData.append("image", videoImage);
         // formData.append('File', selectedFile);
         
         // axios call
     }
 
-    const handleProductSelect = (product) => {
+    const handleProductSelect = (product, index) => {
         if (videoProducts.some((p) => p.id === product.id)) {
           // If the product's id is already in videoProducts, remove it
           setVideoProducts(videoProducts.filter((p) => p.id !== product.id));
@@ -172,7 +179,7 @@ export default function Page() {
                                 {productList?.map((product, index) => (
                                     <div key={index} className={styles.productItem}>
                                         <div className={styles.checkbxContainer}>
-                                            <Checkbox id={product.id} className={styles.checkbox} onClick={()=>handleProductSelect(product)}/>
+                                            <Checkbox id={product.id} className={styles.checkbox} onClick={()=>handleProductSelect(product, index)}/>
                                         </div>
                                         <img src={awsURL+product.image} alt={`Product ${index}`} className={styles.productImg} />
                                     </div>
