@@ -1,0 +1,1 @@
+{ "*": "prettier --experimental-ternaries --ignore-unknown --write" }

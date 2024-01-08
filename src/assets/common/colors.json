@@ -1,243 +1,242 @@
 [
-    {
-      "label": "마룬",
-      "value": "maroon",
-      "hexColor": "#800000"
-    },
-    {
-      "label": "어두운레드",
-      "value": "darkred",
-      "hexColor": "#8b0000"
-    },
-    {
-      "label": "갈색",
-      "value": "brown",
-      "hexColor": "#a52a2a"
-    },
-    {
-      "label": "벽돌",
-      "value": "brick",
-      "hexColor": "#b22222"
-    },
-    {
-      "label": "크림슨",
-      "value": "crimson",
-      "hexColor": "#dc143c"
-    },
-    {
-      "label": "레드",
-      "value": "red",
-      "hexColor": "#ff0000"
-    },
-    {
-      "label": "토마토",
-      "value": "tomato",
-      "hexColor": "#ff6347"
-    },
-    {
-      "label": "코랄",
-      "value": "coral",
-      "hexColor": "#ff7f50"
-    },
-    {
-      "label": "살몬",
-      "value": "salmon",
-      "hexColor": "#fa8072"
-    },
-    {
-      "label": "인디안레드",
-      "value": "indianred",
-      "hexColor": "#cd5c5c"
-    },
-    {
-      "label": "로지브라운",
-      "value": "rosybrown",
-      "hexColor": "#bc8f8f"
-    },
-    {
-      "label": "초코렛",
-      "value": "chocolate",
-      "hexColor": "#d2691e"
-    },
-    {
-      "label": "오렌지",
-      "value": "orange",
-      "hexColor": "#ff6e00"
-    },
-    {
-      "label": "골드",
-      "value": "gold",
-      "hexColor": "#ffd700"
-    },
-    {
-      "label": "옐로우",
-      "value": "yellow",
-      "hexColor": "#ffff00"
-    },
-    {
-      "label": "라이트옐로우",
-      "value": "lightyellow",
-      "hexColor": "#ffffe0"
-    },
-    {
-      "label": "피치",
-      "value": "peach",
-      "hexColor": "#ffdab9"
-    },
-    {
-      "label": "탠",
-      "value": "tan",
-      "hexColor": "#d2b48c"
-    },
-    {
-      "label": "카키",
-      "value": "khaki",
-      "hexColor": "#bdb76b"
-    },
-    {
-      "label": "다크카키",
-      "value": "darkkhaki",
-      "hexColor": "#bdb76b"
-    },
-    {
-      "label": "올리브",
-      "value": "olive",
-      "hexColor": "#808000"
-    },
-    {
-      "label": "라임",
-      "value": "lime",
-      "hexColor": "#00ff00"
-    },
-    {
-      "label": "그린",
-      "value": "green",
-      "hexColor": "#008000"
-    },
-    {
-      "label": "다크그린",
-      "value": "darkgreen",
-      "hexColor": "#006400"
-    },
-    {
-      "label": "틸",
-      "value": "teal",
-      "hexColor": "#008080"
-    },
-    {
-      "label": "아쿠아마린",
-      "value": "aquamarine",
-      "hexColor": "#7fffd4"
-    },
-    {
-      "label": "라이트블루",
-      "value": "lightblue",
-      "hexColor": "#add8e6"
-    },
-    {
-      "label": "스카이블루",
-      "value": "skyblue",
-      "hexColor": "#87cdfa"
-    },
-    {
-      "label": "블루",
-      "value": "blue",
-      "hexColor": "#0000ff"
-    },
-    {
-      "label": "네이비",
-      "value": "navy",
-      "hexColor": "#000080"
-    },
-    {
-      "label": "인디고",
-      "value": "indigo",
-      "hexColor": "#4b0082"
-    },
-    {
-      "label": "퍼플",
-      "value": "purple",
-      "hexColor": "#800080"
-    },
-    {
-      "label": "바이올렛",
-      "value": "violet",
-      "hexColor": "#ee82ee"
-    },
-    {
-      "label": "마젠타",
-      "value": "magenta",
-      "hexColor": "#ff00ff"
-    },
-    {
-      "label": "딥핑크",
-      "value": "deeppink",
-      "hexColor": "#ff1493"
-    },
-    {
-      "label": "핫핑크",
-      "value": "hotpink",
-      "hexColor": "#ff69b4"
-    },
-    {
-        "label": "핑크",
-        "value": "pink",
-        "hexColor": "#ffc0cb"
-    },
-    {
-      "label": "아이보리",
-      "value": "ivory",
-      "hexColor": "#fffff0"
-    },
-    {
-      "label": "베이지",
-      "value": "beige",
-      "hexColor": "#f5f5dc"
-    },
-    {
-        "label": "라벤더",
-        "value": "lavender",
-        "hexColor": "#e6e6fa"
-    },
-    {
-      "label": "게인스보로",
-      "value": "gainboro",
-      "hexColor": "#dcdcdc"
-    },
-    {
-      "label": "그레이",
-      "value": "gray",
-      "hexColor": "#d3d3d3"
-    },
-    {
-      "label": "실버",
-      "value": "silver",
-      "hexColor": "#c0c0c0"
-    },
-    {
-      "label": "블랙",
-      "value": "black",
-      "hexColor": "#000000"
-    },
-    {
-      "label": "화이트",
-      "value": "white",
-      "hexColor": "#ffffff"
-    },
-    {
-      "label": "비닐",
-      "value": "vinyl",
-      "hexColor": "#dedede"
-    },
-    {
-      "label": "프린트",
-      "value": "prints",
-      "hexColor": "#dddddd"
-    },
-    {
-      "label": "기타",
-      "value": "others",
-      "hexColor": "#cccccc"
-    }
-  ]
-  
+  {
+    "label": "마룬",
+    "value": "maroon",
+    "hexColor": "#800000"
+  },
+  {
+    "label": "어두운레드",
+    "value": "darkred",
+    "hexColor": "#8b0000"
+  },
+  {
+    "label": "갈색",
+    "value": "brown",
+    "hexColor": "#a52a2a"
+  },
+  {
+    "label": "벽돌",
+    "value": "brick",
+    "hexColor": "#b22222"
+  },
+  {
+    "label": "크림슨",
+    "value": "crimson",
+    "hexColor": "#dc143c"
+  },
+  {
+    "label": "레드",
+    "value": "red",
+    "hexColor": "#ff0000"
+  },
+  {
+    "label": "토마토",
+    "value": "tomato",
+    "hexColor": "#ff6347"
+  },
+  {
+    "label": "코랄",
+    "value": "coral",
+    "hexColor": "#ff7f50"
+  },
+  {
+    "label": "살몬",
+    "value": "salmon",
+    "hexColor": "#fa8072"
+  },
+  {
+    "label": "인디안레드",
+    "value": "indianred",
+    "hexColor": "#cd5c5c"
+  },
+  {
+    "label": "로지브라운",
+    "value": "rosybrown",
+    "hexColor": "#bc8f8f"
+  },
+  {
+    "label": "초코렛",
+    "value": "chocolate",
+    "hexColor": "#d2691e"
+  },
+  {
+    "label": "오렌지",
+    "value": "orange",
+    "hexColor": "#ff6e00"
+  },
+  {
+    "label": "골드",
+    "value": "gold",
+    "hexColor": "#ffd700"
+  },
+  {
+    "label": "옐로우",
+    "value": "yellow",
+    "hexColor": "#ffff00"
+  },
+  {
+    "label": "라이트옐로우",
+    "value": "lightyellow",
+    "hexColor": "#ffffe0"
+  },
+  {
+    "label": "피치",
+    "value": "peach",
+    "hexColor": "#ffdab9"
+  },
+  {
+    "label": "탠",
+    "value": "tan",
+    "hexColor": "#d2b48c"
+  },
+  {
+    "label": "카키",
+    "value": "khaki",
+    "hexColor": "#bdb76b"
+  },
+  {
+    "label": "다크카키",
+    "value": "darkkhaki",
+    "hexColor": "#bdb76b"
+  },
+  {
+    "label": "올리브",
+    "value": "olive",
+    "hexColor": "#808000"
+  },
+  {
+    "label": "라임",
+    "value": "lime",
+    "hexColor": "#00ff00"
+  },
+  {
+    "label": "그린",
+    "value": "green",
+    "hexColor": "#008000"
+  },
+  {
+    "label": "다크그린",
+    "value": "darkgreen",
+    "hexColor": "#006400"
+  },
+  {
+    "label": "틸",
+    "value": "teal",
+    "hexColor": "#008080"
+  },
+  {
+    "label": "아쿠아마린",
+    "value": "aquamarine",
+    "hexColor": "#7fffd4"
+  },
+  {
+    "label": "라이트블루",
+    "value": "lightblue",
+    "hexColor": "#add8e6"
+  },
+  {
+    "label": "스카이블루",
+    "value": "skyblue",
+    "hexColor": "#87cdfa"
+  },
+  {
+    "label": "블루",
+    "value": "blue",
+    "hexColor": "#0000ff"
+  },
+  {
+    "label": "네이비",
+    "value": "navy",
+    "hexColor": "#000080"
+  },
+  {
+    "label": "인디고",
+    "value": "indigo",
+    "hexColor": "#4b0082"
+  },
+  {
+    "label": "퍼플",
+    "value": "purple",
+    "hexColor": "#800080"
+  },
+  {
+    "label": "바이올렛",
+    "value": "violet",
+    "hexColor": "#ee82ee"
+  },
+  {
+    "label": "마젠타",
+    "value": "magenta",
+    "hexColor": "#ff00ff"
+  },
+  {
+    "label": "딥핑크",
+    "value": "deeppink",
+    "hexColor": "#ff1493"
+  },
+  {
+    "label": "핫핑크",
+    "value": "hotpink",
+    "hexColor": "#ff69b4"
+  },
+  {
+    "label": "핑크",
+    "value": "pink",
+    "hexColor": "#ffc0cb"
+  },
+  {
+    "label": "아이보리",
+    "value": "ivory",
+    "hexColor": "#fffff0"
+  },
+  {
+    "label": "베이지",
+    "value": "beige",
+    "hexColor": "#f5f5dc"
+  },
+  {
+    "label": "라벤더",
+    "value": "lavender",
+    "hexColor": "#e6e6fa"
+  },
+  {
+    "label": "게인스보로",
+    "value": "gainboro",
+    "hexColor": "#dcdcdc"
+  },
+  {
+    "label": "그레이",
+    "value": "gray",
+    "hexColor": "#d3d3d3"
+  },
+  {
+    "label": "실버",
+    "value": "silver",
+    "hexColor": "#c0c0c0"
+  },
+  {
+    "label": "블랙",
+    "value": "black",
+    "hexColor": "#000000"
+  },
+  {
+    "label": "화이트",
+    "value": "white",
+    "hexColor": "#ffffff"
+  },
+  {
+    "label": "비닐",
+    "value": "vinyl",
+    "hexColor": "#dedede"
+  },
+  {
+    "label": "프린트",
+    "value": "prints",
+    "hexColor": "#dddddd"
+  },
+  {
+    "label": "기타",
+    "value": "others",
+    "hexColor": "#cccccc"
+  }
+]
