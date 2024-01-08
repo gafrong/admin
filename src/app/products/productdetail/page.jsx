@@ -350,7 +350,7 @@ export default function Page({searchParams}) {
                     </div>
                 </div>
             : null }
-            {subOption1.options?.length>0 ?
+            {/* {subOption1.options?.length>0 ?
                 <div className="pt-5 flex">
                     <p className='mr-10'>{subOption1.title}: </p>
                     <div className='flex flex-col'>
@@ -403,7 +403,7 @@ export default function Page({searchParams}) {
                     ))}
                 </div>
             </div>
-            : null }
+            : null } */}
             <div className='flex pb-80 mt-12'>
                 <Button className="mt-8 w-60" onClick={handleSubmit}>편집 저장</Button>
             </div>
