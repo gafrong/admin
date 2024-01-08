@@ -1,3 +1,3 @@
-let awsURL = "https://d22veplpbtt1aw.cloudfront.net/";
+let awsURL = 'https://d22veplpbtt1aw.cloudfront.net/'
 
-export default awsURL;
+export default awsURL

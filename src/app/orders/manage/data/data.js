@@ -1,30 +1,30 @@
 export const statuses = [
   {
-    value: "Ordered",
-    label: "Ordered",
+    value: 'Ordered',
+    label: 'Ordered',
   },
   {
-    value: "Processing",
-    label: "Processing",
+    value: 'Processing',
+    label: 'Processing',
   },
   {
-    value: "In Delivery",
-    label: "In Delivery",
+    value: 'In Delivery',
+    label: 'In Delivery',
   },
   {
-    value: "Delivered",
-    label: "Delivered",
+    value: 'Delivered',
+    label: 'Delivered',
   },
   {
-    value: "Cancel",
-    label: "Cancel/Refund",
+    value: 'Cancel',
+    label: 'Cancel/Refund',
   },
   {
-    value: "Refunded",
-    label: "Refunded",
+    value: 'Refunded',
+    label: 'Refunded',
   },
   {
-    value: "All",
-    label: "All",
+    value: 'All',
+    label: 'All',
   },
-];
+]

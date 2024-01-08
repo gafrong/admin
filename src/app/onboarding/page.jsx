@@ -1,11 +1,12 @@
-"use client";
-import Link from "next/link";
-import Onboardingtrack from '@/components/Onboadingtrack';
+'use client'
+
+import Onboardingtrack from '@/components/Onboadingtrack'
+import Link from 'next/link'
 
 export default function Page() {
-    return (
-        <div className="pl-5 pt-5">
-            <Onboardingtrack />
-        </div>
-    );
+  return (
+    <div className="pl-5 pt-5">
+      <Onboardingtrack />
+    </div>
+  )
 }
