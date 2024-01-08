@@ -24,23 +24,24 @@ import React, { useEffect, useRef, useState } from 'react'
 import styles from './videoadd.module.css'
 
 export default function Page() {
-  const router = useRouter()
-  const [selectedFile, setSelectedFile] = useState()
-  const [isFilePicked, setIsFilePicked] = useState(false)
-  const [isSelected, setIsSelected] = useState(false)
+  const router = useRouter();
+  const [selectedFile, setSelectedFile] = useState();
+  const [isFilePicked, setIsFilePicked] = useState(false);
+  const [isSelected, setIsSelected] = useState(false);
 
-  const [selectedFirstProduct, setSelectedFirstProduct] = useState()
-  const [productList, setProductList] = useState([])
-  const [videoProducts, setVideoProducts] = useState([])
-  const [videoProductIds, setVideoProductIds] = useState([])
-  const [description, setDescription] = useState('')
-  const [selectedProducts, setSelectedProducts] = useState([])
-  const user = useUserStore((state) => state.user)
+  const [selectedFirstProduct, setSelectedFirstProduct] = useState();
+  const [productList, setProductList] = useState([]);
+  const [videoProducts, setVideoProducts] = useState([]);
+  const [videoFile, setVideoFile] = useState(null);
+  const [videoProductIds, setVideoProductIds] = useState([]);
+  const [description, setDescription] = useState('');
+  const [thumbnail, setThumbnail]= useState(null);
+  const [selectedProducts, setSelectedProducts] = useState([]);
+  const user = useUserStore((state) => state.user);
   console.log('video product IDs', videoProductIds)
-  const userId = user?._id
+  const userId = user?._id;
 
-    const videoRef = useRef(null);
-    const [thumbnail, setThumbnail]= useState(null);
+const videoRef = useRef(null);
 
   useEffect(() => {
     if (userId) {
@@ -57,7 +58,7 @@ export default function Page() {
     const pickVideo = (e) => {
         const file = e.target.files[0];
         const video = videoRef.current;
-        
+        setVideoFile(file);
         if (file && video){
             video.src = URL.createObjectURL(file);
             video.onloadedmetadata = () => {
@@ -68,7 +69,7 @@ export default function Page() {
 
                 ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
 
-                const image = canvas.toDataURL('image/png');
+                const base64Image = canvas.toDataURL('image/png');
 
                 axios.post(`${baseURL}videos/upload-base64-image`, {base64Image})
                     .then(response => {
@@ -94,10 +95,13 @@ export default function Page() {
     console.log('ee', e)
   }
 
-  const handleSubmit = () => {
+  const handleSubmit =  async () => {
     console.log('checking')
+    try {
         const formData = new FormData();
         
+        formData.append('video', videoFile);
+        formData.append("image", thumbnail);
         formData.append('description', description);
         formData.append(
             "videoItems",
@@ -105,12 +109,13 @@ export default function Page() {
                 ? videoProductIds
                 : [videoProductIds]
         );
-        formData.append("image", thumbnail);
-        console.log('selected file', selectedFile)
-        // formData.append('File', selectedFile);
+        console.log('selected file', videoFile);
         
         // axios call
+    } catch (error) {
+        console.error('Error uploading vidoe:', error.response)
     }
+  }
 
   const handleProductSelect = (product, index) => {
     if (videoProducts.some((p) => p.id === product.id)) {
