@@ -1,14 +1,4 @@
-"use client";
-
-import * as React from "react";
-import {
-  flexRender,
-  getCoreRowModel,
-  getFilteredRowModel,
-  getPaginationRowModel,
-  getSortedRowModel,
-  useReactTable,
-} from "@tanstack/react-table";
+'use client'
 
 import {
   Table,
@@ -17,13 +7,21 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "@/components/ui/table";
-import { DataTableToolbarFilter } from "./data-table-order-filter";
-import { DataTablePagination } from "./data-table-pagination";
-
-import { DataTableViewOptions } from "./data-table-view-options";
-import { DebouncedInput } from "../../../components/ui/debounced-input";
-import { DataTableDropdownSearch } from "./data-table-dropdown-search";
+} from '@/components/ui/table'
+import {
+  flexRender,
+  getCoreRowModel,
+  getFilteredRowModel,
+  getPaginationRowModel,
+  getSortedRowModel,
+  useReactTable,
+} from '@tanstack/react-table'
+import * as React from 'react'
+import { DebouncedInput } from '../../../components/ui/debounced-input'
+import { DataTableDropdownSearch } from './data-table-dropdown-search'
+import { DataTableToolbarFilter } from './data-table-order-filter'
+import { DataTablePagination } from './data-table-pagination'
+import { DataTableViewOptions } from './data-table-view-options'
 
 // fuzzy global filter. Disabled for now
 // const fuzzyFilter = (row, columnId, value, addMeta) => {
@@ -45,14 +43,14 @@ export const EmptyTableRows = ({ columns }) => (
       No results.
     </TableCell>
   </TableRow>
-);
+)
 
 export function DataTable({ columns, data }) {
-  const [sorting, setSorting] = React.useState([]);
-  const [columnFilters, setColumnFilters] = React.useState([]);
-  const [columnVisibility, setColumnVisibility] = React.useState({});
-  const [rowSelection, setRowSelection] = React.useState({});
-  const [searchColumn, setSearchColumn] = React.useState("name");
+  const [sorting, setSorting] = React.useState([])
+  const [columnFilters, setColumnFilters] = React.useState([])
+  const [columnVisibility, setColumnVisibility] = React.useState({})
+  const [rowSelection, setRowSelection] = React.useState({})
+  const [searchColumn, setSearchColumn] = React.useState('name')
   // const [globalFilter, setGlobalFilter] = React.useState("");
 
   const table = useReactTable({
@@ -74,21 +72,21 @@ export function DataTable({ columns, data }) {
       columnVisibility,
       rowSelection,
     },
-  });
+  })
 
   const handleSearchDropdown = (value) => {
-    table.getColumn("orderNumber")?.setFilterValue("");
-    table.getColumn("name")?.setFilterValue("");
-    setSearchColumn(value);
-  };
+    table.getColumn('orderNumber')?.setFilterValue('')
+    table.getColumn('name')?.setFilterValue('')
+    setSearchColumn(value)
+  }
 
   const handleOrderNumberChange = (value) => {
-    table.getColumn("orderNumber")?.setFilterValue(value);
-  };
+    table.getColumn('orderNumber')?.setFilterValue(value)
+  }
 
   const handleNameChange = (value) => {
-    table.getColumn("name")?.setFilterValue(value);
-  };
+    table.getColumn('name')?.setFilterValue(value)
+  }
 
   return (
     <div className="w-full">
@@ -96,26 +94,26 @@ export function DataTable({ columns, data }) {
 
       <div className="space-y-4">
         <DataTableToolbarFilter table={table} />
-        <div className="flex justify-between p4">
+        <div className="p4 flex justify-between">
           <DataTableDropdownSearch
             searchColumn={searchColumn}
             setSearchColumn={handleSearchDropdown}
           />
 
-          {searchColumn === "orderNumber" && (
+          {searchColumn === 'orderNumber' && (
             <DebouncedInput
-              value={table.getColumn("orderNumber")?.getFilterValue() ?? ""}
+              value={table.getColumn('orderNumber')?.getFilterValue() ?? ''}
               onChange={handleOrderNumberChange}
-              className="h-10 w-[150px] lg:w-[250px] px-4"
+              className="h-10 w-[150px] px-4 lg:w-[250px]"
               placeholder="Search Order Number..."
             />
           )}
 
-          {searchColumn === "name" && (
+          {searchColumn === 'name' && (
             <DebouncedInput
-              value={table.getColumn("name")?.getFilterValue() ?? ""}
+              value={table.getColumn('name')?.getFilterValue() ?? ''}
               onChange={handleNameChange}
-              className="h-10 w-[150px] lg:w-[250px] px-4"
+              className="h-10 w-[150px] px-4 lg:w-[250px]"
               placeholder="Search User..."
             />
           )}
@@ -131,38 +129,36 @@ export function DataTable({ columns, data }) {
                   {headerGroup.headers.map((header) => {
                     return (
                       <TableHead key={header.id}>
-                        {header.isPlaceholder
-                          ? null
-                          : flexRender(
-                              header.column.columnDef.header,
-                              header.getContext()
-                            )}
+                        {header.isPlaceholder ? null : (
+                          flexRender(
+                            header.column.columnDef.header,
+                            header.getContext(),
+                          )
+                        )}
                       </TableHead>
-                    );
+                    )
                   })}
                 </TableRow>
               ))}
             </TableHeader>
             <TableBody>
-              {table.getRowModel().rows?.length ? (
+              {table.getRowModel().rows?.length ?
                 table.getRowModel().rows.map((row) => (
                   <TableRow
                     key={row.id}
-                    data-state={row.getIsSelected() && "selected"}
+                    data-state={row.getIsSelected() && 'selected'}
                   >
                     {row.getVisibleCells().map((cell) => (
                       <TableCell key={cell.id} className="align-top">
                         {flexRender(
                           cell.column.columnDef.cell,
-                          cell.getContext()
+                          cell.getContext(),
                         )}
                       </TableCell>
                     ))}
                   </TableRow>
                 ))
-              ) : (
-                <EmptyTableRows columns={columns} />
-              )}
+              : <EmptyTableRows columns={columns} />}
             </TableBody>
           </Table>
         </div>
@@ -170,5 +166,5 @@ export function DataTable({ columns, data }) {
         <DataTablePagination table={table} />
       </div>
     </div>
-  );
+  )
 }
