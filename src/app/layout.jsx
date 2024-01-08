@@ -1,5 +1,6 @@
 "use client";
 
+import { useEffect } from 'react'; 
 import "./globals.css";
 import styles from "./utils.module.css";
 import Navbar from '@/components/Navbar'
@@ -10,15 +11,17 @@ import NextAuthProvider from './provider';
 import { useRouter } from "next/navigation";
 
 export default function RootLayout({ children }) {
-    const user = useUserStore((state) => state.user);
-    const token = useUserStore((state) => state.token);
-    const isAuthenticated = useUserStore((state) => state.isAuthenticated);
+    const user = useUserStore((state) => state?.user);
+    const token = useUserStore((state) => state?.token);
+    const isAuthenticated = useUserStore((state) => state?.isAuthenticated);
 
     const router = useRouter();
 
-    // if (!isAuthenticated) {
-    //     router?.push('/')
-    // }
+    useEffect(() => {
+        if (!isAuthenticated) {
+            router?.push('/')
+        }
+    }, [isAuthenticated, router]);
     
     return (
         <html>
