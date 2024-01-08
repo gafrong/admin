@@ -40,7 +40,9 @@ export default function Page() {
     console.log('video product IDs', videoProductIds)
     const userId = user?._id;
 
+    // set up video thumbnail and save to aws
     const videoRef = useRef(null);
+    const canvasRef = useRef(null);
     const [thumbnail, setThumbnail]= useState(null);
 
     useEffect(() => {
@@ -60,7 +62,7 @@ export default function Page() {
     const changeHandler = (e) => {
         const file = e.target.files[0];
         const video = videoRef.current;
-        
+        console.log('video ref', video)
         if (file && video){
             video.src = URL.createObjectURL(file);
             video.onloadedmetadata = () => {
@@ -71,9 +73,17 @@ export default function Page() {
 
                 ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
 
-                const image = canvas.toDataURL('image/png');
+                const base64Image = canvas.toDataURL('image/png');
 
-                setThumbnail(image);
+
+                axios.post(`${baseURL}videos/upload-base64-image`, {base64Image})
+                    .then(response => {
+                        console.log('Returned Img URL', response.data.imageUrl) 
+                        setThumbnail(response.data.imageUrl);
+                    })
+                    .catch(error => {
+                        console.log('Error uploading image:', error.response ? error.response.data : error.message);
+                    })
             }
         }
         
@@ -93,6 +103,9 @@ export default function Page() {
     const handleSubmit = () => {
         console.log('checking')
 
+        const formData = new FormData();
+console.log('Des', description)
+console.log('vid items', videoProductIds)
         formData.append('description', description);
         formData.append(
             "videoItems",
@@ -100,7 +113,8 @@ export default function Page() {
                 ? videoProductIds
                 : [videoProductIds]
         );
-        formData.append("image", videoImage);
+        formData.append("image", thumbnail);
+   console.log('vid', videoProductIds)
         // formData.append('File', selectedFile);
         
         // axios call
