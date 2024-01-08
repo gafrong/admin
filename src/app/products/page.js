@@ -1,7 +1,8 @@
-"use client";
-import styles from "./products.module.css";
-import Link from "next/link";
+'use client'
+
+import Link from 'next/link'
+import styles from './products.module.css'
 
 export default function Page() {
-    return <></>;
+  return <></>
 }
