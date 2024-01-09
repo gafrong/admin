@@ -24,52 +24,60 @@ import React, { useEffect, useRef, useState } from 'react'
 import styles from './videoadd.module.css'
 
 export default function Page() {
-  const router = useRouter();
-  const [selectedFile, setSelectedFile] = useState();
-  const [isFilePicked, setIsFilePicked] = useState(false);
-  const [isSelected, setIsSelected] = useState(false);
+    const router = useRouter();
+    const user = useUserStore((state) => state.user);
+    const token = useUserStore((state) => state?.token);
+    const userId = user?._id;
 
-  const [selectedFirstProduct, setSelectedFirstProduct] = useState();
-  const [productList, setProductList] = useState([]);
-  const [videoProducts, setVideoProducts] = useState([]);
-  const [videoFile, setVideoFile] = useState(null);
-  const [videoProductIds, setVideoProductIds] = useState([]);
-  const [description, setDescription] = useState('');
-  const [thumbnail, setThumbnail]= useState(null);
-  const [selectedProducts, setSelectedProducts] = useState([]);
-  const user = useUserStore((state) => state.user);
-  console.log('video product IDs', videoProductIds)
-  const userId = user?._id;
+    const [selectedFile, setSelectedFile] = useState();
+    const [isFilePicked, setIsFilePicked] = useState(false);
+    const [isSelected, setIsSelected] = useState(false);
 
-const videoRef = useRef(null);
+    const [selectedFirstProduct, setSelectedFirstProduct] = useState();
+    const [productList, setProductList] = useState([]);
+    const [videoProducts, setVideoProducts] = useState([]);
+    const [videoFile, setVideoFile] = useState(null);
+    const [videoProductIds, setVideoProductIds] = useState([]);
+    const [description, setDescription] = useState('');
+    const [thumbnail, setThumbnail]= useState(null);
+    const [selectedProducts, setSelectedProducts] = useState([]);
+    const [uploadProgress, setUploadProgress] = useState(0);
+    console.log('video product IDs', videoProductIds)
 
-  useEffect(() => {
-    if (userId) {
-      axios.get(`${baseURL}products/admin/${userId}`).then((res) => {
-        setProductList(res.data)
-      })
+    const videoRef = useRef(null);
 
-      return () => {
-        setProductList()
-      }
-    }
-  }, [userId])
+    useEffect(() => {
+        if (userId) {
+            axios.get(`${baseURL}products/admin/${userId}`).then((res) => {
+                setProductList(res.data)
+            })
+
+            return () => {
+                setProductList()
+            }
+        }
+    }, [userId])
 
     const pickVideo = (e) => {
         const file = e.target.files[0];
         const video = videoRef.current;
+        console.log('video SHOW', video)
         setVideoFile(file);
+
         if (file && video){
             video.src = URL.createObjectURL(file);
+            // console.log('vid source', video.src)
             video.onloadedmetadata = () => {
                 const canvas = document.createElement('canvas');
                 canvas.width = video.videoWidth;
                 canvas.height = video.videoHeight;
                 const ctx = canvas.getContext('2d');
-
+console.group('CTX', ctx)
                 ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
 
                 const base64Image = canvas.toDataURL('image/png');
+
+                // console.log('Base64 Image:', base64Image);
 
                 axios.post(`${baseURL}videos/upload-base64-image`, {base64Image})
                     .then(response => {
@@ -86,6 +94,8 @@ const videoRef = useRef(null);
         setIsSelected(true);
 
     }
+    
+ 
 
   const handleDescriptionChange = (e) => {
     setDescription(e.target.value)
@@ -109,11 +119,43 @@ const videoRef = useRef(null);
                 ? videoProductIds
                 : [videoProductIds]
         );
-        console.log('selected file', videoFile);
+        
+        const response = await axios.post(`${baseURL}videos/upload/${userId}`, formData, {
+                            headers: {
+                                "Content-Type": "multipart/form-data",
+                                Authorization: `Bearer ${token}`,
+                            },
+                            onUploadProgress: (progressEvent) => {
+                                const progress = Math.round(
+                                    (progressEvent.loaded / progressEvent.total) * 100
+                                );
+                                setUploadProgress(progress);
+                            },
+                        })
+                        .then((res) => {
+                            if (res.data) {
+                                setSelectedProducts([]);
+                                setVideoProductIds([]);
+                                setDescription('');
+                                setThumbnail(null);
+                                console.log('RES DATA', res.data)
+                                router.push('/videos/video-add-complete')
+                            } else {
+                                alert("영상을 올릴 수 없습니다");
+                            }
+                        })
+                        .catch((err) => {
+                            console.log("error message", err.message);
+                            setUploadProgress(0);
+                            setSelectedProducts([]);
+                            setVideoProductIds([]);
+                            setDescription('');
+                            setThumbnail(null);
+                        });
         
         // axios call
     } catch (error) {
-        console.error('Error uploading vidoe:', error.response)
+        console.error('Error uploading video:', error)
     }
   }
 
