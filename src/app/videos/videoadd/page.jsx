@@ -58,42 +58,91 @@ export default function Page() {
         }
     }, [userId])
 
+    // const pickVideo = (e) => {
+    //     const file = e.target.files[0];
+    //     const video = videoRef.current;
+ 
+    //     setVideoFile(file);
+
+    //     if (file && video){
+    //         video.src = URL.createObjectURL(file);
+    //         video.onloadedmetadata = () => {
+    //             console.log('Video metadata loaded:', video.videoWidth, video.videoHeight);
+
+    //             const canvas = document.createElement('canvas');
+    //             canvas.width = video.videoWidth;
+    //             canvas.height = video.videoHeight;
+    //             console.log('Canvas dimensions:', canvas.width, canvas.height);
+
+    //             const ctx = canvas.getContext('2d');
+
+    //             ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+
+    //             const base64Image = canvas.toDataURL('image/png');
+
+    //             console.log('Base64 Image:', base64Image);
+
+    //             axios.post(`${baseURL}videos/upload-base64-image`, {base64Image})
+    //                 .then(response => {
+    //                     console.log('Returned Img URL', response.data.imageUrl) 
+    //                     setThumbnail(response.data.imageUrl);
+    //                 })
+    //                 .catch(error => {
+    //                     console.log('Error uploading image:', error.response ? error.response.data : error.message);
+    //                 })
+    //         }
+    //     }
+        
+    //     setSelectedFile(file);
+    //     setIsSelected(true);
+
+    // }
+
     const pickVideo = (e) => {
         const file = e.target.files[0];
         const video = videoRef.current;
-        console.log('video SHOW', video)
         setVideoFile(file);
-
-        if (file && video){
+    
+        if (file && video) {
             video.src = URL.createObjectURL(file);
-            // console.log('vid source', video.src)
+    
             video.onloadedmetadata = () => {
-                const canvas = document.createElement('canvas');
-                canvas.width = video.videoWidth;
-                canvas.height = video.videoHeight;
-                const ctx = canvas.getContext('2d');
-console.group('CTX', ctx)
-                ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+    
+                // Add 'seeked' event listener
+                video.addEventListener('seeked', () => {
+                    const canvas = document.createElement('canvas');
+                    canvas.width = video.videoWidth;
+                    canvas.height = video.videoHeight;
+                    console.log('Canvas dimensions:', canvas.width, canvas.height);
+    
+                    const ctx = canvas.getContext('2d');
+                    ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+    
+                    const base64Image = canvas.toDataURL('image/png', 0.7);
+                    
+                    const binaryImage = canvas.toDataURL('image/jpeg').split(',')[1];
 
-                const base64Image = canvas.toDataURL('image/png');
-
-                // console.log('Base64 Image:', base64Image);
-
-                axios.post(`${baseURL}videos/upload-base64-image`, {base64Image})
-                    .then(response => {
-                        console.log('Returned Img URL', response.data.imageUrl) 
-                        setThumbnail(response.data.imageUrl);
-                    })
-                    .catch(error => {
-                        console.log('Error uploading image:', error.response ? error.response.data : error.message);
-                    })
-            }
+                    axios.post(`${baseURL}videos/upload-base64-image`, { base64Image:binaryImage })
+                        .then(response => {
+                            console.log('Returned Img URL', response.data.imageUrl);
+                            setThumbnail(response.data.imageUrl);
+                        })
+                        .catch(error => {
+                            console.log('Error uploading image:', error.response ? error.response.data : error.message);
+                        });
+                });
+    
+                // Seek to the second frame
+                video.currentTime = 1; // Assuming the frame rate is 1 frame per second
+            };
         }
-        
+    
         setSelectedFile(file);
         setIsSelected(true);
+    };
 
-    }
+    
+    
     
  
 
