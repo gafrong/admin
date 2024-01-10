@@ -61,44 +61,75 @@ export default function Page() {
     // const pickVideo = (e) => {
     //     const file = e.target.files[0];
     //     const video = videoRef.current;
- 
     //     setVideoFile(file);
-
-    //     if (file && video){
+    
+    //     if (file && video) {
     //         video.src = URL.createObjectURL(file);
+    
     //         video.onloadedmetadata = () => {
-    //             console.log('Video metadata loaded:', video.videoWidth, video.videoHeight);
+    //             console.log('checking')
+    //             // Add 'seeked' event listener
+    //             video.addEventListener('loadeddata', () => {
+    //                 const canvas = document.createElement('canvas');
+    //                 canvas.width = video.videoWidth;
+    //                 canvas.height = video.videoHeight;
+    
+    //                 const ctx = canvas.getContext('2d');
+    //                 ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+    
+    //                 const base64Image = canvas.toDataURL('image/png');
+    //                 // const binaryImage = canvas.toDataURL('image/jpeg').split(',')[1];
 
-    //             const canvas = document.createElement('canvas');
-    //             canvas.width = video.videoWidth;
-    //             canvas.height = video.videoHeight;
-    //             console.log('Canvas dimensions:', canvas.width, canvas.height);
+    //                 const imageSizeInBytes = base64Image.length;
+    //                 const MAX_ACCEPTABLE_SIZE = 102400;
 
-    //             const ctx = canvas.getContext('2d');
+    //                 if (imageSizeInBytes > MAX_ACCEPTABLE_SIZE) {
+    //                     console.log('resizing!!!')
+    //                     // Resize the image if it exceeds the acceptable size
+    //                     const scaleFactor = MAX_ACCEPTABLE_SIZE / imageSizeInBytes;
+    //                     const resizedCanvas = document.createElement('canvas');
+    //                     const resizedCtx = resizedCanvas.getContext('2d');
 
-    //             ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+    //                     resizedCanvas.width = video.videoWidth * scaleFactor;
+    //                     resizedCanvas.height = video.videoHeight * scaleFactor;
 
-    //             const base64Image = canvas.toDataURL('image/png');
+    //                     // Draw the resized video frame on the resized canvas
+    //                     resizedCtx.drawImage(video, 0, 0, resizedCanvas.width, resizedCanvas.height);
 
-    //             console.log('Base64 Image:', base64Image);
+    //                     // Convert the resized canvas content to a base64 image
+    //                     const resizedBase64Image = resizedCanvas.toDataURL('image/jpeg');
 
-    //             axios.post(`${baseURL}videos/upload-base64-image`, {base64Image})
-    //                 .then(response => {
-    //                     console.log('Returned Img URL', response.data.imageUrl) 
-    //                     setThumbnail(response.data.imageUrl);
-    //                 })
-    //                 .catch(error => {
-    //                     console.log('Error uploading image:', error.response ? error.response.data : error.message);
-    //                 })
-    //         }
+    //                     axios.post(`${baseURL}videos/upload-base64-image`, { base64Image:resizedBase64Image })
+    //                         .then(response => {
+    //                             console.log('Returned Img URL', response.data.imageUrl);
+    //                             setThumbnail(response.data.imageUrl);
+    //                         })
+    //                         .catch(error => {
+    //                             console.log('Error uploading image:', error.response ? error.response.data : error.message);
+    //                         });
+
+    //                 } else {
+    //                     console.log('no resizing!')
+    //                     axios.post(`${baseURL}videos/upload-base64-image`, { base64Image:base64Image })
+    //                         .then(response => {
+    //                             console.log('Returned Img URL', response.data.imageUrl);
+    //                             setThumbnail(response.data.imageUrl);
+    //                         })
+    //                         .catch(error => {
+    //                             console.log('Error uploading image:', error.response ? error.response.data : error.message);
+    //                         });
+    //                 }
+                    
+                    
+    //             });
+    //         };
     //     }
-        
+    
     //     setSelectedFile(file);
     //     setIsSelected(true);
+    // };
 
-    // }
-
-    const pickVideo = (e) => {
+    const pickVideo = async (e) => {
         const file = e.target.files[0];
         const video = videoRef.current;
         setVideoFile(file);
@@ -106,41 +137,71 @@ export default function Page() {
         if (file && video) {
             video.src = URL.createObjectURL(file);
     
+            const processVideo = async () => {
+                const canvas = document.createElement('canvas');
+                canvas.width = video.videoWidth;
+                canvas.height = video.videoHeight;
+    
+                const ctx = canvas.getContext('2d');
+                ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+    
+                const base64Image = canvas.toDataURL('image/png');
+    
+                const imageSizeInBytes = base64Image.length;
+                const MAX_ACCEPTABLE_SIZE = 102400;
+    
+                if (imageSizeInBytes > MAX_ACCEPTABLE_SIZE) {
+                    console.log('resizing!!!');
+    
+                    // Resize the image if it exceeds the acceptable size
+                    const scaleFactor = MAX_ACCEPTABLE_SIZE / imageSizeInBytes;
+                    const resizedCanvas = document.createElement('canvas');
+                    const resizedCtx = resizedCanvas.getContext('2d');
+    
+                    resizedCanvas.width = video.videoWidth * scaleFactor;
+                    resizedCanvas.height = video.videoHeight * scaleFactor;
+    
+                    // Seek to the second frame (2 seconds assuming a frame rate of 1 frame per second)
+                    video.currentTime = 2;
+    
+                    // Draw the resized video frame on the resized canvas
+                    resizedCtx.drawImage(video, 0, 0, resizedCanvas.width, resizedCanvas.height);
+    
+                    // Convert the resized canvas content to a base64 image
+                    const resizedBase64Image = resizedCanvas.toDataURL('image/jpeg');
+    
+                    try {
+                        const response = await axios.post(`${baseURL}videos/upload-base64-image`, { base64Image: resizedBase64Image });
+                        setThumbnail(response.data.imageUrl);
+                    } catch (error) {
+                        console.log('Error uploading image:', error.response ? error.response.data : error.message);
+                    }
+                } else {
+                    console.log('no resizing!');
+                    try {
+                        const response = await axios.post(`${baseURL}videos/upload-base64-image`, { base64Image });
+                        setThumbnail(response.data.imageUrl);
+                    } catch (error) {
+                        console.log('Error uploading image:', error.response ? error.response.data : error.message);
+                    }
+                }
+            };
+    
             video.onloadedmetadata = () => {
+                // Add 'loadeddata' event listener to ensure the first frame is loaded
+                video.addEventListener('loadeddata', () => {
+                    // Add 'seeked' event listener to capture the second frame
+                    video.addEventListener('seeked', processVideo, { once: true });
     
-                // Add 'seeked' event listener
-                video.addEventListener('seeked', () => {
-                    const canvas = document.createElement('canvas');
-                    canvas.width = video.videoWidth;
-                    canvas.height = video.videoHeight;
-                    console.log('Canvas dimensions:', canvas.width, canvas.height);
-    
-                    const ctx = canvas.getContext('2d');
-                    ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
-    
-                    const base64Image = canvas.toDataURL('image/png', 0.7);
-                    
-                    const binaryImage = canvas.toDataURL('image/jpeg').split(',')[1];
-
-                    axios.post(`${baseURL}videos/upload-base64-image`, { base64Image:binaryImage })
-                        .then(response => {
-                            console.log('Returned Img URL', response.data.imageUrl);
-                            setThumbnail(response.data.imageUrl);
-                        })
-                        .catch(error => {
-                            console.log('Error uploading image:', error.response ? error.response.data : error.message);
-                        });
+                    // Seek to the second frame (2 seconds assuming a frame rate of 1 frame per second)
+                    video.currentTime = 0.1;
                 });
-    
-                // Seek to the second frame
-                video.currentTime = 1; // Assuming the frame rate is 1 frame per second
             };
         }
     
         setSelectedFile(file);
         setIsSelected(true);
     };
-
     
     
     
