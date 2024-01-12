@@ -32,6 +32,7 @@ import {
 
 export default function Page() {
     const user = useUserStore((state) => state.user);
+    const token = useUserStore((state) => state?.token);
     const userId = user?._id;
     const [loading, setLoading] = useState(false)
     const [videos, setVideos] = useState([]);
@@ -39,7 +40,7 @@ export default function Page() {
         from: new Date(2023, 0, 20),
         to: addDays(new Date(2023, 0, 20), 20),
     })
-
+    console.log('videos', videos)
     // console.log('DATE SHOW', date)
     const handleQuery = () => {
         console.log('DATE', date)
@@ -70,7 +71,34 @@ export default function Page() {
         }
     }, [userId])
     
-
+    const formatDate = (dateString) => {
+        const dateObject = new Date(dateString);
+        const year = dateObject.getFullYear();
+        const month = (dateObject.getMonth() + 1).toString().padStart(2, '0');
+        const day = dateObject.getDate().toString().padStart(2, '0');
+        return `${year}.${month}.${day}`;
+    };
+    
+    const removeVideo = (video) => {
+        console.log('delete video', video)
+        axios
+            .delete(`${baseURL}videos/${video._id}`, {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                    "Content-Type": "multipart/form-data",
+                },
+            })
+            .then((res) => {
+                const updatedVideos = videos.filter(
+                    (item) => item._id !== video._id
+                );
+                setVideos(updatedVideos);
+            })
+            .catch((error) => [
+                console.log("Status", error.response.status),
+                console.log("Data", error.response.data.message),
+            ]);
+    }
     return (
         <div className="pl-5 pt-5">
             <div>
@@ -122,31 +150,38 @@ export default function Page() {
                 </div>
             </div> 
             {/* end of duration select */}
-            {videos?.length > 0 &&
-                videos.map((video, index) => (
-                    <TableRow key={index}>
-                    <TableCell>
-                        <img
-                            src={awsURL + video.image}
-                            alt={`Product ${index}`}
-                            className="h-18 w-12 rounded-sm"
-                        />
-                    </TableCell>
-                    <TableCell>
-                        <div className="mt-2 pl-5">{video.description}</div>
-                    </TableCell>
-                    <TableCell>
-                        <Link
-                        href={{
-                            pathname: '/products/productdetail',
-                            query: { video: JSON.stringify(video) },
-                        }}
-                        >
-                        edit
-                        </Link>
-                    </TableCell>
+            <Table>
+                <TableHeader>
+                    <TableRow>
+                        <TableCell>Date Created</TableCell>
+                        <TableCell>Image</TableCell>
+                        <TableCell>Description</TableCell>
+                        <TableCell>Action</TableCell>
                     </TableRow>
-                ))}
+                </TableHeader>
+                <TableBody>
+                    {videos?.length > 0 &&
+                        videos.map((video, index) => (
+                            <TableRow key={index}>
+                                <TableCell>{formatDate(video.dateCreated)}</TableCell>
+                                <TableCell>
+                                    <img
+                                        src={awsURL + video.image}
+                                        alt={`Product ${index}`}
+                                        className="h-18 w-12 rounded-sm"
+                                    />
+                                </TableCell>
+                                <TableCell>
+                                    <div className="mt-2 pl-5">{video.description}</div>
+                                </TableCell>
+                                <TableCell>
+                                    <Button variant="destructive" onClick={()=>removeVideo(video)}>삭제</Button>
+                                </TableCell>
+                            </TableRow>
+                        ))}
+                </TableBody>
+            </Table>
+
         </div>
     )
 }
