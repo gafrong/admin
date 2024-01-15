@@ -80,7 +80,6 @@ export default function Page() {
     };
     
     const removeVideo = (video) => {
-        console.log('delete video', video)
         axios
             .delete(`${baseURL}videos/${video._id}`, {
                 headers: {
@@ -153,10 +152,10 @@ export default function Page() {
             <Table>
                 <TableHeader>
                     <TableRow>
-                        <TableCell>Date Created</TableCell>
-                        <TableCell>Image</TableCell>
-                        <TableCell>Description</TableCell>
-                        <TableCell>Action</TableCell>
+                        <TableCell>날짜</TableCell>
+                        <TableCell>영상</TableCell>
+                        <TableCell>설명</TableCell>
+                        <TableCell>영상 삭제</TableCell>
                     </TableRow>
                 </TableHeader>
                 <TableBody>

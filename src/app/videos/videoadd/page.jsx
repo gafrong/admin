@@ -44,7 +44,6 @@ export default function Page() {
     const [thumbnail, setThumbnail]= useState(null);
     const [selectedProducts, setSelectedProducts] = useState([]);
     const [uploadProgress, setUploadProgress] = useState(0);
-    console.log('video product IDs', videoProductIds)
 
     const videoRef = useRef(null);
 
@@ -144,10 +143,17 @@ export default function Page() {
     if (!videoFile || !thumbnail || !description || videoProductIds.length === 0) {
         // Show an error message or prevent submission
         alert('모든 정보를 정확히 선택/입력하시기 바랍니다.');
+        setThumbnail(null);
         return;
     }
     try {
         setLoading(true);
+        const fileSizeInMB = selectedFile.size / 1000000;;
+        if (fileSizeInMB > 50) {
+            alert('영상 파일이 초과되었습니다. 15초 이하(50MB)의 영상을 선택하세요.');
+            setLoading(false);
+            return;
+        }
         const formData = new FormData();
         
         formData.append('video', videoFile);
@@ -241,7 +247,6 @@ export default function Page() {
                     className="hidden"
                 />
             </div>
-            {/* {thumbnail && <img src={thumbnail} alt="Video Thumbnail"  className={styles.thumbnail}/>} */}
             {videoRef && (
                 <video ref={videoRef} className={styles.selectedVideo} />
             )}
