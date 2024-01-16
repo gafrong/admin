@@ -449,7 +449,7 @@ export default function Page() {
               <label htmlFor="mainImageInput" className={styles.mainLabel}>
                 <CiCamera className={styles.mainImageCamera}/>
               </label>
-              <input type="file" accept="image/*" id="mainImageInput" className="custom-file-input" style={{display:'none'}} onChange={handleMainImageChange}/>   
+              <input type="file" accept="image/*" id="mainImageInput" style={{display:'none'}} onChange={handleMainImageChange}/>   
             </div>
           : <div className={styles.mainImageBlank}>
               <label htmlFor="mainImageInput" className={styles.mainLabelStart}>
@@ -464,7 +464,11 @@ export default function Page() {
             <>
               {firstImage ? (
                 <div className={styles.productImageShow}>
-                  <img src={firstImage} alt="first image" style={{ opacity: displayProduct ? 1 : 0.5, width: '100px', height: '100px', objectFit: 'cover' }}/>
+                  <img src={firstImage} alt="first image" style={{ opacity: displayProduct ? 1 : 0.5, width: '150px', height: '150px', objectFit: 'cover' }}/>
+                  <label htmlFor="firstImageInput" className={styles.firstLabel}>
+                    <CiCamera className={styles.firstImageCamera}/>
+                  </label>
+                  <input type="file" accept="image/*" id="firstImageInput" style={{display:'none'}} onChange={handleFirstImageChange}/>  
                 </div>
               ) : (
                 <div className={styles.productImage}>
@@ -481,7 +485,11 @@ export default function Page() {
             <>
               {secondImage ? (
                 <div className={styles.productImageShow}>
-                  <img src={secondImage} alt="second image" style={{ opacity: displayProduct ? 1 : 0.5, width: '100px', height: '100px', objectFit: 'cover' }}/>
+                  <img src={secondImage} alt="second image" style={{ opacity: displayProduct ? 1 : 0.5, width: '150px', height: '150px', objectFit: 'cover' }}/>
+                  <label htmlFor="secondImageInput" className={styles.firstLabel}>
+                    <CiCamera className={styles.firstImageCamera}/>
+                  </label>
+                  <input type="file" accept="image/*" id="secondImageInput" style={{display:'none'}} onChange={handleSecondImageChange}/> 
                 </div>
               ) : (
                 <div className={styles.productImage}>
@@ -489,6 +497,48 @@ export default function Page() {
                     <CiCamera className={styles.smallCameraCenter}/>
                   </label>
                   <input type="file" accept="image/*" id="secondImageInput" style={{display:'none'}} onChange={handleSecondImageChange}/>  
+                </div>
+              )}
+            </>
+          )}
+
+          { mainImage && firstImage && secondImage && (
+            <>
+              {thirdImage ? (
+                <div className={styles.productImageShow}>
+                  <img src={thirdImage} alt="third image" style={{ opacity: displayProduct ? 1 : 0.5, width: '150px', height: '150px', objectFit: 'cover' }}/>
+                  <label htmlFor="thirdImageInput" className={styles.firstLabel}>
+                    <CiCamera className={styles.firstImageCamera}/>
+                  </label>
+                  <input type="file" accept="image/*" id="thirdImageInput" style={{display:'none'}} onChange={handleThirdImageChange}/> 
+                </div>
+              ) : (
+                <div className={styles.productImage}>
+                  <label htmlFor="thirdImageInput" className={styles.labelFirst}>
+                    <CiCamera className={styles.smallCameraCenter}/>
+                  </label>
+                  <input type="file" accept="image/*" id="thirdImageInput" style={{display:'none'}} onChange={handleThirdImageChange}/>  
+                </div>
+              )}
+            </>
+          )}
+
+          { mainImage && firstImage && secondImage && thirdImage && (
+            <>
+              {fourthImage ? (
+                <div className={styles.productImageShow}>
+                  <img src={fourthImage} alt="fourth image" style={{ opacity: displayProduct ? 1 : 0.5, width: '150px', height: '150px', objectFit: 'cover' }}/>
+                  <label htmlFor="fourthImageInput" className={styles.firstLabel}>
+                    <CiCamera className={styles.firstImageCamera}/>
+                  </label>
+                  <input type="file" accept="image/*" id="fourthImageInput" style={{display:'none'}} onChange={handleFourthImageChange}/> 
+                </div>
+              ) : (
+                <div className={styles.productImage}>
+                  <label htmlFor="fourthImageInput" className={styles.labelFirst}>
+                    <CiCamera className={styles.smallCameraCenter}/>
+                  </label>
+                  <input type="file" accept="image/*" id="fourthImageInput" style={{display:'none'}} onChange={handleFourthImageChange}/>  
                 </div>
               )}
             </>
