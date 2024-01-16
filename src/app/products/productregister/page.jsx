@@ -15,7 +15,13 @@ import { useEffect, useState } from 'react'
 import { HexColorPicker } from 'react-colorful'
 import { CiCamera } from "react-icons/ci";
 import styles from './productregister.module.css'
+import mime from "mime";
+import useUserStore from '@/store/zustand'
+
 export default function Page() {
+  const user = useUserStore((state) => state.user);
+  const token = useUserStore((state) => state?.token);
+  const userId = user?._id;
 
   const [mainImage, setMainImage] = useState(null);
   const [firstImage, setFirstImage] = useState(null);
@@ -24,18 +30,15 @@ export default function Page() {
   const [fourthImage, setFourthImage] = useState(null);
 
 
-  const [editedProduct, setEditedProduct] = useState({})
+  const [product, setProduct] = useState({});
+  const [error, setError] = useState(null);
   const [deliveryFeeOn, setDeliveryFeeOn] = useState('')
   const [onSale, setOnSale] = useState(false)
   const [soldout, setSoldout] = useState(false)
   const [displayProduct, setDisplayProduct] = useState(true)
-  const [selectedParentCategoryId, setSelectedParentCategoryId] = useState(null)
+  const [selectedParentCategoryId, setSelectedParentCategoryId] = useState('642d1f4406159dd4f0519464')
   const [color, setColor] = useState('')
   const [productColor, setProductColor] = useState('')
-  const [sizes, setSizes] = useState('')
-  const [subOption1, setSubOption1] = useState('')
-  const [subOption2, setSubOption2] = useState('')
-  const [subOption3, setSubOption3] = useState('')
 
   const parentCategories = [
     { id: '642d1f4406159dd4f0519464', name: '의류' },
@@ -266,7 +269,7 @@ export default function Page() {
   const [selectedParentCategory, setSelectedParentCategory] = useState(
     parentCategories.find(
       (category) => category.id === selectedParentCategoryId,
-    ) || editedProduct?.category?.parentId,
+    ) || product?.category?.parentId,
   )
 
   const [subCategories, setSubCategories] = useState([])
@@ -290,9 +293,11 @@ export default function Page() {
   }
 
   const handleSubCategoryChange = (categoryId) => {
+    console.log('category id', categoryId)
     const selectedSubCategory = subCategories.find(
       (category) => category.id === categoryId,
     )
+    console.log('selected sub cat', selectedSubCategory)
     setSubCategory(selectedSubCategory)
   }
 
@@ -302,7 +307,7 @@ export default function Page() {
         (category) => category.id === selectedParentCategoryId,
       ) ||
         parentCategories.find(
-          (category) => category.id === editedProduct?.category?.parentId,
+          (category) => category.id === product?.category?.parentId,
         ) ||
         null,
     )
@@ -319,70 +324,6 @@ export default function Page() {
       setSubCategories([])
     }
   }, [selectedParentCategory])
-
-  const handleInputChange = (e, field) => {
-    const inputValue = e.target.value
-    if (field === 'deliveryFeeAmount' && parseFloat(inputValue) > 0) {
-      setDeliveryFeeOn(true)
-    }
-
-    setEditedProduct((prevProduct) => ({
-      ...prevProduct,
-      [field]: e.target.value,
-    }))
-  }
-
-  const handleFeeChange = () => {
-    const updatedSwitchValue = !deliveryFeeOn
-    setDeliveryFeeOn(updatedSwitchValue)
-
-    // Update the corresponding property in editedProduct
-    setEditedProduct((prevProduct) => ({
-      ...prevProduct,
-      deliveryFee: updatedSwitchValue,
-      deliveryFeeAmount: updatedSwitchValue ? prevProduct.deliveryFeeAmount : 0,
-    }))
-  }
-
-  const handleDiscountChange = () => {
-    const updatedDiscountValue = !onSale
-    setOnSale(updatedDiscountValue)
-    setEditedProduct((prevProduct) => ({
-      ...prevProduct,
-      onSale: updatedDiscountValue,
-      discount: updatedDiscountValue ? prevProduct.discount : 0,
-    }))
-  }
-
-  const handleDisplayProductChange = () => {
-    setDisplayProduct((prevValue) => !prevValue)
-  }
-
-  const handleSoldoutProductChange = () => {
-    const updatedSoldout = !soldout
-    setSoldout(updatedSoldout)
-    setEditedProduct((prevProduct) => ({
-      ...prevProduct,
-      soldout: updatedSoldout,
-    }))
-  }
-
-  const handleColorInputChange = (e) => {
-    setProductColor(e.target.value)
-  }
-
-  const handleStockInputChange = (e, sizeId) => {
-    const newStockValue = e.target.value
-    setSizes((prevSizes) =>
-      prevSizes.map((size) =>
-        size._id === sizeId ? { ...size, stock: newStockValue } : size,
-      ),
-    )
-  }
-
-  const handleSubmit = () => {
-
-  }
 
   const handleMainImageChange = (e) => {
     const file = e.target.files[0];
@@ -437,6 +378,149 @@ export default function Page() {
       };
       reader.readAsDataURL(file);
     }
+  }
+
+  const handleInputChange = (e, field) => {
+    const inputValue = e.target.value
+    if (field === 'deliveryFeeAmount' && parseFloat(inputValue) > 0) {
+      setDeliveryFeeOn(true)
+    }
+
+    setProduct((prevProduct) => ({
+      ...prevProduct,
+      [field]: e.target.value,
+    }))
+  }
+
+  const handleFeeChange = () => {
+    const updatedSwitchValue = !deliveryFeeOn
+    setDeliveryFeeOn(updatedSwitchValue)
+
+    setProduct((prevProduct) => ({
+      ...prevProduct,
+      deliveryFee: updatedSwitchValue,
+      deliveryFeeAmount: updatedSwitchValue ? prevProduct.deliveryFeeAmount : 0,
+    }))
+  }
+
+  const handleDiscountChange = () => {
+    const updatedDiscountValue = !onSale
+    setOnSale(updatedDiscountValue)
+    setProduct((prevProduct) => ({
+      ...prevProduct,
+      onSale: updatedDiscountValue,
+      discount: updatedDiscountValue ? prevProduct.discount : 0,
+    }))
+  }
+
+  const handleDisplayProductChange = () => {
+    setDisplayProduct((prevValue) => !prevValue)
+  }
+
+  const handleSoldoutProductChange = () => {
+    const updatedSoldout = !soldout
+    setSoldout(updatedSoldout)
+    setProduct((prevProduct) => ({
+      ...prevProduct,
+      soldout: updatedSoldout,
+    }))
+  }
+
+  const handleColorInputChange = (e) => {
+    setProductColor(e.target.value)
+  }
+
+  const handleStockInputChange = (e, sizeId) => {
+    const newStockValue = e.target.value
+    setSizes((prevSizes) =>
+      prevSizes.map((size) =>
+        size._id === sizeId ? { ...size, stock: newStockValue } : size,
+      ),
+    )
+  }
+
+  // Add Sizes and Remove Sizes options
+  const [sizes, setSizes] = useState([])
+  const [subOption1, setSubOption1] = useState('')
+  const [subOption2, setSubOption2] = useState('')
+  const [subOption3, setSubOption3] = useState('')
+  const [colorOptions, setColorOptions] = useState([
+    {
+        productColor: '',
+        hexColor:'',
+        sizes: [{ size: ''}],
+    },
+  ]);
+  const [ sizeValues, setSizeValues ] = useState([]);
+  const [ stockValues, setStockValues ] = useState([]);
+
+  const handleAddSize = (colorIndex, size, stock) => {
+    setSizes(prevSizes => {
+        const updatedSizes = [...prevSizes];
+        updatedSizes.push({ size, stock });
+        return updatedSizes;
+    });
+
+    setSizeValues(prevSizeValues => [...prevSizeValues, size]);
+    setStockValues(prevStockValues => [...prevStockValues, stock]);
+  };
+
+  const handleRemoveSize = (colorIndex) => {
+      setSizes(prevSizes => {
+          const updatedSizes = [...prevSizes];
+          updatedSizes.pop(); // Remove the last added size
+          return updatedSizes;
+      });
+  };
+
+  const handleSubmit = () => {
+    console.log('PRODUCT', product)
+    console.log('selectedParentCategory', selectedParentCategory);
+    console.log('sub cate', subCategory)
+    console.log('color name', productColor)
+    console.log('color hex', color)
+    if (
+      product.name == "" ||
+      product.price == "" ||
+      product.description == "" ||
+      product.selectedCategory == ""
+    ) {
+        setError("Please fill in the form correctly");
+    }
+
+    const formData = new FormData();
+    const images = [mainImage, firstImage, secondImage, thirdImage, fourthImage];
+
+    for (let i = 0; i < images.length; i++) {
+      const img = images[i];
+      if (img) {
+          const newImageUri = "file:///" + img.split("file:/").join("");
+          const imageFile = {
+              uri: newImageUri,
+              type: mime.getType(newImageUri),
+              name: newImageUri.split("/").pop(),
+          };
+          formData.append("image", imageFile);
+      }
+    }
+
+    formData.append("name", product.name);
+    formData.append("price", product.price);
+    formData.append("description", product.description);
+    formData.append("parentCategory", selectedParentCategory);
+    formData.append("category", subCategory);
+    formData.append("richDescription", "richDescription example");
+    formData.append("rating", product.rating);
+    formData.append("numReviews", product.numReviews);
+    formData.append("isFeatured", product.isFeatured);
+    // formData.append("colorOptions", JSON.stringify(colorOptions));
+    formData.append("sale", product.onSale);
+    formData.append("soldout", product.soldout);
+    formData.append("display", displayProduct);
+    formData.append("deliveryFee", product.deliveryFee);
+    formData.append("deliveryCost", product.deliveryFeeAmount);
+    formData.append("sellerId", userId);
+    // formData.append("preorder", preorder);
   }
 
   return (
@@ -548,28 +632,32 @@ export default function Page() {
       </div>
 
       <div className="flex pt-5">
-        <p className="w-20">제품명:</p>
+        <p className="w-36">제품명: <span style={{color: 'red', fontSize: '13px'}}>(필수)</span></p>
         <Input
           type="text"
-          value={editedProduct.name}
+          placeholder="예) 슬림 반팔 티셔츠"
+          value={product.name}
           onChange={(e) => handleInputChange(e, 'name')}
           className=""
         />
       </div>
       <div className="flex pt-5">
-        <p className="w-20">제품 설명: </p>
+        <p className="w-36">제품 설명: <span style={{color: 'red', fontSize: '13px'}}>(필수)</span></p>
         <Textarea
           type="text"
-          value={editedProduct.description}
+          placeholder="예) 절개 없이 드레이프 되는 세련된 넥라인과 캡소매 디자인으로 여성스럽고 도시적인 느낌의 티셔츠입니다."
+          value={product.description}
+          rows={10}
           onChange={(e) => handleInputChange(e, 'description')}
         />
       </div>
 
       <div className="flex w-1/3 items-center pt-5">
-        <p className="w-16">가격:</p>
+        <p className="w-32">가격: <span style={{color: 'red', fontSize: '13px'}}>(필수)</span></p>
         <Input
-          type="text"
-          value={editedProduct.price}
+          type="number"
+          placeholder="예) 50000"
+          value={product?.price?.toLocaleString()}
           onChange={(e) => handleInputChange(e, 'price')}
           className="w-32"
         />
@@ -577,15 +665,15 @@ export default function Page() {
       </div>
       <div className="flex">
         <div className="flex w-1/2 items-center pt-5">
-          <p className="w-24">배송비 적용:</p>
+          <p className="w-36">배송비 적용: <span style={{fontSize: '13px'}}>(선택)</span></p>
           <Switch checked={deliveryFeeOn} onCheckedChange={handleFeeChange} />
         </div>
         {deliveryFeeOn ?
           <div className="flex w-1/2 items-center pt-5">
-            <p className="w-16">배송비:</p>
+            <p className="w-28">배송비: <span style={{color: 'red', fontSize: '13px'}}>(필수)</span></p>
             <Input
-              type="text"
-              value={editedProduct.deliveryFeeAmount}
+              type="number"
+              value={product.deliveryFeeAmount}
               onChange={(e) => handleInputChange(e, 'deliveryFeeAmount')}
               className="w-24"
             />
@@ -595,15 +683,15 @@ export default function Page() {
       </div>
       <div className="flex">
         <div className="flex w-1/2 items-center pt-5">
-          <p className="w-24">할인률 적용:</p>
+          <p className="w-36">할인률 적용: <span style={{fontSize: '13px'}}>(선택)</span></p>
           <Switch checked={onSale} onCheckedChange={handleDiscountChange} />
         </div>
         {onSale ?
           <div className="flex w-1/2 items-center pt-5">
-            <p className="w-16">할인률:</p>
+            <p className="w-28">할인률: <span style={{color: 'red', fontSize: '13px'}}>(필수)</span></p>
             <Input
-              type="text"
-              value={editedProduct.discount}
+              type="number"
+              value={product.discount}
               onChange={(e) => handleInputChange(e, 'discount')}
               className="w-24"
             />
@@ -612,14 +700,14 @@ export default function Page() {
         : null}
       </div>
       <div className="flex w-1/2 items-center pt-5">
-        <p className="w-24">상품 공개:</p>
+        <p className="w-36">상품 공개: <span style={{fontSize: '13px'}}>(선택)</span></p>
         <Switch
           checked={displayProduct}
           onCheckedChange={handleDisplayProductChange}
         />
       </div>
       <div className="flex w-1/2 items-center pt-5">
-        <p className={`w-24 ${soldout ? 'text-red-600' : ''}`}>품절:</p>
+        <p className={`w-36 ${soldout ? 'text-red-600' : ''}`}>품절: <span style={{fontSize: '13px'}}>(선택)</span></p>
         <Switch
           checked={soldout}
           onCheckedChange={handleSoldoutProductChange}
@@ -627,7 +715,7 @@ export default function Page() {
       </div>
       <div className="flex">
         <div className="flex w-1/2 items-center pt-5">
-          <p className="w-24">메인 카테고리:</p>
+          <p className="w-36">메인 카테고리: <span style={{color: 'red',fontSize: '13px'}}>(필수)</span></p>
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button className="ml-2" variant="outline">
@@ -647,11 +735,11 @@ export default function Page() {
           </DropdownMenu>
         </div>
         <div className="flex w-1/2 items-center pt-5">
-          <p className="w-24">상세 카테고리:</p>
+          <p className="w-36">상세 카테고리: <span style={{color: 'red',fontSize: '13px'}}>(필수)</span></p>
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button className="ml-2" variant="outline">
-                {'선택'}
+                {subCategory?.name || '선택'}
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent>
@@ -669,27 +757,55 @@ export default function Page() {
       </div>
       <div className="flex pt-5">
         <div className="flex w-1/2 items-center pt-5">
-          <p className="mr-4">제품색:</p>
+          <p className="mr-4 w-32">제품색: <span style={{color: 'red',fontSize: '13px'}}>(필수)</span></p>
           <HexColorPicker color={color} onChange={setColor} />
         </div>
         <div className="flex w-1/2 items-center pt-5">
-          <p className="w-16">색명:</p>
+          <p className="w-24">색명: <span style={{color: 'red',fontSize: '13px'}}>(필수)</span></p>
           <Input
             type="text"
+            placeholder="예) 빨강"
             value={productColor}
             onChange={handleColorInputChange}
-            className="w-24"
+            className="w-30"
           />
         </div>
       </div>
-      {/* {sizes?.length > 0 ?
-        <div className="mt-5 flex pt-5">
-          <p className="mr-8">사이즈:</p>
+
+      {/* handle size input and remove size  */}
+      <div className="flex pt-5">
+          <div className="flex w-1/3 items-center pt-5">
+            <p className="w-36">사이즈: <span style={{fontSize: '13px'}}>(선택)</span></p>
+            <Input
+              type="text"
+              placeholder='예) Small'
+              onChangeText={(text)=> setSizeValues(prevSizeValues => {
+                const updatedSizeValues = [...prevSizeValues];
+                updatedSizeValues[sizeIndex] = text;
+                return updatedSizeValues;
+              })}
+              className="w-32"
+            />
+          </div>
+          <div className="flex w-1/3 items-center pt-5">
+            <p className="w-28">재고 수량: <span style={{color: 'red',fontSize: '13px'}}>(필수)</span></p>
+            <Input
+              type="number"
+              placeholder='예) 500'
+              onChangeText={(text) => setStockValues(prevStockValues => {
+                  const updatedStockValues = [...prevStockValues];
+                  updatedStockValues[sizeIndex] = text;
+                  return updatedStockValues;
+              })}
+              className="w-32"
+            />
+            <p className="ml-2">개</p>
+          </div>
           <div className="flex flex-col">
             {sizes?.map((size) => (
               <div key={size._id} className="mr-4 flex">
                 <p className="mb-6 mt-2 w-40">{size.size}</p>
-                <p className="mr-2 mt-2">재고:</p>
+                <p className="mr-2 mt-2">재고 수량:</p>
                 <Input
                   type="text"
                   value={size.stock}
@@ -700,11 +816,11 @@ export default function Page() {
               </div>
             ))}
           </div>
-        </div>
-      : null} */}
+      </div>
+
       <div className="mt-12 flex pb-80">
         <Button className="mt-8 w-60" onClick={handleSubmit}>
-          편집 저장
+          저장
         </Button>
       </div>
     </div>
