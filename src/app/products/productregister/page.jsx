@@ -454,6 +454,10 @@ export default function Page() {
   const [ sizeValues, setSizeValues ] = useState([]);
   const [ stockValues, setStockValues ] = useState([]);
 
+  const [ options1, setOptions1 ] = useState([]);
+  const [ option1Names, setOption1Names ] = useState([]);
+  const [ option1Values, setOption1Values] = useState([]);
+
   const handleAddSize = (colorIndex, size, stock) => {
     setSizes(prevSizes => {
         const updatedSizes = [...prevSizes];
@@ -472,6 +476,20 @@ export default function Page() {
           return updatedSizes;
       });
   };
+
+  const addOption1 = () => {
+    setOptions1(prevOptions => [
+      ...prevOptions, { optionName: '', optionValue: ''}
+  ]);
+  }
+
+  const removeOption1 = (index) => {
+    setOptions1(prevOptions => {
+      const updatedOptions = [...prevOptions];
+      updatedOptions.splice(index, 1); // Remove the last added size
+      return updatedOptions;
+  });
+  }
 
   const handleSubmit = () => {
     console.log('PRODUCT', product)
@@ -774,49 +792,168 @@ export default function Page() {
 
       {/* handle size input and remove size  */}
       <div className="flex pt-5">
-          <div className="flex w-1/3 items-center pt-5">
-            <p className="w-36">사이즈: <span style={{fontSize: '13px'}}>(선택)</span></p>
-            <Input
-              type="text"
-              placeholder='예) Small'
-              onChangeText={(text)=> setSizeValues(prevSizeValues => {
-                const updatedSizeValues = [...prevSizeValues];
-                updatedSizeValues[sizeIndex] = text;
-                return updatedSizeValues;
-              })}
-              className="w-32"
-            />
-          </div>
-          <div className="flex w-1/3 items-center pt-5">
-            <p className="w-28">재고 수량: <span style={{color: 'red',fontSize: '13px'}}>(필수)</span></p>
-            <Input
-              type="number"
-              placeholder='예) 500'
-              onChangeText={(text) => setStockValues(prevStockValues => {
-                  const updatedStockValues = [...prevStockValues];
-                  updatedStockValues[sizeIndex] = text;
-                  return updatedStockValues;
-              })}
-              className="w-32"
-            />
-            <p className="ml-2">개</p>
-          </div>
-          <div className="flex flex-col">
-            {sizes?.map((size) => (
-              <div key={size._id} className="mr-4 flex">
-                <p className="mb-6 mt-2 w-40">{size.size}</p>
-                <p className="mr-2 mt-2">재고 수량:</p>
-                <Input
-                  type="text"
-                  value={size.stock}
-                  onChange={(e) => handleStockInputChange(e, size._id)}
-                  className="w-20"
-                />{' '}
-                <p className="ml-2 mt-2">개</p>
-              </div>
-            ))}
-          </div>
+        <div className="flex w-1/3 items-center pt-5">
+          <p className="w-36">사이즈: <span style={{color: 'red',fontSize: '13px'}}>(필수)</span></p>
+          <Input
+            type="text"
+            placeholder='예) Free'
+            onChangeText={(text)=> setSizeValues(prevSizeValues => {
+              const updatedSizeValues = [...prevSizeValues];
+              updatedSizeValues[sizeIndex] = text;
+              return updatedSizeValues;
+            })}
+            className="w-32"
+          />
+        </div>
+        <div className="flex w-1/3 items-center pt-5 justify-start">
+          <p className="w-28 mr-2">재고 수량: <span style={{color: 'red',fontSize: '13px'}}>(필수)</span></p>
+          <Input
+            type="number"
+            placeholder='예) 5000'
+            onChangeText={(text) => setStockValues(prevStockValues => {
+                const updatedStockValues = [...prevStockValues];
+                updatedStockValues[sizeIndex] = text;
+                return updatedStockValues;
+            })}
+            className="w-32"
+          />
+          <p className="ml-2">개</p>
+        </div>
+        <div className='flex w-1/3 items-center pt-5'>
+          <Button variant="outline" className="mr-2" onClick={handleAddSize}>+</Button>
+          <Button variant="outline" onClick={handleRemoveSize}>-</Button>
+        </div>    
       </div>
+      <div className="flex flex-col">
+        {sizes?.map((size) => (
+          <div key={size._id} className="flex mt-2 w-full">
+            <div className="flex w-1/3 pt-1"> 
+              <p className='mt-2 w-36'></p>
+              <Input
+                type="text"
+                placeholder="예) Small"
+                value={size.size}
+                onChangeText={(text)=> setSizeValues(prevSizeValues => {
+                  const updatedSizeValues = [...prevSizeValues];
+                  updatedSizeValues[sizeIndex] = text;
+                  return updatedSizeValues;
+                })}
+                className="w-32"
+              />
+            </div>
+            <div className="flex w-1/3  pt-1">  
+              <p className="mr-2 mt-2 w-28">재고 수량: <span style={{color: 'red',fontSize: '13px'}}>(필수)</span> </p>
+              <Input
+                type="number"
+                placeholder='예) 5000'
+                value={size.stock}
+                onChange={(e) => handleStockInputChange(e, size._id)}
+                className="w-32"
+              />
+              <p className="ml-2 mt-2">개</p>
+            </div>
+          </div>
+        ))}
+      </div> 
+
+      <div className="flex pt-8">
+        <div className="flex w-1/3 pt-1">  
+          <p className="w-36">옵션 1 설정: <span style={{fontSize: '13px'}}>(선택)</span></p>
+          <Input
+            type="text"
+            placeholder="옵션명 (예, 둘레)"
+            className="w-32"
+          />
+        </div>
+        <div className="flex w-1/3 pt-1 justify-start">  
+          <p className="mt-2 w-28">옵션: <span style={{fontSize: '13px'}}>(선택)</span> </p>
+          <Input
+            type="text"
+            placeholder="예) 20mm"
+            className="w-32"
+          />
+        </div>
+        <div className='flex w-1/3 items-center pt-1'>
+          <Button variant="outline" className="mr-2" onClick={addOption1}>+</Button>
+          <Button variant="outline" onClick={removeOption1}>-</Button>
+        </div> 
+      </div>
+      <div className="flex flex-col">
+        {options1?.map((option) => (
+          <div key={option._id} className="flex mt-2 w-full">
+            <div className="flex w-1/3 pt-1"> 
+              <p className='mt-2 w-36'></p>
+              <Input
+                type="text"
+                placeholder='옵션명 (예, 둘레)'
+                value={option.size}
+                onChangeText={(text, index)=> 
+                  setOption1Names((prevOptions) => {
+                      const updatedOptions = [...prevOptions];
+                      updatedOptions[optionIndex] = text;
+                      return updatedOptions;
+                })}
+                className="w-32"
+              />
+            </div>
+            <div className="flex w-1/3  pt-1">  
+            <p className="mt-2 w-28">옵션: <span style={{fontSize: '13px'}}>(선택)</span> </p>
+              <Input
+                type="text"
+                placeholder='예, 20mm'
+                value={option.stock}
+                onChangeText={(text, index) => 
+                  setOption1Values((prevOptions) => {
+                      const updatedOptions = [...prevOptions];
+                      updatedOptions[optionIndex] = text;
+                      return updatedOptions;
+                  })
+              }
+                className="w-32"
+              />
+            </div>
+          </div>
+        ))}
+      </div> 
+
+      <div className="flex pt-8">
+        <div className="flex w-1/3 pt-1">  
+          <p className="w-36">옵션 2 설정: <span style={{fontSize: '13px'}}>(선택)</span></p>
+          <Input
+            type="text"
+            placeholder="옵션명 (예, 둘레)"
+            className="w-32"
+          />
+        </div>
+        <div className="flex w-1/3 pt-1 justify-start">  
+          <p className="mt-2 w-28">옵션: <span style={{fontSize: '13px'}}>(선택)</span> </p>
+          <Input
+            type="text"
+            placeholder="예) 20mm"
+            className="w-32"
+          />
+        </div>
+      </div>
+
+      <div className="flex pt-8">
+        <div className="flex w-1/3 pt-1">  
+          <p className="w-36">옵션 3 설정: <span style={{fontSize: '13px'}}>(선택)</span></p>
+          <Input
+            type="text"
+            placeholder="옵션명 (예, 둘레)"
+            className="w-32"
+          />
+        </div>
+        <div className="flex w-1/3 pt-1 justify-start">  
+          <p className="mt-2 w-28">옵션: <span style={{fontSize: '13px'}}>(선택)</span> </p>
+          <Input
+            type="text"
+            placeholder="예) 20mm"
+            className="w-32"
+          />
+        </div>
+      </div>
+      
 
       <div className="mt-12 flex pb-80">
         <Button className="mt-8 w-60" onClick={handleSubmit}>
