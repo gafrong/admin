@@ -430,17 +430,13 @@ export default function Page() {
     setProductColor(e.target.value)
   }
 
-  const handleStockInputChange = (e, sizeId) => {
-    const newStockValue = e.target.value
-    setSizes((prevSizes) =>
-      prevSizes.map((size) =>
-        size._id === sizeId ? { ...size, stock: newStockValue } : size,
-      ),
-    )
+  const handleColorHexInputChange = (e) => {
+    setColor(e);
+    console.group('eee', e)
   }
 
   // Add Sizes and Remove Sizes options
-  const [sizes, setSizes] = useState([])
+  const [sizes, setSizes] = useState([{size: '', stock: ''}])
   const [subOption1, setSubOption1] = useState('')
   const [subOption2, setSubOption2] = useState('')
   const [subOption3, setSubOption3] = useState('')
@@ -451,9 +447,12 @@ export default function Page() {
         sizes: [{ size: ''}],
     },
   ]);
+
   const [ sizeValues, setSizeValues ] = useState([]);
+  console.log('size values', sizeValues)
   const [ stockValues, setStockValues ] = useState([]);
 
+  console.log('stock values', stockValues)
   const [ options1, setOptions1 ] = useState([]);
   const [ options2, setOptions2 ] = useState([]);
   const [ options3, setOptions3 ] = useState([]);
@@ -464,22 +463,58 @@ export default function Page() {
   const [ option2Values, setOption2Values] = useState([]);
   const [ option3Values, setOption3Values] = useState([]);
 
-  const handleAddSize = (colorIndex, size, stock) => {
+  useEffect (() => {
+    const selectedColorOptions = {
+        productColor: productColor ? productColor : '',
+        hexColor: color?  color : '',
+        sizes: sizes.map((_, index) => ({
+            size:sizeValues[index],
+            stock: stockValues[index]
+        })),
+    }
+
+    // onColorOptionChange(selectedColorOptions)
+
+    console.log('SELECTED COLOR OPTIONS', selectedColorOptions)
+  }, [sizeValues, stockValues, productColor, color])
+
+  const handleStockInputChange = (e, sizeId) => {
+    console.log('sizeID', sizeId)
+    const newStockValue = e.target.value
+    setSizes((prevSizes) =>
+      prevSizes.map((size) =>
+        size._id === sizeId ? { ...size, stock: newStockValue } : size,
+      ),
+    )
+  }
+  
+  const handleAddSize = (size, stock) => {
     setSizes(prevSizes => {
         const updatedSizes = [...prevSizes];
         updatedSizes.push({ size, stock });
         return updatedSizes;
     });
-
     setSizeValues(prevSizeValues => [...prevSizeValues, size]);
     setStockValues(prevStockValues => [...prevStockValues, stock]);
   };
 
-  const handleRemoveSize = (colorIndex) => {
+  const handleRemoveSize = () => {
       setSizes(prevSizes => {
           const updatedSizes = [...prevSizes];
           updatedSizes.pop(); // Remove the last added size
           return updatedSizes;
+      });
+
+      setSizeValues((prevSizeValues) => {
+        const updatedSizeValues = [...prevSizeValues];
+        updatedSizeValues.pop(); // Remove the last added size value
+        return updatedSizeValues;
+      });
+    
+      setStockValues((prevStockValues) => {
+        const updatedStockValues = [...prevStockValues];
+        updatedStockValues.pop(); // Remove the last added stock value
+        return updatedStockValues;
       });
   };
 
@@ -531,6 +566,8 @@ export default function Page() {
     console.log('sub cate', subCategory)
     console.log('color name', productColor)
     console.log('color hex', color)
+    console.log('size value', sizeValues)
+    console.log('stock values', stockValues)
     if (
       product.name == "" ||
       product.price == "" ||
@@ -810,7 +847,7 @@ export default function Page() {
       <div className="flex pt-5">
         <div className="flex w-1/2 items-center pt-5">
           <p className="mr-4 w-32">제품색: <span style={{color: 'red',fontSize: '13px'}}>(필수)</span></p>
-          <HexColorPicker color={color} onChange={setColor} />
+          <HexColorPicker color={color} onChange={handleColorHexInputChange} />
         </div>
         <div className="flex w-1/2 items-center pt-5">
           <p className="w-24">색명: <span style={{color: 'red',fontSize: '13px'}}>(필수)</span></p>
@@ -825,7 +862,7 @@ export default function Page() {
       </div>
 
       {/* handle size input and remove size  */}
-      <div className="flex pt-5">
+      {/* <div className="flex pt-5">
         <div className="flex w-1/3 items-center pt-5">
           <p className="w-36">사이즈: <span style={{color: 'red',fontSize: '13px'}}>(필수)</span></p>
           <Input
@@ -833,7 +870,7 @@ export default function Page() {
             placeholder='예) Free'
             onChangeText={(text)=> setSizeValues(prevSizeValues => {
               const updatedSizeValues = [...prevSizeValues];
-              updatedSizeValues[sizeIndex] = text;
+              updatedSizeValues[0] = text;
               return updatedSizeValues;
             })}
             className="w-32"
@@ -844,9 +881,9 @@ export default function Page() {
           <Input
             type="number"
             placeholder='예) 5000'
-            onChangeText={(text) => setStockValues(prevStockValues => {
-                const updatedStockValues = [...prevStockValues];
-                updatedStockValues[sizeIndex] = text;
+            onChangeText={(text) => setStockValues((prevStockValues) => {
+                const updatedStockValues = [...prevStockValues,];
+                updatedStockValues[0] = text;
                 return updatedStockValues;
             })}
             className="w-32"
@@ -854,42 +891,54 @@ export default function Page() {
           <p className="ml-2">개</p>
         </div>
         <div className='flex w-1/3 items-center pt-5'>
-          <Button variant="outline" className="mr-2" onClick={handleAddSize}>+</Button>
+          <Button variant="outline" className="mr-2" onClick={()=>handleAddSize()}>+</Button>
           <Button variant="outline" onClick={handleRemoveSize}>-</Button>
         </div>    
-      </div>
-      <div className="flex flex-col">
-        {sizes?.map((size) => (
-          <div key={size._id} className="flex mt-2 w-full">
-            <div className="flex w-1/3 pt-1"> 
-              <p className='mt-2 w-36'></p>
-              <Input
-                type="text"
-                placeholder="예) Small"
-                value={size.size}
-                onChangeText={(text)=> setSizeValues(prevSizeValues => {
-                  const updatedSizeValues = [...prevSizeValues];
-                  updatedSizeValues[sizeIndex] = text;
-                  return updatedSizeValues;
-                })}
-                className="w-32"
-              />
-            </div>
-            <div className="flex w-1/3  pt-1">  
-              <p className="mr-2 mt-2 w-28">재고 수량: <span style={{color: 'red',fontSize: '13px'}}>(필수)</span> </p>
-              <Input
-                type="number"
-                placeholder='예) 5000'
-                value={size.stock}
-                onChange={(e) => handleStockInputChange(e, size._id)}
-                className="w-32"
-              />
-              <p className="ml-2 mt-2">개</p>
-            </div>
+      </div> */}
+      <div className="flex flex-row pt-5">
+        <p className="w-44 mt-5">사이즈: <span style={{color: 'red',fontSize: '13px'}}>(필수)</span></p>
+        <div className="flex flex-row w-full">
+          <div className='flex flex-col w-auto'>
+            {sizes?.map((size, index) => (
+              <div key={size._id} className="flex mt-2 w-full">
+                <div className="flex w-48 pt-1"> 
+                  <Input
+                    type="text"
+                    placeholder="예) Small"
+                    value={size.size}
+                    onChangeText={(text)=> setSizeValues(prevSizeValues => {
+                      const updatedSizeValues = [...prevSizeValues];
+                      updatedSizeValues[index] = text;
+                      return updatedSizeValues;
+                    })}
+                    className="w-32"
+                  />
+                </div>
+                <div className="flex w-72  pt-1">  
+                  <p className="mr-2 mt-2 w-36">재고 수량: <span style={{color: 'red',fontSize: '13px'}}>(필수)</span> </p>
+                  <Input
+                    type="number"
+                    placeholder='예) 5000'
+                    value={size.stock}
+                    onChangeText={(text) => setStockValues((prevStockValues) => {
+                        const updatedStockValues = [...prevStockValues,];
+                        updatedStockValues[index] = text;
+                        return updatedStockValues;
+                    })}
+                    className="w-32"
+                  />
+                  <p className="ml-2 mt-2">개</p>
+                </div>
+              </div>
+            ))}
           </div>
-        ))}
-      </div> 
 
+          <div className=' items-center pt-3 ml-16'>
+            <Button variant="outline" className="mr-2" onClick={()=>handleAddSize()}>+</Button>
+            <Button variant="outline" onClick={handleRemoveSize}>-</Button>
+          </div>  
+        </div> 
+      </div>
       <div className="flex pt-8">
         <div className="flex w-1/3 pt-1">  
           <p className="w-36">옵션 1 설정: <span style={{fontSize: '13px'}}>(선택)</span></p>
