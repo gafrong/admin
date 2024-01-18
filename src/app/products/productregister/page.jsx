@@ -442,6 +442,14 @@ export default function Page() {
   const [ options1, setOptions1 ] = useState([]);
   const [ options2, setOptions2 ] = useState([]);
   const [ options3, setOptions3 ] = useState([]);
+  const [ subOption1, setSubOption1 ] = useState({});
+  const [ subOption2, setSubOption2 ] = useState({});
+  const [ subOption3, setSubOption3 ] = useState({});
+
+  const [ option1Title, setOption1Title] = useState('');
+  const [ option2Title, setOption2Title] = useState('');
+  const [ option3Title, setOption3Title] = useState('');
+
   const [ option1Names, setOption1Names ] = useState([]);
   const [ option2Names, setOption2Names ] = useState([]);
   const [ option3Names, setOption3Names ] = useState([]);
@@ -464,8 +472,6 @@ export default function Page() {
       const updatedStockValues = [...prevStockValues, stock];
       return updatedStockValues;
     });
-    console.log('Size Values after add:', sizeValues);
-    console.log('Stock Values after add:', stockValues);
   };
 
   const handleRemoveSize = () => {
@@ -486,9 +492,6 @@ export default function Page() {
         updatedStockValues.pop(); // Remove the last added stock value
         return updatedStockValues;
       });
-
-  console.log('Size Values after remove:', sizeValues);
-  console.log('Stock Values after remove:', stockValues);
   };
 
   const addOption1 = () => {
@@ -542,6 +545,7 @@ export default function Page() {
     console.log('size value', sizeValues)
     console.log('stock values', stockValues)
     console.log('colorOptions', colorOptions);
+    console.log('subOption1', subOption1);
     if (
       product.name == "" ||
       product.price == "" ||
@@ -584,6 +588,26 @@ export default function Page() {
     formData.append("deliveryCost", product.deliveryFeeAmount);
     formData.append("sellerId", userId);
     // formData.append("preorder", preorder);
+    if (subOption1 !== "") {
+      formData.append("subOption1", JSON.stringify(subOption1));
+
+      if (subOption2 !== "") {
+          formData.append("subOption2", JSON.stringify(subOption2));
+      } else {
+          formData.append("subOption2", null);
+          formData.append("subOption3", null);
+      }
+
+      if (subOption3 !== "") {
+          formData.append("subOption3", JSON.stringify(subOption3));
+      } else {
+          formData.append("subOption3", null);
+      }
+    } else {
+        formData.append("subOption1", null);
+        formData.append("subOption2", null);
+        formData.append("subOption3", null);
+    }
   }
 
 
@@ -596,17 +620,24 @@ export default function Page() {
             stock: stockValues[index]
         })),
     }
-    console.log('sizeValues', sizeValues)
-    // onColorOptionChange(selectedColorOptions)
-
-    console.log('SELECTED COLOR OPTIONS', selectedColorOptions)
     setColorOptions(selectedColorOptions);
   }, [sizeValues, stockValues, productColor, color, sizes])
 
+  useEffect (() => {    
+    const selectedOptions1 = {
+        title: option1Title,
+        options: options1.map((option, index) => ({
+            name: option1Names[index],
+            value: option1Values[index]
+        })),
+    }
 
-  const handleCheck = (text, index) => {
-    console.log(`Checking for index ${index}: ${text}`);
-  } 
+    const hasOptionValues = option1Values.some((value)=> value !== '');
+
+    if(hasOptionValues){
+      setSubOption1(selectedOptions1)
+    }
+  }, [option1Names, option1Values])
 
 
   return (
@@ -907,186 +938,145 @@ export default function Page() {
         </div> 
       </div>
 
+      {/* Option 1 Area */}
+      <div className="flex flex-row pt-8">
+        <p className="w-44 mt-5">옵션 1 설정: <span style={{fontSize: '13px'}}>(선택)</span></p>
+        <div className="flex flex-row w-full">
 
-      {/* <div className="flex pt-8">
-        <div className="flex w-1/3 pt-1">  
-          <p className="w-36">옵션 1 설정: <span style={{fontSize: '13px'}}>(선택)</span></p>
-          <Input
-            type="text"
-            placeholder="옵션명 (예, 둘레)"
-            className="w-32"
-          />
+          <div className="flex flex-col w-auto">
+            {options1?.map((option, index) => (
+              <div key={option.id} className="flex mt-2 w-full">
+                <div className="flex w-48 pt-1"> 
+                  <Input
+                    type="text"
+                    placeholder='옵션명 (예, 둘레)'
+                    // value={option.size}
+                    onChange={(e)=> 
+                      setOption1Names((prevOptions) => {
+                          const updatedOptions = [...prevOptions];
+                          updatedOptions[index] = e.target.value;
+                          return updatedOptions;
+                    })}
+                    className="w-32"
+                  />
+                </div>
+                <div className="flex w-72  pt-1">  
+                <p className="mt-2 w-36">옵션: <span style={{fontSize: '13px'}}>(선택)</span> </p>
+                  <Input
+                    type="text"
+                    placeholder='예, 20mm'
+                    // value={option.stock}
+                    onChange={(e) => 
+                      setOption1Values((prevOptions) => {
+                          const updatedOptions = [...prevOptions];
+                          updatedOptions[index] = e.target.value;
+                          return updatedOptions;
+                      })
+                  }
+                    className="w-32"
+                  />
+                </div>
+              </div>
+            ))}
+          </div>  
+          <div className='items-center pt-3 ml-16'>
+            <Button variant="outline" className="mr-2" onClick={addOption1}>+</Button>
+            <Button variant="outline" onClick={removeOption1}>-</Button>
+          </div> 
         </div>
-        <div className="flex w-1/3 pt-1 justify-start">  
-          <p className="mt-2 w-28">옵션: <span style={{fontSize: '13px'}}>(선택)</span> </p>
-          <Input
-            type="text"
-            placeholder="예) 20mm"
-            className="w-32"
-          />
-        </div>
-        <div className='flex w-1/3 items-center pt-1'>
-          <Button variant="outline" className="mr-2" onClick={addOption1}>+</Button>
-          <Button variant="outline" onClick={removeOption1}>-</Button>
-        </div> 
-      </div>
-      <div className="flex flex-col">
-        {options1?.map((option) => (
-          <div key={option._id} className="flex mt-2 w-full">
-            <div className="flex w-1/3 pt-1"> 
-              <p className='mt-2 w-36'></p>
-              <Input
-                type="text"
-                placeholder='옵션명 (예, 둘레)'
-                value={option.size}
-                onChange={(text, index)=> 
-                  setOption1Names((prevOptions) => {
-                      const updatedOptions = [...prevOptions];
-                      updatedOptions[optionIndex] = text;
-                      return updatedOptions;
-                })}
-                className="w-32"
-              />
-            </div>
-            <div className="flex w-1/3  pt-1">  
-            <p className="mt-2 w-28">옵션: <span style={{fontSize: '13px'}}>(선택)</span> </p>
-              <Input
-                type="text"
-                placeholder='예, 20mm'
-                value={option.stock}
-                onChangeText={(text, index) => 
-                  setOption1Values((prevOptions) => {
-                      const updatedOptions = [...prevOptions];
-                      updatedOptions[optionIndex] = text;
-                      return updatedOptions;
-                  })
-              }
-                className="w-32"
-              />
-            </div>
-          </div>
-        ))}
       </div> 
 
-      <div className="flex pt-8">
-        <div className="flex w-1/3 pt-1">  
-          <p className="w-36">옵션 2 설정: <span style={{fontSize: '13px'}}>(선택)</span></p>
-          <Input
-            type="text"
-            placeholder="옵션명 (예, 발볼)"
-            className="w-32"
-          />
+      {/* Option 2 Area */}
+      <div className="flex flex-row pt-8">
+        <p className="w-44 mt-5">옵션 2 설정: <span style={{fontSize: '13px'}}>(선택)</span></p>
+        <div className="flex flex-row w-full">
+
+          <div className="flex flex-col w-auto">
+            {options2?.map((option, index) => (
+              <div key={option.id} className="flex mt-2 w-full">
+                <div className="flex w-48 pt-1"> 
+                  <Input
+                    type="text"
+                    placeholder='옵션명 (예, 둘레)'
+                    onChange={(e)=> 
+                      setOption2Names((prevOptions) => {
+                          const updatedOptions = [...prevOptions];
+                          updatedOptions[index] = e.target.value;
+                          return updatedOptions;
+                    })}
+                    className="w-32"
+                  />
+                </div>
+                <div className="flex w-72  pt-1">  
+                <p className="mt-2 w-36">옵션: <span style={{fontSize: '13px'}}>(선택)</span> </p>
+                  <Input
+                    type="text"
+                    placeholder='예, 20mm'
+                    onChange={(e) => 
+                      setOption2Values((prevOptions) => {
+                          const updatedOptions = [...prevOptions];
+                          updatedOptions[index] = e.target.value;
+                          return updatedOptions;
+                      })
+                  }
+                    className="w-32"
+                  />
+                </div>
+              </div>
+            ))}
+          </div>  
+          <div className='items-center pt-3 ml-16'>
+            <Button variant="outline" className="mr-2" onClick={addOption2}>+</Button>
+            <Button variant="outline" onClick={removeOption2}>-</Button>
+          </div> 
         </div>
-        <div className="flex w-1/3 pt-1 justify-start">  
-          <p className="mt-2 w-28">옵션: <span style={{fontSize: '13px'}}>(선택)</span> </p>
-          <Input
-            type="text"
-            placeholder="예) 300mm"
-            className="w-32"
-          />
-        </div>
-        <div className='flex w-1/3 items-center pt-1'>
-          <Button variant="outline" className="mr-2" onClick={addOption2}>+</Button>
-          <Button variant="outline" onClick={removeOption2}>-</Button>
-        </div> 
-      </div>
-      <div className="flex flex-col">
-        {options2?.map((option) => (
-          <div key={option._id} className="flex mt-2 w-full">
-            <div className="flex w-1/3 pt-1"> 
-              <p className='mt-2 w-36'></p>
-              <Input
-                type="text"
-                placeholder='옵션명 (예, 발볼)'
-                value={option.size}
-                onChangeText={(text, index)=> 
-                  setOption2Names((prevOptions) => {
-                      const updatedOptions = [...prevOptions];
-                      updatedOptions[optionIndex] = text;
-                      return updatedOptions;
-                })}
-                className="w-32"
-              />
-            </div>
-            <div className="flex w-1/3  pt-1">  
-            <p className="mt-2 w-28">옵션: <span style={{fontSize: '13px'}}>(선택)</span> </p>
-              <Input
-                type="text"
-                placeholder='예, 300mm'
-                value={option.stock}
-                onChangeText={(text, index) => 
-                  setOption2Values((prevOptions) => {
-                      const updatedOptions = [...prevOptions];
-                      updatedOptions[optionIndex] = text;
-                      return updatedOptions;
-                  })
-              }
-                className="w-32"
-              />
-            </div>
-          </div>
-        ))}
       </div> 
 
-      <div className="flex pt-8">
-        <div className="flex w-1/3 pt-1">  
-          <p className="w-36">옵션 3 설정: <span style={{fontSize: '13px'}}>(선택)</span></p>
-          <Input
-            type="text"
-            placeholder="옵션명 (예, 길이)"
-            className="w-32"
-          />
+      {/* Option 3 Area */}
+      <div className="flex flex-row pt-8">
+        <p className="w-44 mt-5">옵션 3 설정: <span style={{fontSize: '13px'}}>(선택)</span></p>
+        <div className="flex flex-row w-full">
+
+          <div className="flex flex-col w-auto">
+            {options3?.map((option, index) => (
+              <div key={option.id} className="flex mt-2 w-full">
+                <div className="flex w-48 pt-1"> 
+                  <Input
+                    type="text"
+                    placeholder='옵션명 (예, 둘레)'
+                    onChange={(e)=> 
+                      setOption3Names((prevOptions) => {
+                          const updatedOptions = [...prevOptions];
+                          updatedOptions[index] = e.target.value;
+                          return updatedOptions;
+                    })}
+                    className="w-32"
+                  />
+                </div>
+                <div className="flex w-72  pt-1">  
+                <p className="mt-2 w-36">옵션: <span style={{fontSize: '13px'}}>(선택)</span> </p>
+                  <Input
+                    type="text"
+                    placeholder='예, 20mm'
+                    onChange={(e) => 
+                      setOption3Values((prevOptions) => {
+                          const updatedOptions = [...prevOptions];
+                          updatedOptions[index] = e.target.value;
+                          return updatedOptions;
+                      })
+                  }
+                    className="w-32"
+                  />
+                </div>
+              </div>
+            ))}
+          </div>  
+          <div className='items-center pt-3 ml-16'>
+            <Button variant="outline" className="mr-2" onClick={addOption3}>+</Button>
+            <Button variant="outline" onClick={removeOption3}>-</Button>
+          </div> 
         </div>
-        <div className="flex w-1/3 pt-1 justify-start">  
-          <p className="mt-2 w-28">옵션: <span style={{fontSize: '13px'}}>(선택)</span> </p>
-          <Input
-            type="text"
-            placeholder="예) 240mm"
-            className="w-32"
-          />
-        </div>
-        <div className='flex w-1/3 items-center pt-1'>
-          <Button variant="outline" className="mr-2" onClick={addOption3}>+</Button>
-          <Button variant="outline" onClick={removeOption3}>-</Button>
-        </div> 
-      </div>
-      <div className="flex flex-col">
-        {options3?.map((option) => (
-          <div key={option._id} className="flex mt-2 w-full">
-            <div className="flex w-1/3 pt-1"> 
-              <p className='mt-2 w-36'></p>
-              <Input
-                type="text"
-                placeholder='옵션명 (예, 길이)'
-                value={option.size}
-                onChangeText={(text, index)=> 
-                  setOption3Names((prevOptions) => {
-                      const updatedOptions = [...prevOptions];
-                      updatedOptions[optionIndex] = text;
-                      return updatedOptions;
-                })}
-                className="w-32"
-              />
-            </div>
-            <div className="flex w-1/3  pt-1">  
-            <p className="mt-2 w-28">옵션: <span style={{fontSize: '13px'}}>(선택)</span> </p>
-              <Input
-                type="text"
-                placeholder='예, 240mm'
-                value={option.stock}
-                onChangeText={(text, index) => 
-                  setOption3Values((prevOptions) => {
-                      const updatedOptions = [...prevOptions];
-                      updatedOptions[optionIndex] = text;
-                      return updatedOptions;
-                  })
-              }
-                className="w-32"
-              />
-            </div>
-          </div>
-        ))}
-      </div>  */}
+      </div> 
 
       <div className="mt-12 flex pb-80">
         <Button className="mt-8 w-60" onClick={handleSubmit}>
