@@ -293,11 +293,9 @@ export default function Page() {
   }
 
   const handleSubCategoryChange = (categoryId) => {
-    console.log('category id', categoryId)
     const selectedSubCategory = subCategories.find(
       (category) => category.id === categoryId,
     )
-    console.log('selected sub cat', selectedSubCategory)
     setSubCategory(selectedSubCategory)
   }
 
@@ -432,27 +430,15 @@ export default function Page() {
 
   const handleColorHexInputChange = (e) => {
     setColor(e);
-    console.group('eee', e)
   }
 
   // Add Sizes and Remove Sizes options
   const [sizes, setSizes] = useState([{size: '', stock: ''}])
-  const [subOption1, setSubOption1] = useState('')
-  const [subOption2, setSubOption2] = useState('')
-  const [subOption3, setSubOption3] = useState('')
-  const [colorOptions, setColorOptions] = useState([
-    {
-        productColor: '',
-        hexColor:'',
-        sizes: [{ size: ''}],
-    },
-  ]);
+  const [colorOptions, setColorOptions] = useState({});
 
   const [ sizeValues, setSizeValues ] = useState([]);
-  console.log('size values', sizeValues)
   const [ stockValues, setStockValues ] = useState([]);
 
-  console.log('stock values', stockValues)
   const [ options1, setOptions1 ] = useState([]);
   const [ options2, setOptions2 ] = useState([]);
   const [ options3, setOptions3 ] = useState([]);
@@ -463,39 +449,23 @@ export default function Page() {
   const [ option2Values, setOption2Values] = useState([]);
   const [ option3Values, setOption3Values] = useState([]);
 
-  useEffect (() => {
-    const selectedColorOptions = {
-        productColor: productColor ? productColor : '',
-        hexColor: color?  color : '',
-        sizes: sizes.map((_, index) => ({
-            size:sizeValues[index],
-            stock: stockValues[index]
-        })),
-    }
-
-    // onColorOptionChange(selectedColorOptions)
-
-    console.log('SELECTED COLOR OPTIONS', selectedColorOptions)
-  }, [sizeValues, stockValues, productColor, color])
-
-  const handleStockInputChange = (e, sizeId) => {
-    console.log('sizeID', sizeId)
-    const newStockValue = e.target.value
-    setSizes((prevSizes) =>
-      prevSizes.map((size) =>
-        size._id === sizeId ? { ...size, stock: newStockValue } : size,
-      ),
-    )
-  }
-  
   const handleAddSize = (size, stock) => {
     setSizes(prevSizes => {
         const updatedSizes = [...prevSizes];
         updatedSizes.push({ size, stock });
         return updatedSizes;
     });
-    setSizeValues(prevSizeValues => [...prevSizeValues, size]);
-    setStockValues(prevStockValues => [...prevStockValues, stock]);
+    setSizeValues((prevSizeValues) => {
+      const updatedSizeValues = [...prevSizeValues, size];
+      return updatedSizeValues;
+    });
+  
+    setStockValues((prevStockValues) => {
+      const updatedStockValues = [...prevStockValues, stock];
+      return updatedStockValues;
+    });
+    console.log('Size Values after add:', sizeValues);
+    console.log('Stock Values after add:', stockValues);
   };
 
   const handleRemoveSize = () => {
@@ -516,6 +486,9 @@ export default function Page() {
         updatedStockValues.pop(); // Remove the last added stock value
         return updatedStockValues;
       });
+
+  console.log('Size Values after remove:', sizeValues);
+  console.log('Stock Values after remove:', stockValues);
   };
 
   const addOption1 = () => {
@@ -568,6 +541,7 @@ export default function Page() {
     console.log('color hex', color)
     console.log('size value', sizeValues)
     console.log('stock values', stockValues)
+    console.log('colorOptions', colorOptions);
     if (
       product.name == "" ||
       product.price == "" ||
@@ -602,7 +576,7 @@ export default function Page() {
     formData.append("rating", product.rating);
     formData.append("numReviews", product.numReviews);
     formData.append("isFeatured", product.isFeatured);
-    // formData.append("colorOptions", JSON.stringify(colorOptions));
+    formData.append("colorOptions", JSON.stringify(colorOptions));
     formData.append("sale", product.onSale);
     formData.append("soldout", product.soldout);
     formData.append("display", displayProduct);
@@ -611,6 +585,29 @@ export default function Page() {
     formData.append("sellerId", userId);
     // formData.append("preorder", preorder);
   }
+
+
+  useEffect (() => {
+    const selectedColorOptions = {
+        productColor: productColor ? productColor : '',
+        hexColor: color?  color : '',
+        sizes: sizes.map((_, index) => ({
+            size: sizeValues[index],
+            stock: stockValues[index]
+        })),
+    }
+    console.log('sizeValues', sizeValues)
+    // onColorOptionChange(selectedColorOptions)
+
+    console.log('SELECTED COLOR OPTIONS', selectedColorOptions)
+    setColorOptions(selectedColorOptions);
+  }, [sizeValues, stockValues, productColor, color, sizes])
+
+
+  const handleCheck = (text, index) => {
+    console.log(`Checking for index ${index}: ${text}`);
+  } 
+
 
   return (
     <div className={`p-10 ${displayProduct ? '' : 'bg-gray-300'}`}>
@@ -862,75 +859,45 @@ export default function Page() {
       </div>
 
       {/* handle size input and remove size  */}
-      {/* <div className="flex pt-5">
-        <div className="flex w-1/3 items-center pt-5">
-          <p className="w-36">사이즈: <span style={{color: 'red',fontSize: '13px'}}>(필수)</span></p>
-          <Input
-            type="text"
-            placeholder='예) Free'
-            onChangeText={(text)=> setSizeValues(prevSizeValues => {
-              const updatedSizeValues = [...prevSizeValues];
-              updatedSizeValues[0] = text;
-              return updatedSizeValues;
-            })}
-            className="w-32"
-          />
-        </div>
-        <div className="flex w-1/3 items-center pt-5 justify-start">
-          <p className="w-28 mr-2">재고 수량: <span style={{color: 'red',fontSize: '13px'}}>(필수)</span></p>
-          <Input
-            type="number"
-            placeholder='예) 5000'
-            onChangeText={(text) => setStockValues((prevStockValues) => {
-                const updatedStockValues = [...prevStockValues,];
-                updatedStockValues[0] = text;
-                return updatedStockValues;
-            })}
-            className="w-32"
-          />
-          <p className="ml-2">개</p>
-        </div>
-        <div className='flex w-1/3 items-center pt-5'>
-          <Button variant="outline" className="mr-2" onClick={()=>handleAddSize()}>+</Button>
-          <Button variant="outline" onClick={handleRemoveSize}>-</Button>
-        </div>    
-      </div> */}
+
       <div className="flex flex-row pt-5">
         <p className="w-44 mt-5">사이즈: <span style={{color: 'red',fontSize: '13px'}}>(필수)</span></p>
         <div className="flex flex-row w-full">
+   
           <div className='flex flex-col w-auto'>
-            {sizes?.map((size, index) => (
-              <div key={size._id} className="flex mt-2 w-full">
-                <div className="flex w-48 pt-1"> 
-                  <Input
-                    type="text"
-                    placeholder="예) Small"
-                    value={size.size}
-                    onChangeText={(text)=> setSizeValues(prevSizeValues => {
-                      const updatedSizeValues = [...prevSizeValues];
-                      updatedSizeValues[index] = text;
-                      return updatedSizeValues;
-                    })}
-                    className="w-32"
-                  />
+            {sizes?.map((size, index) => {
+              return(
+                <div key={size.id} className="flex mt-2 w-full">
+                  <div className="flex w-48 pt-1"> 
+                    <Input
+                      type="text"
+                      placeholder="예) Small"
+                      onChange={(e)=> setSizeValues(prevSizeValues => {
+                        const updatedSizeValues = [...prevSizeValues];
+                        updatedSizeValues[index] = e.target.value;
+                        return updatedSizeValues;
+                      })}
+                      className="w-32"
+                    />
+                  </div>
+                  <div className="flex w-72  pt-1">  
+                    <p className="mr-2 mt-2 w-36">재고 수량: <span style={{color: 'red',fontSize: '13px'}}>(필수)</span> </p>
+                    <Input
+                      type="number"
+                      placeholder='예) 5000'
+                      onChange={(e) => setStockValues((prevStockValues) => {
+                          const updatedStockValues = [...prevStockValues,];
+                          updatedStockValues[index] = e.target.value;
+                          console.log('Updated Stock Values:', updatedStockValues);
+                          return updatedStockValues;
+                      })}
+                      className="w-32"
+                    />
+                    <p className="ml-2 mt-2">개</p>
+                  </div>
                 </div>
-                <div className="flex w-72  pt-1">  
-                  <p className="mr-2 mt-2 w-36">재고 수량: <span style={{color: 'red',fontSize: '13px'}}>(필수)</span> </p>
-                  <Input
-                    type="number"
-                    placeholder='예) 5000'
-                    value={size.stock}
-                    onChangeText={(text) => setStockValues((prevStockValues) => {
-                        const updatedStockValues = [...prevStockValues,];
-                        updatedStockValues[index] = text;
-                        return updatedStockValues;
-                    })}
-                    className="w-32"
-                  />
-                  <p className="ml-2 mt-2">개</p>
-                </div>
-              </div>
-            ))}
+              );
+            })}
           </div>
 
           <div className=' items-center pt-3 ml-16'>
@@ -939,7 +906,9 @@ export default function Page() {
           </div>  
         </div> 
       </div>
-      <div className="flex pt-8">
+
+
+      {/* <div className="flex pt-8">
         <div className="flex w-1/3 pt-1">  
           <p className="w-36">옵션 1 설정: <span style={{fontSize: '13px'}}>(선택)</span></p>
           <Input
@@ -970,7 +939,7 @@ export default function Page() {
                 type="text"
                 placeholder='옵션명 (예, 둘레)'
                 value={option.size}
-                onChangeText={(text, index)=> 
+                onChange={(text, index)=> 
                   setOption1Names((prevOptions) => {
                       const updatedOptions = [...prevOptions];
                       updatedOptions[optionIndex] = text;
@@ -1117,7 +1086,7 @@ export default function Page() {
             </div>
           </div>
         ))}
-      </div> 
+      </div>  */}
 
       <div className="mt-12 flex pb-80">
         <Button className="mt-8 w-60" onClick={handleSubmit}>
