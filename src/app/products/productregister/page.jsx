@@ -39,6 +39,7 @@ export default function Page() {
   const [selectedParentCategoryId, setSelectedParentCategoryId] = useState('642d1f4406159dd4f0519464')
   const [color, setColor] = useState('')
   const [productColor, setProductColor] = useState('')
+  const [preorder, setPreorder] = useState(false);
 
   const parentCategories = [
     { id: '642d1f4406159dd4f0519464', name: '의류' },
@@ -415,6 +416,10 @@ export default function Page() {
     setDisplayProduct((prevValue) => !prevValue)
   }
 
+  const handlePreorderProductChange = () => {
+    setPreorder((prevValue) => !prevValue)
+  }
+
   const handleSoldoutProductChange = () => {
     const updatedSoldout = !soldout
     setSoldout(updatedSoldout)
@@ -439,9 +444,9 @@ export default function Page() {
   const [ sizeValues, setSizeValues ] = useState([]);
   const [ stockValues, setStockValues ] = useState([]);
 
-  const [ options1, setOptions1 ] = useState([{name: '', value: ''}]);
-  const [ options2, setOptions2 ] = useState([{name: '', value: ''}]);
-  const [ options3, setOptions3 ] = useState([{name: '', value: ''}]);
+  const [ options1, setOptions1 ] = useState([]);
+  const [ options2, setOptions2 ] = useState([]);
+  const [ options3, setOptions3 ] = useState([]);
   const [ subOption1, setSubOption1 ] = useState({});
   const [ subOption2, setSubOption2 ] = useState({});
   const [ subOption3, setSubOption3 ] = useState({});
@@ -582,6 +587,7 @@ export default function Page() {
     console.log('colorOptions', colorOptions);
     console.log('subOption1', subOption1);
     console.log('subOption2', subOption2);
+    console.log('preorder', preorder);
     if (
       product.name == "" ||
       product.price == "" ||
@@ -623,7 +629,7 @@ export default function Page() {
     formData.append("deliveryFee", product.deliveryFee);
     formData.append("deliveryCost", product.deliveryFeeAmount);
     formData.append("sellerId", userId);
-    // formData.append("preorder", preorder);
+    formData.append("preorder", preorder);
     if (subOption1 !== "") {
       formData.append("subOption1", JSON.stringify(subOption1));
 
@@ -645,7 +651,6 @@ export default function Page() {
         formData.append("subOption3", null);
     }
   }
-
 
   useEffect (() => {
     const selectedColorOptions = {
@@ -811,7 +816,6 @@ export default function Page() {
               )}
             </>
           )}
-
         </div>
       </div>
 
@@ -849,7 +853,7 @@ export default function Page() {
       </div>
       <div className="flex">
         <div className="flex w-1/2 items-center pt-5">
-          <p className="w-36">배송비 적용: <span style={{fontSize: '13px'}}>(선택)</span></p>
+          <p className="w-48">배송비 적용: <span style={{fontSize: '13px'}}>(선택)</span></p>
           <Switch checked={deliveryFeeOn} onCheckedChange={handleFeeChange} />
         </div>
         {deliveryFeeOn ?
@@ -857,7 +861,7 @@ export default function Page() {
             <p className="w-28">배송비: <span style={{color: 'red', fontSize: '13px'}}>(필수)</span></p>
             <Input
               type="number"
-              value={product.deliveryFeeAmount}
+              value={product.deliveryFeeAmount || ''}
               onChange={(e) => handleInputChange(e, 'deliveryFeeAmount')}
               className="w-24"
             />
@@ -867,7 +871,7 @@ export default function Page() {
       </div>
       <div className="flex">
         <div className="flex w-1/2 items-center pt-5">
-          <p className="w-36">할인률 적용: <span style={{fontSize: '13px'}}>(선택)</span></p>
+          <p className="w-48">할인률 적용: <span style={{fontSize: '13px'}}>(선택)</span></p>
           <Switch checked={onSale} onCheckedChange={handleDiscountChange} />
         </div>
         {onSale ?
@@ -875,7 +879,7 @@ export default function Page() {
             <p className="w-28">할인률: <span style={{color: 'red', fontSize: '13px'}}>(필수)</span></p>
             <Input
               type="number"
-              value={product.discount}
+              value={product.discount || ''}
               onChange={(e) => handleInputChange(e, 'discount')}
               className="w-24"
             />
@@ -884,14 +888,21 @@ export default function Page() {
         : null}
       </div>
       <div className="flex w-1/2 items-center pt-5">
-        <p className="w-36">상품 공개: <span style={{fontSize: '13px'}}>(선택)</span></p>
+        <p className="w-48">상품 공개: <span style={{fontSize: '13px'}}>(선택)</span></p>
         <Switch
           checked={displayProduct}
           onCheckedChange={handleDisplayProductChange}
         />
       </div>
       <div className="flex w-1/2 items-center pt-5">
-        <p className={`w-36 ${soldout ? 'text-red-600' : ''}`}>품절: <span style={{fontSize: '13px'}}>(선택)</span></p>
+        <p className="w-48">예약배송(프리오더): <span style={{fontSize: '13px'}}>(선택)</span></p>
+        <Switch
+          checked={preorder}
+          onCheckedChange={handlePreorderProductChange}
+        />
+      </div>
+      <div className="flex w-1/2 items-center pt-5">
+        <p className={`w-48 ${soldout ? 'text-red-600' : ''}`}>품절: <span style={{fontSize: '13px'}}>(선택)</span></p>
         <Switch
           checked={soldout}
           onCheckedChange={handleSoldoutProductChange}
@@ -964,11 +975,11 @@ export default function Page() {
           <div className='flex flex-col w-auto'>
             {sizes?.map((size, index) => {
               return(
-                <div key={size._id} className="flex mt-2 w-full">
+                <div key={size.id} className="flex mt-2 w-full">
                   <div className="flex w-48 pt-1"> 
                     <Input
                       type="text"
-                      placeholder="예) Small"
+                      placeholder="예) Free"
                       onChange={(e)=> setSizeValues(prevSizeValues => {
                         const updatedSizeValues = [...prevSizeValues];
                         updatedSizeValues[index] = e.target.value;
