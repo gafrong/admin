@@ -439,16 +439,16 @@ export default function Page() {
   const [ sizeValues, setSizeValues ] = useState([]);
   const [ stockValues, setStockValues ] = useState([]);
 
-  const [ options1, setOptions1 ] = useState([]);
-  const [ options2, setOptions2 ] = useState([]);
-  const [ options3, setOptions3 ] = useState([]);
+  const [ options1, setOptions1 ] = useState([{name: '', value: ''}]);
+  const [ options2, setOptions2 ] = useState([{name: '', value: ''}]);
+  const [ options3, setOptions3 ] = useState([{name: '', value: ''}]);
   const [ subOption1, setSubOption1 ] = useState({});
   const [ subOption2, setSubOption2 ] = useState({});
   const [ subOption3, setSubOption3 ] = useState({});
 
-  const [ option1Title, setOption1Title] = useState('');
-  const [ option2Title, setOption2Title] = useState('');
-  const [ option3Title, setOption3Title] = useState('');
+  const [ option1Title, setOption1Title] = useState('옵션 1');
+  const [ option2Title, setOption2Title] = useState('옵션 2');
+  const [ option3Title, setOption3Title] = useState('옵션 3');
 
   const [ option1Names, setOption1Names ] = useState([]);
   const [ option2Names, setOption2Names ] = useState([]);
@@ -456,6 +456,18 @@ export default function Page() {
   const [ option1Values, setOption1Values] = useState([]);
   const [ option2Values, setOption2Values] = useState([]);
   const [ option3Values, setOption3Values] = useState([]);
+
+  const handleOption1Change = (e) => {
+    setOption1Title(e.target.value)
+  }
+
+  const handleOption2Change = (e) => {
+    setOption2Title(e.target.value)
+  }
+
+  const handleOption3Change = (e) => {
+    setOption3Title(e.target.value)
+  }
 
   const handleAddSize = (size, stock) => {
     setSizes(prevSizes => {
@@ -500,26 +512,10 @@ export default function Page() {
     ]);
   }
 
-  const removeOption1 = (index) => {
-    setOptions1(prevOptions => {
-      const updatedOptions = [...prevOptions];
-      updatedOptions.splice(index, 1); // Remove the last added size
-      return updatedOptions;
-    });
-  }
-
   const addOption2 = () => {
     setOptions2(prevOptions => [
       ...prevOptions, { optionName: '', optionValue: ''}
     ]);
-  }
-
-  const removeOption2 = (index) => {
-    setOptions2(prevOptions => {
-      const updatedOptions = [...prevOptions];
-      updatedOptions.splice(index, 1); // Remove the last added size
-      return updatedOptions;
-    });
   }
 
   const addOption3 = () => {
@@ -528,13 +524,52 @@ export default function Page() {
     ]);
   }
 
-  const removeOption3 = (index) => {
-    setOptions3(prevOptions => {
-      const updatedOptions = [...prevOptions];
-      updatedOptions.splice(index, 1); // Remove the last added size
-      return updatedOptions;
+  // const removeOption1 = () => {
+  //   setOptions1(prevOptions => {
+  //     const updatedOptions = [...prevOptions];
+      
+  //     updatedOptions.splice(index, 1); // Remove the last added size
+  //     return updatedOptions;
+  //   });
+  // }
+
+  const removeOption1 = () => {
+    setOptions1((prevOptions) => {
+      if (prevOptions.length > 0) {
+        prevOptions[prevOptions.length - 1].optionName = '';
+        prevOptions[prevOptions.length - 1].optionValue = '';
+  
+        prevOptions.pop();
+      }
+  
+      return [...prevOptions];
     });
-  }
+  };
+
+  const removeOption2 = () => {
+    setOptions2((prevOptions) => {
+      if (prevOptions.length > 0) {
+        prevOptions[prevOptions.length - 1].optionName = '';
+        prevOptions[prevOptions.length - 1].optionValue = '';
+  
+        prevOptions.pop();
+      }
+  
+      return [...prevOptions];
+    });
+  };
+  const removeOption3 = () => {
+    setOptions3((prevOptions) => {
+      if (prevOptions.length > 0) {
+        prevOptions[prevOptions.length - 1].optionName = '';
+        prevOptions[prevOptions.length - 1].optionValue = '';
+  
+        prevOptions.pop();
+      }
+  
+      return [...prevOptions];
+    });
+  };
 
   const handleSubmit = () => {
     console.log('PRODUCT', product)
@@ -546,6 +581,7 @@ export default function Page() {
     console.log('stock values', stockValues)
     console.log('colorOptions', colorOptions);
     console.log('subOption1', subOption1);
+    console.log('subOption2', subOption2);
     if (
       product.name == "" ||
       product.price == "" ||
@@ -637,8 +673,39 @@ export default function Page() {
     if(hasOptionValues){
       setSubOption1(selectedOptions1)
     }
-  }, [option1Names, option1Values])
+  }, [option1Names, option1Values, option1Title, options1])
 
+  useEffect (() => {    
+    const selectedOptions2 = {
+        title: option2Title,
+        options: options2.map((option, index) => ({
+            name: option2Names[index],
+            value: option2Values[index]
+        })),
+    }
+
+    const hasOptionValues = option2Values.some((value)=> value !== '');
+
+    if(hasOptionValues){
+      setSubOption2(selectedOptions2)
+    }
+  }, [option2Names, option2Values, option2Title, options2])
+
+  useEffect (() => {    
+    const selectedOptions3 = {
+        title: option3Title,
+        options: options3.map((option, index) => ({
+            name: option3Names[index],
+            value: option3Values[index]
+        })),
+    }
+
+    const hasOptionValues = option3Values.some((value)=> value !== '');
+
+    if(hasOptionValues){
+      setSubOption3(selectedOptions3)
+    }
+  }, [option3Names, option3Values, option3Title, options3])
 
   return (
     <div className={`p-10 ${displayProduct ? '' : 'bg-gray-300'}`}>
@@ -753,7 +820,7 @@ export default function Page() {
         <Input
           type="text"
           placeholder="예) 슬림 반팔 티셔츠"
-          value={product.name}
+          value={product.name || ''}
           onChange={(e) => handleInputChange(e, 'name')}
           className=""
         />
@@ -763,7 +830,7 @@ export default function Page() {
         <Textarea
           type="text"
           placeholder="예) 절개 없이 드레이프 되는 세련된 넥라인과 캡소매 디자인으로 여성스럽고 도시적인 느낌의 티셔츠입니다."
-          value={product.description}
+          value={product.description || ''}
           rows={10}
           onChange={(e) => handleInputChange(e, 'description')}
         />
@@ -774,7 +841,7 @@ export default function Page() {
         <Input
           type="number"
           placeholder="예) 50000"
-          value={product?.price?.toLocaleString()}
+          value={product?.price?.toLocaleString() || ''}
           onChange={(e) => handleInputChange(e, 'price')}
           className="w-32"
         />
@@ -894,11 +961,10 @@ export default function Page() {
       <div className="flex flex-row pt-5">
         <p className="w-44 mt-5">사이즈: <span style={{color: 'red',fontSize: '13px'}}>(필수)</span></p>
         <div className="flex flex-row w-full">
-   
           <div className='flex flex-col w-auto'>
             {sizes?.map((size, index) => {
               return(
-                <div key={size.id} className="flex mt-2 w-full">
+                <div key={size._id} className="flex mt-2 w-full">
                   <div className="flex w-48 pt-1"> 
                     <Input
                       type="text"
@@ -933,23 +999,33 @@ export default function Page() {
 
           <div className=' items-center pt-3 ml-16'>
             <Button variant="outline" className="mr-2" onClick={()=>handleAddSize()}>+</Button>
-            <Button variant="outline" onClick={handleRemoveSize}>-</Button>
+            { sizes.length > 1 ?
+              <Button variant="outline" onClick={handleRemoveSize}>-</Button>
+              : null }
           </div>  
         </div> 
       </div>
 
       {/* Option 1 Area */}
       <div className="flex flex-row pt-8">
-        <p className="w-44 mt-5">옵션 1 설정: <span style={{fontSize: '13px'}}>(선택)</span></p>
+        <p className="w-32 mt-5">{option1Title}: <span style={{fontSize: '13px'}}>(선택)</span></p>
         <div className="flex flex-row w-full">
-
+          <div className="pt-3 mr-16">
+            <Input
+              type="text"
+              placeholder="옵션제목(예, 발볼)"
+              onChange={handleOption1Change}
+              className="w-32"
+            />
+          </div>
           <div className="flex flex-col w-auto">
             {options1?.map((option, index) => (
               <div key={option.id} className="flex mt-2 w-full">
-                <div className="flex w-48 pt-1"> 
+                <div className="flex w-72 pt-1"> 
+                <p className="mt-2 w-24">옵션명: <span style={{fontSize: '13px'}}>(선택)</span> </p>
                   <Input
                     type="text"
-                    placeholder='옵션명 (예, 둘레)'
+                    placeholder='예) 발볼늘림 1단계'
                     // value={option.size}
                     onChange={(e)=> 
                       setOption1Names((prevOptions) => {
@@ -957,11 +1033,11 @@ export default function Page() {
                           updatedOptions[index] = e.target.value;
                           return updatedOptions;
                     })}
-                    className="w-32"
+                    className="w-36"
                   />
                 </div>
                 <div className="flex w-72  pt-1">  
-                <p className="mt-2 w-36">옵션: <span style={{fontSize: '13px'}}>(선택)</span> </p>
+                  <p className="mt-2 w-24 ml-10">옵션: <span style={{fontSize: '13px'}}>(선택)</span> </p>
                   <Input
                     type="text"
                     placeholder='예, 20mm'
@@ -981,34 +1057,44 @@ export default function Page() {
           </div>  
           <div className='items-center pt-3 ml-16'>
             <Button variant="outline" className="mr-2" onClick={addOption1}>+</Button>
-            <Button variant="outline" onClick={removeOption1}>-</Button>
+            {options1.length > 1 ?
+              <Button variant="outline" onClick={removeOption1}>-</Button>
+              : null }
           </div> 
         </div>
       </div> 
 
       {/* Option 2 Area */}
       <div className="flex flex-row pt-8">
-        <p className="w-44 mt-5">옵션 2 설정: <span style={{fontSize: '13px'}}>(선택)</span></p>
+        <p className="w-32 mt-5">{option2Title}: <span style={{fontSize: '13px'}}>(선택)</span></p>
         <div className="flex flex-row w-full">
-
+          <div className="pt-3 mr-16">
+            <Input
+              type="text"
+              placeholder="옵션제목(예, 둘레)"
+              onChange={handleOption2Change}
+              className="w-32"
+            />
+          </div>
           <div className="flex flex-col w-auto">
             {options2?.map((option, index) => (
               <div key={option.id} className="flex mt-2 w-full">
-                <div className="flex w-48 pt-1"> 
+                <div className="flex w-72 pt-1"> 
+                <p className="mt-2 w-24">옵션명: <span style={{fontSize: '13px'}}>(선택)</span> </p>
                   <Input
                     type="text"
-                    placeholder='옵션명 (예, 둘레)'
+                    placeholder='예) 둘레늘림 1단계'
                     onChange={(e)=> 
                       setOption2Names((prevOptions) => {
                           const updatedOptions = [...prevOptions];
                           updatedOptions[index] = e.target.value;
                           return updatedOptions;
                     })}
-                    className="w-32"
+                    className="w-36"
                   />
                 </div>
                 <div className="flex w-72  pt-1">  
-                <p className="mt-2 w-36">옵션: <span style={{fontSize: '13px'}}>(선택)</span> </p>
+                <p className="mt-2 w-24 ml-10">옵션: <span style={{fontSize: '13px'}}>(선택)</span> </p>
                   <Input
                     type="text"
                     placeholder='예, 20mm'
@@ -1027,34 +1113,44 @@ export default function Page() {
           </div>  
           <div className='items-center pt-3 ml-16'>
             <Button variant="outline" className="mr-2" onClick={addOption2}>+</Button>
-            <Button variant="outline" onClick={removeOption2}>-</Button>
+            {options2.length > 1 ?
+              <Button variant="outline" onClick={removeOption2}>-</Button>
+            : null }
           </div> 
         </div>
       </div> 
 
       {/* Option 3 Area */}
       <div className="flex flex-row pt-8">
-        <p className="w-44 mt-5">옵션 3 설정: <span style={{fontSize: '13px'}}>(선택)</span></p>
+        <p className="w-32 mt-5">{option3Title}: <span style={{fontSize: '13px'}}>(선택)</span></p>
         <div className="flex flex-row w-full">
-
+          <div className="pt-3 mr-16">
+            <Input
+              type="text"
+              placeholder="옵션제목(예, 넓이)"
+              onChange={handleOption3Change}
+              className="w-32"
+            />
+          </div>
           <div className="flex flex-col w-auto">
             {options3?.map((option, index) => (
               <div key={option.id} className="flex mt-2 w-full">
-                <div className="flex w-48 pt-1"> 
+                <div className="flex w-72 pt-1"> 
+                <p className="mt-2 w-24">옵션명: <span style={{fontSize: '13px'}}>(선택)</span> </p>
                   <Input
                     type="text"
-                    placeholder='옵션명 (예, 둘레)'
+                    placeholder='예) 넓이늘림 1단계'
                     onChange={(e)=> 
                       setOption3Names((prevOptions) => {
                           const updatedOptions = [...prevOptions];
                           updatedOptions[index] = e.target.value;
                           return updatedOptions;
                     })}
-                    className="w-32"
+                    className="w-36"
                   />
                 </div>
                 <div className="flex w-72  pt-1">  
-                <p className="mt-2 w-36">옵션: <span style={{fontSize: '13px'}}>(선택)</span> </p>
+                <p className="mt-2 w-24 ml-10">옵션: <span style={{fontSize: '13px'}}>(선택)</span> </p>
                   <Input
                     type="text"
                     placeholder='예, 20mm'
@@ -1073,7 +1169,9 @@ export default function Page() {
           </div>  
           <div className='items-center pt-3 ml-16'>
             <Button variant="outline" className="mr-2" onClick={addOption3}>+</Button>
-            <Button variant="outline" onClick={removeOption3}>-</Button>
+            {options3.length > 1 ?
+              <Button variant="outline" onClick={removeOption3}>-</Button>
+            : null }
           </div> 
         </div>
       </div> 
