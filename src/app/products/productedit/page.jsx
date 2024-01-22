@@ -49,26 +49,32 @@ export default function Page() {
           <h1>Product Edit Page</h1>
           <Table>
             <TableHeader>
-              <TableRow>
-                <TableHead className="w-[60px]">Product</TableHead>
-                <TableHead className="w-[300px]">Title</TableHead>
-                <TableHead>Edit</TableHead>
-              </TableRow>
+              <thead className='w-full'>
+                <TableRow>
+                  <TableHead className="w-1/4">Product</TableHead>
+                  <TableHead className="w-1/4">Title</TableHead>
+                  <TableHead className="w-1/4">Price</TableHead>
+                  <TableHead className="w-1/4">Edit</TableHead>
+                </TableRow>
+              </thead>
             </TableHeader>
             {products?.length > 0 &&
               products.map((product, index) => (
                 <TableRow key={index}>
-                  <TableCell>
+                  <TableCell className="w-1/4">
                     <img
                       src={awsURL + product.image}
                       alt={`Product ${index}`}
                       className="h-12 w-12 rounded-sm"
                     />
                   </TableCell>
-                  <TableCell>
+                  <TableCell className="w-1/4">
                     <div className="mt-2 pl-5">{product.name}</div>
                   </TableCell>
-                  <TableCell>
+                  <TableCell className="w-1/4">
+                    <div className="mt-2 pl-5">{product.price.toLocaleString()}원</div>
+                  </TableCell>
+                  <TableCell className="w-1/4">
                     <Link
                       href={{
                         pathname: '/products/productdetail',
