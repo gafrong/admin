@@ -14,9 +14,15 @@ import { Textarea } from '@/components/ui/textarea'
 import { useEffect, useState } from 'react'
 import { HexColorPicker } from 'react-colorful'
 import { CiCamera } from "react-icons/ci";
+import { Label } from "@/components/ui/label"
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
 import styles from './productregister.module.css'
 import mime from "mime";
 import useUserStore from '@/store/zustand'
+import DateTimePicker from 'react-datetime-picker';
+import 'react-datetime-picker/dist/DateTimePicker.css';
+import 'react-calendar/dist/Calendar.css';
+import 'react-clock/dist/Clock.css';
 
 export default function Page() {
   const user = useUserStore((state) => state.user);
@@ -40,6 +46,8 @@ export default function Page() {
   const [color, setColor] = useState('')
   const [productColor, setProductColor] = useState('')
   const [preorder, setPreorder] = useState(false);
+
+  const [isDropProduct ,setIsDropProduct] = useState(false);
 
   const parentCategories = [
     { id: '642d1f4406159dd4f0519464', name: '의류' },
@@ -529,15 +537,6 @@ export default function Page() {
     ]);
   }
 
-  // const removeOption1 = () => {
-  //   setOptions1(prevOptions => {
-  //     const updatedOptions = [...prevOptions];
-      
-  //     updatedOptions.splice(index, 1); // Remove the last added size
-  //     return updatedOptions;
-  //   });
-  // }
-
   const removeOption1 = () => {
     setOptions1((prevOptions) => {
       if (prevOptions.length > 0) {
@@ -577,17 +576,7 @@ export default function Page() {
   };
 
   const handleSubmit = () => {
-    console.log('PRODUCT', product)
-    console.log('selectedParentCategory', selectedParentCategory);
-    console.log('sub cate', subCategory)
-    console.log('color name', productColor)
-    console.log('color hex', color)
-    console.log('size value', sizeValues)
-    console.log('stock values', stockValues)
-    console.log('colorOptions', colorOptions);
-    console.log('subOption1', subOption1);
-    console.log('subOption2', subOption2);
-    console.log('preorder', preorder);
+
     if (
       product.name == "" ||
       product.price == "" ||
@@ -712,6 +701,33 @@ export default function Page() {
     }
   }, [option3Names, option3Values, option3Title, options3])
 
+  const handleProductSell = (value) => {
+    if (value === 'selllater') {
+      setIsDropProduct(true)
+    } else {
+      setIsDropProduct(false)
+      setShowDate(null)
+      setDate(null)
+    }
+  }
+
+
+  const [date, setDate] = useState(new Date());
+  const [showDate, setShowDate] = useState(null);
+  const handleSellDate = (newDate) => {
+    setDate(newDate)
+    const options = {
+      year: 'numeric',
+      month: '2-digit',
+      day: '2-digit',
+      hour: '2-digit',
+      minute: '2-digit',
+      hour12: false,
+      timeZone: 'Asia/Seoul',
+    }
+    const formattedDate = newDate.toLocaleString('en-US', options);
+    setShowDate(formattedDate);
+  }
   return (
     <div className={`p-10 ${displayProduct ? '' : 'bg-gray-300'}`}>
       <div className='flex'>      
@@ -908,6 +924,35 @@ export default function Page() {
           onCheckedChange={handleSoldoutProductChange}
         />
       </div>
+
+      <div className="flex w-full items-center pt-5">
+        <p className="w-48">판매예약: <span style={{color:'red', fontSize: '13px'}}>(필수)</span></p>
+        <RadioGroup defaultValue="sellnow" className="flex flex-row" onValueChange={handleProductSell}>
+          <div className="flex items-center space-x-2 w-32">
+            <RadioGroupItem value="sellnow" id="r1"/>
+            <Label htmlFor="r1">바로판매</Label>
+          </div>
+          <div className="flex items-center space-x-2">
+            <RadioGroupItem value="selllater" id="r2"  />
+            <Label htmlFor="r2">판매 시작 설정</Label>
+          </div>
+        </RadioGroup>
+
+          {showDate && (
+            <div className='flex w-48 ml-10'>{showDate}시</div>
+          )}
+      </div>
+      {isDropProduct && (
+        <div className='flex h-44 ml-48 mt-4'>
+          <DateTimePicker 
+            onChange={handleSellDate} 
+            value={date} 
+            format="y-MM-dd HH:mm"
+            style={{ height: '100%', width: '100%' }}  
+          />
+        </div>
+      )}
+
       <div className="flex">
         <div className="flex w-1/2 items-center pt-5">
           <p className="w-36">메인 카테고리: <span style={{color: 'red',fontSize: '13px'}}>(필수)</span></p>
@@ -975,7 +1020,7 @@ export default function Page() {
           <div className='flex flex-col w-auto'>
             {sizes?.map((size, index) => {
               return(
-                <div key={size.id} className="flex mt-2 w-full">
+                <div key={size._id} className="flex mt-2 w-full">
                   <div className="flex w-48 pt-1"> 
                     <Input
                       type="text"
