@@ -40,7 +40,7 @@ export default function Page() {
   const [error, setError] = useState(null);
   const [deliveryFeeOn, setDeliveryFeeOn] = useState('')
   const [onSale, setOnSale] = useState(false)
-  const [soldout, setSoldout] = useState(false)
+  // const [soldout, setSoldout] = useState(false)
   const [displayProduct, setDisplayProduct] = useState(true)
   const [selectedParentCategoryId, setSelectedParentCategoryId] = useState('642d1f4406159dd4f0519464')
   const [color, setColor] = useState('')
@@ -48,6 +48,10 @@ export default function Page() {
   const [preorder, setPreorder] = useState(false);
 
   const [isDropProduct ,setIsDropProduct] = useState(false);
+  const currentDate = new Date();
+  const [date, setDate] = useState(new Date());
+  const [ dropDate, setDropDate] = useState(null);
+  const [isSoldout, setIsSoldout] = useState(false);
 
   const parentCategories = [
     { id: '642d1f4406159dd4f0519464', name: '의류' },
@@ -332,6 +336,16 @@ export default function Page() {
     }
   }, [selectedParentCategory])
 
+  useEffect(() => {
+    if (date > currentDate) {
+        setIsSoldout(true);
+        setIsDropProduct(true);
+    } else {
+        setIsSoldout(false);
+        setIsDropProduct(false);
+    }
+  }, [date]);
+
   const handleMainImageChange = (e) => {
     const file = e.target.files[0];
     if(file){
@@ -429,12 +443,7 @@ export default function Page() {
   }
 
   const handleSoldoutProductChange = () => {
-    const updatedSoldout = !soldout
-    setSoldout(updatedSoldout)
-    setProduct((prevProduct) => ({
-      ...prevProduct,
-      soldout: updatedSoldout,
-    }))
+    setIsSoldout((prevIsSoldout) => !prevIsSoldout);
   }
 
   const handleColorInputChange = (e) => {
@@ -575,72 +584,6 @@ export default function Page() {
     });
   };
 
-  const handleSubmit = () => {
-
-    if (
-      product.name == "" ||
-      product.price == "" ||
-      product.description == "" ||
-      product.selectedCategory == ""
-    ) {
-        setError("Please fill in the form correctly");
-    }
-
-    const formData = new FormData();
-    const images = [mainImage, firstImage, secondImage, thirdImage, fourthImage];
-
-    for (let i = 0; i < images.length; i++) {
-      const img = images[i];
-      if (img) {
-          const newImageUri = "file:///" + img.split("file:/").join("");
-          const imageFile = {
-              uri: newImageUri,
-              type: mime.getType(newImageUri),
-              name: newImageUri.split("/").pop(),
-          };
-          formData.append("image", imageFile);
-      }
-    }
-
-    formData.append("name", product.name);
-    formData.append("price", product.price);
-    formData.append("description", product.description);
-    formData.append("parentCategory", selectedParentCategory);
-    formData.append("category", subCategory);
-    formData.append("richDescription", "richDescription example");
-    formData.append("rating", product.rating);
-    formData.append("numReviews", product.numReviews);
-    formData.append("isFeatured", product.isFeatured);
-    formData.append("colorOptions", JSON.stringify(colorOptions));
-    formData.append("sale", product.onSale);
-    formData.append("soldout", product.soldout);
-    formData.append("display", displayProduct);
-    formData.append("deliveryFee", product.deliveryFee);
-    formData.append("deliveryCost", product.deliveryFeeAmount);
-    formData.append("sellerId", userId);
-    formData.append("preorder", preorder);
-    if (subOption1 !== "") {
-      formData.append("subOption1", JSON.stringify(subOption1));
-
-      if (subOption2 !== "") {
-          formData.append("subOption2", JSON.stringify(subOption2));
-      } else {
-          formData.append("subOption2", null);
-          formData.append("subOption3", null);
-      }
-
-      if (subOption3 !== "") {
-          formData.append("subOption3", JSON.stringify(subOption3));
-      } else {
-          formData.append("subOption3", null);
-      }
-    } else {
-        formData.append("subOption1", null);
-        formData.append("subOption2", null);
-        formData.append("subOption3", null);
-    }
-  }
-
   useEffect (() => {
     const selectedColorOptions = {
         productColor: productColor ? productColor : '',
@@ -706,14 +649,11 @@ export default function Page() {
       setIsDropProduct(true)
     } else {
       setIsDropProduct(false)
-      setShowDate(null)
+      setDropDate(null)
       setDate(null)
     }
   }
 
-
-  const [date, setDate] = useState(new Date());
-  const [showDate, setShowDate] = useState(null);
   const handleSellDate = (newDate) => {
     setDate(newDate)
     const options = {
@@ -726,7 +666,78 @@ export default function Page() {
       timeZone: 'Asia/Seoul',
     }
     const formattedDate = newDate.toLocaleString('en-US', options);
-    setShowDate(formattedDate);
+    setDropDate(formattedDate)
+  }
+
+  const handleSubmit = () => {
+    console.log('isDropProduct', isDropProduct);
+    if (
+      product.name == "" ||
+      product.price == "" ||
+      product.description == "" ||
+      product.selectedCategory == ""
+    ) {
+        setError("Please fill in the form correctly");
+    }
+
+    const formData = new FormData();
+    const images = [mainImage, firstImage, secondImage, thirdImage, fourthImage];
+
+    for (let i = 0; i < images.length; i++) {
+      const img = images[i];
+      if (img) {
+          const newImageUri = "file:///" + img.split("file:/").join("");
+          const imageFile = {
+              uri: newImageUri,
+              type: mime.getType(newImageUri),
+              name: newImageUri.split("/").pop(),
+          };
+          formData.append("image", imageFile);
+      }
+    }
+
+    formData.append("name", product.name);
+    formData.append("price", product.price);
+    formData.append("description", product.description);
+    formData.append("parentCategory", selectedParentCategory);
+    formData.append("category", subCategory);
+    formData.append("richDescription", "richDescription example");
+    formData.append("rating", product.rating);
+    formData.append("numReviews", product.numReviews);
+    formData.append("isFeatured", product.isFeatured);
+    formData.append("colorOptions", JSON.stringify(colorOptions));
+    formData.append("sale", product.onSale);
+    formData.append("soldout", isSoldout);
+    formData.append("display", displayProduct);
+    formData.append("deliveryFee", product.deliveryFee);
+    formData.append("deliveryCost", product.deliveryFeeAmount);
+    formData.append("sellerId", userId);
+    formData.append("preorder", preorder);
+    
+    if (date > currentDate) {
+      formData.append("dropProduct", isDropProduct);
+    }
+
+    if (subOption1 !== "") {
+      formData.append("subOption1", JSON.stringify(subOption1));
+
+      if (subOption2 !== "") {
+          formData.append("subOption2", JSON.stringify(subOption2));
+      } else {
+          formData.append("subOption2", null);
+          formData.append("subOption3", null);
+      }
+
+      if (subOption3 !== "") {
+          formData.append("subOption3", JSON.stringify(subOption3));
+      } else {
+          formData.append("subOption3", null);
+      }
+    } else {
+        formData.append("subOption1", null);
+        formData.append("subOption2", null);
+        formData.append("subOption3", null);
+    }
   }
   return (
     <div className={`p-10 ${displayProduct ? '' : 'bg-gray-300'}`}>
@@ -918,9 +929,9 @@ export default function Page() {
         />
       </div>
       <div className="flex w-1/2 items-center pt-5">
-        <p className={`w-48 ${soldout ? 'text-red-600' : ''}`}>품절: <span style={{fontSize: '13px'}}>(선택)</span></p>
+        <p className={`w-48 ${isSoldout ? 'text-red-600' : ''}`}>품절: <span style={{fontSize: '13px'}}>(선택)</span></p>
         <Switch
-          checked={soldout}
+          checked={isSoldout}
           onCheckedChange={handleSoldoutProductChange}
         />
       </div>
@@ -938,8 +949,8 @@ export default function Page() {
           </div>
         </RadioGroup>
 
-          {showDate && (
-            <div className='flex w-48 ml-10'>{showDate}시</div>
+          {dropDate && (
+            <div className='flex w-48 ml-10'>{dropDate}시</div>
           )}
       </div>
       {isDropProduct && (
