@@ -1031,7 +1031,7 @@ export default function Page() {
           <div className='flex flex-col w-auto'>
             {sizes?.map((size, index) => {
               return(
-                <div key={size._id} className="flex mt-2 w-full">
+                <div key={size.id || index} className="flex mt-2 w-full">
                   <div className="flex w-48 pt-1"> 
                     <Input
                       type="text"
