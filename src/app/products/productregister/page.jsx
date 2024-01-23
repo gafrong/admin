@@ -23,6 +23,8 @@ import DateTimePicker from 'react-datetime-picker';
 import 'react-datetime-picker/dist/DateTimePicker.css';
 import 'react-calendar/dist/Calendar.css';
 import 'react-clock/dist/Clock.css';
+import axios from 'axios'
+import baseURL from '@/assets/common/baseUrl'
 
 export default function Page() {
   const user = useUserStore((state) => state.user);
@@ -30,15 +32,15 @@ export default function Page() {
   const userId = user?._id;
 
   const [mainImage, setMainImage] = useState(null);
-  const [firstImage, setFirstImage] = useState(null);
-  const [secondImage, setSecondImage] = useState(null);
-  const [thirdImage, setThirdImage] = useState(null);
-  const [fourthImage, setFourthImage] = useState(null);
+  const [firstImage, setFirstImage] = useState('');
+  const [secondImage, setSecondImage] = useState('');
+  const [thirdImage, setThirdImage] = useState('');
+  const [fourthImage, setFourthImage] = useState('');
 
-
+  const [loading, setLoading] = useState(false);
   const [product, setProduct] = useState({});
   const [error, setError] = useState(null);
-  const [deliveryFeeOn, setDeliveryFeeOn] = useState('')
+  const [deliveryFeeOn, setDeliveryFeeOn] = useState(false)
   const [onSale, setOnSale] = useState(false)
   // const [soldout, setSoldout] = useState(false)
   const [displayProduct, setDisplayProduct] = useState(true)
@@ -49,9 +51,11 @@ export default function Page() {
 
   const [isDropProduct ,setIsDropProduct] = useState(false);
   const currentDate = new Date();
-  const [date, setDate] = useState(new Date());
-  const [ dropDate, setDropDate] = useState(null);
+  const [ date, setDate ] = useState(null);
+  const [ dropDate, setDropDate] = useState(new Date());
   const [isSoldout, setIsSoldout] = useState(false);
+  const [isFeatured, setIsFeatured] = useState(false);
+  const [ deliveryFeeAmount, setDeliveryFeeAmount ] = useState(0);
 
   const parentCategories = [
     { id: '642d1f4406159dd4f0519464', name: '의류' },
@@ -337,23 +341,25 @@ export default function Page() {
   }, [selectedParentCategory])
 
   useEffect(() => {
-    if (date > currentDate) {
+    if (dropDate > currentDate) {
         setIsSoldout(true);
         setIsDropProduct(true);
     } else {
         setIsSoldout(false);
         setIsDropProduct(false);
     }
-  }, [date]);
+  }, [dropDate]);
 
   const handleMainImageChange = (e) => {
     const file = e.target.files[0];
+
     if(file){
       const reader = new FileReader();
       reader.onloadend = () => {
-        setMainImage(reader.result)
+        const blob = new Blob([reader.result], { type: file.type });
+        setMainImage(blob)
       };
-      reader.readAsDataURL(file);
+      reader.readAsArrayBuffer(file);
     }
   }
 
@@ -362,9 +368,10 @@ export default function Page() {
     if(file){
       const reader = new FileReader();
       reader.onloadend = () => {
-        setFirstImage(reader.result)
+        const blob = new Blob([reader.result], { type: file.type });
+        setFirstImage(blob)
       };
-      reader.readAsDataURL(file);
+      reader.readAsArrayBuffer(file);
     }
   }
 
@@ -373,9 +380,10 @@ export default function Page() {
     if(file){
       const reader = new FileReader();
       reader.onloadend = () => {
-        setSecondImage(reader.result)
+        const blob = new Blob([reader.result], { type: file.type });
+        setSecondImage(blob)
       };
-      reader.readAsDataURL(file);
+      reader.readAsArrayBuffer(file);
     }
   }
 
@@ -384,9 +392,10 @@ export default function Page() {
     if(file){
       const reader = new FileReader();
       reader.onloadend = () => {
-        setThirdImage(reader.result)
+        const blob = new Blob([reader.result], { type: file.type });
+        setThirdImage(blob)
       };
-      reader.readAsDataURL(file);
+      reader.readAsArrayBuffer(file);
     }
   }
 
@@ -395,9 +404,10 @@ export default function Page() {
     if(file){
       const reader = new FileReader();
       reader.onloadend = () => {
-        setFourthImage(reader.result)
+        const blob = new Blob([reader.result], { type: file.type });
+        setFourthImage(blob)
       };
-      reader.readAsDataURL(file);
+      reader.readAsArrayBuffer(file);
     }
   }
 
@@ -420,7 +430,7 @@ export default function Page() {
     setProduct((prevProduct) => ({
       ...prevProduct,
       deliveryFee: updatedSwitchValue,
-      deliveryFeeAmount: updatedSwitchValue ? prevProduct.deliveryFeeAmount : 0,
+      deliveryFeeAmount: updatedSwitchValue ? deliveryFeeAmount : 0,
     }))
   }
 
@@ -451,6 +461,7 @@ export default function Page() {
   }
 
   const handleColorHexInputChange = (e) => {
+    console.log('hex color', e)
     setColor(e);
   }
 
@@ -571,6 +582,7 @@ export default function Page() {
       return [...prevOptions];
     });
   };
+
   const removeOption3 = () => {
     setOptions3((prevOptions) => {
       if (prevOptions.length > 0) {
@@ -587,7 +599,7 @@ export default function Page() {
   useEffect (() => {
     const selectedColorOptions = {
         productColor: productColor ? productColor : '',
-        hexColor: color?  color : '',
+        hexColor: color?  color : '#ffffff',
         sizes: sizes.map((_, index) => ({
             size: sizeValues[index],
             stock: stockValues[index]
@@ -655,7 +667,7 @@ export default function Page() {
   }
 
   const handleSellDate = (newDate) => {
-    setDate(newDate)
+    setDropDate(newDate)
     const options = {
       year: 'numeric',
       month: '2-digit',
@@ -666,11 +678,15 @@ export default function Page() {
       timeZone: 'Asia/Seoul',
     }
     const formattedDate = newDate.toLocaleString('en-US', options);
-    setDropDate(formattedDate)
+    setDate(formattedDate)
+  }
+
+  const handleDeliveryFee = (e) => {
+    console.log('fee amount', e.target.value)
+    setDeliveryFeeAmount(e.target.value)
   }
 
   const handleSubmit = () => {
-    console.log('isDropProduct', isDropProduct);
     if (
       product.name == "" ||
       product.price == "" ||
@@ -685,37 +701,50 @@ export default function Page() {
 
     for (let i = 0; i < images.length; i++) {
       const img = images[i];
-      if (img) {
-          const newImageUri = "file:///" + img.split("file:/").join("");
-          const imageFile = {
-              uri: newImageUri,
-              type: mime.getType(newImageUri),
-              name: newImageUri.split("/").pop(),
-          };
-          formData.append("image", imageFile);
+  
+      if (img instanceof Blob) {
+        formData.append("image", img, `image${i + 1}.jpg`);
       }
     }
+
+    // for (let i = 0; i < images.length; i++) {
+    //   const img = images[i];
+    //   if (img) {
+    //       const newImageUri = "file:///" + img.split("file:/").join("");
+    //       const imageFile = {
+    //           uri: newImageUri,
+    //           type: mime.getType(newImageUri),
+    //           name: newImageUri.split("/").pop(),
+    //       };
+    //       console.log('checking1')
+    //       formData.append("image", imageFile);
+    //   }
+    // }
 
     formData.append("name", product.name);
     formData.append("price", product.price);
     formData.append("description", product.description);
-    formData.append("parentCategory", selectedParentCategory);
-    formData.append("category", subCategory);
+    formData.append("parentCategory", selectedParentCategory.id);
+    formData.append("category", subCategory.id);
     formData.append("richDescription", "richDescription example");
     formData.append("rating", product.rating);
     formData.append("numReviews", product.numReviews);
-    formData.append("isFeatured", product.isFeatured);
+    formData.append("isFeatured", isFeatured);
     formData.append("colorOptions", JSON.stringify(colorOptions));
     formData.append("sale", product.onSale);
     formData.append("soldout", isSoldout);
     formData.append("display", displayProduct);
-    formData.append("deliveryFee", product.deliveryFee);
-    formData.append("deliveryCost", product.deliveryFeeAmount);
+    formData.append("deliveryFee", deliveryFeeOn);
+    formData.append("deliveryFeeAmount", deliveryFeeAmount);
     formData.append("sellerId", userId);
     formData.append("preorder", preorder);
     
-    if (date > currentDate) {
+    if (dropDate > currentDate) {
       formData.append("dropProduct", isDropProduct);
+    }
+
+    if (isDropProduct) {
+      formData.append("dropDate", dropDate.toISOString());
     }
 
     if (subOption1 !== "") {
@@ -738,24 +767,41 @@ export default function Page() {
         formData.append("subOption2", null);
         formData.append("subOption3", null);
     }
+
+    axios
+      .post(`${baseURL}products/create`, formData, {
+        headers: {
+          'Content-Type': `multipart/form-data`,
+          'Authorization': `Bearer ${token}`,
+        }
+      })
+      .then((res) => {
+          if (res.status === 200 || res.status === 201) {
+              setLoading(false);
+          }
+      })
+      .catch((error) => {
+          setLoading(false);
+      });
   }
+
   return (
     <div className={`p-10 ${displayProduct ? '' : 'bg-gray-300'}`}>
       <div className='flex'>      
         <div>
           {mainImage ?
             <div>
-              <img src={mainImage} alt="main image" style={{ opacity: displayProduct ? 1 : 0.5, width: '250px', height: '250px', objectFit: 'cover' }} />
+              <img src={URL.createObjectURL(mainImage)} alt="main image" style={{ opacity: displayProduct ? 1 : 0.5, width: '250px', height: '250px', objectFit: 'cover' }} />
               <label htmlFor="mainImageInput" className={styles.mainLabel}>
                 <CiCamera className={styles.mainImageCamera}/>
               </label>
-              <input type="file" accept="image/*" id="mainImageInput" style={{display:'none'}} onChange={handleMainImageChange}/>   
+              <input type="file" accept="image/*" name="mainImage" id="mainImageInput" style={{display:'none'}} onChange={handleMainImageChange}/>   
             </div>
           : <div className={styles.mainImageBlank}>
               <label htmlFor="mainImageInput" className={styles.mainLabelStart}>
                 제품 이미지 <CiCamera className={styles.cameraCenter}/>
               </label>
-              <input type="file" accept="image/*" id="mainImageInput" style={{display:'none'}} onChange={handleMainImageChange}/>   
+              <input type="file" accept="image/*" name="mainImage"  id="mainImageInput" style={{display:'none'}} onChange={handleMainImageChange}/>   
             </div>
           }
         </div>
@@ -764,18 +810,18 @@ export default function Page() {
             <>
               {firstImage ? (
                 <div className={styles.productImageShow}>
-                  <img src={firstImage} alt="first image" style={{ opacity: displayProduct ? 1 : 0.5, width: '150px', height: '150px', objectFit: 'cover' }}/>
+                  <img src={URL.createObjectURL(firstImage)} alt="first image" style={{ opacity: displayProduct ? 1 : 0.5, width: '150px', height: '150px', objectFit: 'cover' }}/>
                   <label htmlFor="firstImageInput" className={styles.firstLabel}>
                     <CiCamera className={styles.firstImageCamera}/>
                   </label>
-                  <input type="file" accept="image/*" id="firstImageInput" style={{display:'none'}} onChange={handleFirstImageChange}/>  
+                  <input type="file" accept="image/*" name="firstImage" id="firstImageInput" style={{display:'none'}} onChange={handleFirstImageChange}/>  
                 </div>
               ) : (
                 <div className={styles.productImage}>
                   <label htmlFor="firstImageInput" className={styles.labelFirst}>
                     <CiCamera className={styles.smallCameraCenter}/>
                   </label>
-                  <input type="file" accept="image/*" id="firstImageInput" style={{display:'none'}} onChange={handleFirstImageChange}/>  
+                  <input type="file" accept="image/*" name="firstImage" id="firstImageInput" style={{display:'none'}} onChange={handleFirstImageChange}/>  
                 </div>
               )}
             </>
@@ -785,18 +831,18 @@ export default function Page() {
             <>
               {secondImage ? (
                 <div className={styles.productImageShow}>
-                  <img src={secondImage} alt="second image" style={{ opacity: displayProduct ? 1 : 0.5, width: '150px', height: '150px', objectFit: 'cover' }}/>
+                  <img src={URL.createObjectURL(secondImage)} alt="second image" style={{ opacity: displayProduct ? 1 : 0.5, width: '150px', height: '150px', objectFit: 'cover' }}/>
                   <label htmlFor="secondImageInput" className={styles.firstLabel}>
                     <CiCamera className={styles.firstImageCamera}/>
                   </label>
-                  <input type="file" accept="image/*" id="secondImageInput" style={{display:'none'}} onChange={handleSecondImageChange}/> 
+                  <input type="file" accept="image/*" name="secondImage" id="secondImageInput" style={{display:'none'}} onChange={handleSecondImageChange}/> 
                 </div>
               ) : (
                 <div className={styles.productImage}>
                   <label htmlFor="secondImageInput" className={styles.labelFirst}>
                     <CiCamera className={styles.smallCameraCenter}/>
                   </label>
-                  <input type="file" accept="image/*" id="secondImageInput" style={{display:'none'}} onChange={handleSecondImageChange}/>  
+                  <input type="file" accept="image/*" name="secondImage" id="secondImageInput" style={{display:'none'}} onChange={handleSecondImageChange}/>  
                 </div>
               )}
             </>
@@ -806,18 +852,18 @@ export default function Page() {
             <>
               {thirdImage ? (
                 <div className={styles.productImageShow}>
-                  <img src={thirdImage} alt="third image" style={{ opacity: displayProduct ? 1 : 0.5, width: '150px', height: '150px', objectFit: 'cover' }}/>
+                  <img src={URL.createObjectURL(thirdImage)} alt="third image" style={{ opacity: displayProduct ? 1 : 0.5, width: '150px', height: '150px', objectFit: 'cover' }}/>
                   <label htmlFor="thirdImageInput" className={styles.firstLabel}>
                     <CiCamera className={styles.firstImageCamera}/>
                   </label>
-                  <input type="file" accept="image/*" id="thirdImageInput" style={{display:'none'}} onChange={handleThirdImageChange}/> 
+                  <input type="file" accept="image/*" name="thirdImage" id="thirdImageInput" style={{display:'none'}} onChange={handleThirdImageChange}/> 
                 </div>
               ) : (
                 <div className={styles.productImage}>
                   <label htmlFor="thirdImageInput" className={styles.labelFirst}>
                     <CiCamera className={styles.smallCameraCenter}/>
                   </label>
-                  <input type="file" accept="image/*" id="thirdImageInput" style={{display:'none'}} onChange={handleThirdImageChange}/>  
+                  <input type="file" accept="image/*" name="thirdImage" id="thirdImageInput" style={{display:'none'}} onChange={handleThirdImageChange}/>  
                 </div>
               )}
             </>
@@ -827,18 +873,18 @@ export default function Page() {
             <>
               {fourthImage ? (
                 <div className={styles.productImageShow}>
-                  <img src={fourthImage} alt="fourth image" style={{ opacity: displayProduct ? 1 : 0.5, width: '150px', height: '150px', objectFit: 'cover' }}/>
+                  <img src={URL.createObjectURL(fourthImage)} alt="fourth image" style={{ opacity: displayProduct ? 1 : 0.5, width: '150px', height: '150px', objectFit: 'cover' }}/>
                   <label htmlFor="fourthImageInput" className={styles.firstLabel}>
                     <CiCamera className={styles.firstImageCamera}/>
                   </label>
-                  <input type="file" accept="image/*" id="fourthImageInput" style={{display:'none'}} onChange={handleFourthImageChange}/> 
+                  <input type="file" accept="image/*" name="fourthImage" id="fourthImageInput" style={{display:'none'}} onChange={handleFourthImageChange}/> 
                 </div>
               ) : (
                 <div className={styles.productImage}>
                   <label htmlFor="fourthImageInput" className={styles.labelFirst}>
                     <CiCamera className={styles.smallCameraCenter}/>
                   </label>
-                  <input type="file" accept="image/*" id="fourthImageInput" style={{display:'none'}} onChange={handleFourthImageChange}/>  
+                  <input type="file" accept="image/*" name="fourthImage" id="fourthImageInput" style={{display:'none'}} onChange={handleFourthImageChange}/>  
                 </div>
               )}
             </>
@@ -888,8 +934,8 @@ export default function Page() {
             <p className="w-28">배송비: <span style={{color: 'red', fontSize: '13px'}}>(필수)</span></p>
             <Input
               type="number"
-              value={product.deliveryFeeAmount || ''}
-              onChange={(e) => handleInputChange(e, 'deliveryFeeAmount')}
+              value={deliveryFeeAmount}
+              onChange={handleDeliveryFee}
               className="w-24"
             />
             <p className="ml-2">원</p>
@@ -949,8 +995,8 @@ export default function Page() {
           </div>
         </RadioGroup>
 
-          {dropDate && (
-            <div className='flex w-48 ml-10'>{dropDate}시</div>
+          {date && (
+            <div className='flex w-48 ml-10'>{date}시</div>
           )}
       </div>
       {isDropProduct && (
