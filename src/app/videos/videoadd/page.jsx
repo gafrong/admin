@@ -102,7 +102,6 @@ export default function Page() {
     
                     try {
                         const response = await axios.post(`${baseURL}videos/upload-base64-image`, { base64Image: resizedBase64Image });
-                        console.log('img url resized', response.data)
                         setThumbnail(response.data.imageUrl);
                     } catch (error) {
                         console.log('Error uploading image:', error.response ? error.response.data : error.message);
@@ -111,7 +110,6 @@ export default function Page() {
                     console.log('no resizing!');
                     try {
                         const response = await axios.post(`${baseURL}videos/upload-base64-image`, { base64Image });
-                        console.log('img url', response.data)
                         setThumbnail(response.data.imageUrl);
                     } catch (error) {
                         console.log('Error uploading image:', error.response ? error.response.data : error.message);
