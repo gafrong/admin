@@ -1,5 +1,6 @@
 'use client'
 
+import { ButtonSortable } from '@/components/data-table/data-table-button-sorting'
 import { Button } from '@/components/ui/button'
 import { Checkbox } from '@/components/ui/checkbox'
 import {
@@ -12,7 +13,6 @@ import {
 } from '@/components/ui/dropdown-menu'
 import { MoreHorizontal } from 'lucide-react'
 import Image from 'next/image'
-import { ButtonSortable } from './data-table-button-sorting'
 
 // Table Filters
 // -----------------------------------------------------------------------------
