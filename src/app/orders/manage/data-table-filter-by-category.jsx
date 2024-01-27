@@ -1,11 +1,14 @@
 import { Label } from '@/components/ui/label'
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group'
 import * as React from 'react'
-import { statuses } from './data/data'
 
-export function DataTableToolbarFilter({ table }) {
+export function DataTableFilterByCategory({
+  categories,
+  categoryHeader,
+  table,
+}) {
   const [value, setValue] = React.useState('All')
-  const column = table.getColumn('status')
+  const column = table.getColumn(categoryHeader)
 
   const handleValueChange = (value) => {
     setValue(value)
@@ -19,13 +22,13 @@ export function DataTableToolbarFilter({ table }) {
       defaultValue="All"
       onValueChange={handleValueChange}
     >
-      {statuses.map((status) => (
+      {categories?.map((category) => (
         <div
-          key={status.value}
+          key={category.value}
           className="flex items-center space-x-2 whitespace-nowrap"
         >
-          <RadioGroupItem value={status.value} id={status.value} />
-          <Label htmlFor={status.value}>{status.label}</Label>
+          <RadioGroupItem value={category.value} id={category.value} />
+          <Label htmlFor={category.value}>{category.label}</Label>
         </div>
       ))}
     </RadioGroup>

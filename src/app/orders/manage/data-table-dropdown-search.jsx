@@ -11,7 +11,11 @@ import {
 import { DropdownMenuTrigger } from '@radix-ui/react-dropdown-menu'
 import { MagnifyingGlassIcon } from '@radix-ui/react-icons'
 
-export function DataTableDropdownSearch({ searchColumn, setSearchColumn }) {
+export function DataTableDropdownSearch({
+  searchableColumnHeaders,
+  searchColumn,
+  setSearchColumn,
+}) {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
@@ -25,21 +29,16 @@ export function DataTableDropdownSearch({ searchColumn, setSearchColumn }) {
         <DropdownMenuLabel>Change search</DropdownMenuLabel>
         <DropdownMenuSeparator />
 
-        <DropdownMenuCheckboxItem
-          className="capitalize"
-          checked={searchColumn === 'name'}
-          onCheckedChange={() => setSearchColumn('name')}
-        >
-          User Name
-        </DropdownMenuCheckboxItem>
-
-        <DropdownMenuCheckboxItem
-          className="capitalize"
-          checked={searchColumn === 'orderNumber'}
-          onCheckedChange={() => setSearchColumn('orderNumber')}
-        >
-          Order Number
-        </DropdownMenuCheckboxItem>
+        {searchableColumnHeaders.map((header) => (
+          <DropdownMenuCheckboxItem
+            className="capitalize"
+            checked={searchColumn === header.id}
+            key={header.id}
+            onCheckedChange={() => setSearchColumn(header.id)}
+          >
+            {header.label}
+          </DropdownMenuCheckboxItem>
+        ))}
       </DropdownMenuContent>
     </DropdownMenu>
   )
