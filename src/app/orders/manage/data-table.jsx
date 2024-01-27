@@ -16,10 +16,11 @@ import {
   getSortedRowModel,
   useReactTable,
 } from '@tanstack/react-table'
+import { Search } from 'lucide-react'
 import * as React from 'react'
 import { DebouncedInput } from '../../../components/ui/debounced-input'
 import { DataTableDropdownSearch } from './data-table-dropdown-search'
-import { DataTableToolbarFilter } from './data-table-order-filter'
+import { DataTableFilterByCategory } from './data-table-filter-by-category'
 import { DataTablePagination } from './data-table-pagination'
 import { DataTableViewOptions } from './data-table-view-options'
 
@@ -45,12 +46,20 @@ export const EmptyTableRows = ({ columns }) => (
   </TableRow>
 )
 
-export function DataTable({ columns, data }) {
+export function DataTable({
+  columns,
+  data,
+  defaultCellStyle = '',
+  filterByCategory,
+  searchableColumnHeaders = undefined,
+}) {
   const [sorting, setSorting] = React.useState([])
   const [columnFilters, setColumnFilters] = React.useState([])
   const [columnVisibility, setColumnVisibility] = React.useState({})
   const [rowSelection, setRowSelection] = React.useState({})
-  const [searchColumn, setSearchColumn] = React.useState('name')
+  const [searchColumn, setSearchColumn] = React.useState(
+    searchableColumnHeaders[0]?.id ?? null,
+  )
   // const [globalFilter, setGlobalFilter] = React.useState("");
 
   const table = useReactTable({
@@ -75,96 +84,107 @@ export function DataTable({ columns, data }) {
   })
 
   const handleSearchDropdown = (value) => {
-    table.getColumn('orderNumber')?.setFilterValue('')
-    table.getColumn('name')?.setFilterValue('')
+    searchableColumnHeaders.forEach((column) => {
+      table.getColumn(column.id)?.setFilterValue('')
+    })
     setSearchColumn(value)
   }
 
-  const handleOrderNumberChange = (value) => {
-    table.getColumn('orderNumber')?.setFilterValue(value)
+  const handleSearchUpdate = (value) => {
+    table.getColumn(searchColumn)?.setFilterValue(value)
   }
 
-  const handleNameChange = (value) => {
-    table.getColumn('name')?.setFilterValue(value)
+  const findBy = ({ arr, key, value }) => {
+    return arr.find((item) => item[key] === value) || null
   }
+
+  const getSearchPlaceHolder = () => {
+    return (
+      findBy({
+        arr: searchableColumnHeaders ?? [],
+        key: 'id',
+        value: searchColumn,
+      })?.placeholder ?? 'Search ' + searchColumn + '...'
+    )
+  }
+
+  const isMultipleColumnSearch = searchableColumnHeaders?.length > 1
 
   return (
-    <div className="w-full">
-      {/* old dropdown was here */}
+    <div className="w-full space-y-4">
+      {filterByCategory && (
+        <DataTableFilterByCategory
+          categories={filterByCategory.categories}
+          categoryHeader={filterByCategory.categoryHeader}
+          table={table}
+        />
+      )}
 
-      <div className="space-y-4">
-        <DataTableToolbarFilter table={table} />
-        <div className="p4 flex justify-between">
-          <DataTableDropdownSearch
-            searchColumn={searchColumn}
-            setSearchColumn={handleSearchDropdown}
-          />
+      <div className="p4 flex justify-between">
+        {searchableColumnHeaders && (
+          <>
+            {isMultipleColumnSearch && (
+              <DataTableDropdownSearch
+                searchColumn={searchColumn}
+                setSearchColumn={handleSearchDropdown}
+                searchableColumnHeaders={searchableColumnHeaders}
+              />
+            )}
 
-          {searchColumn === 'orderNumber' && (
             <DebouncedInput
-              value={table.getColumn('orderNumber')?.getFilterValue() ?? ''}
-              onChange={handleOrderNumberChange}
               className="h-10 w-[150px] px-4 lg:w-[250px]"
-              placeholder="Search Order Number..."
+              onChange={handleSearchUpdate}
+              placeholder={getSearchPlaceHolder()}
             />
-          )}
+          </>
+        )}
 
-          {searchColumn === 'name' && (
-            <DebouncedInput
-              value={table.getColumn('name')?.getFilterValue() ?? ''}
-              onChange={handleNameChange}
-              className="h-10 w-[150px] px-4 lg:w-[250px]"
-              placeholder="Search User..."
-            />
-          )}
-
-          <DataTableViewOptions table={table} />
-        </div>
-
-        <div className="rounded-md border">
-          <Table>
-            <TableHeader>
-              {table.getHeaderGroups().map((headerGroup) => (
-                <TableRow key={headerGroup.id}>
-                  {headerGroup.headers.map((header) => {
-                    return (
-                      <TableHead key={header.id}>
-                        {header.isPlaceholder ? null : (
-                          flexRender(
-                            header.column.columnDef.header,
-                            header.getContext(),
-                          )
-                        )}
-                      </TableHead>
-                    )
-                  })}
-                </TableRow>
-              ))}
-            </TableHeader>
-            <TableBody>
-              {table.getRowModel().rows?.length ?
-                table.getRowModel().rows.map((row) => (
-                  <TableRow
-                    key={row.id}
-                    data-state={row.getIsSelected() && 'selected'}
-                  >
-                    {row.getVisibleCells().map((cell) => (
-                      <TableCell key={cell.id} className="align-top">
-                        {flexRender(
-                          cell.column.columnDef.cell,
-                          cell.getContext(),
-                        )}
-                      </TableCell>
-                    ))}
-                  </TableRow>
-                ))
-              : <EmptyTableRows columns={columns} />}
-            </TableBody>
-          </Table>
-        </div>
-
-        <DataTablePagination table={table} />
+        <DataTableViewOptions table={table} />
       </div>
+
+      <div className="rounded-md border">
+        <Table>
+          <TableHeader>
+            {table.getHeaderGroups().map((headerGroup) => (
+              <TableRow key={headerGroup.id}>
+                {headerGroup.headers.map((header) => {
+                  return (
+                    <TableHead key={header.id}>
+                      {header.isPlaceholder ? null : (
+                        flexRender(
+                          header.column.columnDef.header,
+                          header.getContext(),
+                        )
+                      )}
+                    </TableHead>
+                  )
+                })}
+              </TableRow>
+            ))}
+          </TableHeader>
+          <TableBody>
+            {table.getRowModel().rows?.length ?
+              table.getRowModel().rows.map((row) => (
+                <TableRow
+                  key={row.id}
+                  data-state={row.getIsSelected() && 'selected'}
+                >
+                  {row.getVisibleCells().map((cell) => (
+                    <TableCell key={cell.id} className={defaultCellStyle}>
+                      {flexRender(
+                        cell.column.columnDef.cell,
+                        cell.getContext(),
+                      )}
+                    </TableCell>
+                  ))}
+                </TableRow>
+              ))
+            : <EmptyTableRows columns={columns} />}
+          </TableBody>
+        </Table>
+      </div>
+
+      <DataTablePagination table={table} columns={columns} />
     </div>
   )
 }
