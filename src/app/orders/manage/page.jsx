@@ -1,7 +1,7 @@
 import { promises as fs } from 'fs'
 import path from 'path'
+import { DataTable } from '@/components/data-table/data-table'
 import { columns } from './columns'
-import { DataTable } from './data-table'
 import { statuses } from './data/data'
 
 // Simulate a database read for products.

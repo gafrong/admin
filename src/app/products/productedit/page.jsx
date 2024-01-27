@@ -1,7 +1,7 @@
 'use client'
 
-import { DataTable } from '@/app/orders/manage/data-table'
 import baseURL from '@/assets/common/baseUrl'
+import { DataTable } from '@/components/data-table/data-table'
 import LoadingSpinner from '@/components/LoadingSpinner'
 import useUserStore from '@/store/zustand'
 import axios from 'axios'

@@ -1,5 +1,9 @@
 'use client'
 
+import { DataTableDropdownSearch } from '@/components/data-table/data-table-dropdown-search'
+import { DataTableFilterByCategory } from '@/components/data-table/data-table-filter-by-category'
+import { DataTablePagination } from '@/components/data-table/data-table-pagination'
+import { DataTableViewOptions } from '@/components/data-table/data-table-view-options'
 import {
   Table,
   TableBody,
@@ -18,11 +22,7 @@ import {
 } from '@tanstack/react-table'
 import { Search } from 'lucide-react'
 import * as React from 'react'
-import { DebouncedInput } from '../../../components/ui/debounced-input'
-import { DataTableDropdownSearch } from './data-table-dropdown-search'
-import { DataTableFilterByCategory } from './data-table-filter-by-category'
-import { DataTablePagination } from './data-table-pagination'
-import { DataTableViewOptions } from './data-table-view-options'
+import { DebouncedInput } from '../ui/debounced-input'
 
 // fuzzy global filter. Disabled for now
 // const fuzzyFilter = (row, columnId, value, addMeta) => {

@@ -1,7 +1,7 @@
 'use client'
 
-import { DataTable } from '@/app/orders/manage/data-table'
 import baseURL from '@/assets/common/baseUrl'
+import { DataTable } from '@/components/data-table/data-table'
 import { Button } from '@/components/ui/button'
 import { Calendar } from '@/components/ui/calendar'
 import {

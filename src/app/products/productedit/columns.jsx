@@ -1,5 +1,5 @@
-import { ButtonSortable } from '@/app/orders/manage/data-table-button-sorting'
 import awsURL from '@/assets/common/awsUrl'
+import { ButtonSortable } from '@/components/data-table/data-table-button-sorting'
 import { Button } from '@/components/ui/button'
 import Image from 'next/image'
 import Link from 'next/link'
