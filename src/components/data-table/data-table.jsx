@@ -58,7 +58,7 @@ export function DataTable({
   const [columnVisibility, setColumnVisibility] = React.useState({})
   const [rowSelection, setRowSelection] = React.useState({})
   const [searchColumn, setSearchColumn] = React.useState(
-    searchableColumnHeaders[0]?.id ?? null,
+    (searchableColumnHeaders && searchableColumnHeaders[0]?.id) ?? null,
   )
   // const [globalFilter, setGlobalFilter] = React.useState("");
 
