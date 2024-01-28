@@ -26,6 +26,11 @@ const CellProductImage = ({ row }) => (
   </div>
 )
 
+// Price
+const HeaderPrice = ({ column }) => (
+  <ButtonSortable column={column}>Price</ButtonSortable>
+)
+
 const CellPrice = ({ row }) => {
   const amount = parseFloat(row.getValue('price'))
   // Format the amount as a dollar amount
@@ -71,7 +76,7 @@ export const columns = [
     accessorKey: 'price',
     cell: CellPrice,
     // filterFn: filterPrice,
-    header: 'Price',
+    header: HeaderPrice,
   },
   {
     cell: CellEdit,
