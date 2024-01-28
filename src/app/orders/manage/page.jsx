@@ -1,7 +1,7 @@
 import { promises as fs } from 'fs'
 import path from 'path'
 import { DataTable } from '@/components/data-table/data-table'
-import { columns } from './columns'
+import { columns, searchableColumnHeaders } from './columns'
 import { statuses } from './data/data'
 
 // Simulate a database read for products.
@@ -16,11 +16,6 @@ async function getData() {
   const parsedData = JSON.parse(data.toString())
   return parsedData
 }
-
-const searchableColumnHeaders = [
-  { id: 'name', label: 'Name' },
-  { id: 'orderNumber', label: 'Order Number' },
-]
 
 export default async function ManageOrdersPage() {
   const data = await getData()

@@ -3,12 +3,17 @@ import { ButtonSortable } from '@/components/data-table/data-table-button-sortin
 import { Button } from '@/components/ui/button'
 import Image from 'next/image'
 
-// Table Filters
+// Table filters
 // -----------------------------------------------------------------------------
 const filterDateCreated = (row, id, filterValue) => {
   const date = formatDate(row.getValue('dateCreated'))
   return date.includes(filterValue)
 }
+
+export const searchableColumnHeaders = [
+  { id: 'dateCreated', label: '날짜', placeholder: '검색 날짜...' },
+  { id: 'description', label: '설명', placeholder: '검색 설명...' },
+]
 
 // Table components
 // -----------------------------------------------------------------------------

@@ -5,6 +5,11 @@ import Image from 'next/image'
 import Link from 'next/link'
 import { FiEdit } from 'react-icons/fi'
 
+// Table filters
+// -----------------------------------------------------------------------------
+
+export const searchableColumnHeaders = [{ id: 'name', label: 'Name' }]
+
 // Table components
 // -----------------------------------------------------------------------------
 

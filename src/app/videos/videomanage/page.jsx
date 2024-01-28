@@ -16,13 +16,8 @@ import { addDays, format } from 'date-fns'
 import { Calendar as CalendarIcon } from 'lucide-react'
 import React, { useEffect, useState } from 'react'
 import { DateRange } from 'react-day-picker'
-import { getColumns } from './columns'
+import { getColumns, searchableColumnHeaders } from './columns'
 import styles from './videoadd.module.css'
-
-const searchableColumnHeaders = [
-  { id: 'dateCreated', label: '날짜', placeholder: '검색 날짜...' },
-  { id: 'description', label: '설명', placeholder: '검색 설명...' },
-]
 
 export default function Page() {
   const user = useUserStore((state) => state.user)
