@@ -14,8 +14,13 @@ import {
 import { MoreHorizontal } from 'lucide-react'
 import Image from 'next/image'
 
-// Table Filters
+// Table filters
 // -----------------------------------------------------------------------------
+
+export const searchableColumnHeaders = [
+  { id: 'name', label: 'Name' },
+  { id: 'orderNumber', label: 'Order Number' },
+]
 
 const filterProductGroup = (row, id, value) => {
   const productGroup = row.getValue(id)

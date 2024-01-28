@@ -6,15 +6,13 @@ import LoadingSpinner from '@/components/LoadingSpinner'
 import useUserStore from '@/store/zustand'
 import axios from 'axios'
 import React, { useEffect, useState } from 'react'
-import { columns } from './columns'
+import { columns, searchableColumnHeaders } from './columns'
 
 export default function Page() {
   const user = useUserStore((state) => state.user)
   const [products, setProducts] = useState([])
   const [loading, setLoading] = useState(false)
   const vendorId = user?._id
-
-  const searchableColumnHeaders = [{ id: 'name', label: 'Name' }]
 
   const getVendorProduct = async () => {
     try {
