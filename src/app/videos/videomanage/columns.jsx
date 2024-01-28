@@ -3,6 +3,13 @@ import { ButtonSortable } from '@/components/data-table/data-table-button-sortin
 import { Button } from '@/components/ui/button'
 import Image from 'next/image'
 
+// Table Filters
+// -----------------------------------------------------------------------------
+const filterDateCreated = (row, id, filterValue) => {
+  const date = formatDate(row.getValue('dateCreated'))
+  return date.includes(filterValue)
+}
+
 // Table components
 // -----------------------------------------------------------------------------
 
@@ -27,11 +34,16 @@ const formatDate = (dateString) => {
   return `${year}.${month}.${day}`
 }
 
-const CellDateCreated = ({ row }) => {
-  const date = formatDate(row.getValue('dateCreated'))
-  // const date = row.getValue('dateCreated').split('T')[0].split('-').join('.')
-  return date
-}
+// Date created
+const HeaderDateCreated = ({ column }) => (
+  <ButtonSortable column={column}>날짜</ButtonSortable>
+)
+
+const CellDateCreated = ({ row }) => formatDate(row.getValue('dateCreated'))
+
+const HeaderDescription = ({ column }) => (
+  <ButtonSortable column={column}>설명</ButtonSortable>
+)
 
 export const getColumns = ({ removeVideo }) => {
   const CellDeleteVideo = ({ row }) => {
@@ -47,22 +59,8 @@ export const getColumns = ({ removeVideo }) => {
     {
       accessorKey: 'dateCreated',
       cell: CellDateCreated,
-      header: '날짜',
-      filterFn: (row, id, filterValue) => {
-        // date: "2023-08-25T04:42:31.809Z"
-
-        const date = row
-          .getValue('dateCreated')
-          .split('T')[0]
-          .split('-')
-          .join('.')
-        console.log('filter row', row, {
-          date,
-          T: row.getValue('dateCreated'),
-          filterValue,
-        })
-        return date.includes(filterValue)
-      },
+      filterFn: filterDateCreated,
+      header: HeaderDateCreated,
     },
     {
       accessorKey: 'image',
@@ -72,7 +70,7 @@ export const getColumns = ({ removeVideo }) => {
 
     {
       accessorKey: 'description',
-      header: '설명',
+      header: HeaderDescription,
     },
     {
       cell: CellDeleteVideo,
