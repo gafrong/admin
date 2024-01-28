@@ -2,6 +2,7 @@
 
 import baseURL from '@/assets/common/baseUrl'
 import { DataTable } from '@/components/data-table/data-table'
+import { PageTitle } from '@/components/typography/PageTitle'
 import { Button } from '@/components/ui/button'
 import { Calendar } from '@/components/ui/calendar'
 import {
@@ -82,9 +83,7 @@ export default function Page() {
 
   return (
     <div className="py-10 pl-5 pr-2">
-      <h1 className="scroll-m-20 pb-8 text-2xl font-extrabold tracking-tight lg:text-2xl">
-        동영상 관리
-      </h1>
+      <PageTitle>동영상 관리</PageTitle>
 
       <div className={styles.durationContainer}>
         <div className="mr-5 flex flex-row">

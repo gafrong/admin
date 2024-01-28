@@ -3,6 +3,7 @@
 import baseURL from '@/assets/common/baseUrl'
 import { DataTable } from '@/components/data-table/data-table'
 import LoadingSpinner from '@/components/LoadingSpinner'
+import { PageTitle } from '@/components/typography/PageTitle'
 import useUserStore from '@/store/zustand'
 import axios from 'axios'
 import React, { useEffect, useState } from 'react'
@@ -38,9 +39,7 @@ export default function Page() {
 
   return (
     <div className="py-10 pl-5 pr-2">
-      <h1 className="scroll-m-20 pb-8 text-2xl font-extrabold tracking-tight lg:text-2xl">
-        Edit Product
-      </h1>
+      <PageTitle>Edit Product</PageTitle>
       <DataTable
         columns={columns}
         data={products}

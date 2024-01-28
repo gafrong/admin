@@ -1,6 +1,7 @@
 import { promises as fs } from 'fs'
 import path from 'path'
 import { DataTable } from '@/components/data-table/data-table'
+import { PageTitle } from '@/components/typography/PageTitle'
 import { columns, searchableColumnHeaders } from './columns'
 import { statuses } from './data/data'
 
@@ -21,9 +22,7 @@ export default async function ManageOrdersPage() {
   const data = await getData()
   return (
     <div className="py-10 pl-5 pr-2">
-      <h1 className="scroll-m-20 pb-8 text-2xl font-extrabold tracking-tight lg:text-2xl">
-        Manage Orders
-      </h1>
+      <PageTitle>Manage Orders</PageTitle>
       <DataTable
         columns={columns}
         data={data}

@@ -134,6 +134,7 @@ const ButtonJumpToLastPage = ({
 //     id: 'select',
 //   },]
 export const DataTablePagination = ({ table, columns }) => {
+  // check for an id of 'select' in the columns array to determine if multi-select checkboxes are active
   const isSelectPresent = columns.some((column) => column.id === 'select')
   const { pageIndex } = table.getState().pagination
   const pageIndexCurrent = pageIndex
