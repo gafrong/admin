@@ -1,5 +1,6 @@
 'use client'
 
+import { ButtonSortable } from '@/components/data-table/data-table-button-sorting'
 import { Button } from '@/components/ui/button'
 import { Checkbox } from '@/components/ui/checkbox'
 import {
@@ -10,15 +11,17 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
-import { cn } from '@/lib/utils'
-import { ArrowUpDown, MoreHorizontal } from 'lucide-react'
+import { MoreHorizontal } from 'lucide-react'
 import Image from 'next/image'
 
-// Table components
-// ----------------
+// Table filters
+// -----------------------------------------------------------------------------
 
-// Filters
-// -------
+export const searchableColumnHeaders = [
+  { id: 'name', label: 'Name' },
+  { id: 'orderNumber', label: 'Order Number' },
+]
+
 const filterProductGroup = (row, id, value) => {
   const productGroup = row.getValue(id)
   return (
@@ -47,19 +50,8 @@ const filterName = (row, id, value) => {
   return row.getValue(id).includes(value)
 }
 
-// General sorting button, add to any column to make it sortable
-const ButtonSorting = ({ column, children, className }) => {
-  return (
-    <Button
-      variant="ghost"
-      onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
-      className={cn('px-0', className)}
-    >
-      {children}
-      <ArrowUpDown className="ml-2 h-4 w-4" />
-    </Button>
-  )
-}
+// Table components
+// -----------------------------------------------------------------------------
 
 // Date
 const CellDate = ({ row }) => (
@@ -115,7 +107,7 @@ const CellStatus = ({ row }) => (
 
 // Name
 const HeaderName = ({ column }) => (
-  <ButtonSorting column={column}>User</ButtonSorting>
+  <ButtonSortable column={column}>User</ButtonSortable>
 )
 
 const CellName = ({ row }) => (
@@ -128,7 +120,7 @@ const CellName = ({ row }) => (
 
 // Quantity
 const HeaderQuantity = ({ column }) => (
-  <ButtonSorting column={column}>Qty</ButtonSorting>
+  <ButtonSortable column={column}>Qty</ButtonSortable>
 )
 
 // Image
@@ -138,7 +130,6 @@ const CellProductImage = ({ row }) => (
       src={row.getValue('productImage')}
       width={160}
       height={160}
-      // layout="fixed"
       alt="product image"
     />
   </div>
@@ -158,18 +149,18 @@ const CellAmount = ({ row }) => {
 
 const HeaderAmount = ({ column }) => (
   <div className="flex">
-    <ButtonSorting className="ml-auto" column={column}>
+    <ButtonSortable className="ml-auto" column={column}>
       Payment
-    </ButtonSorting>
+    </ButtonSortable>
   </div>
 )
 
 // Price
 const HeaderPrice = ({ column }) => (
   <div className="flex">
-    <ButtonSorting className="ml-auto" column={column}>
+    <ButtonSortable className="ml-auto" column={column}>
       Price
-    </ButtonSorting>
+    </ButtonSortable>
   </div>
 )
 
