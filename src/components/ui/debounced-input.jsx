@@ -8,7 +8,7 @@ export function DebouncedInput({
   debounce = 500,
   ...props
 }) {
-  const [value, setValue] = React.useState(initialValue)
+  const [value, setValue] = React.useState(initialValue ?? '')
 
   React.useEffect(() => {
     setValue(initialValue)

@@ -125,8 +125,17 @@ const ButtonJumpToLastPage = ({
     </>
   )
 }
-
-export const DataTablePagination = ({ table }) => {
+// const columns = [
+//   {
+//     cell: CellSelectCheckbox,
+//     enableHiding: false,
+//     enableSorting: false,
+//     header: HeaderSelectAll,
+//     id: 'select',
+//   },]
+export const DataTablePagination = ({ table, columns }) => {
+  // check for an id of 'select' in the columns array to determine if multi-select checkboxes are active
+  const isSelectPresent = columns.some((column) => column.id === 'select')
   const { pageIndex } = table.getState().pagination
   const pageIndexCurrent = pageIndex
   const pageIndexLast = table.getPageCount() - 1
@@ -142,7 +151,7 @@ export const DataTablePagination = ({ table }) => {
   if (!isPageAvailable) return null
   return (
     <div className="flex flex-col items-center justify-center gap-5 space-x-2 py-4 lg:flex-row">
-      <CountProductsSelected table={table} />
+      {isSelectPresent && <CountProductsSelected table={table} />}
       <div className="flex gap-2">
         <ChevronGotoPreviousPage table={table} />
 
