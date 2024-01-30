@@ -17,7 +17,6 @@ import { CiCamera } from "react-icons/ci";
 import { Label } from "@/components/ui/label"
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
 import styles from './productregister.module.css'
-import mime from "mime";
 import useUserStore from '@/store/zustand'
 import DateTimePicker from 'react-datetime-picker';
 import 'react-datetime-picker/dist/DateTimePicker.css';
@@ -42,7 +41,7 @@ export default function Page() {
   const [error, setError] = useState(null);
   const [deliveryFeeOn, setDeliveryFeeOn] = useState(false)
   const [onSale, setOnSale] = useState(false)
-  // const [soldout, setSoldout] = useState(false)
+  const [discountRate, setDiscountRate] = useState(0);
   const [displayProduct, setDisplayProduct] = useState(true)
   const [selectedParentCategoryId, setSelectedParentCategoryId] = useState('642d1f4406159dd4f0519464')
   const [color, setColor] = useState('')
@@ -434,14 +433,23 @@ export default function Page() {
     }))
   }
 
+  useEffect (() => {    
+    console.log('onSale', onSale)
+    if(!onSale){
+      setDiscountRate(0)
+    }
+  }, [onSale])
+  
   const handleDiscountChange = () => {
-    const updatedDiscountValue = !onSale
-    setOnSale(updatedDiscountValue)
-    setProduct((prevProduct) => ({
-      ...prevProduct,
-      onSale: updatedDiscountValue,
-      discount: updatedDiscountValue ? prevProduct.discount : 0,
-    }))
+    setOnSale((prevValue) => !prevValue)
+  }
+
+  const handleDiscountRate = (e) => {
+    console.log('discount rate', e.target.value)
+    const value = e.target.value;
+    const discountValue = value / 100;
+    console.log('rate', discountValue)
+    setDiscountRate(discountValue);
   }
 
   const handleDisplayProductChange = () => {
@@ -682,7 +690,6 @@ export default function Page() {
   }
 
   const handleDeliveryFee = (e) => {
-    console.log('fee amount', e.target.value)
     setDeliveryFeeAmount(e.target.value)
   }
 
@@ -707,20 +714,6 @@ export default function Page() {
       }
     }
 
-    // for (let i = 0; i < images.length; i++) {
-    //   const img = images[i];
-    //   if (img) {
-    //       const newImageUri = "file:///" + img.split("file:/").join("");
-    //       const imageFile = {
-    //           uri: newImageUri,
-    //           type: mime.getType(newImageUri),
-    //           name: newImageUri.split("/").pop(),
-    //       };
-    //       console.log('checking1')
-    //       formData.append("image", imageFile);
-    //   }
-    // }
-
     formData.append("name", product.name);
     formData.append("price", product.price);
     formData.append("description", product.description);
@@ -731,7 +724,8 @@ export default function Page() {
     formData.append("numReviews", product.numReviews);
     formData.append("isFeatured", isFeatured);
     formData.append("colorOptions", JSON.stringify(colorOptions));
-    formData.append("sale", product.onSale);
+    formData.append("onSale", onSale);
+    formData.append("discount", discountRate);
     formData.append("soldout", isSoldout);
     formData.append("display", displayProduct);
     formData.append("deliveryFee", deliveryFeeOn);
@@ -952,8 +946,8 @@ export default function Page() {
             <p className="w-28">할인률: <span style={{color: 'red', fontSize: '13px'}}>(필수)</span></p>
             <Input
               type="number"
-              value={product.discount || ''}
-              onChange={(e) => handleInputChange(e, 'discount')}
+              // value={product.discount || ''}
+              onChange={handleDiscountRate}
               className="w-24"
             />
             <p className="ml-2">%</p>
