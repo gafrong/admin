@@ -49,41 +49,39 @@ export function DateRangePicker({ table, dateColumnId }) {
     : 'Pick a date'
 
   return (
-    <div className="mr-2 rounded border p-2">
-      <div className="flex flex-wrap gap-4">
-        <div className="mt-2">동영상 기간설정</div>
-        <div className={cn('grid gap-2')}>
-          <Popover>
-            <PopoverTrigger asChild>
-              <Button
-                id="date"
-                variant={'outline'}
-                className={cn(
-                  'w-[300px] justify-start text-left font-normal',
-                  !date && 'text-muted-foreground',
-                )}
-              >
-                <CalendarIcon className="h-4 w-4" />
-                {ButtonText}
-              </Button>
-            </PopoverTrigger>
-            <PopoverContent className="w-auto p-0" align="start">
-              <Calendar
-                defaultMonth={date?.from}
-                initialFocus
-                mode="range"
-                numberOfMonths={2}
-                onSelect={handleSetDate}
-                selected={date}
-              />
-            </PopoverContent>
-          </Popover>
-        </div>
-        <Button onClick={handleQuery}>조회</Button>
-        <Button variant="secondary" onClick={handleReset}>
-          초기화
-        </Button>
+    <div className="flex flex-wrap gap-4 rounded border p-2">
+      <div className="mt-2">동영상 기간설정</div>
+      <div className={cn('grid gap-2')}>
+        <Popover>
+          <PopoverTrigger asChild>
+            <Button
+              id="date"
+              variant={'outline'}
+              className={cn(
+                'w-[300px] justify-start text-left font-normal',
+                !date && 'text-muted-foreground',
+              )}
+            >
+              <CalendarIcon className="h-4 w-4" />
+              {ButtonText}
+            </Button>
+          </PopoverTrigger>
+          <PopoverContent className="w-auto p-0" align="start">
+            <Calendar
+              defaultMonth={date?.from}
+              initialFocus
+              mode="range"
+              numberOfMonths={2}
+              onSelect={handleSetDate}
+              selected={date}
+            />
+          </PopoverContent>
+        </Popover>
       </div>
+      <Button onClick={handleQuery}>조회</Button>
+      <Button variant="secondary" onClick={handleReset}>
+        초기화
+      </Button>
     </div>
   )
 }
