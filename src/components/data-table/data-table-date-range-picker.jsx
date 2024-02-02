@@ -50,8 +50,8 @@ export function DateRangePicker({ table, dateColumnId }) {
 
   return (
     <div className="mr-2 rounded border p-2">
-      <div className="mr-5 flex flex-row">
-        <div className="mr-5 mt-2">동영상 기간설정</div>
+      <div className="flex flex-wrap gap-4">
+        <div className="mt-2">동영상 기간설정</div>
         <div className={cn('grid gap-2')}>
           <Popover>
             <PopoverTrigger asChild>
@@ -63,7 +63,7 @@ export function DateRangePicker({ table, dateColumnId }) {
                   !date && 'text-muted-foreground',
                 )}
               >
-                <CalendarIcon className="mr-2 h-4 w-4" />
+                <CalendarIcon className="h-4 w-4" />
                 {ButtonText}
               </Button>
             </PopoverTrigger>
@@ -79,10 +79,8 @@ export function DateRangePicker({ table, dateColumnId }) {
             </PopoverContent>
           </Popover>
         </div>
-        <Button className="ml-5" onClick={handleQuery}>
-          조회
-        </Button>
-        <Button variant="secondary" className="ml-2" onClick={handleReset}>
+        <Button onClick={handleQuery}>조회</Button>
+        <Button variant="secondary" onClick={handleReset}>
           초기화
         </Button>
       </div>
