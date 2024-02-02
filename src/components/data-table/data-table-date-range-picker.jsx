@@ -12,7 +12,7 @@ import React, { useEffect, useState } from 'react'
 
 const initialDateRange = {
   from: new Date(2023, 0, 20),
-  to: addDays(new Date(2023, 0, 20), 20),
+  to: addDays(new Date(2023, 0, 20), 200),
 }
 
 export function DateRangePicker({ table, dateColumnId }) {
@@ -61,7 +61,7 @@ export function DateRangePicker({ table, dateColumnId }) {
                 !date && 'text-muted-foreground',
               )}
             >
-              <CalendarIcon className="h-4 w-4" />
+              <CalendarIcon className="mr-2 h-4 w-4" />
               {ButtonText}
             </Button>
           </PopoverTrigger>

@@ -28,6 +28,7 @@ export default function Page() {
       setLoading(false)
     }
   }
+
   useEffect(() => {
     if (userId) {
       getVendorVideos()
