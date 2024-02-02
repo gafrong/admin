@@ -16,8 +16,7 @@ const initialDateRange = {
 }
 
 export function DateRangePicker({ table, dateColumnId }) {
-  const columnDateCreated = table.getColumn(dateColumnId)
-  const setFilterValue = columnDateCreated.setFilterValue
+  const { setFilterValue } = table.getColumn(dateColumnId)
 
   const [date, setDate] = useState(initialDateRange)
 

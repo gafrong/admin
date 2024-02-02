@@ -17,7 +17,7 @@ export function filterDateBetween(rows, id, filterValues) {
   endDate = endDate.getTime()
 
   if (!(endDate || startDate)) {
-    return rows
+    return false
   }
 
   const cellDate = new Date(rows.getValue('dateCreated')).getTime()
@@ -34,7 +34,7 @@ export function filterDateBetween(rows, id, filterValues) {
     return cellDate <= endDate
   }
 
-  return undefined
+  return false
 }
 
 export const searchableColumnHeaders = [
