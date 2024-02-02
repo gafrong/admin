@@ -23,6 +23,7 @@ import {
 import { Search } from 'lucide-react'
 import * as React from 'react'
 import { DebouncedInput } from '../ui/debounced-input'
+import { DateRangePicker } from './data-table-date-range-picker'
 
 // fuzzy global filter. Disabled for now
 // const fuzzyFilter = (row, columnId, value, addMeta) => {
@@ -48,6 +49,7 @@ export const EmptyTableRows = ({ columns }) => (
 
 export function DataTable({
   columns,
+  controls = {},
   data,
   defaultCellStyle = '',
   filterByCategory,
@@ -112,6 +114,12 @@ export function DataTable({
 
   return (
     <div className="w-full space-y-4">
+      {controls.dateRangePicker && (
+        <DateRangePicker
+          table={table}
+          dateColumnId={controls.dateRangePicker}
+        />
+      )}
       {filterByCategory && (
         <DataTableFilterByCategory
           categories={filterByCategory.categories}
