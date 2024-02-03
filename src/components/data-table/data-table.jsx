@@ -20,8 +20,8 @@ import {
   getSortedRowModel,
   useReactTable,
 } from '@tanstack/react-table'
-import { Search } from 'lucide-react'
 import * as React from 'react'
+import LoadingSpinner from '../LoadingSpinner'
 import { DebouncedInput } from '../ui/debounced-input'
 import { DateRangePicker } from './data-table-date-range-picker'
 
@@ -47,12 +47,21 @@ export const EmptyTableRows = ({ columns }) => (
   </TableRow>
 )
 
+export const LoadingTableRows = ({ columns }) => (
+  <TableRow>
+    <TableCell colSpan={columns.length} className="h-24 text-center">
+      <LoadingSpinner className="h-40" />
+    </TableCell>
+  </TableRow>
+)
+
 export function DataTable({
   columns,
   controls = {},
   data,
   defaultCellStyle = '',
   filterByCategory,
+  isLoading,
   searchableColumnHeaders = undefined,
 }) {
   const [sorting, setSorting] = React.useState([])
@@ -111,7 +120,8 @@ export function DataTable({
   }
 
   const isMultipleColumnSearch = searchableColumnHeaders?.length > 1
-
+  const isDataLoaded = table.getRowModel().rows?.length
+  const isNoData = !isDataLoaded && !isLoading
   return (
     <div className="w-full space-y-4">
       {controls.dateRangePicker && (
@@ -171,7 +181,7 @@ export function DataTable({
             ))}
           </TableHeader>
           <TableBody>
-            {table.getRowModel().rows?.length ?
+            {isDataLoaded &&
               table.getRowModel().rows.map((row) => (
                 <TableRow
                   key={row.id}
@@ -186,8 +196,9 @@ export function DataTable({
                     </TableCell>
                   ))}
                 </TableRow>
-              ))
-            : <EmptyTableRows columns={columns} />}
+              ))}
+            {isNoData && <EmptyTableRows columns={columns} />}
+            {isLoading && <LoadingTableRows columns={columns} />}
           </TableBody>
         </Table>
       </div>

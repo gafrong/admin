@@ -61,9 +61,10 @@ export default function Page() {
 
       <DataTable
         columns={columns}
-        data={videos}
-        searchableColumnHeaders={searchableColumnHeaders}
         controls={{ dateRangePicker: 'dateCreated' }}
+        data={videos}
+        isLoading={loading}
+        searchableColumnHeaders={searchableColumnHeaders}
       />
     </div>
   )
