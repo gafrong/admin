@@ -120,8 +120,9 @@ export function DataTable({
   }
 
   const isMultipleColumnSearch = searchableColumnHeaders?.length > 1
-  const isDataLoaded = table.getRowModel().rows?.length
+  const isDataLoaded = table.getRowModel().rows?.length > 1
   const isNoData = !isDataLoaded && !isLoading
+
   return (
     <div className="w-full space-y-4">
       {controls.dateRangePicker && (
