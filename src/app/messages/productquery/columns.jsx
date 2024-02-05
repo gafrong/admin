@@ -38,7 +38,7 @@ export function filterDateBetween(rows, id, filterValues) {
 }
 
 export const searchableColumnHeaders = [
-  { id: 'dateCreated', label: '날짜', placeholder: '검색 날짜...' },
+  { id: 'title', label: '날짜', placeholder: '검색 날짜...' },
   { id: 'description', label: '설명', placeholder: '검색 설명...' },
 ]
 
@@ -51,7 +51,7 @@ const CellUser = ({ row }) => {
   return (
     <>
       <div className="flex gap-4">
-        <div className="h-18 w-12 overflow-hidden rounded-sm border">
+        <div className="h-18 w-12 overflow-hidden rounded-full border">
           <Image
             src={awsURL + user.image} // Access nested object value
             width={48}
@@ -63,6 +63,27 @@ const CellUser = ({ row }) => {
         <div className="mr-4">
           <p className="">{user.name}</p>
           <p>{user.username}</p>
+        </div>
+      </div>
+    </>
+  )
+}
+
+// Image
+const CellProductImage = ({ row }) => {
+  const productImage = row.original?.productId?.image
+  if (!productImage) return <div className="blue-500 h-10 w-10 border"></div>
+  return (
+    <>
+      <div className="flex gap-4">
+        <div className="h-12 w-12 overflow-hidden rounded-full border">
+          <Image
+            src={awsURL + productImage} // Access nested object value
+            width={48}
+            height={48}
+            style={{ objectFit: 'contain' }}
+            alt="product image"
+          />
         </div>
       </div>
     </>
@@ -100,6 +121,10 @@ export const getColumns = () => {
   // }
 
   const columns = [
+    {
+      cell: CellProductImage,
+      header: 'Product',
+    },
     {
       accessorKey: 'title',
       header: HeaderTitle,
