@@ -38,7 +38,6 @@ export function filterDateBetween(rows, id, filterValues) {
 }
 
 export const searchableColumnHeaders = [
-  { id: 'dateCreated', label: '날짜', placeholder: '검색 날짜...' },
   { id: 'description', label: '설명', placeholder: '검색 설명...' },
 ]
 

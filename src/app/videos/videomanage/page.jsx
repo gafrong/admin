@@ -18,7 +18,15 @@ export default function Page() {
   const getVendorVideos = async () => {
     try {
       setLoading(true)
-      const response = await axios.get(`${baseURL}videos/user/${userId}/videos`)
+      const response = await axios.get(
+        `${baseURL}videos/user/${userId}/videos`,
+        {
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${token}`,
+          },
+        },
+      )
 
       setVideos(response.data.videos)
       console.log('vidoe counts', videos)
@@ -55,16 +63,16 @@ export default function Page() {
 
   const columns = getColumns({ removeVideo })
 
+  const dateRangePicker = 'dateCreated'
+
   return (
     <div className="py-10 pl-5 pr-2">
       <PageTitle>동영상 관리</PageTitle>
-
       <DataTable
         columns={columns}
-        controls={{ dateRangePicker: 'dateCreated' }}
+        controls={{ dateRangePicker, searchableColumnHeaders }}
         data={videos}
         isLoading={loading}
-        searchableColumnHeaders={searchableColumnHeaders}
       />
     </div>
   )

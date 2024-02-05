@@ -11,8 +11,8 @@ import { Calendar as CalendarIcon } from 'lucide-react'
 import React, { useEffect, useState } from 'react'
 
 const initialDateRange = {
-  from: new Date(2023, 0, 20),
-  to: addDays(new Date(2023, 0, 20), 200),
+  from: addDays(new Date(), -365),
+  to: new Date(),
 }
 
 export function DateRangePicker({ table, dateColumnId }) {

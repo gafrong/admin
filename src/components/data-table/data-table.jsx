@@ -60,10 +60,9 @@ export function DataTable({
   controls = {},
   data,
   defaultCellStyle = '',
-  filterByCategory,
   isLoading,
-  searchableColumnHeaders = undefined,
 }) {
+  const { searchableColumnHeaders, filterByCategory } = controls ?? {}
   const [sorting, setSorting] = React.useState([])
   const [columnFilters, setColumnFilters] = React.useState([])
   const [columnVisibility, setColumnVisibility] = React.useState({})
