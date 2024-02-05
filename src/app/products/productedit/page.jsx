@@ -2,7 +2,6 @@
 
 import baseURL from '@/assets/common/baseUrl'
 import { DataTable } from '@/components/data-table/data-table'
-import LoadingSpinner from '@/components/LoadingSpinner'
 import { PageTitle } from '@/components/typography/PageTitle'
 import useUserStore from '@/store/zustand'
 import axios from 'axios'
@@ -33,16 +32,13 @@ export default function Page() {
     }
   }, [vendorId])
 
-  if (loading) {
-    return <LoadingSpinner />
-  }
-
   return (
     <div className="py-10 pl-5 pr-2">
       <PageTitle>제품 편집</PageTitle>
       <DataTable
         columns={columns}
         data={products}
+        isLoading={loading}
         searchableColumnHeaders={searchableColumnHeaders}
       />
     </div>
