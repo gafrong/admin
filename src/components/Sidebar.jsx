@@ -125,13 +125,7 @@ const Sidebar = () => {
               href="/messages/productquery"
               className="flex flex-col pb-3 pl-3 pt-3 hover:bg-slate-200"
             >
-              Inquiry
-            </Link>
-            <Link
-              href="/messages/review"
-              className="flex flex-col pb-3 pl-3 pt-3 hover:bg-slate-200"
-            >
-              Review
+              고객 문의
             </Link>
           </AccordionContent>
         </AccordionItem>
