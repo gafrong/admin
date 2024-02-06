@@ -47,22 +47,7 @@ export default function Page() {
   const dateRangePicker = 'dateCreated'
 
   return (
-<<<<<<< HEAD
-    <div className="pl-5 pt-5">
-      <h1>고객 문의</h1>
-      <div className="questions-list">
-        <div className='flex row'>
-          <p className='w-36'>제품</p>
-          <p className='w-40'>제목</p>
-          <p className='w-48'>내용</p>
-          <p className='w-64'>고객</p>
-          <p className='w-28'>날짜</p>
-        </div>
-        {questions.map((question, index) => (
-          <Question key={index} question={question} />
-        ))}
-      </div>
-=======
+
     <div className="py-10 pl-5 pr-2">
       <PageTitle>고객 문의</PageTitle>
       <DataTable
@@ -71,7 +56,6 @@ export default function Page() {
         data={questions}
         isLoading={loading}
       />
->>>>>>> 86de245e461b3ec6d05350dfcdc368ca52b584ec
     </div>
   )
 }
