@@ -34,12 +34,12 @@ export default function Page() {
 
   return (
     <div className="py-10 pl-5 pr-2">
-      <PageTitle>제품 편집</PageTitle>
+      <PageTitle>제품 편집 uu</PageTitle>
       <DataTable
         columns={columns}
+        controls={{ searchableColumnHeaders }}
         data={products}
         isLoading={loading}
-        searchableColumnHeaders={searchableColumnHeaders}
       />
     </div>
   )

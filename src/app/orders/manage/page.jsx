@@ -20,15 +20,15 @@ async function getData() {
 
 export default async function ManageOrdersPage() {
   const data = await getData()
+  const filterByCategory = { categories: statuses, categoryHeader: 'status' }
   return (
     <div className="py-10 pl-5 pr-2">
       <PageTitle>Manage Orders</PageTitle>
       <DataTable
         columns={columns}
+        controls={{ filterByCategory, searchableColumnHeaders }}
         data={data}
         defaultCellStyle="align-top"
-        searchableColumnHeaders={searchableColumnHeaders}
-        filterByCategory={{ categories: statuses, categoryHeader: 'status' }}
       />
     </div>
   )
