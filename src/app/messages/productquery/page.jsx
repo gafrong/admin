@@ -37,6 +37,13 @@ export default function Page() {
     <div className="pl-5 pt-5">
       <h1>고객 문의</h1>
       <div className="questions-list">
+        <div className='flex row'>
+          <p className='w-36'>제품</p>
+          <p className='w-40'>제목</p>
+          <p className='w-48'>내용</p>
+          <p className='w-64'>고객</p>
+          <p className='w-28'>날짜</p>
+        </div>
         {questions.map((question, index) => (
           <Question key={index} question={question} />
         ))}
