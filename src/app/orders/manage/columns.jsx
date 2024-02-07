@@ -114,12 +114,25 @@ const HeaderQuantity = ({ column }) => (
 )
 
 // Image
+// const CellProductImage = ({ row }) => (
+//   <div className="flex w-24 overflow-hidden">
+//     <Image
+//       src={row.getValue('productImage')}
+//       width={160}
+//       height={160}
+//       alt="product image"
+//     />
+//   </div>
+// )
+
 const CellProductImage = ({ row }) => (
-  <div className="flex w-24 overflow-hidden">
+  <div className="h-18 w-12 overflow-hidden rounded-sm border">
     <Image
+      // src={awsURL + row.getValue('productImage')}
       src={row.getValue('productImage')}
-      width={160}
-      height={160}
+      width={48}
+      height={48}
+      style={{ objectFit: 'contain' }}
       alt="product image"
     />
   </div>
