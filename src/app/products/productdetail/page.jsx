@@ -13,8 +13,12 @@ import { Switch } from '@/components/ui/switch'
 import { Textarea } from '@/components/ui/textarea'
 import { useEffect, useState } from 'react'
 import { HexColorPicker } from 'react-colorful'
+import useUserStore from '@/store/zustand'
+import axios from 'axios'
+import baseURL from '@/assets/common/baseUrl'
 
 export default function Page({ searchParams }) {
+  const token = useUserStore((state) => state?.token);
   const parsedProduct = JSON.parse(decodeURIComponent(searchParams.product))
 
   const [editedProduct, setEditedProduct] = useState({ ...parsedProduct })
@@ -23,14 +27,12 @@ export default function Page({ searchParams }) {
   const [soldout, setSoldout] = useState(parsedProduct.soldout)
   const [displayProduct, setDisplayProduct] = useState(parsedProduct.display)
   const [selectedParentCategoryId, setSelectedParentCategoryId] = useState(null)
-  const [color, setColor] = useState(parsedProduct.colorOptions?.hexColor)
-  const [productColor, setProductColor] = useState(
-    parsedProduct.colorOptions?.productColor,
-  )
-  const [sizes, setSizes] = useState(parsedProduct.colorOptions?.sizes)
-  const [subOption1, setSubOption1] = useState(parsedProduct.subOption1)
-  const [subOption2, setSubOption2] = useState(parsedProduct.subOption2)
-  const [subOption3, setSubOption3] = useState(parsedProduct.subOption3)
+  const [colorOptions, setColorOptions] = useState({
+    hexColor: parsedProduct.colorOptions?.hexColor || '',
+    productColor: parsedProduct.colorOptions?.productColor || '',
+    sizes: parsedProduct.colorOptions?.sizes || []
+  });
+  const [error, setError] = useState('');
 
   const parentCategories = [
     { id: '642d1f4406159dd4f0519464', name: '의류' },
@@ -296,10 +298,10 @@ export default function Page({ searchParams }) {
       parentCategories.find(
         (category) => category.id === selectedParentCategoryId,
       ) ||
-        parentCategories.find(
-          (category) => category.id === editedProduct?.category?.parentId,
-        ) ||
-        null,
+      parentCategories.find(
+        (category) => category.id === editedProduct?.category?.parentId,
+      ) ||
+      null,
     )
   }, [selectedParentCategoryId, editedProduct])
 
@@ -363,26 +365,84 @@ export default function Page({ searchParams }) {
   }
 
   const handleColorInputChange = (e) => {
-    setProductColor(e.target.value)
+    setColorOptions(prevOptions => ({
+      ...prevOptions,
+      productColor: e.target.value
+    }));
   }
 
   const handleStockInputChange = (e, sizeId) => {
-    const newStockValue = e.target.value
-    setSizes((prevSizes) =>
-      prevSizes.map((size) =>
-        size._id === sizeId ? { ...size, stock: newStockValue } : size,
-      ),
-    )
-  }
+    const inputValue = e.target.value.trim(); // Remove leading and trailing whitespace
+    if (inputValue === '' || /^\d+$/.test(inputValue)) { // Check if the input value is empty or a valid integer
+      const newStockValue = inputValue === '' ? 0 : parseInt(inputValue);
+      setColorOptions(prevOptions => ({
+        ...prevOptions,
+        sizes: prevOptions.sizes.map(size =>
+          size._id === sizeId ? { ...size, stock: newStockValue } : size
+        )
+      }));
+      setError('');
+    } else {
+      setError('Please enter a valid integer value or leave it empty.'); // Set error message
+    }
+  };
+
+
+  const handleColorChange = (newColor) => {
+    setColorOptions(prevOptions => ({
+      ...prevOptions,
+      hexColor: newColor
+    }));
+  };
 
   const handleSubmit = () => {
-    console.log('name', editedProduct.name)
-    console.log('price', editedProduct.price)
-    console.log('soldout', editedProduct.soldout)
+    if (
+      editedProduct.name == "" ||
+      editedProduct.price == "" ||
+      editedProduct.description == ""
+    ) {
+      setError("Please fill in the form correctly");
+    }
+    const currentDate = new Date();
+    const formData = new FormData();
+    formData.append("category", subCategory.id || editedProduct.category._id);
+    formData.append("colorOptions", JSON.stringify(colorOptions));
+    formData.append("deliveryFee", editedProduct.deliveryFee);
+    formData.append("deliveryFeeAmount", editedProduct.deliveryFeeAmount);
+    formData.append("description", editedProduct.description);
+    formData.append("discount", editedProduct.discount);
+    formData.append("display", editedProduct.display);
+    formData.append("dropProduct", editedProduct.dropProduct);
+    formData.append("name", editedProduct.name);
+    formData.append("onSale", editedProduct.onSale);
+    formData.append("parentCategory", selectedParentCategoryId || editedProduct.category.parentId);
+    formData.append("preorder", editedProduct.preorder);
+    formData.append("price", editedProduct.price);
+    formData.append("soldout", editedProduct.soldout);
+
+    console.log('edited', editedProduct)
+    console.log('parent category', selectedParentCategoryId || editedProduct.category.parentId)
+    console.log('sub category', subCategory.id || editedProduct.category._id)
+    console.log('colorOptions', colorOptions)
+
+    axios
+      .put(`${baseURL}products/${editedProduct._id}`, formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+          Authorization: `Bearer ${token}`,
+        },
+      })
+      .then((res) => {
+        if (res.status === 200 || res.status === 201) {
+          console.log('Product Updated!!')
+        }
+      })
+      .catch((error) => {
+        console.log('Error!!', error);
+      });
   }
 
-  console.log('parsed PRODUCT', parsedProduct)
-  console.log('EDITED PROD', editedProduct)
+
   return (
     <div className={`p-10 ${displayProduct ? '' : 'bg-gray-300'}`}>
       <img
@@ -434,7 +494,7 @@ export default function Page({ searchParams }) {
             />
             <p className="ml-2">원</p>
           </div>
-        : null}
+          : null}
       </div>
       <div className="flex">
         <div className="flex w-1/2 items-center pt-5">
@@ -452,7 +512,7 @@ export default function Page({ searchParams }) {
             />
             <p className="ml-2">%</p>
           </div>
-        : null}
+          : null}
       </div>
       <div className="flex w-1/2 items-center pt-5">
         <p className="w-24">상품 공개:</p>
@@ -514,23 +574,24 @@ export default function Page({ searchParams }) {
       <div className="flex pt-5">
         <div className="flex w-1/2 items-center pt-5">
           <p className="mr-4">제품색:</p>
-          <HexColorPicker color={color} onChange={setColor} />
+          <HexColorPicker color={colorOptions.hexColor} onChange={handleColorChange} />
         </div>
         <div className="flex w-1/2 items-center pt-5">
           <p className="w-16">색명:</p>
           <Input
             type="text"
-            value={productColor}
+            value={colorOptions.productColor}
             onChange={handleColorInputChange}
             className="w-24"
           />
         </div>
       </div>
-      {sizes.length > 0 ?
+      {colorOptions.sizes.length > 0
+        ?
         <div className="mt-5 flex pt-5">
           <p className="mr-8">사이즈:</p>
           <div className="flex flex-col">
-            {sizes.map((size) => (
+            {colorOptions.sizes.map((size) => (
               <div key={size._id} className="mr-4 flex">
                 <p className="mb-6 mt-2 w-40">{size.size}</p>
                 <p className="mr-2 mt-2">재고:</p>
@@ -544,62 +605,9 @@ export default function Page({ searchParams }) {
               </div>
             ))}
           </div>
+          {error && <div style={{ color: 'red' }}>{error}</div>}
         </div>
-      : null}
-      {/* {subOption1.options?.length>0 ?
-                <div className="pt-5 flex">
-                    <p className='mr-10'>{subOption1.title}: </p>
-                    <div className='flex flex-col'>
-                        {subOption1.options.map((option) => (
-                            <div key={option._id} className='flex mr-4'>
-                                <p className='w-40 mb-6 mt-2'>{option.name}</p>
-                                <Input
-                                    type="text"
-                                    value={option.value}
-                                    onChange={(e) => handleStockInputChange(e, option._id)} 
-                                    className="w-20"
-                                /> 
-                            </div>
-                        ))}
-                    </div>
-                </div>
-            : null }
-            {subOption2.options?.length>0 ?
-                <div className="pt-5 flex">
-                    <p className='mr-10'>{subOption2.title}: </p>
-                    <div className='flex flex-col'>
-                        {subOption2.options.map((option) => (
-                            <div key={option._id} className='flex mr-4'>
-                                <p className='w-40 mb-6 mt-2'>{option.name}</p>
-                                <Input
-                                    type="text"
-                                    value={option.value}
-                                    onChange={(e) => handleStockInputChange(e, option._id)} 
-                                    className="w-20"
-                                /> 
-                            </div>
-                        ))}
-                    </div>
-                </div>
-            : null }
-            {subOption3.options?.length>0 ?
-            <div className="pt-5 flex">
-                <p className='mr-10'>{subOption3.title}: </p>
-                <div className='flex flex-col'>
-                    {subOption3.options.map((option) => (
-                        <div key={option._id} className='flex mr-4'>
-                            <p className='w-40 mb-6 mt-2'>{option.name}</p>
-                            <Input
-                                type="text"
-                                value={option.value}
-                                onChange={(e) => handleStockInputChange(e, option._id)} 
-                                className="w-20"
-                            /> 
-                        </div>
-                    ))}
-                </div>
-            </div>
-            : null } */}
+        : null}
       <div className="mt-12 flex pb-80">
         <Button className="mt-8 w-60" onClick={handleSubmit}>
           편집 저장

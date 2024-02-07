@@ -15,7 +15,7 @@ export const searchableColumnHeaders = [{ id: 'name', label: 'Name' }]
 
 // Name
 const HeaderName = ({ column }) => (
-  <ButtonSortable column={column}>Title</ButtonSortable>
+  <ButtonSortable column={column}>제목</ButtonSortable>
 )
 
 // Image
@@ -33,7 +33,7 @@ const CellProductImage = ({ row }) => (
 
 // Price
 const HeaderPrice = ({ column }) => (
-  <ButtonSortable column={column}>Price</ButtonSortable>
+  <ButtonSortable column={column}>가격</ButtonSortable>
 )
 
 const CellPrice = ({ row }) => {
@@ -58,7 +58,23 @@ const CellEdit = ({ row }) => (
     >
       <span className="inline-flex w-20 flex-row gap-1">
         <FiEdit className="mt-[2px] w-6" />
-        Edit
+        편집
+      </span>
+    </Link>
+  </Button>
+)
+
+const CellDelete = ({ row }) => (
+  <Button variant="destructive" asChild>
+    <Link
+      href={{
+        pathname: '/products/productdetail',
+        query: { product: JSON.stringify(row.original) },
+      }}
+      className="w-16"
+    >
+      <span className="w-8">
+        삭제
       </span>
     </Link>
   </Button>
@@ -71,7 +87,7 @@ export const columns = [
   {
     accessorKey: 'image',
     cell: CellProductImage,
-    header: 'Product',
+    header: '제품',
   },
   {
     accessorKey: 'name',
@@ -85,6 +101,10 @@ export const columns = [
   },
   {
     cell: CellEdit,
-    header: 'Edit',
+    header: '편집',
+  },
+  {
+    cell: CellDelete,
+    header: '삭제',
   },
 ]
