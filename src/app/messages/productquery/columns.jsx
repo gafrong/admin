@@ -1,41 +1,11 @@
 import awsURL from '@/assets/common/awsUrl'
 import { ButtonSortable } from '@/components/data-table/data-table-button-sorting'
-import { Button } from '@/components/ui/button'
+import { filterDateBetween } from '@/components/data-table/data-table-date-range-picker'
 import Image from 'next/image'
 import React from 'react'
 
 // Table filters
 // -----------------------------------------------------------------------------
-
-export function filterDateBetween(rows, id, filterValues) {
-  const [start, end] = filterValues
-  const startDate = start && new Date(start).getTime()
-  let endDate = end && new Date(end)
-
-  // add 24 hours to the end date so that it is inclusive
-  endDate.setDate(endDate.getDate() + 1)
-  endDate = endDate.getTime()
-
-  if (!(endDate || startDate)) {
-    return false
-  }
-
-  const cellDate = new Date(rows.getValue('dateCreated')).getTime()
-
-  if (endDate && startDate) {
-    return cellDate >= startDate && cellDate <= endDate
-  }
-
-  if (startDate) {
-    return cellDate >= startDate
-  }
-
-  if (endDate) {
-    return cellDate <= endDate
-  }
-
-  return false
-}
 
 export const searchableColumnHeaders = [
   { id: 'title', label: '날짜', placeholder: '검색 날짜...' },

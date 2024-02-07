@@ -10,6 +10,40 @@ import { addDays, format } from 'date-fns'
 import { Calendar as CalendarIcon } from 'lucide-react'
 import React, { useEffect, useState } from 'react'
 
+// Filter function
+// -----------------------------------------------------------------------------
+export function filterDateBetween(rows, id, filterValues) {
+  const [start, end] = filterValues
+  const startDate = start && new Date(start).getTime()
+  let endDate = end && new Date(end)
+
+  // add 24 hours to the end date so that it is inclusive
+  if (endDate) {
+    endDate.setDate(endDate.getDate() + 1)
+    endDate = endDate.getTime()
+  }
+
+  if (!(endDate || startDate)) {
+    return false
+  }
+
+  const cellDate = new Date(rows.getValue('dateCreated')).getTime()
+
+  if (endDate && startDate) {
+    return cellDate >= startDate && cellDate <= endDate
+  }
+
+  if (startDate) {
+    return cellDate >= startDate
+  }
+
+  if (endDate) {
+    return cellDate <= endDate
+  }
+
+  return false
+}
+
 const initialDateRange = {
   from: addDays(new Date(), -365),
   to: new Date(),
@@ -31,7 +65,7 @@ export function DateRangePicker({ table, dateColumnId }) {
 
   const handleSetDate = (datePickerDate) => {
     if (!datePickerDate) {
-      console.log('!DATE', datePickerDate)
+      console.log('!datePickerDate', datePickerDate)
       return null
     }
     console.log('DATE', datePickerDate, date)
@@ -44,7 +78,7 @@ export function DateRangePicker({ table, dateColumnId }) {
     console.log('DATE', date)
   }
 
-  const dateFrom = date?.from && format(date.to, 'LLL dd, y')
+  const dateFrom = date?.from && format(date.from, 'LLL dd, y')
   const dateTo = date?.to && format(date.to, 'LLL dd, y')
   const ButtonText =
     dateFrom && dateTo ? `${dateFrom} - ${dateTo}`
