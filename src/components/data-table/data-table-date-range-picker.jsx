@@ -29,22 +29,26 @@ export function DateRangePicker({ table, dateColumnId }) {
     setFilterValue(() => [initialDateRange.from, initialDateRange.to])
   }
 
-  const handleSetDate = (date) => {
-    if (!date) {
+  const handleSetDate = (datePickerDate) => {
+    if (!datePickerDate) {
+      console.log('!DATE', datePickerDate)
       return null
     }
-    setDate(date)
-    setFilterValue(() => [date?.from, date?.to])
+    console.log('DATE', datePickerDate, date)
+
+    setDate(datePickerDate)
+    setFilterValue(() => [datePickerDate?.from, datePickerDate?.to])
   }
 
   const handleQuery = () => {
     console.log('DATE', date)
   }
 
+  const dateFrom = date?.from && format(date.to, 'LLL dd, y')
+  const dateTo = date?.to && format(date.to, 'LLL dd, y')
   const ButtonText =
-    date?.from && date.to ?
-      `${format(date.from, 'LLL dd, y')} - ${format(date.to, 'LLL dd, y')}`
-    : date?.from ? format(date.from, 'LLL dd, y')
+    dateFrom && dateTo ? `${dateFrom} - ${dateTo}`
+    : dateFrom ? dateFrom
     : 'Pick a date'
 
   return (
