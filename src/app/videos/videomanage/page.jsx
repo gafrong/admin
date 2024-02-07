@@ -29,7 +29,6 @@ export default function Page() {
       )
 
       setVideos(response.data.videos)
-      console.log('vidoe counts', videos)
     } catch (error) {
       console.log('Product fetch error', error)
     } finally {
