@@ -8,6 +8,8 @@ import axios from 'axios'
 import React, { useEffect, useState } from 'react'
 import { columns, searchableColumnHeaders } from './columns'
 
+const dateRangePicker = 'dateCreated'
+
 export default function Page() {
   const user = useUserStore((state) => state.user)
   const [products, setProducts] = useState([])
@@ -37,7 +39,7 @@ export default function Page() {
       <PageTitle>제품 편집 uu</PageTitle>
       <DataTable
         columns={columns}
-        controls={{ searchableColumnHeaders }}
+        controls={{ dateRangePicker, searchableColumnHeaders }}
         data={products}
         isLoading={loading}
       />

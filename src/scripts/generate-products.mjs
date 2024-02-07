@@ -5,7 +5,7 @@ import { fakerKO as faker } from '@faker-js/faker'
 
 const selectRandom = (arr) => arr[Math.floor(Math.random() * arr.length)]
 
-const formatDate = () => {
+const randomFormatttedDate = () => {
   let dateObject = faker.date.anytime()
 
   let year = dateObject.getFullYear()
@@ -42,7 +42,7 @@ function generateProducts(max) {
     ])
     let method = selectRandom(['cash', 'card', 'cheque', 'paypal'])
     let memo = selectRandom(['info', 'none'])
-    let date = formatDate()
+    let date = randomFormatttedDate()
     let time = formatTime()
     let orderNumber = faker.number.int({
       min: 1000000000000,

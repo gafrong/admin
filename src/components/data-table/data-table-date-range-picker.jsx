@@ -10,6 +10,15 @@ import { addDays, format } from 'date-fns'
 import { Calendar as CalendarIcon } from 'lucide-react'
 import React, { useEffect, useState } from 'react'
 
+// Utility function
+export const formatDate = (dateString) => {
+  const dateObject = new Date(dateString)
+  const year = dateObject.getFullYear()
+  const month = (dateObject.getMonth() + 1).toString().padStart(2, '0')
+  const day = dateObject.getDate().toString().padStart(2, '0')
+  return `${year}.${month}.${day}`
+}
+
 // Filter function
 // -----------------------------------------------------------------------------
 export function filterDateBetween(rows, id, filterValues) {

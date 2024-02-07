@@ -1,6 +1,9 @@
 import awsURL from '@/assets/common/awsUrl'
 import { ButtonSortable } from '@/components/data-table/data-table-button-sorting'
-import { filterDateBetween } from '@/components/data-table/data-table-date-range-picker'
+import {
+  filterDateBetween,
+  formatDate,
+} from '@/components/data-table/data-table-date-range-picker'
 import { Button } from '@/components/ui/button'
 import Image from 'next/image'
 import React from 'react'
@@ -27,14 +30,6 @@ const CellProductImage = ({ row }) => (
     />
   </div>
 )
-
-const formatDate = (dateString) => {
-  const dateObject = new Date(dateString)
-  const year = dateObject.getFullYear()
-  const month = (dateObject.getMonth() + 1).toString().padStart(2, '0')
-  const day = dateObject.getDate().toString().padStart(2, '0')
-  return `${year}.${month}.${day}`
-}
 
 // Date created
 const HeaderDateCreated = ({ column }) => (
