@@ -5,6 +5,13 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from '@/components/ui/popover'
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select'
 import { cn } from '@/lib/utils'
 import { addDays, format } from 'date-fns'
 import { Calendar as CalendarIcon } from 'lucide-react'
@@ -113,6 +120,29 @@ export function DateRangePicker({ table, dateColumnId }) {
             </Button>
           </PopoverTrigger>
           <PopoverContent className="w-auto p-0" align="start">
+            <Select
+              onValueChange={(value) => {
+                const from = addDays(new Date(), -parseInt(value))
+                const to = new Date()
+                setDate({ from, to })
+                setFilterValue(() => [from, to])
+              }}
+            >
+              <div className="mx-4 my-4">
+                <SelectTrigger className="">
+                  <SelectValue placeholder="Select" />
+                </SelectTrigger>
+              </div>
+              <SelectContent position="popper">
+                <SelectItem value="0">Today</SelectItem>
+                <SelectItem value="7">Past week</SelectItem>
+                <SelectItem value="31">Past month</SelectItem>
+                <SelectItem value="93">Past 3 months</SelectItem>
+                <SelectItem value="365">Past year</SelectItem>
+                <SelectItem value="760">Past 2 years</SelectItem>
+              </SelectContent>
+            </Select>
+
             <Calendar
               defaultMonth={date?.from}
               initialFocus
