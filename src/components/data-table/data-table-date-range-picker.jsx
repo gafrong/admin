@@ -67,18 +67,10 @@ const getDateFirstLastOfMonth = (date) => {
 }
 
 const today = new Date()
-const previousMonth1 = subMonths(today, 1)
-const previousMonth2 = subMonths(today, 2)
-const previousMonth3 = subMonths(today, 3)
-const previousMonth4 = subMonths(today, 4)
-
-const previousMonths = [
-  previousMonth4,
-  previousMonth3,
-  previousMonth2,
-  previousMonth1,
-  today,
-].map(getDateFirstLastOfMonth)
+const subtractMonth = (months) => subMonths(today, months)
+const previousMonths = [0, 1, 2, 3, 4]
+  .map(subtractMonth)
+  .map(getDateFirstLastOfMonth)
 
 const initialDateRange = {
   from: addDays(new Date(), -365),
