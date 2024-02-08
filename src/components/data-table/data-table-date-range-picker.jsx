@@ -68,7 +68,7 @@ const getDateFirstLastOfMonth = (date) => {
 
 const today = new Date()
 const subtractMonth = (months) => subMonths(today, months)
-const previousMonths = [0, 1, 2, 3, 4]
+const previousMonths = [4, 3, 2, 1, 0]
   .map(subtractMonth)
   .map(getDateFirstLastOfMonth)
 
