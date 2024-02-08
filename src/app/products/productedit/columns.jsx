@@ -1,5 +1,9 @@
 import awsURL from '@/assets/common/awsUrl'
 import { ButtonSortable } from '@/components/data-table/data-table-button-sorting'
+import {
+  filterDateBetween,
+  formatDate,
+} from '@/components/data-table/data-table-date-range-picker'
 import { Button } from '@/components/ui/button'
 import Image from 'next/image'
 import Link from 'next/link'
@@ -80,10 +84,22 @@ const CellDelete = ({ row }) => (
   </Button>
 )
 
+//  dateCreated
+const HeaderDateCreated = ({ column }) => (
+  <ButtonSortable column={column}>날짜</ButtonSortable>
+)
+const CellDateCreated = ({ row }) => formatDate(row.getValue('dateCreated'))
+
 // Table configuration
 // -------------------
 
 export const columns = [
+  {
+    accessorKey: 'dateCreated',
+    cell: CellDateCreated,
+    filterFn: filterDateBetween,
+    header: HeaderDateCreated,
+  },
   {
     accessorKey: 'image',
     cell: CellProductImage,

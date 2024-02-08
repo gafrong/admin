@@ -5,7 +5,7 @@ import { fakerKO as faker } from '@faker-js/faker'
 
 const selectRandom = (arr) => arr[Math.floor(Math.random() * arr.length)]
 
-const formatDate = () => {
+const randomFormattedDate = () => {
   let dateObject = faker.date.anytime()
 
   let year = dateObject.getFullYear()
@@ -14,7 +14,7 @@ const formatDate = () => {
   return [year, month, day].join('-')
 }
 
-const formatTime = () => {
+const randomFormattedTime = () => {
   let dateObject = faker.date.anytime()
   let hours = dateObject.getHours()
   let minutes = dateObject.getMinutes()
@@ -40,10 +40,8 @@ function generateProducts(max) {
       'Cancel',
       'Refunded',
     ])
-    let method = selectRandom(['cash', 'card', 'cheque', 'paypal'])
     let memo = selectRandom(['info', 'none'])
-    let date = formatDate()
-    let time = formatTime()
+    let dateCreated = faker.date.anytime()
     let orderNumber = faker.number.int({
       min: 1000000000000,
       max: 2000000000000,
@@ -65,7 +63,7 @@ function generateProducts(max) {
       email,
       amount,
       status,
-      dateGroup: { date, time },
+      dateCreated,
       orderNumber,
       name,
       productImage,
@@ -80,13 +78,12 @@ function generateProducts(max) {
       quantity,
       price,
       payment,
-      method,
       memo,
     })
   }
   return products
 }
 
-const dataLength = 1000
+const dataLength = 100
 let dataObj = generateProducts(dataLength)
 fs.writeFileSync('src/mocks/data.json', JSON.stringify(dataObj, null, '\t'))
