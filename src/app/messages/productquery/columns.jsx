@@ -51,7 +51,7 @@ const CellUser = ({ row }) => {
   return (
     <>
       <div className="flex gap-4">
-        <div className="h-18 w-12 overflow-hidden rounded-full border">
+        <div className="h-12 w-12 overflow-hidden rounded-full border">
           <Image
             src={awsURL + user.image} // Access nested object value
             width={48}
@@ -72,7 +72,7 @@ const CellUser = ({ row }) => {
 // Image
 const CellProductImage = ({ row }) => {
   const productImage = row.original?.productId?.image
-  if (!productImage) return <div className="blue-500 h-10 w-10 border"></div>
+  if (!productImage) return <Image src={"https://voutiq-app.s3.ap-northeast-2.amazonaws.com/website/product.jpg"} width={48} height={48} className='border p-1' />
   return (
     <>
       <div className="flex gap-4">
