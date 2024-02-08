@@ -41,8 +41,7 @@ function generateProducts(max) {
       'Refunded',
     ])
     let memo = selectRandom(['info', 'none'])
-    let date = randomFormattedDate()
-    let time = randomFormattedTime()
+    let dateCreated = faker.date.anytime()
     let orderNumber = faker.number.int({
       min: 1000000000000,
       max: 2000000000000,
@@ -64,7 +63,7 @@ function generateProducts(max) {
       email,
       amount,
       status,
-      dateGroup: { date, time },
+      dateCreated,
       orderNumber,
       name,
       productImage,
@@ -85,6 +84,6 @@ function generateProducts(max) {
   return products
 }
 
-const dataLength = 1000
+const dataLength = 100
 let dataObj = generateProducts(dataLength)
 fs.writeFileSync('src/mocks/data.json', JSON.stringify(dataObj, null, '\t'))

@@ -2,6 +2,7 @@
 
 import { ButtonSortable } from '@/components/data-table/data-table-button-sorting'
 import { Checkbox } from '@/components/ui/checkbox'
+import { format } from 'date-fns'
 import Image from 'next/image'
 
 // Table filters
@@ -44,12 +45,23 @@ const filterName = (row, id, value) => {
 // -----------------------------------------------------------------------------
 
 // Date
-const CellDate = ({ row }) => (
-  <div className="flex flex-col space-y-2">
-    <div className="whitespace-nowrap">{row.getValue('dateGroup').date}</div>
-    <div className="whitespace-nowrap">{row.getValue('dateGroup').time}</div>
-  </div>
-)
+function getCurrentDateTime(dateString) {
+  const dateObject = new Date(dateString)
+  return {
+    date: format(dateObject, 'yyyy.MM.dd'),
+    time: format(dateObject, 'HH:mm:ss'),
+  }
+}
+
+const CellDate = ({ row }) => {
+  const { date, time } = getCurrentDateTime(row.getValue('dateCreated'))
+  return (
+    <div className="flex flex-col space-y-2">
+      <div className="whitespace-nowrap">{date}</div>
+      <div className="whitespace-nowrap">{time}</div>
+    </div>
+  )
+}
 
 // Product Description
 const CellProductDescription = ({ row }) => {
@@ -183,7 +195,7 @@ export const columns = [
     header: 'Status',
   },
   {
-    accessorKey: 'dateGroup',
+    accessorKey: 'dateCreated',
     cell: CellDate,
     header: 'Date',
     visibilityLabel: 'Date',
