@@ -122,8 +122,8 @@ export function DateRangePicker({ table, dateColumnId }) {
           <PopoverContent className="w-auto p-0" align="start">
             <Select
               onValueChange={(value) => {
-                const from = addDays(new Date(), -parseInt(value))
                 const to = new Date()
+                const from = addDays(to, -parseInt(value))
                 setDate({ from, to })
                 setFilterValue(() => [from, to])
               }}
