@@ -16,9 +16,11 @@ import { HexColorPicker } from 'react-colorful'
 import useUserStore from '@/store/zustand'
 import axios from 'axios'
 import baseURL from '@/assets/common/baseUrl'
+import { useRouter } from 'next/navigation'
 
 export default function Page({ searchParams }) {
   const token = useUserStore((state) => state?.token);
+  const router = useRouter();
   const parsedProduct = JSON.parse(decodeURIComponent(searchParams.product))
 
   const [editedProduct, setEditedProduct] = useState({ ...parsedProduct })
@@ -322,7 +324,7 @@ export default function Page({ searchParams }) {
     if (field === 'deliveryFeeAmount' && parseFloat(inputValue) > 0) {
       setDeliveryFeeOn(true)
     }
-
+    console.log('field', field)
     setEditedProduct((prevProduct) => ({
       ...prevProduct,
       [field]: e.target.value,
@@ -330,7 +332,9 @@ export default function Page({ searchParams }) {
   }
 
   const handleFeeChange = () => {
+    console.log('deliveryFeeOn', deliveryFeeOn)
     const updatedSwitchValue = !deliveryFeeOn
+    console.log('updatedSwitchValue', updatedSwitchValue)
     setDeliveryFeeOn(updatedSwitchValue)
 
     // Update the corresponding property in editedProduct
@@ -401,17 +405,18 @@ export default function Page({ searchParams }) {
       editedProduct.price == "" ||
       editedProduct.description == ""
     ) {
-      setError("Please fill in the form correctly");
+      setError("입력한 내용을 확인해주세요");
     }
+
     const currentDate = new Date();
     const formData = new FormData();
     formData.append("category", subCategory.id || editedProduct.category._id);
     formData.append("colorOptions", JSON.stringify(colorOptions));
-    formData.append("deliveryFee", editedProduct.deliveryFee);
+    formData.append("deliveryFee", deliveryFeeOn);
     formData.append("deliveryFeeAmount", editedProduct.deliveryFeeAmount);
     formData.append("description", editedProduct.description);
     formData.append("discount", editedProduct.discount);
-    formData.append("display", editedProduct.display);
+    formData.append("display", displayProduct);
     formData.append("dropProduct", editedProduct.dropProduct);
     formData.append("name", editedProduct.name);
     formData.append("onSale", editedProduct.onSale);
@@ -419,11 +424,6 @@ export default function Page({ searchParams }) {
     formData.append("preorder", editedProduct.preorder);
     formData.append("price", editedProduct.price);
     formData.append("soldout", editedProduct.soldout);
-
-    console.log('edited', editedProduct)
-    console.log('parent category', selectedParentCategoryId || editedProduct.category.parentId)
-    console.log('sub category', subCategory.id || editedProduct.category._id)
-    console.log('colorOptions', colorOptions)
 
     axios
       .put(`${baseURL}products/${editedProduct._id}`, formData, {
@@ -434,7 +434,7 @@ export default function Page({ searchParams }) {
       })
       .then((res) => {
         if (res.status === 200 || res.status === 201) {
-          console.log('Product Updated!!')
+          router.push('/products/productedit')
         }
       })
       .catch((error) => {
