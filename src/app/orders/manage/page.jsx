@@ -5,6 +5,7 @@ import { PageTitle } from '@/components/typography/PageTitle'
 import { columns, searchableColumnHeaders } from './columns'
 import { statuses } from './data/data'
 
+const dateRangePicker = 'dateCreated'
 // Simulate a database read for products.
 // Replace with a fetch call from mongodb in prod.
 async function getData() {
@@ -26,7 +27,11 @@ export default async function ManageOrdersPage() {
       <PageTitle>Manage Orders</PageTitle>
       <DataTable
         columns={columns}
-        controls={{ filterByCategory, searchableColumnHeaders }}
+        controls={{
+          dateRangePicker,
+          filterByCategory,
+          searchableColumnHeaders,
+        }}
         data={data}
         defaultCellStyle="align-top"
       />

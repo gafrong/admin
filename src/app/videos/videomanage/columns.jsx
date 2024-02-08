@@ -1,41 +1,15 @@
 import awsURL from '@/assets/common/awsUrl'
 import { ButtonSortable } from '@/components/data-table/data-table-button-sorting'
+import {
+  filterDateBetween,
+  formatDate,
+} from '@/components/data-table/data-table-date-range-picker'
 import { Button } from '@/components/ui/button'
 import Image from 'next/image'
 import React from 'react'
 
 // Table filters
 // -----------------------------------------------------------------------------
-
-export function filterDateBetween(rows, id, filterValues) {
-  const [start, end] = filterValues
-  const startDate = start && new Date(start).getTime()
-  let endDate = end && new Date(end)
-
-  // add 24 hours to the end date so that it is inclusive
-  endDate.setDate(endDate.getDate() + 1)
-  endDate = endDate.getTime()
-
-  if (!(endDate || startDate)) {
-    return false
-  }
-
-  const cellDate = new Date(rows.getValue('dateCreated')).getTime()
-
-  if (endDate && startDate) {
-    return cellDate >= startDate && cellDate <= endDate
-  }
-
-  if (startDate) {
-    return cellDate >= startDate
-  }
-
-  if (endDate) {
-    return cellDate <= endDate
-  }
-
-  return false
-}
 
 export const searchableColumnHeaders = [
   { id: 'description', label: '설명', placeholder: '검색 설명...' },
@@ -56,14 +30,6 @@ const CellProductImage = ({ row }) => (
     />
   </div>
 )
-
-const formatDate = (dateString) => {
-  const dateObject = new Date(dateString)
-  const year = dateObject.getFullYear()
-  const month = (dateObject.getMonth() + 1).toString().padStart(2, '0')
-  const day = dateObject.getDate().toString().padStart(2, '0')
-  return `${year}.${month}.${day}`
-}
 
 // Date created
 const HeaderDateCreated = ({ column }) => (
