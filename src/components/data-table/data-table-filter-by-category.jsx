@@ -18,7 +18,7 @@ export function DataTableFilterByCategory({
 
   return (
     <RadioGroup
-      className="flex w-full flex-wrap gap-8 rounded-md border p-4 md:w-full md:grid-cols-2"
+      className="flex w-full flex-wrap gap-8 rounded-md border p-4 py-3 md:w-full md:grid-cols-2"
       defaultValue="All"
       onValueChange={handleValueChange}
     >
