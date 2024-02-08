@@ -15,7 +15,6 @@ export default function Page() {
   const [loading, setLoading] = useState(false)
   const vendorId = user?._id
   const columns = getColumns()
-  console.log('questions', questions)
 
   const getMessages = async () => {
     setLoading(true)

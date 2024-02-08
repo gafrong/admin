@@ -437,7 +437,6 @@ export default function Page() {
   }
 
   useEffect(() => {
-    console.log('onSale', onSale)
     if (!onSale) {
       setDiscountRate(0)
     }

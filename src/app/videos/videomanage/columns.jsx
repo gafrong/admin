@@ -105,7 +105,7 @@ export const getColumns = ({ removeVideo }) => {
     },
     {
       cell: CellDeleteVideo,
-      header: '삭제<',
+      header: '삭제',
     },
   ]
   return columns

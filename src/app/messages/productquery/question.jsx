@@ -10,20 +10,16 @@ const Question = ({ question }) => {
     const month = originalDate.getMonth() + 1;
     const day = originalDate.getDate();
     const formattedDate = `${year}.${month}.${day}`;
-
+    console.log('img', question.productId)
     return (
         <table className="w-full mb-4 mt-4">
             <tbody>
                 <tr>
                     <td className="mr-4 mt-2 w-36">
-                        <img
-                            src={
-                                question.productId?.image
-                                    ? awsURL + question.productId.image
-                                    : "https://voutiq-app.s3.ap-northeast-2.amazonaws.com/website/product.jpg"
-                            }
-                            alt="제품"
-                            className="w-12"
+                        <img src={question.productId
+                            ? awsURL + question.productId.image
+                            : "https://voutiq-app.s3.ap-northeast-2.amazonaws.com/website/product.jpg"}
+                            alt="제품" className="w-12"
                         />
                     </td>
                     <td className="mt-1 w-40">
@@ -49,7 +45,7 @@ const Question = ({ question }) => {
                 </tr>
             </tbody>
         </table>
-    
+
     );
 };
 
