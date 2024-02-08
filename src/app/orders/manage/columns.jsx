@@ -1,6 +1,7 @@
 'use client'
 
 import { ButtonSortable } from '@/components/data-table/data-table-button-sorting'
+import { filterDateBetween } from '@/components/data-table/data-table-date-range-picker'
 import { Checkbox } from '@/components/ui/checkbox'
 import { format } from 'date-fns'
 import Image from 'next/image'
@@ -62,6 +63,9 @@ const CellDate = ({ row }) => {
     </div>
   )
 }
+const HeaderDateCreated = ({ column }) => (
+  <ButtonSortable column={column}>날짜</ButtonSortable>
+)
 
 // Product Description
 const CellProductDescription = ({ row }) => {
@@ -197,7 +201,8 @@ export const columns = [
   {
     accessorKey: 'dateCreated',
     cell: CellDate,
-    header: 'Date',
+    filterFn: filterDateBetween,
+    header: HeaderDateCreated,
     visibilityLabel: 'Date',
   },
   {
