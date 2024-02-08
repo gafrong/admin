@@ -136,6 +136,7 @@ const CellProductImage = ({ row }) => (
       src={row.getValue('productImage')}
       style={{ objectFit: 'cover' }}
       fill
+      sizes="48px"
       alt="product image"
     />
   </div>
