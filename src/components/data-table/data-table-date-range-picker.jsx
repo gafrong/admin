@@ -10,6 +10,49 @@ import { addDays, format } from 'date-fns'
 import { Calendar as CalendarIcon } from 'lucide-react'
 import React, { useEffect, useState } from 'react'
 
+// Utility function
+export const formatDate = (dateString) => {
+  const dateObject = new Date(dateString)
+  const year = dateObject.getFullYear()
+  const month = (dateObject.getMonth() + 1).toString().padStart(2, '0')
+  const day = dateObject.getDate().toString().padStart(2, '0')
+  return `${year}.${month}.${day}`
+}
+
+// Filter function
+// -----------------------------------------------------------------------------
+export function filterDateBetween(rows, id, filterValues) {
+  const [start, end] = filterValues
+  const startDate = start && new Date(start).getTime()
+  let endDate = end && new Date(end)
+
+  // add 24 hours to the end date so that it is inclusive
+  if (endDate) {
+    endDate.setDate(endDate.getDate() + 1)
+    endDate = endDate.getTime()
+  }
+
+  if (!(endDate || startDate)) {
+    return false
+  }
+
+  const cellDate = new Date(rows.getValue('dateCreated')).getTime()
+
+  if (endDate && startDate) {
+    return cellDate >= startDate && cellDate <= endDate
+  }
+
+  if (startDate) {
+    return cellDate >= startDate
+  }
+
+  if (endDate) {
+    return cellDate <= endDate
+  }
+
+  return false
+}
+
 const initialDateRange = {
   from: addDays(new Date(), -365),
   to: new Date(),
@@ -29,22 +72,26 @@ export function DateRangePicker({ table, dateColumnId }) {
     setFilterValue(() => [initialDateRange.from, initialDateRange.to])
   }
 
-  const handleSetDate = (date) => {
-    if (!date) {
+  const handleSetDate = (datePickerDate) => {
+    if (!datePickerDate) {
+      console.log('!datePickerDate', datePickerDate)
       return null
     }
-    setDate(date)
-    setFilterValue(() => [date?.from, date?.to])
+    console.log('DATE', datePickerDate, date)
+
+    setDate(datePickerDate)
+    setFilterValue(() => [datePickerDate?.from, datePickerDate?.to])
   }
 
   const handleQuery = () => {
     console.log('DATE', date)
   }
 
+  const dateFrom = date?.from && format(date.from, 'LLL dd, y')
+  const dateTo = date?.to && format(date.to, 'LLL dd, y')
   const ButtonText =
-    date?.from && date.to ?
-      `${format(date.from, 'LLL dd, y')} - ${format(date.to, 'LLL dd, y')}`
-    : date?.from ? format(date.from, 'LLL dd, y')
+    dateFrom && dateTo ? `${dateFrom} - ${dateTo}`
+    : dateFrom ? dateFrom
     : 'Pick a date'
 
   return (

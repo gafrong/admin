@@ -1,17 +1,9 @@
 'use client'
 
 import { ButtonSortable } from '@/components/data-table/data-table-button-sorting'
-import { Button } from '@/components/ui/button'
+import { filterDateBetween } from '@/components/data-table/data-table-date-range-picker'
 import { Checkbox } from '@/components/ui/checkbox'
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu'
-import { MoreHorizontal } from 'lucide-react'
+import { format } from 'date-fns'
 import Image from 'next/image'
 
 // Table filters
@@ -54,11 +46,25 @@ const filterName = (row, id, value) => {
 // -----------------------------------------------------------------------------
 
 // Date
-const CellDate = ({ row }) => (
-  <div className="flex flex-col space-y-2">
-    <div className="whitespace-nowrap">{row.getValue('dateGroup').date}</div>
-    <div className="whitespace-nowrap">{row.getValue('dateGroup').time}</div>
-  </div>
+function getCurrentDateTime(dateString) {
+  const dateObject = new Date(dateString)
+  return {
+    date: format(dateObject, 'yyyy.MM.dd'),
+    time: format(dateObject, 'HH:mm:ss'),
+  }
+}
+
+const CellDate = ({ row }) => {
+  const { date, time } = getCurrentDateTime(row.getValue('dateCreated'))
+  return (
+    <div className="flex flex-col space-y-2">
+      <div className="whitespace-nowrap">{date}</div>
+      <div className="whitespace-nowrap">{time}</div>
+    </div>
+  )
+}
+const HeaderDateCreated = ({ column }) => (
+  <ButtonSortable column={column}>날짜</ButtonSortable>
 )
 
 // Product Description
@@ -125,11 +131,11 @@ const HeaderQuantity = ({ column }) => (
 
 // Image
 const CellProductImage = ({ row }) => (
-  <div className="flex w-24 overflow-hidden">
+  <div className="relative h-12 w-12 overflow-hidden rounded-sm border">
     <Image
       src={row.getValue('productImage')}
-      width={160}
-      height={160}
+      style={{ objectFit: 'cover' }}
+      fill
       alt="product image"
     />
   </div>
@@ -174,33 +180,6 @@ const CellPrice = ({ row }) => {
   return <div className="text-right font-medium">{formatted}</div>
 }
 
-// Actions
-const CellActions = ({ row }) => {
-  const payment = row.original
-
-  return (
-    <DropdownMenu>
-      <DropdownMenuTrigger asChild>
-        <Button variant="ghost" className="h-8 w-8 p-0">
-          <span className="sr-only">Open menu</span>
-          <MoreHorizontal className="h-4 w-4" />
-        </Button>
-      </DropdownMenuTrigger>
-      <DropdownMenuContent align="end">
-        <DropdownMenuLabel>Actions</DropdownMenuLabel>
-        <DropdownMenuItem
-          onClick={() => navigator.clipboard.writeText(payment.id)}
-        >
-          Copy payment ID
-        </DropdownMenuItem>
-        <DropdownMenuSeparator />
-        <DropdownMenuItem>View customer</DropdownMenuItem>
-        <DropdownMenuItem>View payment details</DropdownMenuItem>
-      </DropdownMenuContent>
-    </DropdownMenu>
-  )
-}
-
 // Table configuration
 // -------------------
 
@@ -220,9 +199,10 @@ export const columns = [
     header: 'Status',
   },
   {
-    accessorKey: 'dateGroup',
+    accessorKey: 'dateCreated',
     cell: CellDate,
-    header: 'Date',
+    filterFn: filterDateBetween,
+    header: HeaderDateCreated,
     visibilityLabel: 'Date',
   },
   {
@@ -265,16 +245,7 @@ export const columns = [
     header: HeaderAmount,
   },
   {
-    accessorKey: 'method',
-    header: 'Method',
-  },
-  {
     accessorKey: 'memo',
     header: 'Memo',
-  },
-  {
-    cell: CellActions,
-    enableHiding: false,
-    id: 'actions',
   },
 ]
