@@ -5,18 +5,21 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from '@/components/ui/popover'
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select'
 import { cn } from '@/lib/utils'
-import { addDays, format } from 'date-fns'
+import { addDays, format, lastDayOfMonth, subMonths } from 'date-fns'
 import { Calendar as CalendarIcon } from 'lucide-react'
 import React, { useEffect, useState } from 'react'
 
 // Utility function
 export const formatDate = (dateString) => {
-  const dateObject = new Date(dateString)
-  const year = dateObject.getFullYear()
-  const month = (dateObject.getMonth() + 1).toString().padStart(2, '0')
-  const day = dateObject.getDate().toString().padStart(2, '0')
-  return `${year}.${month}.${day}`
+  return format(new Date(dateString), 'yyyy.MM.dd')
 }
 
 // Filter function
@@ -53,6 +56,22 @@ export function filterDateBetween(rows, id, filterValues) {
   return false
 }
 
+// function to get the date range for a month, used by date picker.
+
+const getDateFirstLastOfMonth = (date) => {
+  const today = date
+  const firstDateOfMonth = new Date(format(today, 'yyyy-MM-01'))
+  const lastDateOfMonth = new Date(format(lastDayOfMonth(today), 'yyyy-MM-dd'))
+  const monthName = format(firstDateOfMonth, 'LLLL')
+  return { from: firstDateOfMonth, to: lastDateOfMonth, label: monthName }
+}
+
+const today = new Date()
+const subtractMonth = (months) => subMonths(today, months)
+const previousMonths = [4, 3, 2, 1, 0]
+  .map(subtractMonth)
+  .map(getDateFirstLastOfMonth)
+
 const initialDateRange = {
   from: addDays(new Date(), -365),
   to: new Date(),
@@ -60,27 +79,28 @@ const initialDateRange = {
 
 export function DateRangePicker({ table, dateColumnId }) {
   const { setFilterValue } = table.getColumn(dateColumnId)
-
   const [date, setDate] = useState(initialDateRange)
+
+  const setDateRange = ({ from, to }) => {
+    // set what the calendar shows
+    setDate({ from, to })
+    // filter the dates on the calendar in table
+    setFilterValue(() => [from, to])
+  }
 
   useEffect(() => {
     setFilterValue([initialDateRange.from, initialDateRange.to])
   }, [setFilterValue])
 
   const handleReset = () => {
-    setDate(initialDateRange)
-    setFilterValue(() => [initialDateRange.from, initialDateRange.to])
+    setDateRange(initialDateRange)
   }
 
   const handleSetDate = (datePickerDate) => {
     if (!datePickerDate) {
-      console.log('!datePickerDate', datePickerDate)
       return null
     }
-    console.log('DATE', datePickerDate, date)
-
-    setDate(datePickerDate)
-    setFilterValue(() => [datePickerDate?.from, datePickerDate?.to])
+    setDateRange(datePickerDate)
   }
 
   const handleQuery = () => {
@@ -113,6 +133,42 @@ export function DateRangePicker({ table, dateColumnId }) {
             </Button>
           </PopoverTrigger>
           <PopoverContent className="w-auto p-0" align="start">
+            <div className="flex gap-3 p-4">
+              {previousMonths.map(({ to, from, label }) => (
+                <Button
+                  key={label}
+                  variant="outline"
+                  size="sm"
+                  onClick={() => {
+                    setDateRange({ from, to })
+                  }}
+                >
+                  {label}
+                </Button>
+              ))}
+            </div>
+
+            <Select
+              onValueChange={(value) => {
+                const to = new Date()
+                const from = addDays(to, -parseInt(value))
+                setDateRange({ from, to })
+              }}
+            >
+              <div className="mx-4 pb-2">
+                <SelectTrigger className="">
+                  <SelectValue placeholder="Select" />
+                </SelectTrigger>
+              </div>
+              <SelectContent position="popper">
+                <SelectItem value="0">Today</SelectItem>
+                <SelectItem value="7">Past week</SelectItem>
+                <SelectItem value="31">Past month</SelectItem>
+                <SelectItem value="93">Past 3 months</SelectItem>
+                <SelectItem value="365">Past year</SelectItem>
+                <SelectItem value="730">Past 2 years</SelectItem>
+              </SelectContent>
+            </Select>
             <Calendar
               defaultMonth={date?.from}
               initialFocus
