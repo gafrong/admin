@@ -72,7 +72,7 @@ const DropdownPastDateRanges = ({ setDateRange }) => (
     }}
   >
     <div className="flex w-full">
-      <SelectTrigger className="SELECT_TRIGGER_! m-4 flex-auto">
+      <SelectTrigger className="m-4 flex-auto">
         <SelectValue placeholder="선택하다" />
       </SelectTrigger>
     </div>
