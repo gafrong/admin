@@ -13,7 +13,8 @@ import {
   SelectValue,
 } from '@/components/ui/select'
 import { cn } from '@/lib/utils'
-import { addDays, format, lastDayOfMonth, subMonths } from 'date-fns'
+import { addDays, format, formatRelative } from 'date-fns'
+import { ko } from 'date-fns/locale'
 import { Calendar as CalendarIcon } from 'lucide-react'
 import React, { useEffect, useState } from 'react'
 
@@ -87,29 +88,29 @@ const DropdownPastDateRanges = ({ setDateRange }) => (
 )
 
 const ButtonCalendarTrigger = ({ date }) => {
-  const dateFrom = date?.from && format(date.from, 'LLL dd, y')
-  const dateTo = date?.to && format(date.to, 'LLL dd, y')
+  const KOREAN_DATE_FORMAT = 'y년 dd일 MMM'
+  const dateFrom =
+    date?.from && format(date.from, KOREAN_DATE_FORMAT, { locale: ko })
+  const dateTo = date?.to && format(date.to, KOREAN_DATE_FORMAT, { locale: ko })
   const ButtonText =
     dateFrom && dateTo ? `${dateFrom} - ${dateTo}`
     : dateFrom ? dateFrom
     : 'Pick a date'
 
   return (
-    <>
-      <PopoverTrigger asChild>
-        <Button
-          id="date"
-          variant={'outline'}
-          className={cn(
-            'w-[300px] justify-start text-left font-normal',
-            !date && 'text-muted-foreground',
-          )}
-        >
-          <CalendarIcon className="mr-2 h-4 w-4" />
-          {ButtonText}
-        </Button>
-      </PopoverTrigger>
-    </>
+    <PopoverTrigger asChild>
+      <Button
+        id="date"
+        variant={'outline'}
+        className={cn(
+          'w-[300px] justify-start text-left font-normal',
+          !date && 'text-muted-foreground',
+        )}
+      >
+        <CalendarIcon className="mr-2 h-4 w-4" />
+        {ButtonText}
+      </Button>
+    </PopoverTrigger>
   )
 }
 
