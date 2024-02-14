@@ -2,6 +2,7 @@
 
 import { buttonVariants } from '@/components/ui/button'
 import { cn } from '@/lib/utils'
+import { ko } from 'date-fns/locale'
 import { ChevronLeft, ChevronRight } from 'lucide-react'
 import * as React from 'react'
 import { DayPicker } from 'react-day-picker'
@@ -47,6 +48,7 @@ function Calendar({ className, classNames, showOutsideDays = true, ...props }) {
         IconLeft: ({ ...props }) => <ChevronLeft className="h-4 w-4" />,
         IconRight: ({ ...props }) => <ChevronRight className="h-4 w-4" />,
       }}
+      locale={ko}
       {...props}
     />
   )
