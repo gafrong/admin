@@ -63,7 +63,7 @@ const initialDateRange = {
   to: today,
 }
 
-const PastDateRangesDropdown = ({ setDateRange }) => (
+const DropdownPastDateRanges = ({ setDateRange }) => (
   <>
     <Select
       onValueChange={(value) => {
@@ -152,8 +152,7 @@ export function DateRangePicker({ table, dateColumnId }) {
         <Popover>
           <ButtonCalendarTrigger date={date} />
           <PopoverContent className="w-auto p-0" align="start">
-            <PastDateRangesDropdown setDateRange={setDateRange} />
-
+            <DropdownPastDateRanges setDateRange={setDateRange} />
             <Calendar
               defaultMonth={date?.from}
               initialFocus
