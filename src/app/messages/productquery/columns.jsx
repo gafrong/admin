@@ -45,7 +45,7 @@ const CellUser = ({ row }) => {
 // Image
 const CellProductImage = ({ row }) => {
   const productImage = row.original?.productId?.image
-  if (!productImage) return <Image src={"https://voutiq-app.s3.ap-northeast-2.amazonaws.com/website/product.jpg"} width={48} height={48} className='border p-1' />
+  if (!productImage) return <Image src={"https://voutiq-app.s3.ap-northeast-2.amazonaws.com/website/product.jpg"} width={48} height={48} className='border p-1' alt="product" />
   return (
     <>
       <div className="flex gap-4">
