@@ -67,14 +67,10 @@ const getDateFirstLastOfMonth = (date) => {
 }
 
 const today = new Date()
-const subtractMonth = (months) => subMonths(today, months)
-const previousMonths = [4, 3, 2, 1, 0]
-  .map(subtractMonth)
-  .map(getDateFirstLastOfMonth)
 
 const initialDateRange = {
-  from: addDays(new Date(), -365),
-  to: new Date(),
+  from: addDays(today, -365),
+  to: today,
 }
 
 export function DateRangePicker({ table, dateColumnId }) {
@@ -133,26 +129,10 @@ export function DateRangePicker({ table, dateColumnId }) {
             </Button>
           </PopoverTrigger>
           <PopoverContent className="w-auto p-0" align="start">
-            <div className="flex gap-3 p-4">
-              {previousMonths.map(({ to, from, label }) => (
-                <Button
-                  key={label}
-                  variant="outline"
-                  size="sm"
-                  onClick={() => {
-                    setDateRange({ from, to })
-                  }}
-                >
-                  {label}
-                </Button>
-              ))}
-            </div>
-
             <Select
               onValueChange={(value) => {
-                const to = new Date()
-                const from = addDays(to, -parseInt(value))
-                setDateRange({ from, to })
+                const from = addDays(today, -parseInt(value))
+                setDateRange({ from, to: today })
               }}
             >
               <div className="mx-4 pb-2">
@@ -161,12 +141,12 @@ export function DateRangePicker({ table, dateColumnId }) {
                 </SelectTrigger>
               </div>
               <SelectContent position="popper">
-                <SelectItem value="0">Today</SelectItem>
-                <SelectItem value="7">Past week</SelectItem>
-                <SelectItem value="31">Past month</SelectItem>
-                <SelectItem value="93">Past 3 months</SelectItem>
-                <SelectItem value="365">Past year</SelectItem>
-                <SelectItem value="730">Past 2 years</SelectItem>
+                <SelectItem value="0">오늘</SelectItem>
+                <SelectItem value="7">지난 주</SelectItem>
+                <SelectItem value="31">지난달</SelectItem>
+                <SelectItem value="93">지난 3개월</SelectItem>
+                <SelectItem value="365">지난 해</SelectItem>
+                <SelectItem value="730">지난 2년</SelectItem>
               </SelectContent>
             </Select>
             <Calendar
