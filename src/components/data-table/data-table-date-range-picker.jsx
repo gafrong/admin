@@ -111,8 +111,8 @@ export function DateRangePicker({ table, dateColumnId }) {
   const dateTo = date?.to && format(date.to, 'LLL dd, y')
   const ButtonText =
     dateFrom && dateTo ? `${dateFrom} - ${dateTo}`
-    : dateFrom ? dateFrom
-    : 'Pick a date'
+      : dateFrom ? dateFrom
+        : 'Pick a date'
 
   return (
     <div className="flex flex-wrap gap-4 rounded border p-2">
@@ -157,16 +157,16 @@ export function DateRangePicker({ table, dateColumnId }) {
             >
               <div className="mx-4 pb-2">
                 <SelectTrigger className="">
-                  <SelectValue placeholder="Select" />
+                  <SelectValue placeholder="선택" />
                 </SelectTrigger>
               </div>
               <SelectContent position="popper">
-                <SelectItem value="0">Today</SelectItem>
-                <SelectItem value="7">Past week</SelectItem>
-                <SelectItem value="31">Past month</SelectItem>
-                <SelectItem value="93">Past 3 months</SelectItem>
-                <SelectItem value="365">Past year</SelectItem>
-                <SelectItem value="730">Past 2 years</SelectItem>
+                <SelectItem value="0">오늘</SelectItem>
+                <SelectItem value="7">7일</SelectItem>
+                <SelectItem value="31">1개월</SelectItem>
+                <SelectItem value="93">3개월</SelectItem>
+                <SelectItem value="365">1년</SelectItem>
+                <SelectItem value="730">2년</SelectItem>
               </SelectContent>
             </Select>
             <Calendar
