@@ -78,11 +78,11 @@ const DropdownPastDateRanges = ({ setDateRange }) => (
     </div>
     <SelectContent position="popper">
       <SelectItem value="0">오늘</SelectItem>
-      <SelectItem value="7">지난 주</SelectItem>
-      <SelectItem value="31">지난달</SelectItem>
-      <SelectItem value="93">지난 3개월</SelectItem>
-      <SelectItem value="365">지난 해</SelectItem>
-      <SelectItem value="730">지난 2년</SelectItem>
+      <SelectItem value="7">7일</SelectItem>
+      <SelectItem value="31">1개월</SelectItem>
+      <SelectItem value="93">3개월</SelectItem>
+      <SelectItem value="365">1년</SelectItem>
+      <SelectItem value="730">2년</SelectItem>
     </SelectContent>
   </Select>
 )
