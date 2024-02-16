@@ -10,7 +10,7 @@ const Question = ({ question }) => {
     const month = originalDate.getMonth() + 1;
     const day = originalDate.getDate();
     const formattedDate = `${year}.${month}.${day}`;
-    console.log('img', question.productId)
+    console.log('img', question)
     return (
         <table className="w-full mb-4 mt-4">
             <tbody>
