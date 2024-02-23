@@ -28,7 +28,7 @@ export default function RootLayout({ children }) {
       <head />
       <body>
         <Navbar />
-        {user?.verified && (
+        {user?.isAdmin && (
           <div
             className={`w-34 fixed m-0 mt-16 h-full overflow-auto border-r border-slate-300 p-0`}
           >
