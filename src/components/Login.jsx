@@ -37,7 +37,7 @@ const Login = () => {
       const token = data.token
 
       setUser(userData, token)
-      if (userData.verified) {
+      if (userData.isAdmin) {
         router.push('/dashboard')
       } else if (userData.submitted) {
         router.push('/welcome')
