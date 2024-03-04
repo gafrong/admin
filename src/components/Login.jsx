@@ -54,12 +54,14 @@ const Login = () => {
       <div className="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
         <form className="space-y-6" onSubmit={handleSubmit}>
           <div>
-            <label
-              htmlFor="email"
-              className="block text-sm font-medium leading-6 text-gray-900"
-            >
-              이메일 주소
-            </label>
+            <div className="flex items-center justify-between">
+              <label
+                htmlFor="email"
+                className="block text-sm font-medium leading-6 text-gray-900"
+              >
+                이메일 주소
+              </label>
+            </div>
             <div className="mt-2">
               <input
                 onChange={(e) => setEmail(e.target.value)}
@@ -81,14 +83,6 @@ const Login = () => {
               >
                 비밀번호
               </label>
-              <div className="text-sm">
-                <a
-                  href="#"
-                  className="font-semibold text-indigo-600 hover:text-indigo-500"
-                >
-                  비밀번호 찾기?
-                </a>
-              </div>
             </div>
             <div className="mt-2">
               <input
