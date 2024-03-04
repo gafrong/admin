@@ -24,7 +24,7 @@ const CellUser = ({ row }) => {
   return (
     <>
       <div className="flex gap-4">
-        <div className="h-12 w-12 overflow-hidden rounded-full border">
+        <div className="h-10 w-10 overflow-hidden rounded-full border">
           <Image
             src={awsURL + user.image} // Access nested object value
             width={48}
@@ -35,7 +35,7 @@ const CellUser = ({ row }) => {
         </div>
         <div className="mr-4">
           <p className="">{user.name}</p>
-          <p>{user.username}</p>
+          <p className='text-xs mt-1'>@{user.username}</p>
         </div>
       </div>
     </>
@@ -49,7 +49,7 @@ const CellProductImage = ({ row }) => {
   return (
     <>
       <div className="flex gap-4">
-        <div className="h-12 w-12 overflow-hidden rounded-full border">
+        <div className="h-12 w-12 overflow-hidden border">
           <Image
             src={awsURL + productImage} // Access nested object value
             width={48}
