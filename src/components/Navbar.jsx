@@ -24,7 +24,7 @@ const Navbar = () => {
         />
       </Link>
       <div className="mr-5 mt-5 flex flex-row">
-        {user?.verified ?
+        {user?.isAdmin ?
           <>
             <Link href="/profile">
               <Avatar className="mr-5 h-[30px] w-[30px]">
@@ -40,7 +40,7 @@ const Navbar = () => {
               <FiSettings className="mt-1" />
             </Link>
           </>
-        : <>
+          : <>
             {/* <Link href="/">
                             login
                         </Link> */}

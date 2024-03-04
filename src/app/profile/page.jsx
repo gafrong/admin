@@ -27,11 +27,12 @@ export default function Page() {
             <AvatarImage src={avatar} />
             <AvatarFallback>CN</AvatarFallback>
           </Avatar>
-          <div>{user?.name}</div>
-          <div>@{user?.username}</div>
-          <div>{user?.email}</div>
-          <div>{user?.brandDescription}</div>
-          <Button onClick={handleLogout}>Logout</Button>
+          <div className='mt-4'>성함: {user?.name}</div>
+          <div className='mt-2'>사용자명: @{user?.username}</div>
+          <div className='mt-2'>이메일: {user?.email}</div>
+          <div className='mt-2'>브랜드: {user?.brand}</div>
+          <div className='mt-2'>브랜드 설명: {user?.brandDescription}</div>
+          <Button className='mt-12' onClick={handleLogout}>Logout</Button>
         </>
       )}
     </div>

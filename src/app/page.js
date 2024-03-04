@@ -10,14 +10,18 @@ export default function Home() {
   const isAuthenticated = useUserStore((state) => state.isAuthenticated)
   return (
     <main className="ml-[-120px] grid min-h-screen place-items-center">
-      {isAuthenticated ?
+      {isAuthenticated ? (
         <div>
           <p>You are logged in</p>
         </div>
-      : <div>
+      ) : (
+        <div className='text-center'>
           <Login />
+          <Link href="/reset-password">
+            <p className='font-semibold leading-6 text-indigo-600 hover:text-indigo-500 text-sm self-center justify-self-center'>비밀번호 재설정</p>
+          </Link>
         </div>
-      }
+      )}
       {user && <p>{user?.email}</p>}
     </main>
   )
