@@ -61,37 +61,69 @@ export function DataTable({
   data,
   defaultCellStyle = '',
   isLoading,
+  refetchTableData,
+  updateTableData,
 }) {
-  const { searchableColumnHeaders, filterByCategory } = controls ?? {}
-  const [sorting, setSorting] = React.useState([])
   const [columnFilters, setColumnFilters] = React.useState([])
   const [columnVisibility, setColumnVisibility] = React.useState({})
   const [rowSelection, setRowSelection] = React.useState({})
+  const [rowSelectionIds, setRowSelectionIds] = React.useState({})
+  const [sorting, setSorting] = React.useState([])
+  const [tableData, setTableData] = React.useState([...data])
+
+  React.useEffect(() => {
+    setTableData([...data])
+  }, [data])
+
+  const { searchableColumnHeaders, filterByCategory } = controls ?? {}
+  const meta = updateTableData && updateTableData({ setTableData })
   const [searchColumn, setSearchColumn] = React.useState(
     (searchableColumnHeaders && searchableColumnHeaders[0]?.id) ?? null,
   )
+  const useSelectedCategory = React.useState('All')
+  const [selectedRowIds, setSelectedRowIds] = React.useState({})
+
   // const [globalFilter, setGlobalFilter] = React.useState("");
 
   const table = useReactTable({
-    data,
+    data: tableData,
     columns,
-    onSortingChange: setSorting,
-    onColumnFiltersChange: setColumnFilters,
+    ...(meta ? { meta } : {}),
+    enableRowSelection: true,
     getCoreRowModel: getCoreRowModel(),
+    getFilteredRowModel: getFilteredRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
     getSortedRowModel: getSortedRowModel(),
-    getFilteredRowModel: getFilteredRowModel(),
-    onColumnVisibilityChange: setColumnVisibility,
-    onRowSelectionChange: setRowSelection,
-    // onGlobalFilterChange: setGlobalFilter,
     // globalFilterFn: fuzzyFilter,
+    onColumnFiltersChange: setColumnFilters,
+    onColumnVisibilityChange: setColumnVisibility,
+    // onGlobalFilterChange: setGlobalFilter,
+    onRowSelectionChange: setRowSelection,
+    onSortingChange: setSorting,
     state: {
-      sorting,
       columnFilters,
       columnVisibility,
       rowSelection,
+      selectedRowIds,
+      sorting,
     },
   })
+
+  React.useEffect(() => {
+    setRowSelectionIds(
+      table.getSelectedRowModel().rows.map(({ original }) => original._id),
+    )
+  }, [rowSelection, table]) // update selected rows
+
+  if (
+    !tableData &&
+    !tableData?.length &&
+    !tableData?.[0] &&
+    table?.getRowModel()?.rows
+  ) {
+    console.log('no table data')
+    return <div>no table</div>
+  }
 
   const handleSearchDropdown = (value) => {
     searchableColumnHeaders.forEach((column) => {
@@ -119,11 +151,14 @@ export function DataTable({
   }
 
   const isMultipleColumnSearch = searchableColumnHeaders?.length > 1
-  const isDataLoaded = table.getRowModel().rows?.length > 1
+  const isDataLoaded = Boolean(
+    tableData?.length && table?.getRowModel()?.rows?.length,
+  )
   const isNoData = !isDataLoaded && !isLoading
 
   return (
     <div className="w-full space-y-4">
+      {/* {JSON.stringify({data:table.getFilteredSelectedRowModel().rows})} */}
       {controls.dateRangePicker && (
         <DateRangePicker
           table={table}
@@ -134,7 +169,11 @@ export function DataTable({
         <DataTableFilterByCategory
           categories={filterByCategory.categories}
           categoryHeader={filterByCategory.categoryHeader}
+          orderItemIds={rowSelectionIds}
+          refetchTableData={refetchTableData}
+          rowSelectionIds={rowSelectionIds}
           table={table}
+          useSelectedCategory={useSelectedCategory}
         />
       )}
 
@@ -182,7 +221,8 @@ export function DataTable({
           </TableHeader>
           <TableBody>
             {isDataLoaded &&
-              table.getRowModel().rows.map((row) => (
+              !isLoading &&
+              table?.getRowModel().rows.map((row) => (
                 <TableRow
                   key={row.id}
                   data-state={row.getIsSelected() && 'selected'}

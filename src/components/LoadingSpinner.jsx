@@ -13,4 +13,15 @@ const LoadingSpinner = ({ className }) => (
   </div>
 )
 
+const cssButtonSpinner = {
+  display: 'block',
+  margin: 'auto',
+}
+
+export const LoadingSpinnerButton = ({ className }) => (
+  <div className={cn('absolute ', className)}>
+    <ClipLoader color="#000" cssOverride={cssButtonSpinner} loading size={24} />
+  </div>
+)
+
 export default LoadingSpinner
