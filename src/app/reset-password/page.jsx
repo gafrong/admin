@@ -12,7 +12,7 @@ export default function Page() {
     const [email, setEmail] = useState('')
     const [error, setError] = useState('')
     const setPasswordEmail = useUserStore((state) => state.setEmail)
-    console.log('check state', setPasswordEmail)
+
     const router = useRouter()
 
     const handleSubmit = async (e) => {

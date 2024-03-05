@@ -5,50 +5,62 @@
   border-radius: 5px;
   padding: 10px;
 }
+
 .startDateContainer {
   flex-direction: row;
 }
+
 .btn {
   border: 1px solid #ccc;
   padding: 10px;
   border-radius: 5px;
   background-color: #f3f7fa;
   cursor: pointer;
-  width: 150px;
+  width: 170px;
 }
+
 .border {
   border: 1px solid #ccc;
   border-radius: 5px;
   margin-left: 15px;
 }
+
 .pointer {
   cursor: pointer;
 }
+
 .productImg {
   width: 50px;
   height: 50px;
   margin-left: 15px;
   border-radius: 3px;
 }
+
 .productItem {
   display: flex;
   flex-direction: row;
   padding-left: 10px;
 }
+
 .checkboxContainer {
   display: flex;
-  align-items: center; /* Vertically center the checkbox */
+  align-items: center;
+  /* Vertically center the checkbox */
 }
+
 .checkbox {
   margin-top: 15px;
 }
+
 .selectedVideo {
   width: 70px;
   margin-top: 10px;
 }
+
 .thumbnail {
   width: 70px;
 }
+
 .selectedProductImages {
   display: flex;
   flex-direction: row;
