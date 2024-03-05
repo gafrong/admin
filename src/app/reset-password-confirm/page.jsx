@@ -19,10 +19,6 @@ export default function Page() {
     const router = useRouter()
 
     const handleSubmit = async (e) => {
-        console.log('veri code', verificationCode)
-        console.log('email', passwordEmail)
-        console.log('password', password)
-        console.log('confirm password', confirmPassword)
         e.preventDefault()
         if (verificationCode === '' || password === '') {
             setError("정보를 정확히 입력해주세요")
@@ -46,7 +42,7 @@ export default function Page() {
                     if (res.status == 200) {
                         // clears global email address
                         clear();
-                        router.push('/login')
+                        router.push('/')
                     }
                 })
                 .catch((error) => {
@@ -55,7 +51,6 @@ export default function Page() {
                 });
         } catch (error) {
             setError(error.message)
-            console.log('There is an error')
             router.push('/reset-password-confirm')
         }
     }
