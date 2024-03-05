@@ -9,7 +9,7 @@ import useUserStore from '@/store/zustand'
 import { useRouter } from 'next/navigation'
 
 export default function Page() {
-    const [email, setEmail] = useState('')
+    // const [email, setEmail] = useState('')
     const [verificationCode, setVerificationCode] = useState('');
     const [password, setPassword] = useState('')
     const [confirmPassword, setConfirmPassword] = useState('')
@@ -21,6 +21,8 @@ export default function Page() {
     const handleSubmit = async (e) => {
         console.log('veri code', verificationCode)
         console.log('email', passwordEmail)
+        console.log('password', password)
+        console.log('confirm password', confirmPassword)
         e.preventDefault()
         if (verificationCode === '' || password === '') {
             setError("정보를 정확히 입력해주세요")
@@ -44,14 +46,17 @@ export default function Page() {
                     if (res.status == 200) {
                         // clears global email address
                         clear();
+                        router.push('/login')
                     }
                 })
                 .catch((error) => {
-
+                    setError(error)
+                    console.log('There is an axios error resetting password confirm')
                 });
-            router.push('/onboarding')
         } catch (error) {
             setError(error.message)
+            console.log('There is an error')
+            router.push('/reset-password-confirm')
         }
     }
 
