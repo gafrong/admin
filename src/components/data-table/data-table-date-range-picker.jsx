@@ -86,11 +86,12 @@ const DropdownPastDateRanges = ({ setDateRange }) => (
   </Select>
 )
 
+const formatKoreanDate = (date) =>
+  date && format(date, 'y년 dd일 MMM', { locale: ko })
+
 const ButtonCalendarTrigger = ({ date }) => {
-  const KOREAN_DATE_FORMAT = 'y년 dd일 MMM'
-  const dateFrom =
-    date?.from && format(date.from, KOREAN_DATE_FORMAT, { locale: ko })
-  const dateTo = date?.to && format(date.to, KOREAN_DATE_FORMAT, { locale: ko })
+  const dateFrom = formatKoreanDate(date?.from)
+  const dateTo = formatKoreanDate(date?.to)
   const ButtonText =
     dateFrom && dateTo ? `${dateFrom} - ${dateTo}`
     : dateFrom ? dateFrom
