@@ -55,17 +55,14 @@ export function ManageOrders() {
   }
 
   return (
-    <>
-      {/* <pre>{JSON.stringify({ orderItems: orderItems[0] }, null, 2)}</pre> */}
-      <DataTable
-        columns={columns}
-        controls={controls}
-        data={orderItems}
-        defaultCellStyle="align-top"
-        isLoading={isLoading}
-        refetchTableData={refetchTableData}
-        updateTableData={updateTableData}
-      />
-    </>
+    <DataTable
+      columns={columns}
+      controls={controls}
+      data={orderItems}
+      defaultCellStyle="align-top"
+      isLoading={isLoading}
+      refetchTableData={refetchTableData}
+      updateTableData={updateTableData}
+    />
   )
 }
