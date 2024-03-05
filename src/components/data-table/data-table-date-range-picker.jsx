@@ -29,7 +29,6 @@ export function filterDateBetween(rows, id, filterValues) {
   const [start, end] = filterValues
   const startDate = start && new Date(start).getTime()
   let endDate = end && new Date(end)
-
   // add 24 hours to the end date so that it is inclusive
   if (endDate) {
     endDate.setDate(endDate.getDate() + 1)
@@ -40,7 +39,7 @@ export function filterDateBetween(rows, id, filterValues) {
     return false
   }
 
-  const cellDate = new Date(rows.getValue('dateCreated')).getTime()
+  const cellDate = new Date(rows.getValue(id)).getTime()
 
   if (endDate && startDate) {
     return cellDate >= startDate && cellDate <= endDate
@@ -87,15 +86,16 @@ const DropdownPastDateRanges = ({ setDateRange }) => (
   </Select>
 )
 
+const formatKoreanDate = (date) =>
+  date && format(date, 'y년 dd일 MMM', { locale: ko })
+
 const ButtonCalendarTrigger = ({ date }) => {
-  const KOREAN_DATE_FORMAT = 'y년 dd일 MMM'
-  const dateFrom =
-    date?.from && format(date.from, KOREAN_DATE_FORMAT, { locale: ko })
-  const dateTo = date?.to && format(date.to, KOREAN_DATE_FORMAT, { locale: ko })
+  const dateFrom = formatKoreanDate(date?.from)
+  const dateTo = formatKoreanDate(date?.to)
   const ButtonText =
     dateFrom && dateTo ? `${dateFrom} - ${dateTo}`
-      : dateFrom ? dateFrom
-        : 'Pick a date'
+    : dateFrom ? dateFrom
+    : 'Pick a date'
 
   return (
     <PopoverTrigger asChild>
@@ -151,7 +151,6 @@ export function DateRangePicker({ table, dateColumnId }) {
         <Popover>
           <ButtonCalendarTrigger date={date} />
           <PopoverContent className="w-auto p-0" align="start">
-
             <DropdownPastDateRanges setDateRange={setDateRange} />
             <Calendar
               defaultMonth={date?.from}
