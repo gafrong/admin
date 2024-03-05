@@ -128,7 +128,7 @@ export default function Page() {
                         {error && (
                             <div>
                                 <p className="text-red-600">
-                                    입력에 문제가 있습니다. 다시 시도해보세요
+                                    입력에 문제가 발생했습니다. 다시 시도해보세요
                                 </p>
                             </div>
                         )}
