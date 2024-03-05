@@ -115,7 +115,7 @@ const Register = () => {
           {error && (
             <div>
               <p className="text-red-600">
-                입력에 문제가 있습니다. 다시 시도해보세요
+                이메일 주소와 비밀번호를 확인하시고 다시 시도해보세요
               </p>
             </div>
           )}

@@ -59,7 +59,7 @@ const Login = () => {
                 htmlFor="email"
                 className="block text-sm font-medium leading-6 text-gray-900"
               >
-                이메일 주소
+                Email Address
               </label>
             </div>
             <div className="mt-2">
@@ -69,6 +69,7 @@ const Login = () => {
                 name="email"
                 type="email"
                 autoComplete="email"
+                placeholder='이메일 주소'
                 required
                 className="block w-full rounded-md border-0 py-1.5 pl-3 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-black sm:text-sm sm:leading-6"
               />
@@ -81,7 +82,7 @@ const Login = () => {
                 htmlFor="password"
                 className="block text-sm font-medium leading-6 text-gray-900"
               >
-                비밀번호
+                Password
               </label>
             </div>
             <div className="mt-2">
@@ -90,6 +91,7 @@ const Login = () => {
                 id="password"
                 name="password"
                 type="password"
+                placeholder='비밀번호'
                 autoComplete="current-password"
                 required
                 className="block w-full rounded-md border-0 py-1.5 pl-3 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-black sm:text-sm sm:leading-6"
