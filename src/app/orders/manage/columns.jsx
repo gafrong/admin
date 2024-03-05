@@ -1,36 +1,24 @@
 'use client'
 
+import awsURL from '@/assets/common/awsUrl'
+import baseURL from '@/assets/common/baseUrl'
 import { ButtonSortable } from '@/components/data-table/data-table-button-sorting'
 import { filterDateBetween } from '@/components/data-table/data-table-date-range-picker'
 import { Checkbox } from '@/components/ui/checkbox'
+import useUserStore from '@/store/zustand'
+import axios from 'axios'
 import { format } from 'date-fns'
 import Image from 'next/image'
+import { useState } from 'react'
+import { DialogMemo } from './CellDialogMemo'
 
 // Table filters
 // -----------------------------------------------------------------------------
 
 export const searchableColumnHeaders = [
-  { id: 'name', label: 'Name' },
+  { id: 'buyerName', label: 'Name' },
   { id: 'orderNumber', label: 'Order Number' },
 ]
-
-const filterProductGroup = (row, id, value) => {
-  const productGroup = row.getValue(id)
-  return (
-    productGroup.productAdjective1
-      ?.toLowerCase()
-      .includes(value?.toLowerCase()) ||
-    productGroup.productAdjective2
-      ?.toLowerCase()
-      .includes(value?.toLowerCase()) ||
-    productGroup.productAdjective3
-      ?.toLowerCase()
-      .includes(value?.toLowerCase()) ||
-    productGroup.productDescription
-      ?.toLowerCase()
-      .includes(value?.toLowerCase())
-  )
-}
 
 // "name": "대호 엄","orderNumber": 1873917702819,
 const filterOrderNumber = (row, id, value) => {
@@ -39,14 +27,26 @@ const filterOrderNumber = (row, id, value) => {
 
 // "name": "대호 엄","orderNumber": 1873917702819,
 const filterName = (row, id, value) => {
-  return row.getValue(id).includes(value)
+  const name = row.original.buyer.name
+  return name.includes(value)
 }
 
-// Table components
+function filterStatus(row, id, filterValue) {
+  const status = getLastCompletedStatus(row.getValue(id))?.type
+  return status === filterValue
+}
+
 // -----------------------------------------------------------------------------
 
 // Date
 function getCurrentDateTime(dateString) {
+  if (!Date.parse(dateString)) {
+    console.error('Invalid date string: ', dateString)
+    return {
+      date: dateString,
+      time: dateString,
+    }
+  }
   const dateObject = new Date(dateString)
   return {
     date: format(dateObject, 'yyyy.MM.dd'),
@@ -55,7 +55,7 @@ function getCurrentDateTime(dateString) {
 }
 
 const CellDate = ({ row }) => {
-  const { date, time } = getCurrentDateTime(row.getValue('dateCreated'))
+  const { date, time } = getCurrentDateTime(row.getValue('dateOrdered'))
   return (
     <div className="flex flex-col space-y-2">
       <div className="whitespace-nowrap">{date}</div>
@@ -69,18 +69,15 @@ const HeaderDateCreated = ({ column }) => (
 
 // Product Description
 const CellProductDescription = ({ row }) => {
-  const {
-    productAdjective1,
-    productAdjective2,
-    productAdjective3,
-    productDescription,
-  } = row.getValue('productGroup')
+  const { selectedColor } = row.original
+  const { name, description, richDescription } = row.getValue('product') ?? {}
+
   return (
     <div className="flex max-w-sm flex-col space-y-2">
-      <div>{productDescription}</div>
-      <div>color: {productAdjective1}</div>
-      <div>{productAdjective2}</div>
-      <div>{productAdjective3}</div>
+      <div>{name}</div>
+      <div>{description}</div>
+      <div>{richDescription}</div>
+      <div>{selectedColor}</div>
     </div>
   )
 }
@@ -101,28 +98,49 @@ const HeaderSelectAll = ({ table }) => (
 const CellSelectCheckbox = ({ row }) => (
   <Checkbox
     checked={row.getIsSelected()}
-    onCheckedChange={(value) => row.toggleSelected(!!value)}
+    onCheckedChange={(value) => {
+      return row.toggleSelected(!!value)
+    }}
     aria-label="Select row"
   />
 )
 
 // Status
-const CellStatus = ({ row }) => (
-  <div className="capitalize">{row.getValue('status')}</div>
-)
+function getLastCompletedStatus(orderStatuses) {
+  const lastCompletedStatus = orderStatuses
+    .slice()
+    .reverse()
+    .find((status) => Boolean(status.isCompleted))
+
+  return lastCompletedStatus
+}
+
+const CellStatus = ({ row }) => {
+  const orderStatuses = row.getValue('orderStatus')
+  const status = getLastCompletedStatus(orderStatuses)?.type
+  return <div className="capitalize">{status}</div>
+}
+
+const HeaderStatus = () => <div className="w-16">Status</div>
+
+const CellStatusAccessor = ({ row }) =>
+  getLastCompletedStatus(row.getValue('orderStatus'))?.type
 
 // Name
 const HeaderName = ({ column }) => (
   <ButtonSortable column={column}>User</ButtonSortable>
 )
 
-const CellName = ({ row }) => (
-  <div className="flex-col space-y-2">
-    <div className="lowercase">{row.getValue('name')}</div>
-    <div className="lowercase">johnnyname</div>
-    <div className="lowercase">(5)</div>
-  </div>
-)
+const CellName = ({ row }) => {
+  const { name, username, email } = row.original.buyer || {}
+  return (
+    <div className="flex-col space-y-2">
+      <div className="lowercase">{name}</div>
+      <div className="lowercase">{username}</div>
+      <div className="lowercase">{email}</div>
+    </div>
+  )
+}
 
 // Quantity
 const HeaderQuantity = ({ column }) => (
@@ -130,40 +148,51 @@ const HeaderQuantity = ({ column }) => (
 )
 
 // Image
-const CellProductImage = ({ row }) => (
-  <div className="relative h-12 w-12 overflow-hidden rounded-sm border">
-    <Image
-      src={row.getValue('productImage')}
-      style={{ objectFit: 'cover' }}
-      fill
-      sizes="48px"
-      alt="product image"
-    />
-  </div>
-)
+const CellProductImage = ({ row }) => {
+  const product = row.getValue('product')
+  const productImage = product?.image
+  const SRC =
+    'https://voutiq-app.s3.ap-northeast-2.amazonaws.com/website/product.jpg'
+  if (!productImage)
+    return (
+      <Image
+        alt="product"
+        className="border p-1"
+        height={48}
+        src={SRC}
+        width={48}
+      />
+    )
+
+  return (
+    <div className="relative h-12 w-12 overflow-hidden rounded-sm border">
+      <Image
+        src={awsURL + productImage}
+        style={{ objectFit: 'cover' }}
+        fill
+        sizes="48px"
+        alt="product image"
+      />
+    </div>
+  )
+}
 
 // Amount
-const CellAmount = ({ row }) => {
-  const amount = parseFloat(row.getValue('amount'))
+const CellProductPrice = ({ row }) => {
+  const amount = parseFloat(row.getValue('product')?.price) || 0
   // Format the amount as a dollar amount
-  const formatted = new Intl.NumberFormat('en-US', {
-    style: 'currency',
-    currency: 'KRW',
-  }).format(amount)
+  const formatted =
+    amount === NaN ? '₩0' : (
+      new Intl.NumberFormat('en-US', {
+        style: 'currency',
+        currency: 'KRW',
+      }).format(amount)
+    )
 
   return <div className="text-right font-medium">{formatted}</div>
 }
 
-const HeaderAmount = ({ column }) => (
-  <div className="flex">
-    <ButtonSortable className="ml-auto" column={column}>
-      Payment
-    </ButtonSortable>
-  </div>
-)
-
-// Price
-const HeaderPrice = ({ column }) => (
+const HeaderProductPrice = ({ column }) => (
   <div className="flex">
     <ButtonSortable className="ml-auto" column={column}>
       Price
@@ -171,8 +200,17 @@ const HeaderPrice = ({ column }) => (
   </div>
 )
 
-const CellPrice = ({ row }) => {
-  const amount = parseFloat(row.getValue('price'))
+// Price
+const HeaderProductPayment = ({ column }) => (
+  <div className="flex">
+    <ButtonSortable className="ml-auto" column={column}>
+      Payment
+    </ButtonSortable>
+  </div>
+)
+
+const CellProductPayment = ({ row }) => {
+  const amount = parseFloat(row.getValue('paidPrice'))
   // Format the amount as a dollar amount
   const formatted = new Intl.NumberFormat('en-US', {
     style: 'currency',
@@ -180,6 +218,76 @@ const CellPrice = ({ row }) => {
   }).format(amount)
   return <div className="text-right font-medium">{formatted}</div>
 }
+
+// Memo button
+const CellEditVendorNote = ({ column, row, table }) => {
+  const [isLoading, setLoading] = useState(false)
+  const token = useUserStore((state) => state?.token)
+
+  const submitVendorNote = async (vendorNote) => {
+    const URL = `${baseURL}orders/updateVendorNote`
+    try {
+      setLoading(true)
+      const response = await axios.patch(
+        URL,
+        {
+          orderItemId: row.original._id,
+          vendorNote,
+        },
+        {
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${token}`,
+          },
+        },
+      )
+
+      console.log(
+        'Successfully updated the order item with vendor note: ',
+        response.data,
+      )
+    } catch (error) {
+      console.error('Error updating order item: ', error)
+    } finally {
+      table.options.meta?.updateVendorNote(row.index, column.id, vendorNote)
+      setLoading(false)
+    }
+  }
+
+  return (
+    <DialogMemo
+      initialValue={row.original.vendorNote}
+      isLoading={isLoading}
+      submitVendorNote={submitVendorNote}
+    />
+  )
+}
+
+// CRUD update functions.
+// -----------------------------------------------------------------------------
+/*
+  After any CRUD operation, we want to update the table data, without refreshing the page or resetting the 
+  table component.
+  We do this by passing methods to the react-table meta function. This function will update a single item of the table data.
+*/
+
+export const updateTableData = ({ setTableData }) => ({
+  updateVendorNote: (rowIndex, columnId, value) => {
+    setTableData((prevData) =>
+      prevData.map((row, index) => {
+        if (index === rowIndex) {
+          const editedRow = {
+            ...prevData[rowIndex],
+            vendorNote: value,
+          }
+          return editedRow
+        }
+
+        return row
+      }),
+    )
+  },
+})
 
 // Table configuration
 // -------------------
@@ -193,14 +301,14 @@ export const columns = [
     id: 'select',
   },
   {
-    accessorKey: 'status',
+    accessorKey: 'orderStatus',
+    accessor: CellStatusAccessor,
     cell: CellStatus,
-    // filterFn: (row, id, value) =>
-    //   row.getValue(id)?.toLowerCase().includes(value.toLowerCase()),
-    header: 'Status',
+    filterFn: filterStatus,
+    header: HeaderStatus,
   },
   {
-    accessorKey: 'dateCreated',
+    accessorKey: 'dateOrdered',
     cell: CellDate,
     filterFn: filterDateBetween,
     header: HeaderDateCreated,
@@ -213,23 +321,22 @@ export const columns = [
     filterFn: filterOrderNumber,
   },
   {
-    accessorKey: 'name',
+    id: 'buyerName',
     cell: CellName,
     header: HeaderName,
     filterFn: filterName,
   },
   {
-    accessorKey: 'productImage',
+    accessorKey: 'product',
     cell: CellProductImage,
     header: '',
     visibilityLabel: 'Product Image',
   },
   {
-    accessorKey: 'productGroup',
+    id: 'description',
     cell: CellProductDescription,
     header: 'Product',
     visibilityLabel: 'Product Details',
-    filterFn: filterProductGroup,
   },
   {
     accessorKey: 'quantity',
@@ -237,16 +344,19 @@ export const columns = [
   },
   {
     accessorKey: 'price',
-    cell: CellPrice,
-    header: HeaderPrice,
+    cell: CellProductPrice,
+    header: HeaderProductPrice,
   },
   {
-    accessorKey: 'amount',
-    cell: CellAmount,
-    header: HeaderAmount,
+    accessorKey: 'paidPrice',
+    cell: CellProductPayment,
+    header: HeaderProductPayment,
   },
   {
     accessorKey: 'memo',
+    cell: CellEditVendorNote,
     header: 'Memo',
+    disableFilters: true,
+    disableSortBy: true,
   },
 ]
