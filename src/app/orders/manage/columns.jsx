@@ -98,24 +98,19 @@ const HeaderSelectAll = ({ table }) => (
 const CellSelectCheckbox = ({ row }) => (
   <Checkbox
     checked={row.getIsSelected()}
-    onCheckedChange={(value) => {
-      return row.toggleSelected(!!value)
-    }}
+    onCheckedChange={(value) => row.toggleSelected(Boolean(value))}
     aria-label="Select row"
   />
 )
 
 // Status
-function getLastCompletedStatus(orderStatuses) {
-  const lastCompletedStatus = orderStatuses
+const getLastCompletedStatus = (orderStatuses) =>
+  orderStatuses
     .slice()
     .reverse()
     .find((status) => Boolean(status.isCompleted))
 
-  return lastCompletedStatus
-}
-
-const CellStatus = ({ row }) => {
+const CellStatus = ({ row, cell }) => {
   const orderStatuses = row.getValue('orderStatus')
   const status = getLastCompletedStatus(orderStatuses)?.type
   return <div className="capitalize">{status}</div>
@@ -123,6 +118,7 @@ const CellStatus = ({ row }) => {
 
 const HeaderStatus = () => <div className="w-16">Status</div>
 
+// the accessor function is used by react-table by the filter and sort functions
 const CellStatusAccessor = ({ row }) =>
   getLastCompletedStatus(row.getValue('orderStatus'))?.type
 
