@@ -1,4 +1,5 @@
 import awsURL from '@/assets/common/awsUrl'
+import { IMG } from '@/assets/common/urls'
 import { ButtonSortable } from '@/components/data-table/data-table-button-sorting'
 import {
   filterDateBetween,
@@ -12,7 +13,7 @@ import React from 'react'
 
 export const searchableColumnHeaders = [
   { id: 'title', label: '날짜', placeholder: '검색 날짜...' },
-  { id: 'description', label: '설명', placeholder: '검색 설명...' },
+  // { id: 'description', label: '설명', placeholder: '검색 설명...' },
 ]
 
 // Table components
@@ -35,7 +36,7 @@ const CellUser = ({ row }) => {
         </div>
         <div className="mr-4">
           <p className="">{user.name}</p>
-          <p className='text-xs mt-1'>@{user.username}</p>
+          <p className="mt-1 text-xs">@{user.username}</p>
         </div>
       </div>
     </>
@@ -45,21 +46,13 @@ const CellUser = ({ row }) => {
 // Image
 const CellProductImage = ({ row }) => {
   const productImage = row.original?.productId?.image
-  if (!productImage) return <Image src={"https://voutiq-app.s3.ap-northeast-2.amazonaws.com/website/product.jpg"} width={48} height={48} className='border p-1' alt="product" />
+  const img = productImage ? awsURL + productImage : IMG.empty_product
   return (
-    <>
-      <div className="flex gap-4">
-        <div className="h-12 w-12 overflow-hidden border">
-          <Image
-            src={awsURL + productImage} // Access nested object value
-            width={48}
-            height={48}
-            style={{ objectFit: 'contain' }}
-            alt="product image"
-          />
-        </div>
+    <div className="flex gap-4">
+      <div className="h-12 w-12 overflow-hidden border">
+        <Image alt="product image" height={48} src={img} width={48} />
       </div>
-    </>
+    </div>
   )
 }
 
