@@ -102,7 +102,7 @@ export function DataTableFilterByCategory({
     const nextStatus =
       currentIndex < statuses.length - 1 ?
         statuses[currentIndex + 1].value
-      : null
+        : null
 
     return { previousStatus, nextStatus }
   }
@@ -140,7 +140,7 @@ export function DataTableFilterByCategory({
             updateOrderStatus={() => updateOrderStatus(nextStatus)}
             isLoading={isLoading}
           >
-            로 변경 {nextStatus}
+            {nextStatus} 변경
           </UpdateOrderStatusButton>
         )}
 
@@ -150,7 +150,7 @@ export function DataTableFilterByCategory({
             updateOrderStatus={() => updateOrderStatus(previousStatus)}
             variant="outline"
           >
-            로 변경 {previousStatus}
+            {previousStatus} 변경
           </UpdateOrderStatusButton>
         )}
 
