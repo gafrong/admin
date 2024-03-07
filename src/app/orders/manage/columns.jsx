@@ -16,7 +16,6 @@ import { DialogMemo } from './CellDialogMemo'
 // -----------------------------------------------------------------------------
 
 export const searchableColumnHeaders = [
-  { id: 'buyerName', label: 'Name' },
   { id: 'orderNumber', label: 'Order Number' },
 ]
 

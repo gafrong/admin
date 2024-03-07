@@ -1,9 +1,7 @@
 'use client'
 
-import { DataTableDropdownSearch } from '@/components/data-table/data-table-dropdown-search'
 import { DataTableFilterByCategory } from '@/components/data-table/data-table-filter-by-category'
 import { DataTablePagination } from '@/components/data-table/data-table-pagination'
-import { DataTableViewOptions } from '@/components/data-table/data-table-view-options'
 import {
   Table,
   TableBody,
@@ -12,6 +10,7 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table'
+import { MagnifyingGlassIcon } from '@radix-ui/react-icons'
 import {
   flexRender,
   getCoreRowModel,
@@ -24,20 +23,6 @@ import * as React from 'react'
 import LoadingSpinner from '../LoadingSpinner'
 import { DebouncedInput } from '../ui/debounced-input'
 import { DateRangePicker } from './data-table-date-range-picker'
-
-// fuzzy global filter. Disabled for now
-// const fuzzyFilter = (row, columnId, value, addMeta) => {
-//   // Rank the item
-//   const itemRank = rankItem(row.getValue(columnId), value);
-
-//   // Store the itemRank info
-//   addMeta({
-//     itemRank,
-//   });
-
-//   // Return if the item should be filtered in/out
-//   return itemRank.passed;
-// };
 
 export const EmptyTableRows = ({ columns }) => (
   <TableRow>
@@ -55,6 +40,41 @@ export const LoadingTableRows = ({ columns }) => (
   </TableRow>
 )
 
+const DateAndSearchBar = ({
+  isSearchBarOpen,
+  controls,
+  handleSearchUpdate,
+  getSearchPlaceHolder,
+  table,
+}) => {
+  const isRendered = isSearchBarOpen || !controls?.filterByCategory
+  return (
+    <>
+      {isRendered && (
+        <div className="flex flex-col rounded border">
+          <div className="flex justify-between p-2 px-4">
+            {controls.dateRangePicker && (
+              <DateRangePicker
+                table={table}
+                dateColumnId={controls.dateRangePicker}
+              />
+            )}
+          </div>
+
+          <div className="flex border-t">
+            <MagnifyingGlassIcon className="ml-4 mt-2 h-6 w-6" />
+            <DebouncedInput
+              className="h-10 border-none px-4"
+              onChange={handleSearchUpdate}
+              placeholder={getSearchPlaceHolder()}
+            />
+          </div>
+        </div>
+      )}
+    </>
+  )
+}
+
 export function DataTable({
   columns,
   controls = {},
@@ -66,6 +86,7 @@ export function DataTable({
 }) {
   const [columnFilters, setColumnFilters] = React.useState([])
   const [columnVisibility, setColumnVisibility] = React.useState({})
+  const [isSearchBarOpen, setIsSearchBarOpen] = React.useState(false)
   const [rowSelection, setRowSelection] = React.useState({})
   const [rowSelectionIds, setRowSelectionIds] = React.useState({})
   const [sorting, setSorting] = React.useState([])
@@ -115,30 +136,17 @@ export function DataTable({
     )
   }, [rowSelection, table]) // update selected rows
 
-  if (
-    !tableData &&
-    !tableData?.length &&
-    !tableData?.[0] &&
-    table?.getRowModel()?.rows
-  ) {
+  if (!tableData && !tableData?.length && table?.getRowModel()?.rows) {
     console.log('no table data')
     return <div>no table</div>
-  }
-
-  const handleSearchDropdown = (value) => {
-    searchableColumnHeaders.forEach((column) => {
-      table.getColumn(column.id)?.setFilterValue('')
-    })
-    setSearchColumn(value)
   }
 
   const handleSearchUpdate = (value) => {
     table.getColumn(searchColumn)?.setFilterValue(value)
   }
 
-  const findBy = ({ arr, key, value }) => {
-    return arr.find((item) => item[key] === value) || null
-  }
+  const findBy = ({ arr, key, value }) =>
+    arr.find((item) => item[key] === value) || null
 
   const getSearchPlaceHolder = () => {
     return (
@@ -146,11 +154,10 @@ export function DataTable({
         arr: searchableColumnHeaders ?? [],
         key: 'id',
         value: searchColumn,
-      })?.placeholder ?? 'Search ' + searchColumn + '...'
+      })?.label ?? 'Search ' + searchColumn + '...'
     )
   }
 
-  const isMultipleColumnSearch = searchableColumnHeaders?.length > 1
   const isDataLoaded = Boolean(
     tableData?.length && table?.getRowModel()?.rows?.length,
   )
@@ -159,45 +166,28 @@ export function DataTable({
   return (
     <div className="w-full space-y-4">
       {/* {JSON.stringify({data:table.getFilteredSelectedRowModel().rows})} */}
-      {controls.dateRangePicker && (
-        <DateRangePicker
-          table={table}
-          dateColumnId={controls.dateRangePicker}
-        />
-      )}
+
+      <DateAndSearchBar
+        isSearchBarOpen={isSearchBarOpen}
+        controls={controls}
+        handleSearchUpdate={handleSearchUpdate}
+        getSearchPlaceHolder={getSearchPlaceHolder}
+        table={table}
+      />
+
       {filterByCategory && (
         <DataTableFilterByCategory
           categories={filterByCategory.categories}
           categoryHeader={filterByCategory.categoryHeader}
+          isSearchBarOpen={isSearchBarOpen}
           orderItemIds={rowSelectionIds}
           refetchTableData={refetchTableData}
           rowSelectionIds={rowSelectionIds}
+          setIsSearchBarOpen={setIsSearchBarOpen}
           table={table}
           useSelectedCategory={useSelectedCategory}
         />
       )}
-
-      <div className="p4 flex justify-between">
-        {searchableColumnHeaders && (
-          <>
-            {isMultipleColumnSearch && (
-              <DataTableDropdownSearch
-                searchColumn={searchColumn}
-                setSearchColumn={handleSearchDropdown}
-                searchableColumnHeaders={searchableColumnHeaders}
-              />
-            )}
-
-            <DebouncedInput
-              className="h-10 w-[150px] px-4 lg:w-[250px]"
-              onChange={handleSearchUpdate}
-              placeholder={getSearchPlaceHolder()}
-            />
-          </>
-        )}
-
-        <DataTableViewOptions table={table} />
-      </div>
 
       <div className="rounded-md border">
         <Table>
