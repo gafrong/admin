@@ -141,13 +141,13 @@ export default function Page() {
                         scope="col"
                         className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500"
                       >
-                        Today
+                        오늘
                       </th>
                       <th
                         scope="col"
                         className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500"
                       >
-                        This Month
+                        이번 달
                       </th>
                     </tr>
                   </thead>
