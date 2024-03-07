@@ -149,13 +149,14 @@ export function DataTable({
     arr.find((item) => item[key] === value) || null
 
   const getSearchPlaceHolder = () => {
-    return (
-      findBy({
-        arr: searchableColumnHeaders ?? [],
-        key: 'id',
-        value: searchColumn,
-      })?.label ?? 'Search ' + searchColumn + '...'
-    )
+    const columnToSearch = findBy({
+      arr: searchableColumnHeaders ?? [],
+      key: 'id',
+      value: searchColumn,
+    })
+    if (columnToSearch?.placeholder) return columnToSearch?.placeholder
+    if (columnToSearch?.label) return 'Search ' + columnToSearch?.label + '...'
+    return 'Search ' + searchColumn + '...'
   }
 
   const isDataLoaded = Boolean(
