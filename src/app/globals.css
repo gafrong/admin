@@ -83,3 +83,14 @@ button:active {
   /* over-ride focus ring color to match chrome */
   --ring: 210, 100%, 40%;
 }
+
+/* debug only */
+.red {
+  border: 1px solid red;
+}
+.blue {
+  border: 1px solid blue;
+}
+.green {
+  border: 1px solid green;
+}
