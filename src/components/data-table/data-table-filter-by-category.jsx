@@ -4,10 +4,24 @@ import { Button } from '@/components/ui/button'
 import { Label } from '@/components/ui/label'
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group'
 import useUserStore from '@/store/zustand'
+import { MagnifyingGlassIcon } from '@radix-ui/react-icons'
 import axios from 'axios'
 import * as React from 'react'
 import { FiXCircle } from 'react-icons/fi'
 import { SelectCategory } from './data-table-dropdown-select-category'
+
+const SearchBarButton = ({ isSearchBarOpen, setIsSearchBarOpen }) => (
+  <Button
+    className="ml-auto"
+    onClick={(prev) => setIsSearchBarOpen(!isSearchBarOpen)}
+    size="sm"
+    variant="ghost"
+  >
+    {isSearchBarOpen ?
+      <FiXCircle size={24} />
+    : <MagnifyingGlassIcon className="h-8 w-8" />}
+  </Button>
+)
 
 function UpdateOrderStatusButton({
   children,
@@ -70,9 +84,11 @@ function useUpdateStatus({ orderItemIds, refetchTableData, table }) {
 export function DataTableFilterByCategory({
   categories,
   categoryHeader,
+  isSearchBarOpen,
   orderItemIds,
   refetchTableData,
   rowSelectionIds,
+  setIsSearchBarOpen,
   table,
   useSelectedCategory,
 }) {
@@ -110,9 +126,9 @@ export function DataTableFilterByCategory({
   const isPreviousStatus = previousStatus && previousStatus !== 'All'
   const isRowSelected = rowSelectionIds.length > 0
   return (
-    <>
+    <div className="flex flex-col">
       <RadioGroup
-        className="flex w-full flex-wrap gap-8 rounded-md border p-4 py-3 md:w-full md:grid-cols-2"
+        className="flex w-full flex-wrap gap-8 rounded-md border p-4 py-3"
         defaultValue="All"
         onValueChange={handleValueChange}
       >
@@ -125,12 +141,10 @@ export function DataTableFilterByCategory({
             <Label htmlFor={category.value}>{category.label}</Label>
           </div>
         ))}
-        <div className="ml-auto flex items-center space-x-2 whitespace-nowrap">
-          <RadioGroupItem value={'All'} id={'All2'} className="invisible" />
-          <Label htmlFor={'All2'}>
-            <FiXCircle size={24} />
-          </Label>
-        </div>
+        <SearchBarButton
+          isSearchBarOpen={isSearchBarOpen}
+          setIsSearchBarOpen={setIsSearchBarOpen}
+        />
       </RadioGroup>
 
       <div className="flex gap-4">
@@ -162,6 +176,6 @@ export function DataTableFilterByCategory({
           />
         )}
       </div>
-    </>
+    </div>
   )
 }

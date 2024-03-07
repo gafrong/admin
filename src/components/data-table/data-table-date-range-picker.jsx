@@ -145,7 +145,7 @@ export function DateRangePicker({ table, dateColumnId }) {
   }
 
   return (
-    <div className="flex flex-wrap gap-4 rounded border p-2">
+    <div className="flex flex-wrap gap-4">
       <div className="mt-2">동영상 기간설정</div>
       <div className={cn('grid gap-2')}>
         <Popover>
