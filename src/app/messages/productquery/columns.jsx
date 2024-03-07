@@ -12,7 +12,7 @@ import React from 'react'
 
 export const searchableColumnHeaders = [
   { id: 'title', label: '날짜', placeholder: '검색 날짜...' },
-  { id: 'description', label: '설명', placeholder: '검색 설명...' },
+  // { id: 'description', label: '설명', placeholder: '검색 설명...' },
 ]
 
 // Table components
@@ -35,7 +35,7 @@ const CellUser = ({ row }) => {
         </div>
         <div className="mr-4">
           <p className="">{user.name}</p>
-          <p className='text-xs mt-1'>@{user.username}</p>
+          <p className="mt-1 text-xs">@{user.username}</p>
         </div>
       </div>
     </>
@@ -45,7 +45,18 @@ const CellUser = ({ row }) => {
 // Image
 const CellProductImage = ({ row }) => {
   const productImage = row.original?.productId?.image
-  if (!productImage) return <Image src={"https://voutiq-app.s3.ap-northeast-2.amazonaws.com/website/product.jpg"} width={48} height={48} className='border p-1' alt="product" />
+  if (!productImage)
+    return (
+      <Image
+        src={
+          'https://voutiq-app.s3.ap-northeast-2.amazonaws.com/website/product.jpg'
+        }
+        width={48}
+        height={48}
+        className="border p-1"
+        alt="product"
+      />
+    )
   return (
     <>
       <div className="flex gap-4">
