@@ -41,10 +41,10 @@ export const LoadingTableRows = ({ columns }) => (
 )
 
 const DateAndSearchBar = ({
-  isSearchBarOpen,
   controls,
-  handleSearchUpdate,
   getSearchPlaceHolder,
+  handleSearchUpdate,
+  isSearchBarOpen,
   table,
 }) => {
   const isRendered = isSearchBarOpen || !controls?.filterByCategory
@@ -55,8 +55,8 @@ const DateAndSearchBar = ({
           <div className="flex justify-between p-2 px-4">
             {controls.dateRangePicker && (
               <DateRangePicker
-                table={table}
                 dateColumnId={controls.dateRangePicker}
+                table={table}
               />
             )}
           </div>
