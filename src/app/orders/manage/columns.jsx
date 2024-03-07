@@ -2,6 +2,7 @@
 
 import awsURL from '@/assets/common/awsUrl'
 import baseURL from '@/assets/common/baseUrl'
+import { IMG } from '@/assets/common/urls'
 import { ButtonSortable } from '@/components/data-table/data-table-button-sorting'
 import { filterDateBetween } from '@/components/data-table/data-table-date-range-picker'
 import { Checkbox } from '@/components/ui/checkbox'
@@ -16,7 +17,6 @@ import { DialogMemo } from './CellDialogMemo'
 // -----------------------------------------------------------------------------
 
 export const searchableColumnHeaders = [
-  { id: 'buyerName', label: 'Name' },
   { id: 'orderNumber', label: 'Order Number' },
 ]
 
@@ -97,23 +97,18 @@ const HeaderSelectAll = ({ table }) => (
 // Select
 const CellSelectCheckbox = ({ row }) => (
   <Checkbox
-    checked={row.getIsSelected()}
-    onCheckedChange={(value) => {
-      return row.toggleSelected(!!value)
-    }}
     aria-label="Select row"
+    checked={row.getIsSelected()}
+    onCheckedChange={(value) => row.toggleSelected(Boolean(value))}
   />
 )
 
 // Status
-function getLastCompletedStatus(orderStatuses) {
-  const lastCompletedStatus = orderStatuses
+const getLastCompletedStatus = (orderStatuses) =>
+  orderStatuses
     .slice()
     .reverse()
     .find((status) => Boolean(status.isCompleted))
-
-  return lastCompletedStatus
-}
 
 const CellStatus = ({ row }) => {
   const orderStatuses = row.getValue('orderStatus')
@@ -123,6 +118,8 @@ const CellStatus = ({ row }) => {
 
 const HeaderStatus = () => <div className="w-16">Status</div>
 
+// the accessor function is used by react-table when the required value is nested
+// by the filter and sort functions
 const CellStatusAccessor = ({ row }) =>
   getLastCompletedStatus(row.getValue('orderStatus'))?.type
 
@@ -149,30 +146,12 @@ const HeaderQuantity = ({ column }) => (
 
 // Image
 const CellProductImage = ({ row }) => {
-  const product = row.getValue('product')
-  const productImage = product?.image
-  const SRC =
-    'https://voutiq-app.s3.ap-northeast-2.amazonaws.com/website/product.jpg'
-  if (!productImage)
-    return (
-      <Image
-        alt="product"
-        className="border p-1"
-        height={48}
-        src={SRC}
-        width={48}
-      />
-    )
+  const productImage = row.getValue('product')?.image
+  const img = productImage ? awsURL + productImage : IMG.empty_product
 
   return (
     <div className="relative h-12 w-12 overflow-hidden rounded-sm border">
-      <Image
-        src={awsURL + productImage}
-        style={{ objectFit: 'cover' }}
-        fill
-        sizes="48px"
-        alt="product image"
-      />
+      <Image alt="product image" fill sizes="48px" src={img} />
     </div>
   )
 }
