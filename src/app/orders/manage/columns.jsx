@@ -2,6 +2,7 @@
 
 import awsURL from '@/assets/common/awsUrl'
 import baseURL from '@/assets/common/baseUrl'
+import { IMG } from '@/assets/common/urls'
 import { ButtonSortable } from '@/components/data-table/data-table-button-sorting'
 import { filterDateBetween } from '@/components/data-table/data-table-date-range-picker'
 import { Checkbox } from '@/components/ui/checkbox'
@@ -148,30 +149,12 @@ const HeaderQuantity = ({ column }) => (
 
 // Image
 const CellProductImage = ({ row }) => {
-  const product = row.getValue('product')
-  const productImage = product?.image
-  const SRC =
-    'https://voutiq-app.s3.ap-northeast-2.amazonaws.com/website/product.jpg'
-  if (!productImage)
-    return (
-      <Image
-        alt="product"
-        className="border p-1"
-        height={48}
-        src={SRC}
-        width={48}
-      />
-    )
+  const productImage = row.getValue('product')?.image
+  const img = productImage ? awsURL + productImage : IMG.empty_product
 
   return (
     <div className="relative h-12 w-12 overflow-hidden rounded-sm border">
-      <Image
-        src={awsURL + productImage}
-        style={{ objectFit: 'cover' }}
-        fill
-        sizes="48px"
-        alt="product image"
-      />
+      <Image alt="product image" fill sizes="48px" src={img} />
     </div>
   )
 }
