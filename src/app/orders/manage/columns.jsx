@@ -104,7 +104,7 @@ const CellSelectCheckbox = ({ row }) => (
 )
 
 // Status
-getLastCompletedStatus = (orderStatuses) =>
+const getLastCompletedStatus = (orderStatuses) =>
   orderStatuses
     .slice()
     .reverse()
