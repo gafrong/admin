@@ -12,10 +12,10 @@ import { SelectCategory } from './data-table-dropdown-select-category'
 
 const SearchBarButton = ({ isSearchBarOpen, setIsSearchBarOpen }) => (
   <Button
-    variant="ghost"
     className="ml-auto"
-    size="sm"
     onClick={(prev) => setIsSearchBarOpen(!isSearchBarOpen)}
+    size="sm"
+    variant="ghost"
   >
     {isSearchBarOpen ?
       <FiXCircle size={24} />

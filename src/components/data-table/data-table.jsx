@@ -168,10 +168,10 @@ export function DataTable({
       {/* {JSON.stringify({data:table.getFilteredSelectedRowModel().rows})} */}
 
       <DateAndSearchBar
-        isSearchBarOpen={isSearchBarOpen}
         controls={controls}
-        handleSearchUpdate={handleSearchUpdate}
         getSearchPlaceHolder={getSearchPlaceHolder}
+        handleSearchUpdate={handleSearchUpdate}
+        isSearchBarOpen={isSearchBarOpen}
         table={table}
       />
 
