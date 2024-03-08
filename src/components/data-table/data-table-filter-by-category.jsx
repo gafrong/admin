@@ -19,7 +19,7 @@ const SearchBarButton = ({ isSearchBarOpen, setIsSearchBarOpen }) => (
   >
     {isSearchBarOpen ?
       <FiXCircle size={24} />
-    : <MagnifyingGlassIcon className="h-8 w-8" />}
+      : <MagnifyingGlassIcon className="h-8 w-8" />}
   </Button>
 )
 
@@ -154,7 +154,7 @@ export function DataTableFilterByCategory({
             updateOrderStatus={() => updateOrderStatus(nextStatus)}
             isLoading={isLoading}
           >
-            {nextStatus} 변경
+            {/* {nextStatus} 변경 */} 다음 단계로 변경
           </UpdateOrderStatusButton>
         )}
 
@@ -164,7 +164,7 @@ export function DataTableFilterByCategory({
             updateOrderStatus={() => updateOrderStatus(previousStatus)}
             variant="outline"
           >
-            {previousStatus} 변경
+            {/* {previousStatus} 변경 */} 이전 단계로 변경
           </UpdateOrderStatusButton>
         )}
 

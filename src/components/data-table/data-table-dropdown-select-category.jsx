@@ -22,11 +22,11 @@ export function SelectCategory({
         <Button variant="outline">
           {isLoading ?
             <LoadingSpinnerButton />
-          : '...'}
+            : '...'}
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent className="w-56">
-        <DropdownMenuLabel>새 상태 선택</DropdownMenuLabel>
+        <DropdownMenuLabel>아래 단계로 변경</DropdownMenuLabel>
         <DropdownMenuSeparator />
         <DropdownMenuGroup>
           {statuses

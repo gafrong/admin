@@ -14,6 +14,8 @@ import {
   FiShoppingCart,
   FiUsers,
   FiVideo,
+  FiEdit,
+  FiHelpCircle,
 } from 'react-icons/fi'
 
 const Sidebar = () => {
@@ -24,14 +26,14 @@ const Sidebar = () => {
         href="/dashboard"
       >
         <div className="flex flex-row">
-          <FiHome className="mr-2 mt-1" /> <div>Dashboard</div>
+          <FiHome className="mr-2 mt-1" /> <div>홈</div>
         </div>
       </Link>
       <Accordion type="single" collapsible>
         <AccordionItem value="item-1" className="block pl-5 pr-2 text-black">
           <AccordionTrigger>
             <div className="flex flex-row">
-              <FiVideo className="mr-2 mt-1" /> <div>Videos</div>
+              <FiVideo className="mr-2 mt-1" /> <div>영상</div>
             </div>
           </AccordionTrigger>
           <AccordionContent>
@@ -39,13 +41,13 @@ const Sidebar = () => {
               href="/videos/videoadd"
               className="flex flex-col pb-3 pl-3 pt-3 hover:bg-slate-200"
             >
-              Upload
+              등록
             </Link>
             <Link
               href="/videos/videomanage"
               className="flex flex-col pb-3 pl-3 pt-3 hover:bg-slate-200"
             >
-              Edit
+              삭제
             </Link>
           </AccordionContent>
         </AccordionItem>
@@ -54,7 +56,7 @@ const Sidebar = () => {
         <AccordionItem value="item-1" className="block pl-5 pr-2 text-black">
           <AccordionTrigger>
             <div className="flex flex-row">
-              <FiGift className="mr-2 mt-1" /> <div>Products</div>
+              <FiGift className="mr-2 mt-1" /> <div>상품</div>
             </div>
           </AccordionTrigger>
           <AccordionContent>
@@ -62,13 +64,13 @@ const Sidebar = () => {
               href="/products/productregister"
               className="flex flex-col pb-3 pl-3 pt-3 hover:bg-slate-200"
             >
-              Upload
+              등록
             </Link>
             <Link
               href="/products/productedit"
               className="flex flex-col pb-3 pl-3 pt-3 hover:bg-slate-200"
             >
-              Search/Edit
+              편집
             </Link>
           </AccordionContent>
         </AccordionItem>
@@ -77,7 +79,7 @@ const Sidebar = () => {
         <AccordionItem value="item-1" className="block pl-5 pr-2 text-black">
           <AccordionTrigger>
             <div className="flex flex-row">
-              <FiShoppingCart className="mr-2 mt-1" /> <div>Orders</div>
+              <FiShoppingCart className="mr-2 mt-1" /> <div>주문</div>
             </div>
           </AccordionTrigger>
           <AccordionContent>
@@ -85,7 +87,7 @@ const Sidebar = () => {
               href="/orders/manage"
               className="flex flex-col pb-3 pl-3 pt-3 hover:bg-slate-200"
             >
-              Manage
+              관리
             </Link>
           </AccordionContent>
         </AccordionItem>
@@ -94,7 +96,7 @@ const Sidebar = () => {
         <AccordionItem value="item-1" className="block pl-5 pr-2 text-black">
           <AccordionTrigger>
             <div className="flex flex-row">
-              <FiUsers className="mr-2 mt-1" /> <div>Clients</div>
+              <FiUsers className="mr-2 mt-1" /> <div>고객</div>
             </div>
           </AccordionTrigger>
           <AccordionContent>
@@ -102,13 +104,7 @@ const Sidebar = () => {
               href="/clients/search"
               className="flex flex-col pb-3 pl-3 pt-3 hover:bg-slate-200"
             >
-              Search
-            </Link>
-            <Link
-              href="/clients/ranking"
-              className="flex flex-col pb-3 pl-3 pt-3 hover:bg-slate-200"
-            >
-              Customer Ranks
+              찾기
             </Link>
           </AccordionContent>
         </AccordionItem>
@@ -117,7 +113,7 @@ const Sidebar = () => {
         <AccordionItem value="item-1" className="block pl-5 pr-2 text-black">
           <AccordionTrigger>
             <div className="flex flex-row">
-              <FiMessageCircle className="mr-2 mt-1" /> <div>Message</div>
+              <FiMessageCircle className="mr-2 mt-1" /> <div className='mr-4'>문의/리뷰</div>
             </div>
           </AccordionTrigger>
           <AccordionContent>
@@ -134,7 +130,7 @@ const Sidebar = () => {
         <AccordionItem value="item-1" className="block pl-5 pr-2 text-black">
           <AccordionTrigger>
             <div className="flex flex-row">
-              <FiBarChart2 className="mr-2 mt-1" /> <div>Statistics</div>
+              <FiBarChart2 className="mr-2 mt-1" /> <div>통계</div>
             </div>
           </AccordionTrigger>
           <AccordionContent>
@@ -159,6 +155,24 @@ const Sidebar = () => {
           </AccordionContent>
         </AccordionItem>
       </Accordion>
+      <div className='flex flex-row hover:bg-slate-200 border-b'>
+        <FiEdit className="ml-5 mt-5" />
+        <Link
+          href="#"
+          className="flex flex-col pl-3 pt-4 pb-4 hover:bg-slate-200"
+        >
+          기본 설정
+        </Link>
+      </div>
+      <div className='flex flex-row hover:bg-slate-200 border-b'>
+        <FiHelpCircle className="ml-5 mt-5" />
+        <Link
+          href="#"
+          className="flex flex-col pl-3 pt-4 pb-4 hover:bg-slate-200"
+        >
+          1:1 문의
+        </Link>
+      </div>
     </>
   )
 }
