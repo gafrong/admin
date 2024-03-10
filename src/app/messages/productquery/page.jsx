@@ -34,8 +34,6 @@ export default function Page() {
 
   const vendorId = vendor?._id
 
-  console.log('questions', questions)
-
   const getMessages = async () => {
     setLoading(true)
     try {
