@@ -1,6 +1,7 @@
 import { cn } from '@/lib/utils'
 import React from 'react'
 import { ClipLoader } from 'react-spinners'
+import { Button } from './ui/button'
 
 const override = {
   display: 'block',
@@ -22,6 +23,27 @@ export const LoadingSpinnerButton = ({ className }) => (
   <div className={cn('absolute ', className)}>
     <ClipLoader color="#000" cssOverride={cssButtonSpinner} loading size={24} />
   </div>
+)
+
+export const ButtonLoader = ({
+  children,
+  className,
+  isLoading,
+  onClick,
+  variant = 'default',
+  disabled = false,
+}) => (
+  <Button
+    className={cn(className, 'relative')}
+    variant={isLoading ? 'outline' : variant}
+    onClick={onClick}
+    disabled={isLoading || disabled}
+  >
+    {children}
+    {isLoading ?
+      <LoadingSpinnerButton />
+    : ''}
+  </Button>
 )
 
 export default LoadingSpinner

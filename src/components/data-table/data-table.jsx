@@ -10,6 +10,7 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table'
+import { cn } from '@/lib/utils'
 import { MagnifyingGlassIcon } from '@radix-ui/react-icons'
 import {
   flexRender,
@@ -77,6 +78,7 @@ const DateAndSearchBar = ({
 
 export function DataTable({
   columns,
+  className = '',
   controls = {},
   data,
   defaultCellStyle = '',
@@ -91,6 +93,7 @@ export function DataTable({
   const [rowSelectionIds, setRowSelectionIds] = React.useState({})
   const [sorting, setSorting] = React.useState([])
   const [tableData, setTableData] = React.useState([...data])
+  const handleRowClick = controls?.onRowClick || (() => null)
 
   React.useEffect(() => {
     setTableData([...data])
@@ -165,7 +168,7 @@ export function DataTable({
   const isNoData = !isDataLoaded && !isLoading
 
   return (
-    <div className="w-full space-y-4">
+    <div className={cn('w-full space-y-4', className)}>
       {/* {JSON.stringify({data:table.getFilteredSelectedRowModel().rows})} */}
 
       <DateAndSearchBar
@@ -217,6 +220,7 @@ export function DataTable({
                 <TableRow
                   key={row.id}
                   data-state={row.getIsSelected() && 'selected'}
+                  onClick={() => handleRowClick({ row })}
                 >
                   {row.getVisibleCells().map((cell) => (
                     <TableCell key={cell.id} className={defaultCellStyle}>

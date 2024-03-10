@@ -67,46 +67,33 @@ const HeaderTitle = ({ column }) => (
   <ButtonSortable column={column}>Title</ButtonSortable>
 )
 
-export const getColumns = () => {
-  // export const getColumns = ({ removeVideo }) =>
-  // const CellDeleteVideo = ({ row }) => {
-  //   const video = row.original
-  //   return (
-  //     <Button variant="destructive" onClick={() => removeVideo(video)}>
-  //       삭제
-  //     </Button>
-  //   )
-  // }
+export const columns = [
+  {
+    cell: CellProductImage,
+    header: 'Product',
+  },
+  {
+    accessorKey: 'title',
+    header: HeaderTitle,
+  },
+  {
+    accessorKey: 'detail',
+    header: 'Detail',
+  },
+  {
+    cell: CellUser,
+    header: 'User',
+  },
+  {
+    accessorKey: 'dateCreated',
+    cell: CellDateCreated,
+    filterFn: filterDateBetween,
+    header: HeaderDateCreated,
+  },
 
-  const columns = [
-    {
-      cell: CellProductImage,
-      header: 'Product',
-    },
-    {
-      accessorKey: 'title',
-      header: HeaderTitle,
-    },
-    {
-      accessorKey: 'detail',
-      header: 'Detail',
-    },
-    {
-      cell: CellUser,
-      header: 'User',
-    },
-    {
-      accessorKey: 'dateCreated',
-      cell: CellDateCreated,
-      filterFn: filterDateBetween,
-      header: HeaderDateCreated,
-    },
-
-    // Do we need to add a delete button? it will be same logic as delete video.
-    // {
-    //   cell: CellDeleteVideo,
-    //   header: '삭제<',
-    // },
-  ]
-  return columns
-}
+  // Do we need to add a delete button? it will be same logic as delete video.
+  // {
+  //   cell: CellDeleteVideo,
+  //   header: '삭제<',
+  // },
+]
