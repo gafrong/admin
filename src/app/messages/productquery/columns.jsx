@@ -90,10 +90,4 @@ export const columns = [
     filterFn: filterDateBetween,
     header: HeaderDateCreated,
   },
-
-  // Do we need to add a delete button? it will be same logic as delete video.
-  // {
-  //   cell: CellDeleteVideo,
-  //   header: '삭제<',
-  // },
 ]
