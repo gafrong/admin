@@ -5,6 +5,7 @@ import {
   filterDateBetween,
   formatDate,
 } from '@/components/data-table/data-table-date-range-picker'
+import { Button } from '@/components/ui/button'
 import Image from 'next/image'
 import React from 'react'
 
@@ -67,7 +68,7 @@ const HeaderTitle = ({ column }) => (
   <ButtonSortable column={column}>Title</ButtonSortable>
 )
 
-export const columns = [
+export const getColumns = (handleRowClick) => [
   {
     cell: CellProductImage,
     header: 'Product',
@@ -89,5 +90,13 @@ export const columns = [
     cell: CellDateCreated,
     filterFn: filterDateBetween,
     header: HeaderDateCreated,
+  },
+  {
+    cell: ({ row }) => (
+      <Button variant="outline" onClick={() => handleRowClick({ row })}>
+        Edit
+      </Button>
+    ),
+    header: 'Edit',
   },
 ]
