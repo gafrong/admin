@@ -15,9 +15,9 @@ export default function Page() {
   const [loading, setLoading] = useState(false)
   const [questions, setQuestions] = useState([])
   const [selectedUserMessage, setSelectedUserMessage] = useState(null)
+  const searchParams = useSearchParams()
   const isMessageView = searchParams.get('view') === 'message'
   const router = useRouter()
-  const searchParams = useSearchParams()
   const token = useUserStore((state) => state?.token)
   const vendor = useUserStore((state) => state.user)
 
@@ -27,7 +27,7 @@ export default function Page() {
       prevQuestions.map((question) =>
         question._id === id ?
           { ...question, replies: [...question.replies, newReply] }
-        : question,
+          : question,
       ),
     )
   }

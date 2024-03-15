@@ -47,7 +47,7 @@ const Sidebar = () => {
               href="/videos/videomanage"
               className="flex flex-col pb-3 pl-3 pt-3 hover:bg-slate-200"
             >
-              삭제
+              관리
             </Link>
           </AccordionContent>
         </AccordionItem>
@@ -113,7 +113,7 @@ const Sidebar = () => {
         <AccordionItem value="item-1" className="block pl-5 pr-2 text-black">
           <AccordionTrigger>
             <div className="flex flex-row">
-              <FiMessageCircle className="mr-2 mt-1" /> <div className='mr-4'>문의/리뷰</div>
+              <FiMessageCircle className="mr-2 mt-1" /> <div className='mr-4'>고객 문의</div>
             </div>
           </AccordionTrigger>
           <AccordionContent>
@@ -121,7 +121,7 @@ const Sidebar = () => {
               href="/messages/productquery"
               className="flex flex-col pb-3 pl-3 pt-3 hover:bg-slate-200"
             >
-              고객 문의
+              문의
             </Link>
           </AccordionContent>
         </AccordionItem>
@@ -155,24 +155,64 @@ const Sidebar = () => {
           </AccordionContent>
         </AccordionItem>
       </Accordion>
-      <div className='flex flex-row hover:bg-slate-200 border-b'>
-        <FiEdit className="ml-5 mt-5" />
-        <Link
-          href="#"
-          className="flex flex-col pl-3 pt-4 pb-4 hover:bg-slate-200"
-        >
-          기본 설정
-        </Link>
-      </div>
-      <div className='flex flex-row hover:bg-slate-200 border-b'>
-        <FiHelpCircle className="ml-5 mt-5" />
-        <Link
-          href="#"
-          className="flex flex-col pl-3 pt-4 pb-4 hover:bg-slate-200"
-        >
-          1:1 문의
-        </Link>
-      </div>
+      <Accordion type="single" collapsible>
+        <AccordionItem value="item-1" className="block pl-5 pr-2 text-black">
+          <AccordionTrigger>
+            <div className="flex flex-row">
+              <FiEdit className="mr-2 mt-1" /> <div>스토어 설정</div>
+            </div>
+          </AccordionTrigger>
+          <AccordionContent>
+            <Link
+              href="/statistics/daily"
+              className="flex flex-col pb-3 pl-3 pt-3 hover:bg-slate-200"
+            >
+              기본 정보
+            </Link>
+            <Link
+              href="/statistics/weekly"
+              className="flex flex-col pb-3 pl-3 pt-3 hover:bg-slate-200"
+            >
+              담당자 정보
+            </Link>
+            <Link
+              href="/statistics/monthly"
+              className="flex flex-col pb-3 pl-3 pt-3 hover:bg-slate-200"
+            >
+              배송 정보
+            </Link>
+            <Link
+              href="/statistics/monthly"
+              className="flex flex-col pb-3 pl-3 pt-3 hover:bg-slate-200"
+            >
+              사업자 정보
+            </Link>
+          </AccordionContent>
+        </AccordionItem>
+      </Accordion>
+      <Accordion type="single" collapsible>
+        <AccordionItem value="item-1" className="block pl-5 pr-2 text-black">
+          <AccordionTrigger>
+            <div className="flex flex-row">
+              <FiHelpCircle className="mr-2 mt-1" /> <div>1:1 문의</div>
+            </div>
+          </AccordionTrigger>
+          <AccordionContent>
+            <Link
+              href="/statistics/daily"
+              className="flex flex-col pb-3 pl-3 pt-3 hover:bg-slate-200"
+            >
+              문의
+            </Link>
+            <Link
+              href="/statistics/weekly"
+              className="flex flex-col pb-3 pl-3 pt-3 hover:bg-slate-200"
+            >
+              답변
+            </Link>
+          </AccordionContent>
+        </AccordionItem>
+      </Accordion>
     </>
   )
 }
