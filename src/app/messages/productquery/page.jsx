@@ -15,14 +15,11 @@ import { UserQuestionReply } from './user-question-reply'
 export default function Page() {
   const [loading, setLoading] = useState(false)
   const [questions, setQuestions] = useState([])
-  const [selectedUserMessage, setSelectedUserMessage] = useState(null)
-  const isMessageView = searchParams.get('view') === 'message'
+  const [selectedUserQuestion, setSelectedUserQuestion] = useState(null)
   const router = useRouter()
   const searchParams = useSearchParams()
   const token = useUserStore((state) => state?.token)
   const vendor = useUserStore((state) => state.user)
-  const router = useRouter()
-  const searchParams = useSearchParams()
   const isQuestionReplyView = searchParams.get('question') !== null
   const vendorId = vendor?._id
   const dateRangePicker = 'dateCreated'
@@ -33,7 +30,7 @@ export default function Page() {
       prevQuestions.map((question) =>
         question._id === id ?
           { ...question, replies: [...question.replies, newReply] }
-          : question,
+        : question,
       ),
     )
   }
@@ -65,23 +62,22 @@ export default function Page() {
   const handleRowClick = ({ row }) => {
     setSelectedUserQuestion(row.original)
     router.push(`?question=${row.original._id}`)
-    // router.push({ href: '/', row.original. });
   }
   const columns = getColumns(handleRowClick)
 
   const BackButton = () => {
     return isQuestionReplyView ?
-      <Button
-        className="mr-auto h-8 w-10 p-0 pr-2"
-        onClick={() => {
-          setSelectedUserQuestion(false)
-          router.back()
-        }}
-        size="sm"
-        variant="ghost"
-      >
-        <FiArrowLeftCircle size={24} />
-      </Button>
+        <Button
+          className="mr-auto h-8 w-10 p-0 pr-2"
+          onClick={() => {
+            setSelectedUserQuestion(false)
+            router.back()
+          }}
+          size="sm"
+          variant="ghost"
+        >
+          <FiArrowLeftCircle size={24} />
+        </Button>
       : null
   }
 
@@ -106,9 +102,7 @@ export default function Page() {
         replaceRepliesById={replaceRepliesById}
         selectedUserQuestion={selectedUserQuestion}
         setSelectedUserQuestion={setSelectedUserQuestion}
-        router={router}
         token={token}
-        vendorId={vendorId}
       ></UserQuestionReply>
     </div>
   )
