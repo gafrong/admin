@@ -28,9 +28,7 @@ export default function Page() {
   const replaceRepliesById = ({ id, newReply }) => {
     setQuestions((prevQuestions) =>
       prevQuestions.map((question) =>
-        question._id === id ?
-          { ...question, replies: [...question.replies, newReply] }
-          : question,
+        question._id === id ? { ...question, replies: [newReply] } : question,
       ),
     )
   }
@@ -62,23 +60,22 @@ export default function Page() {
   const handleRowClick = ({ row }) => {
     setSelectedUserQuestion(row.original)
     router.push(`?question=${row.original._id}`)
-    // router.push({ href: '/', row.original. });
   }
   const columns = getColumns(handleRowClick)
 
   const BackButton = () => {
     return isQuestionReplyView ?
-      <Button
-        className="mr-auto h-8 w-10 p-0 pr-2"
-        onClick={() => {
-          setSelectedUserQuestion(false)
-          router.back()
-        }}
-        size="sm"
-        variant="ghost"
-      >
-        <FiArrowLeftCircle size={24} />
-      </Button>
+        <Button
+          className="mr-auto h-8 w-10 p-0 pr-2"
+          onClick={() => {
+            setSelectedUserQuestion(false)
+            router.back()
+          }}
+          size="sm"
+          variant="ghost"
+        >
+          <FiArrowLeftCircle size={24} />
+        </Button>
       : null
   }
 
@@ -103,9 +100,7 @@ export default function Page() {
         replaceRepliesById={replaceRepliesById}
         selectedUserQuestion={selectedUserQuestion}
         setSelectedUserQuestion={setSelectedUserQuestion}
-        router={router}
         token={token}
-        vendorId={vendorId}
       ></UserQuestionReply>
     </div>
   )
