@@ -15,14 +15,11 @@ import { UserQuestionReply } from './user-question-reply'
 export default function Page() {
   const [loading, setLoading] = useState(false)
   const [questions, setQuestions] = useState([])
-  const [selectedUserMessage, setSelectedUserMessage] = useState(null)
-  const isMessageView = searchParams.get('view') === 'message'
+  const [selectedUserQuestion, setSelectedUserQuestion] = useState(null)
   const router = useRouter()
   const searchParams = useSearchParams()
   const token = useUserStore((state) => state?.token)
   const vendor = useUserStore((state) => state.user)
-  const router = useRouter()
-  const searchParams = useSearchParams()
   const isQuestionReplyView = searchParams.get('question') !== null
   const vendorId = vendor?._id
   const dateRangePicker = 'dateCreated'
