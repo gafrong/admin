@@ -218,8 +218,9 @@ export function DataTable({
               !isLoading &&
               table?.getRowModel().rows.map((row) => (
                 <TableRow
-                  key={row.id}
+                  className={controls?.onRowClick ? 'cursor-pointer' : ''}
                   data-state={row.getIsSelected() && 'selected'}
+                  key={row.id}
                   onClick={() => handleRowClick({ row })}
                 >
                   {row.getVisibleCells().map((cell) => (
