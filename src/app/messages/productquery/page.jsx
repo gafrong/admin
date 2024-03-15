@@ -28,9 +28,7 @@ export default function Page() {
   const replaceRepliesById = ({ id, newReply }) => {
     setQuestions((prevQuestions) =>
       prevQuestions.map((question) =>
-        question._id === id ?
-          { ...question, replies: [...question.replies, newReply] }
-        : question,
+        question._id === id ? { ...question, replies: [newReply] } : question,
       ),
     )
   }
