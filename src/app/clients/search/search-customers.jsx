@@ -5,7 +5,7 @@ import { DataTable } from '@/components/data-table/data-table'
 import useUserStore from '@/store/zustand'
 import axios from 'axios'
 import React, { useEffect, useState } from 'react'
-import { columns, searchableColumnHeaders, updateTableData } from './columns'
+import { columns, searchableColumnHeaders } from './columns'
 
 export function SearchCustomers() {
   const token = useUserStore((state) => state?.token)
@@ -54,7 +54,6 @@ export function SearchCustomers() {
       defaultCellStyle="align-top"
       isLoading={isLoading}
       refetchTableData={refetchTableData}
-      updateTableData={updateTableData}
     />
   )
 }
