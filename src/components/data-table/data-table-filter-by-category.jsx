@@ -19,7 +19,7 @@ const SearchBarButton = ({ isSearchBarOpen, setIsSearchBarOpen }) => (
   >
     {isSearchBarOpen ?
       <FiXCircle size={24} />
-      : <MagnifyingGlassIcon className="h-8 w-8" />}
+    : <MagnifyingGlassIcon className="h-8 w-8" />}
   </Button>
 )
 
@@ -104,7 +104,7 @@ export function DataTableFilterByCategory({
   const handleValueChange = (value) => {
     setValue(value)
     const newValue = value === 'All' ? undefined : value
-    column?.setFilterValue(newValue)
+    column?.setFilterValue(String(newValue))
   }
 
   function getAdjacentStatuses(currentStatus, statuses) {
@@ -118,7 +118,7 @@ export function DataTableFilterByCategory({
     const nextStatus =
       currentIndex < statuses.length - 1 ?
         statuses[currentIndex + 1].value
-        : null
+      : null
 
     return { previousStatus, nextStatus }
   }
@@ -126,7 +126,7 @@ export function DataTableFilterByCategory({
   const isPreviousStatus = previousStatus && previousStatus !== 'All'
   const isRowSelected = rowSelectionIds.length > 0
   return (
-    <div className="flex flex-col">
+    <>
       <RadioGroup
         className="flex w-full flex-wrap gap-8 rounded-md border p-4 py-3"
         defaultValue="All"
@@ -176,6 +176,6 @@ export function DataTableFilterByCategory({
           />
         )}
       </div>
-    </div>
+    </>
   )
 }
