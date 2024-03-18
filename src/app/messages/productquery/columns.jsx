@@ -68,7 +68,7 @@ const HeaderTitle = ({ column }) => (
   <ButtonSortable column={column}>Title</ButtonSortable>
 )
 
-export const getColumns = (handleRowClick) => [
+export const getColumns = (handleEdit) => [
   {
     cell: CellProductImage,
     header: 'Product',
@@ -93,7 +93,7 @@ export const getColumns = (handleRowClick) => [
   },
   {
     cell: ({ row }) => (
-      <Button variant="outline" onClick={() => handleRowClick({ row })}>
+      <Button variant="outline" onClick={() => handleEdit({ row })}>
         Edit
       </Button>
     ),
