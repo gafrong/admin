@@ -2,6 +2,8 @@
 
 import { DataTableFilterByCategory } from '@/components/data-table/data-table-filter-by-category'
 import { DataTablePagination } from '@/components/data-table/data-table-pagination'
+import { Label } from '@/components/ui/label'
+import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group'
 import {
   Table,
   TableBody,
@@ -41,19 +43,57 @@ export const LoadingTableRows = ({ columns }) => (
   </TableRow>
 )
 
+const SearchBarRadioItems = ({
+  searchableColumnHeaders,
+  handleSearchChange,
+}) => {
+  return (
+    <RadioGroup
+      className="flex w-full flex-wrap gap-8 rounded-md p-4 py-3"
+      defaultValue={searchableColumnHeaders?.[0]}
+      onValueChange={handleSearchChange}
+    >
+      {searchableColumnHeaders?.map((header) => (
+        <div
+          key={header.value}
+          className="flex items-center space-x-2 whitespace-nowrap"
+        >
+          <RadioGroupItem value={header} id={header.value} />
+          <Label htmlFor={header.value}>{header.label}</Label>
+        </div>
+      ))}
+    </RadioGroup>
+  )
+}
 const DateAndSearchBar = ({
   controls,
   getSearchPlaceHolder,
   handleSearchUpdate,
   isSearchBarOpen,
+  searchableColumnHeaders,
+  setSearchColumn,
   table,
 }) => {
-  const isRendered = isSearchBarOpen || !controls?.filterByCategory
+  const isMultipleColumnSearch = searchableColumnHeaders?.length > 1
+  const isRendered =
+    isSearchBarOpen ||
+    !controls?.filterByCategory ||
+    controls?.isSearchAlwaysShown
+  const resetRef = React.useRef(null)
+
+  const handleSearchChange = (header) => {
+    searchableColumnHeaders.forEach((column) => {
+      table.getColumn(column.id)?.setFilterValue('')
+    })
+    setSearchColumn(header.id)
+    resetRef.current()
+  }
+
   return (
     <>
       {isRendered && (
         <div className="flex flex-col rounded border">
-          <div className="flex justify-between p-2 px-4">
+          <div className="flex justify-between border-b p-2 px-4 pt-[7px]">
             {controls.dateRangePicker && (
               <DateRangePicker
                 dateColumnId={controls.dateRangePicker}
@@ -62,11 +102,19 @@ const DateAndSearchBar = ({
             )}
           </div>
 
-          <div className="flex border-t">
+          {isMultipleColumnSearch && (
+            <SearchBarRadioItems
+              searchableColumnHeaders={searchableColumnHeaders}
+              handleSearchChange={handleSearchChange}
+            />
+          )}
+
+          <div className="flex">
             <MagnifyingGlassIcon className="ml-4 mt-2 h-6 w-6" />
             <DebouncedInput
               className="h-10 border-none px-4"
               onChange={handleSearchUpdate}
+              reset={resetRef}
               placeholder={getSearchPlaceHolder()}
             />
           </div>
@@ -145,7 +193,7 @@ export function DataTable({
   }
 
   const handleSearchUpdate = (value) => {
-    table.getColumn(searchColumn)?.setFilterValue(value)
+    table.getColumn(searchColumn)?.setFilterValue(String(value))
   }
 
   const findBy = ({ arr, key, value }) =>
@@ -176,6 +224,9 @@ export function DataTable({
         getSearchPlaceHolder={getSearchPlaceHolder}
         handleSearchUpdate={handleSearchUpdate}
         isSearchBarOpen={isSearchBarOpen}
+        searchableColumnHeaders={searchableColumnHeaders}
+        searchColumn={searchColumn}
+        setSearchColumn={setSearchColumn}
         table={table}
       />
 

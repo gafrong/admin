@@ -57,11 +57,11 @@ export default function Page() {
     getQuestions()
   }, [token])
 
-  const handleRowClick = ({ row }) => {
+  const handleEdit = ({ row }) => {
     setSelectedUserQuestion(row.original)
     router.push(`?question=${row.original._id}`)
   }
-  const columns = getColumns(handleRowClick)
+  const columns = getColumns(handleEdit)
 
   const BackButton = () => {
     return isQuestionReplyView ?
