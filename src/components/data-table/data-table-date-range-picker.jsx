@@ -145,30 +145,28 @@ export function DateRangePicker({ table, dateColumnId }) {
   }
 
   return (
-    <div className="flex justify-between border-b p-2 px-4 pt-[7px]">
-      <div className="flex flex-wrap gap-4">
-        <div className="mt-2">동영상 기간설정</div>
-        <div className={cn('grid gap-2')}>
-          <Popover>
-            <ButtonCalendarTrigger date={date} />
-            <PopoverContent className="w-auto p-0" align="start">
-              <DropdownPastDateRanges setDateRange={setDateRange} />
-              <Calendar
-                defaultMonth={date?.from}
-                initialFocus
-                mode="range"
-                numberOfMonths={2}
-                onSelect={handleSetDate}
-                selected={date}
-              />
-            </PopoverContent>
-          </Popover>
-        </div>
-        <Button onClick={handleQuery}>조회</Button>
-        <Button variant="secondary" onClick={handleReset}>
-          초기화
-        </Button>
+    <div className="flex flex-wrap justify-between gap-4 border-b p-2 px-4 pt-[7px]">
+      <div className="mt-2">동영상 기간설정</div>
+      <div className={cn('grid gap-2')}>
+        <Popover>
+          <ButtonCalendarTrigger date={date} />
+          <PopoverContent className="w-auto p-0" align="start">
+            <DropdownPastDateRanges setDateRange={setDateRange} />
+            <Calendar
+              defaultMonth={date?.from}
+              initialFocus
+              mode="range"
+              numberOfMonths={2}
+              onSelect={handleSetDate}
+              selected={date}
+            />
+          </PopoverContent>
+        </Popover>
       </div>
+      <Button onClick={handleQuery}>조회</Button>
+      <Button variant="secondary" onClick={handleReset}>
+        초기화
+      </Button>
     </div>
   )
 }

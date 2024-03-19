@@ -24,13 +24,7 @@ const filterName = (row, id, value) => row.original.name.includes(value)
 
 const CellEdit = ({ row }) => (
   <Button variant="outline" asChild>
-    <Link
-      className="w-20"
-      href={{
-        pathname: '/client/search',
-        query: { product: JSON.stringify(row.original) },
-      }}
-    >
+    <Link className="w-20" href={`/clients/search/${row.original._id}`}>
       <span className="inline-flex flex-row gap-1">편집</span>
     </Link>
   </Button>
