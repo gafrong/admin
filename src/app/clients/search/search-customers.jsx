@@ -12,6 +12,7 @@ export function SearchCustomers() {
   const [isLoading, setIsLoading] = useState(false)
   const [users, setUsers] = useState([])
   const [isFetchTriggered, setFetchTrigger] = useState(false)
+  const setClients = useUserStore((state) => state.setClients)
 
   const getUsers = async () => {
     setIsLoading(true)
@@ -25,6 +26,7 @@ export function SearchCustomers() {
       })
 
       setUsers(response.data)
+      setClients(response.data)
     } catch (error) {
       console.log('getUsers() error', { URL }, error)
     } finally {

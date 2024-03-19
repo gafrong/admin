@@ -55,11 +55,11 @@ const SearchBarRadioItems = ({
     >
       {searchableColumnHeaders?.map((header) => (
         <div
-          key={header.value}
+          key={header.id}
           className="flex items-center space-x-2 whitespace-nowrap"
         >
-          <RadioGroupItem value={header} id={header.value} />
-          <Label htmlFor={header.value}>{header.label}</Label>
+          <RadioGroupItem value={header} id={header.id} />
+          <Label htmlFor={header.id}>{header.label}</Label>
         </div>
       ))}
     </RadioGroup>
@@ -75,10 +75,12 @@ const DateAndSearchBar = ({
   table,
 }) => {
   const isMultipleColumnSearch = searchableColumnHeaders?.length > 1
-  const isRendered =
+  let isRendered =
     isSearchBarOpen ||
     !controls?.filterByCategory ||
     controls?.isSearchAlwaysShown
+  isRendered = controls?.isDateAndSearchBarHidden ? false : isRendered
+
   const resetRef = React.useRef(null)
 
   const handleSearchChange = (header) => {
@@ -290,7 +292,9 @@ export function DataTable({
         </Table>
       </div>
 
-      <DataTablePagination table={table} columns={columns} />
+      {!controls?.isPaginationHidden && (
+        <DataTablePagination table={table} columns={columns} />
+      )}
     </div>
   )
 }
