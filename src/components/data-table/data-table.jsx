@@ -49,7 +49,7 @@ const SearchBarRadioItems = ({
 }) => {
   return (
     <RadioGroup
-      className="flex w-full flex-wrap gap-8 rounded-md p-4 py-3"
+      className="flex w-full flex-wrap gap-8 rounded-md p-4"
       defaultValue={searchableColumnHeaders?.[0]}
       onValueChange={handleSearchChange}
     >
@@ -93,30 +93,30 @@ const DateAndSearchBar = ({
     <>
       {isRendered && (
         <div className="flex flex-col rounded border">
-          <div className="flex justify-between border-b p-2 px-4 pt-[7px]">
-            {controls.dateRangePicker && (
-              <DateRangePicker
-                dateColumnId={controls.dateRangePicker}
-                table={table}
-              />
-            )}
-          </div>
-
-          {isMultipleColumnSearch && (
-            <SearchBarRadioItems
-              searchableColumnHeaders={searchableColumnHeaders}
-              handleSearchChange={handleSearchChange}
+          {controls.dateRangePicker && (
+            <DateRangePicker
+              dateColumnId={controls.dateRangePicker}
+              table={table}
             />
           )}
 
-          <div className="flex">
-            <MagnifyingGlassIcon className="ml-4 mt-2 h-6 w-6" />
-            <DebouncedInput
-              className="h-10 border-none px-4"
-              onChange={handleSearchUpdate}
-              reset={resetRef}
-              placeholder={getSearchPlaceHolder()}
-            />
+          <div className="py-2 pt-1">
+            {isMultipleColumnSearch && (
+              <SearchBarRadioItems
+                searchableColumnHeaders={searchableColumnHeaders}
+                handleSearchChange={handleSearchChange}
+              />
+            )}
+
+            <div className="flex">
+              <MagnifyingGlassIcon className="ml-4 mt-2 h-6 w-6" />
+              <DebouncedInput
+                className="h-10 border-none px-4"
+                onChange={handleSearchUpdate}
+                reset={resetRef}
+                placeholder={getSearchPlaceHolder()}
+              />
+            </div>
           </div>
         </div>
       )}
