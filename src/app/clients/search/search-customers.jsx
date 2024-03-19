@@ -41,7 +41,6 @@ export function SearchCustomers() {
   }
 
   const controls = {
-    dateRangePicker: 'username',
     isSearchAlwaysShown: true,
     searchableColumnHeaders,
   }
