@@ -154,7 +154,7 @@ const CellProductImage = ({ row }) => {
 
 // Amount
 const CellProductPrice = ({ row }) => {
-  const amount = parseFloat(row.getValue('product')?.price) || 0
+  const amount = parseFloat(row.original?.product?.price)
   // Format the amount as a dollar amount
   const formatted =
     amount === NaN ? '₩0' : (
@@ -298,7 +298,7 @@ export const columns = [
   // {
   //   accessorKey: 'product',
   //   cell: CellProductImage,
-  //   header: '',
+  //   header: 'Product',
   //   visibilityLabel: 'Product Image',
   // },
   // {
@@ -312,6 +312,7 @@ export const columns = [
   //   header: HeaderQuantity,
   // },
   {
+    id: 'productPrice',
     accessorKey: 'price',
     cell: CellProductPrice,
     header: HeaderProductPrice,

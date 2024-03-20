@@ -4,7 +4,7 @@ import { DataTable } from '@/components/data-table/data-table'
 import { PageTitle } from '@/components/typography/PageTitle'
 import useUserStore from '@/store/zustand'
 import { customerColumn } from './columns-client-details'
-import { ManageOrders } from './manage-orders'
+import { TableOrderItems } from './table-order-items'
 
 export default function Page({ params }) {
   const { clients } = useUserStore()
@@ -15,7 +15,6 @@ export default function Page({ params }) {
   return (
     <div className="py-10 pl-5 pr-2">
       <PageTitle>Customer Information</PageTitle>
-
       {client && (
         <DataTable
           className="mb-8"
@@ -28,9 +27,8 @@ export default function Page({ params }) {
           defaultCellStyle="align-top"
         />
       )}
-
       <PageTitle>Order History</PageTitle>
-      <ManageOrders />
+      <TableOrderItems clientId={client?.id} />
     </div>
   )
 }

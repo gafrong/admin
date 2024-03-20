@@ -4,10 +4,10 @@ import { DataTable } from '@/components/data-table/data-table'
 import React from 'react'
 import { columns, updateTableData } from './columns'
 import { statuses } from './data/data'
-import { useFetchOrders } from './use-fetch-orders'
+import { useFetchOrderItems } from './use-fetch-order-items'
 
 export function ManageOrders() {
-  const { orderItems, isLoading, refetchTableData } = useFetchOrders()
+  const { orderItems, isLoading, refetchTableData } = useFetchOrderItems()
 
   const searchableColumnHeaders = [{ id: 'orderNumber', label: 'Order Number' }]
 

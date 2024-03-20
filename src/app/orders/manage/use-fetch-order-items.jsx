@@ -4,7 +4,7 @@ import useUserStore from '@/store/zustand'
 import axios from 'axios'
 import { useEffect, useState } from 'react'
 
-export const useFetchOrders = () => {
+export const useFetchOrderItems = () => {
   const user = useUserStore((state) => state.user)
   const token = useUserStore((state) => state?.token)
   const [isLoading, setIsLoading] = useState(false)
@@ -39,5 +39,5 @@ export const useFetchOrders = () => {
     setFetchTrigger((prev) => !prev)
   }
 
-  return { orderItems, isLoading, refetchTableData }
+  return { orderItems, isLoading, refetchTableData, vendorId }
 }
