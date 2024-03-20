@@ -15,7 +15,6 @@ export function TableOrderItems({ clientId }) {
 
   return (
     <DataTable
-      key={clientOrderItems.length}
       columns={columns}
       controls={controls}
       data={clientOrderItems}
