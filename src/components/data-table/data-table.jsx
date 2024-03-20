@@ -195,6 +195,7 @@ export function DataTable({
   }
 
   const handleSearchUpdate = (value) => {
+    if (!searchColumn || !value) return
     table.getColumn(searchColumn)?.setFilterValue(String(value))
   }
 

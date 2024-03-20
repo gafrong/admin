@@ -1,5 +1,5 @@
 import { PageTitle } from '@/components/typography/PageTitle'
-import { SearchCustomers } from './search-customers'
+import { SearchCustomers } from './table-clients'
 
 export default function Page() {
   return (
