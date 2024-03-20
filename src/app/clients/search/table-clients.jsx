@@ -6,7 +6,6 @@ import useUserStore from '@/store/zustand'
 import React, { useEffect, useState } from 'react'
 import { columns, searchableColumnHeaders } from './columns'
 
-// const unique = (arrayWithDuplicates) => [...new Set(arrayWithDuplicates)]
 const unique = (arrayWithDuplicates) => [...new Set(arrayWithDuplicates)]
 
 const getClients = ({ orderItems, vendorId }) => {
@@ -15,7 +14,8 @@ const getClients = ({ orderItems, vendorId }) => {
   )
   const buyers = clientOrderItems.map((item) => item.buyer)
   const ids = unique(buyers.map((buyer) => buyer.id))
-  const clients = ids.map((id) => buyers.find((buyer) => buyer.id === id))
+  const getBuyerById = (id) => buyers.find((buyer) => buyer.id === id)
+  const clients = ids.map(getBuyerById)
   return clients
 }
 
