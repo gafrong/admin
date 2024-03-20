@@ -55,7 +55,7 @@ const CellDate = ({ row }) => {
   return (
     <div className="flex flex-col space-y-2">
       <div className="whitespace-nowrap">{date}</div>
-      <div className="whitespace-nowrap">{time}</div>
+      {/* <div className="whitespace-nowrap">{time}</div> */}
     </div>
   )
 }
@@ -268,20 +268,14 @@ export const updateTableData = ({ setTableData }) => ({
 // -------------------
 
 export const columns = [
-  {
-    cell: CellSelectCheckbox,
-    enableHiding: false,
-    enableSorting: false,
-    header: HeaderSelectAll,
-    id: 'select',
-  },
-  {
-    accessorKey: 'orderStatus',
-    accessor: CellStatusAccessor,
-    cell: CellStatus,
-    filterFn: filterStatus,
-    header: HeaderStatus,
-  },
+  // {
+  //   cell: CellSelectCheckbox,
+  //   enableHiding: false,
+  //   enableSorting: false,
+  //   header: HeaderSelectAll,
+  //   id: 'select',
+  // },
+
   {
     accessorKey: 'dateOrdered',
     cell: CellDate,
@@ -295,28 +289,28 @@ export const columns = [
     visibilityLabel: 'Order Number',
     filterFn: filterOrderNumber,
   },
-  {
-    id: 'buyerName',
-    cell: CellName,
-    header: HeaderName,
-    filterFn: filterName,
-  },
-  {
-    accessorKey: 'product',
-    cell: CellProductImage,
-    header: '',
-    visibilityLabel: 'Product Image',
-  },
-  {
-    id: 'description',
-    cell: CellProductDescription,
-    header: 'Product',
-    visibilityLabel: 'Product Details',
-  },
-  {
-    accessorKey: 'quantity',
-    header: HeaderQuantity,
-  },
+  // {
+  //   id: 'buyerName',
+  //   cell: CellName,
+  //   header: HeaderName,
+  //   filterFn: filterName,
+  // },
+  // {
+  //   accessorKey: 'product',
+  //   cell: CellProductImage,
+  //   header: '',
+  //   visibilityLabel: 'Product Image',
+  // },
+  // {
+  //   id: 'description',
+  //   cell: CellProductDescription,
+  //   header: 'Product',
+  //   visibilityLabel: 'Product Details',
+  // },
+  // {
+  //   accessorKey: 'quantity',
+  //   header: HeaderQuantity,
+  // },
   {
     accessorKey: 'price',
     cell: CellProductPrice,
@@ -326,6 +320,13 @@ export const columns = [
     accessorKey: 'paidPrice',
     cell: CellProductPayment,
     header: HeaderProductPayment,
+  },
+  {
+    accessorKey: 'orderStatus',
+    accessor: CellStatusAccessor,
+    cell: CellStatus,
+    filterFn: filterStatus,
+    header: HeaderStatus,
   },
   {
     accessorKey: 'memo',
