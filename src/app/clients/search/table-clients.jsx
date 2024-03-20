@@ -19,7 +19,7 @@ const getClients = ({ orderItems, vendorId }) => {
   return clients
 }
 
-export function SearchCustomers() {
+export function TableClients() {
   const [users, setUsers] = useState([])
   const setStoreClients = useUserStore((state) => state.setClients)
   const { orderItems, isLoading, refetchTableData, vendorId } =
