@@ -3,7 +3,8 @@
 import { DataTable } from '@/components/data-table/data-table'
 import { PageTitle } from '@/components/typography/PageTitle'
 import useUserStore from '@/store/zustand'
-import { customerColumn } from './columns'
+import { customerColumn } from './columns-client-details'
+import { ManageOrders } from './manage-orders'
 
 export default function Page({ params }) {
   const { clients } = useUserStore()
@@ -29,6 +30,7 @@ export default function Page({ params }) {
       )}
 
       <PageTitle>Order History</PageTitle>
+      <ManageOrders />
     </div>
   )
 }
