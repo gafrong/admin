@@ -5,9 +5,8 @@ import useUserStore from '@/store/zustand'
 import axios from 'axios'
 import { useEffect, useState } from 'react'
 
-export function useFetchProductQueries() {
+export function useFetchProductQueries({ questions, setQuestions }) {
   const [isLoading, setIsLoading] = useState(false)
-  const [questions, setQuestions] = useState([])
   const token = useUserStore((state) => state?.token)
   const seller = useUserStore((state) => state.user)
   const sellerId = seller?._id
@@ -38,5 +37,5 @@ export function useFetchProductQueries() {
     getQuestions()
   }, [token])
 
-  return { questions, isLoading }
+  return { questions, setQuestions, isLoading }
 }

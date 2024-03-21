@@ -2,17 +2,20 @@
 
 import { DataTable } from '@/components/data-table/data-table'
 import { useRouter, useSearchParams } from 'next/navigation'
-import React, { useState } from 'react'
+import React from 'react'
 import { getColumns, searchableColumnHeaders } from './columns'
 import { useFetchProductQueries } from './useFetchProductQueries'
 
-export function TableProductQuery() {
-  const [selectedUserQuestion, setSelectedUserQuestion] = useState(null)
+export function TableProductQuery({
+  setSelectedUserQuestion,
+  questions,
+  setQuestions,
+}) {
   const router = useRouter()
   const searchParams = useSearchParams()
   const isQuestionReplyView = searchParams.get('question') !== null
   const dateRangePicker = 'dateCreated'
-  const { questions, isLoading } = useFetchProductQueries()
+  const { isLoading } = useFetchProductQueries({ questions, setQuestions })
 
   const handleEdit = ({ row }) => {
     setSelectedUserQuestion(row.original)
