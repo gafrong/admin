@@ -6,7 +6,7 @@ import { columns, updateTableData } from './columns'
 import { statuses } from './data/data'
 import { useFetchOrderItems } from './use-fetch-order-items'
 
-export function ManageOrders() {
+export function TableManageOrders() {
   const { orderItems, isLoading, refetchTableData } = useFetchOrderItems()
 
   const searchableColumnHeaders = [{ id: 'orderNumber', label: 'Order Number' }]
