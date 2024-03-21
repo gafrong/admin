@@ -48,7 +48,12 @@ export default function Page() {
         <BackButton />
         고객 문의
       </PageTitle>
-      <TableProductQuery />
+      <TableProductQuery
+        setSelectedUserQuestion={setSelectedUserQuestion}
+        questions={questions}
+        setQuestions={setQuestions}
+      />
+
       <UserQuestionReply
         className={!isQuestionReplyView && 'hidden'}
         replaceRepliesById={replaceRepliesById}
