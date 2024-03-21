@@ -272,23 +272,26 @@ function ButtonDelete({ handleDeleteReply, selectedUserQuestion }) {
     </Button>
   )
 }
+
 function QuestionReplyDisplay({ selectedUserQuestion }) {
   return (
-    <Table>
-      <TableBody>
-        <TableRow>
-          <TableHead scope="row" className="w-40">
-            Comment
-          </TableHead>
-          <TableCell className="py-8 text-base">
-            {selectedUserQuestion.replies.map((reply, index) => (
-              <div key={index} className={`text-left`}>
-                {reply.content}
-              </div>
-            ))}
-          </TableCell>
-        </TableRow>
-      </TableBody>
-    </Table>
+    <div className="rounded-md border">
+      <Table>
+        <TableBody>
+          <TableRow>
+            <TableHead scope="row" className="w-40">
+              Comment
+            </TableHead>
+            <TableCell className="py-8 text-base">
+              {selectedUserQuestion.replies.map((reply, index) => (
+                <div key={index} className={`text-left`}>
+                  {reply.content}
+                </div>
+              ))}
+            </TableCell>
+          </TableRow>
+        </TableBody>
+      </Table>
+    </div>
   )
 }
