@@ -6,7 +6,7 @@ import useUserStore from '@/store/zustand'
 import { useRouter, useSearchParams } from 'next/navigation'
 import React, { useState } from 'react'
 import { FiArrowLeftCircle } from 'react-icons/fi'
-import { TableProductQuery } from './TableProductQuery'
+import { TableProductQuery } from './table-product-query'
 import { UserQuestionReply } from './user-question-reply'
 
 export default function Page() {
@@ -49,9 +49,9 @@ export default function Page() {
         고객 문의
       </PageTitle>
       <TableProductQuery
-        setSelectedUserQuestion={setSelectedUserQuestion}
         questions={questions}
         setQuestions={setQuestions}
+        setSelectedUserQuestion={setSelectedUserQuestion}
       />
 
       <UserQuestionReply

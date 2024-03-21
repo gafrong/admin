@@ -4,7 +4,7 @@ import { DataTable } from '@/components/data-table/data-table'
 import { useRouter, useSearchParams } from 'next/navigation'
 import React from 'react'
 import { getColumns, searchableColumnHeaders } from './columns'
-import { useFetchProductQueries } from './useFetchProductQueries'
+import { useFetchProductQueries } from './use-fetch-product-queries'
 
 export function TableProductQuery({
   setSelectedUserQuestion,
