@@ -11,6 +11,7 @@ export const useFetchOrders = () => {
   const [orderItems, setOrderItems] = useState([])
   const vendorId = user?._id
   const [isFetchTriggered, setFetchTrigger] = useState(false)
+  const setStoreOrderItems = useUserStore((state) => state.setStoreOrderItems)
 
   const getOrderItemsByVendorId = async () => {
     setIsLoading(true)
@@ -22,8 +23,8 @@ export const useFetchOrders = () => {
           Authorization: `Bearer ${token}`,
         },
       })
-
       setOrderItems(response.data)
+      setStoreOrderItems(response.data)
     } catch (error) {
       console.log('getOrderItemsByVendorId() error', { URL }, error)
     } finally {
@@ -39,5 +40,5 @@ export const useFetchOrders = () => {
     setFetchTrigger((prev) => !prev)
   }
 
-  return { orderItems, isLoading, refetchTableData }
+  return { orderItems, isLoading, refetchTableData, vendorId }
 }

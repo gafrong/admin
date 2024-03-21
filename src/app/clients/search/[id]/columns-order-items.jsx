@@ -1,15 +1,11 @@
 'use client'
 
-import awsURL from '@/assets/common/awsUrl'
 import baseURL from '@/assets/common/baseUrl'
-import { IMG } from '@/assets/common/urls'
 import { ButtonSortable } from '@/components/data-table/data-table-button-sorting'
 import { filterDateBetween } from '@/components/data-table/data-table-date-range-picker'
-import { Checkbox } from '@/components/ui/checkbox'
 import useUserStore from '@/store/zustand'
 import axios from 'axios'
 import { format } from 'date-fns'
-import Image from 'next/image'
 import { useState } from 'react'
 import { DialogMemo } from './CellDialogMemo'
 
@@ -19,12 +15,6 @@ import { DialogMemo } from './CellDialogMemo'
 // "name": "대호 엄","orderNumber": 1873917702819,
 const filterOrderNumber = (row, id, value) => {
   return row.getValue(id).toString().includes(value)
-}
-
-// "name": "대호 엄","orderNumber": 1873917702819,
-const filterName = (row, id, value) => {
-  const name = row.original.buyer.name
-  return name.includes(value)
 }
 
 function filterStatus(row, id, filterValue) {
@@ -63,42 +53,6 @@ const HeaderDateCreated = ({ column }) => (
   <ButtonSortable column={column}>날짜</ButtonSortable>
 )
 
-// Product Description
-const CellProductDescription = ({ row }) => {
-  const { selectedColor } = row.original
-  const { name, description, richDescription } = row.getValue('product') ?? {}
-
-  return (
-    <div className="flex max-w-sm flex-col space-y-2">
-      <div>{name}</div>
-      <div>{description}</div>
-      <div>{richDescription}</div>
-      <div>{selectedColor}</div>
-    </div>
-  )
-}
-
-// select all rows in table
-const HeaderSelectAll = ({ table }) => (
-  <Checkbox
-    checked={
-      table.getIsAllPageRowsSelected() ||
-      (table.getIsSomePageRowsSelected() && 'indeterminate')
-    }
-    onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
-    aria-label="Select all"
-  />
-)
-
-// Select
-const CellSelectCheckbox = ({ row }) => (
-  <Checkbox
-    aria-label="Select row"
-    checked={row.getIsSelected()}
-    onCheckedChange={(value) => row.toggleSelected(Boolean(value))}
-  />
-)
-
 // Status
 const getLastCompletedStatus = (orderStatuses) =>
   orderStatuses
@@ -119,42 +73,9 @@ const HeaderStatus = () => <div className="w-16">Status</div>
 const CellStatusAccessor = ({ row }) =>
   getLastCompletedStatus(row.getValue('orderStatus'))?.type
 
-// Name
-const HeaderName = ({ column }) => (
-  <ButtonSortable column={column}>User</ButtonSortable>
-)
-
-const CellName = ({ row }) => {
-  const { name, username, email } = row.original.buyer || {}
-  return (
-    <div className="flex-col space-y-2">
-      <div className="lowercase">{name}</div>
-      <div className="lowercase">{username}</div>
-      <div className="lowercase">{email}</div>
-    </div>
-  )
-}
-
-// Quantity
-const HeaderQuantity = ({ column }) => (
-  <ButtonSortable column={column}>Qty</ButtonSortable>
-)
-
-// Image
-const CellProductImage = ({ row }) => {
-  const productImage = row.getValue('product')?.image
-  const img = productImage ? awsURL + productImage : IMG.empty_product
-
-  return (
-    <div className="relative h-12 w-12 overflow-hidden rounded-sm border">
-      <Image alt="product image" fill sizes="48px" src={img} />
-    </div>
-  )
-}
-
 // Amount
 const CellProductPrice = ({ row }) => {
-  const amount = parseFloat(row.getValue('product')?.price) || 0
+  const amount = parseFloat(row.original?.product?.price)
   // Format the amount as a dollar amount
   const formatted =
     amount === NaN ? '₩0' : (
@@ -268,14 +189,6 @@ export const updateTableData = ({ setTableData }) => ({
 // -------------------
 
 export const columns = [
-  // {
-  //   cell: CellSelectCheckbox,
-  //   enableHiding: false,
-  //   enableSorting: false,
-  //   header: HeaderSelectAll,
-  //   id: 'select',
-  // },
-
   {
     accessorKey: 'dateOrdered',
     cell: CellDate,
@@ -289,29 +202,8 @@ export const columns = [
     visibilityLabel: 'Order Number',
     filterFn: filterOrderNumber,
   },
-  // {
-  //   id: 'buyerName',
-  //   cell: CellName,
-  //   header: HeaderName,
-  //   filterFn: filterName,
-  // },
-  // {
-  //   accessorKey: 'product',
-  //   cell: CellProductImage,
-  //   header: '',
-  //   visibilityLabel: 'Product Image',
-  // },
-  // {
-  //   id: 'description',
-  //   cell: CellProductDescription,
-  //   header: 'Product',
-  //   visibilityLabel: 'Product Details',
-  // },
-  // {
-  //   accessorKey: 'quantity',
-  //   header: HeaderQuantity,
-  // },
   {
+    id: 'productPrice',
     accessorKey: 'price',
     cell: CellProductPrice,
     header: HeaderProductPrice,
