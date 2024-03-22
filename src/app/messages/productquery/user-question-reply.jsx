@@ -208,6 +208,7 @@ export const UserQuestionReply = ({
           />
         }
       </div>
+
       {isExistingReply && !isReplyEditingActive && (
         <QuestionReplyDisplay selectedUserQuestion={selectedUserQuestion} />
       )}
@@ -271,14 +272,26 @@ function ButtonDelete({ handleDeleteReply, selectedUserQuestion }) {
     </Button>
   )
 }
+
 function QuestionReplyDisplay({ selectedUserQuestion }) {
   return (
-    <div className="flex flex-1">
-      {selectedUserQuestion.replies.map((reply, index) => (
-        <div key={index} className={`flex flex-1 rounded-md border p-4`}>
-          {reply.content}
-        </div>
-      ))}
+    <div className="rounded-md border">
+      <Table>
+        <TableBody>
+          <TableRow>
+            <TableHead scope="row" className="w-40">
+              Comment
+            </TableHead>
+            <TableCell className="py-8 text-base">
+              {selectedUserQuestion.replies.map((reply, index) => (
+                <div key={index} className={`text-left`}>
+                  {reply.content}
+                </div>
+              ))}
+            </TableCell>
+          </TableRow>
+        </TableBody>
+      </Table>
     </div>
   )
 }
