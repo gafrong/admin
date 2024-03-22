@@ -1,29 +1,20 @@
 'use client'
 
 import { DataTable } from '@/components/data-table/data-table'
-import { useRouter, useSearchParams } from 'next/navigation'
 import React from 'react'
-import { getColumns, searchableColumnHeaders } from './columns'
+import { columns } from './columns'
 import { useFetchProductQueries } from './use-fetch-product-queries'
 
-export function TableProductQuery({ setSelectedUserQuestion }) {
-  const router = useRouter()
-  const searchParams = useSearchParams()
-  const isQuestionReplyView = searchParams.get('question') !== null
-  const dateRangePicker = 'dateCreated'
+export function TableProductQuery() {
   const { questions, mutate, isLoading } = useFetchProductQueries()
-
-  const handleEdit = ({ row }) => {
-    setSelectedUserQuestion(row.original)
-    router.push(`?question=${row.original._id}`)
-  }
-
-  const columns = getColumns(handleEdit)
+  const dateRangePicker = 'dateCreated'
+  const searchableColumnHeaders = [
+    { id: 'title', label: '날짜', placeholder: '검색 날짜...' },
+  ]
 
   return (
     <DataTable
       columns={columns}
-      className={isQuestionReplyView && 'hidden'}
       controls={{
         dateRangePicker,
         searchableColumnHeaders,

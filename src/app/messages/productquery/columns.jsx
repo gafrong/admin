@@ -7,15 +7,11 @@ import {
 } from '@/components/data-table/data-table-date-range-picker'
 import { Button } from '@/components/ui/button'
 import Image from 'next/image'
+import Link from 'next/link'
 import React from 'react'
 
 // Table filters
 // -----------------------------------------------------------------------------
-
-export const searchableColumnHeaders = [
-  { id: 'title', label: '날짜', placeholder: '검색 날짜...' },
-  // { id: 'description', label: '설명', placeholder: '검색 설명...' },
-]
 
 // Table components
 // -----------------------------------------------------------------------------
@@ -68,7 +64,15 @@ const HeaderTitle = ({ column }) => (
   <ButtonSortable column={column}>Title</ButtonSortable>
 )
 
-export const getColumns = (handleEdit) => [
+const CellEdit = ({ row }) => (
+  <Button variant="outline" asChild>
+    <Link className="w-20" href={`/messages/productquery/${row.original._id}`}>
+      <span className="inline-flex flex-row gap-1">편집</span>
+    </Link>
+  </Button>
+)
+
+export const columns = [
   {
     cell: CellProductImage,
     header: 'Product',
@@ -92,11 +96,7 @@ export const getColumns = (handleEdit) => [
     header: HeaderDateCreated,
   },
   {
-    cell: ({ row }) => (
-      <Button variant="outline" onClick={() => handleEdit({ row })}>
-        Edit
-      </Button>
-    ),
-    header: 'Edit',
+    cell: CellEdit,
+    header: 'Edit Page',
   },
 ]
