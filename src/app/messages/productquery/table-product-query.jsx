@@ -6,16 +6,12 @@ import React from 'react'
 import { getColumns, searchableColumnHeaders } from './columns'
 import { useFetchProductQueries } from './use-fetch-product-queries'
 
-export function TableProductQuery({
-  setSelectedUserQuestion,
-  questions,
-  setQuestions,
-}) {
+export function TableProductQuery({ setSelectedUserQuestion }) {
   const router = useRouter()
   const searchParams = useSearchParams()
   const isQuestionReplyView = searchParams.get('question') !== null
   const dateRangePicker = 'dateCreated'
-  const { isLoading } = useFetchProductQueries({ questions, setQuestions })
+  const { questions, mutate, isLoading } = useFetchProductQueries()
 
   const handleEdit = ({ row }) => {
     setSelectedUserQuestion(row.original)
