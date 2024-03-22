@@ -3,39 +3,25 @@
 import baseURL from '@/assets/common/baseUrl'
 import useUserStore from '@/store/zustand'
 import axios from 'axios'
-import { useEffect, useState } from 'react'
+import useSWR from 'swr'
 
-export function useFetchProductQueries({ questions, setQuestions }) {
-  const [isLoading, setIsLoading] = useState(false)
+export function useFetchProductQueries() {
   const token = useUserStore((state) => state?.token)
   const seller = useUserStore((state) => state.user)
   const sellerId = seller?._id
 
-  // update local state after CRUD operations, so we avoid a page refresh
-
-  const getQuestions = async () => {
-    setIsLoading(true)
-    try {
-      const response = await axios.get(
-        `${baseURL}questions/vendor/${sellerId}`,
-        {
-          headers: {
-            'Content-Type': 'application/json',
-            Authorization: `Bearer ${token}`,
-          },
+  const fetcher = (url) =>
+    axios
+      .get(url, {
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`,
         },
-      )
-      setQuestions(response.data)
-    } catch (error) {
-      console.log('서버 연결에 문제가 있습니다:', error.message)
-    } finally {
-      setIsLoading(false)
-    }
-  }
+      })
+      .then((res) => res.data)
 
-  useEffect(() => {
-    getQuestions()
-  }, [token])
+  const url = `${baseURL}questions/vendor/${sellerId}`
+  const { data: questions, error, mutate } = useSWR(url, fetcher)
 
-  return { questions, setQuestions, isLoading }
+  return { questions, mutate, isLoading: !questions && !error }
 }

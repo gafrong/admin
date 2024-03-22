@@ -146,7 +146,7 @@ export function DataTable({
   const handleRowClick = controls?.onRowClick || (() => null)
 
   React.useEffect(() => {
-    setTableData([...data])
+    data?.length && setTableData([...data])
   }, [data])
 
   const { searchableColumnHeaders, filterByCategory } = controls ?? {}
