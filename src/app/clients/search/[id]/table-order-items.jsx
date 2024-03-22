@@ -2,14 +2,14 @@
 
 import { DataTable } from '@/components/data-table/data-table'
 import React from 'react'
+import { useFetchOrders } from '../use-fetch-orders'
 import { columns, updateTableData } from './columns-order-items'
-import { useFetchOrders } from './use-fetch-order-items'
 
 export function TableOrderItems({ clientId }) {
-  const { orderItems, isLoading, refetchTableData } = useFetchOrders()
-  const clientOrderItems = orderItems.filter(
-    (item) => item.buyer._id === clientId,
-  )
+  const { orderItems, isLoading, mutate } = useFetchOrders()
+  const clientOrderItems =
+    orderItems?.length &&
+    orderItems.filter((item) => item.buyer._id === clientId)
 
   const controls = {}
 
@@ -20,7 +20,7 @@ export function TableOrderItems({ clientId }) {
       data={clientOrderItems}
       defaultCellStyle="align-top"
       isLoading={isLoading}
-      refetchTableData={refetchTableData}
+      refetchTableData={mutate}
       updateTableData={updateTableData}
     />
   )
