@@ -20,23 +20,21 @@ import React from 'react'
 const CellUser = ({ row }) => {
   const user = row.original.userId // Access the original row data
   return (
-    <>
-      <div className="flex gap-4">
-        <div className="h-10 w-10 overflow-hidden rounded-full border">
-          <Image
-            src={awsURL + user.image} // Access nested object value
-            width={48}
-            height={48}
-            style={{ objectFit: 'contain' }}
-            alt="product image"
-          />
-        </div>
-        <div className="mr-4">
-          <p className="">{user.name}</p>
-          <p className="mt-1 text-xs">@{user.username}</p>
-        </div>
+    <div className="flex gap-4">
+      <div className="h-10 w-10 overflow-hidden rounded-full border">
+        <Image
+          src={awsURL + user.image} // Access nested object value
+          width={48}
+          height={48}
+          style={{ objectFit: 'contain' }}
+          alt="product image"
+        />
       </div>
-    </>
+      <div className="mr-4">
+        <p className="">{user.name}</p>
+        <p className="mt-1 text-xs">@{user.username}</p>
+      </div>
+    </div>
   )
 }
 
@@ -45,10 +43,8 @@ const CellProductImage = ({ row }) => {
   const productImage = row.original?.productId?.image
   const img = productImage ? awsURL + productImage : IMG.empty_product
   return (
-    <div className="flex gap-4">
-      <div className="h-12 w-12 overflow-hidden border">
-        <Image alt="product image" height={48} src={img} width={48} />
-      </div>
+    <div className="h-12 w-12 overflow-hidden border">
+      <Image alt="product image" height={48} src={img} width={48} />
     </div>
   )
 }
