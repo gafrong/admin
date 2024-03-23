@@ -130,7 +130,7 @@ export function DataTable({
   columns,
   className = '',
   controls = {},
-  data = [],
+  data,
   defaultCellStyle = '',
   isLoading,
   refetchTableData,

@@ -17,14 +17,15 @@ import useUserStore from '@/store/zustand'
 import axios from 'axios'
 import format from 'date-fns/format'
 import { useEffect, useState } from 'react'
-import { useFetchProductQueries } from '../use-fetch-product-queries'
 
 const findBy = ({ arr, key, value }) =>
   arr?.find((item) => item[key] === value) || null
 
 export default function Page({ params }) {
   const token = useUserStore((state) => state?.token)
-  const { questions, mutate } = useFetchProductQueries()
+  const sellerId = useUserStore((state) => state.user)?._id
+  const url = `questions/vendor/${sellerId}`
+  const { data: questions, mutate } = useFetchAuth(url)
   const selectedUserQuestion = findBy({
     arr: questions,
     key: '_id',
