@@ -12,8 +12,6 @@ import { FiEdit } from 'react-icons/fi'
 // Table filters
 // -----------------------------------------------------------------------------
 
-export const searchableColumnHeaders = [{ id: 'name', label: 'Name' }]
-
 // Table components
 // -----------------------------------------------------------------------------
 
@@ -77,9 +75,7 @@ const CellDelete = ({ row }) => (
       }}
       className="w-16"
     >
-      <span className="w-8">
-        삭제
-      </span>
+      <span className="w-8">삭제</span>
     </Link>
   </Button>
 )

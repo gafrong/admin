@@ -1,46 +1,20 @@
 'use client'
 
+import { useFetchAuth } from '@/app/orders/manage/use-fetch-auth'
 import baseURL from '@/assets/common/baseUrl'
 import { DataTable } from '@/components/data-table/data-table'
 import { PageTitle } from '@/components/typography/PageTitle'
 import useUserStore from '@/store/zustand'
 import axios from 'axios'
-import React, { useEffect, useState } from 'react'
+import React from 'react'
 import { getColumns, searchableColumnHeaders } from './columns'
 
 export default function Page() {
   const user = useUserStore((state) => state.user)
   const token = useUserStore((state) => state?.token)
   const userId = user?._id
-  const [loading, setLoading] = useState(false)
-  const [videos, setVideos] = useState([])
-
-  const getVendorVideos = async () => {
-    try {
-      setLoading(true)
-      const response = await axios.get(
-        `${baseURL}videos/user/${userId}/videos`,
-        {
-          headers: {
-            'Content-Type': 'application/json',
-            Authorization: `Bearer ${token}`,
-          },
-        },
-      )
-
-      setVideos(response.data.videos)
-    } catch (error) {
-      console.log('Product fetch error', error)
-    } finally {
-      setLoading(false)
-    }
-  }
-
-  useEffect(() => {
-    if (userId) {
-      getVendorVideos()
-    }
-  }, [userId])
+  const url = `videos/user/${userId}/videos`
+  const { data, isLoading, mutate } = useFetchAuth(url)
 
   const removeVideo = (video) => {
     axios
@@ -51,8 +25,7 @@ export default function Page() {
         },
       })
       .then((res) => {
-        const updatedVideos = videos.filter((item) => item._id !== video._id)
-        setVideos(updatedVideos)
+        mutate()
       })
       .catch((error) => [
         console.log('Status', error.response.status),
@@ -61,7 +34,6 @@ export default function Page() {
   }
 
   const columns = getColumns({ removeVideo })
-
   const dateRangePicker = 'dateCreated'
 
   return (
@@ -70,8 +42,8 @@ export default function Page() {
       <DataTable
         columns={columns}
         controls={{ dateRangePicker, searchableColumnHeaders }}
-        data={videos}
-        isLoading={loading}
+        data={data?.videos}
+        isLoading={isLoading}
       />
     </div>
   )
