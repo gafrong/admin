@@ -1,11 +1,10 @@
-import awsURL from '@/assets/common/awsUrl'
 import { ButtonSortable } from '@/components/data-table/data-table-button-sorting'
+import { DataTableProductImage } from '@/components/data-table/data-table-cell-components'
 import {
   filterDateBetween,
   formatDate,
 } from '@/components/data-table/data-table-date-range-picker'
 import { Button } from '@/components/ui/button'
-import Image from 'next/image'
 import Link from 'next/link'
 import { FiEdit } from 'react-icons/fi'
 
@@ -22,15 +21,7 @@ const HeaderName = ({ column }) => (
 
 // Image
 const CellProductImage = ({ row }) => (
-  <div className="h-12 w-12 overflow-hidden rounded-sm border">
-    <Image
-      src={awsURL + row.getValue('image')}
-      width={48}
-      height={48}
-      style={{ objectFit: 'contain' }}
-      alt="product image"
-    />
-  </div>
+  <DataTableProductImage productImage={row.getValue('image')} />
 )
 
 // Price
