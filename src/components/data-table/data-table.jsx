@@ -134,7 +134,6 @@ export function DataTable({
   defaultCellStyle = '',
   isLoading,
   refetchTableData,
-  updateTableData,
 }) {
   const [columnFilters, setColumnFilters] = React.useState([])
   const [columnVisibility, setColumnVisibility] = React.useState({})
@@ -150,7 +149,6 @@ export function DataTable({
   }, [data])
 
   const { searchableColumnHeaders, filterByCategory } = controls ?? {}
-  const meta = updateTableData && updateTableData({ setTableData })
   const [searchColumn, setSearchColumn] = React.useState(
     (searchableColumnHeaders && searchableColumnHeaders[0]?.id) ?? null,
   )
@@ -162,7 +160,6 @@ export function DataTable({
   const table = useReactTable({
     data: tableData,
     columns,
-    ...(meta ? { meta } : {}),
     enableRowSelection: true,
     getCoreRowModel: getCoreRowModel(),
     getFilteredRowModel: getFilteredRowModel(),

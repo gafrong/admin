@@ -3,7 +3,7 @@
 import { DataTable } from '@/components/data-table/data-table'
 import useUserStore from '@/store/zustand'
 import React from 'react'
-import { columns, updateTableData } from './columns'
+import { columns } from './columns'
 import { statuses } from './data/data'
 import { useFetchAuth } from './use-fetch-auth'
 
@@ -31,7 +31,6 @@ export function TableManageOrders() {
       defaultCellStyle="align-top"
       isLoading={isLoading}
       refetchTableData={mutate}
-      updateTableData={updateTableData}
     />
   )
 }
