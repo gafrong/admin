@@ -1,5 +1,5 @@
 import { ButtonSortable } from '@/components/data-table/data-table-button-sorting'
-import { DataTableProductImage } from '@/components/data-table/data-table-cell-components'
+import { ProductImage } from '@/components/data-table/data-table-cell-components'
 import {
   filterDateBetween,
   formatDate,
@@ -21,7 +21,7 @@ const HeaderName = ({ column }) => (
 
 // Image
 const CellProductImage = ({ row }) => (
-  <DataTableProductImage productImage={row.getValue('image')} />
+  <ProductImage src={row.getValue('image')} />
 )
 
 // Price

@@ -2,7 +2,7 @@
 
 import baseURL from '@/assets/common/baseUrl'
 import { ButtonSortable } from '@/components/data-table/data-table-button-sorting'
-import { DataTableProductImage } from '@/components/data-table/data-table-cell-components'
+import { ProductImage } from '@/components/data-table/data-table-cell-components'
 import { filterDateBetween } from '@/components/data-table/data-table-date-range-picker'
 import { Checkbox } from '@/components/ui/checkbox'
 import useUserStore from '@/store/zustand'
@@ -140,7 +140,7 @@ const HeaderQuantity = ({ column }) => (
 
 // Image
 const CellProductImage = ({ row }) => (
-  <DataTableProductImage productImage={row.getValue('product')?.image} />
+  <ProductImage src={row.getValue('product')?.image} />
 )
 
 // Amount

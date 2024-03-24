@@ -1,6 +1,6 @@
 import awsURL from '@/assets/common/awsUrl'
 import { ButtonSortable } from '@/components/data-table/data-table-button-sorting'
-import { DataTableProductImage } from '@/components/data-table/data-table-cell-components'
+import { ProductImage } from '@/components/data-table/data-table-cell-components'
 import {
   filterDateBetween,
   formatDate,
@@ -40,7 +40,7 @@ const CellUser = ({ row }) => {
 
 // Image
 const CellProductImage = ({ row }) => (
-  <DataTableProductImage productImage={row.original?.productId?.image} />
+  <ProductImage src={row.original?.productId?.image} />
 )
 
 // Date created
