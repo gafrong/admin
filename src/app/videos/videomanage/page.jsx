@@ -10,9 +10,8 @@ import React from 'react'
 import { getColumns, searchableColumnHeaders } from './columns'
 
 export default function Page() {
-  const user = useUserStore((state) => state.user)
   const token = useUserStore((state) => state?.token)
-  const userId = user?._id
+  const userId = useUserStore((state) => state.user)?._id
   const url = `videos/user/${userId}/videos`
   const { data, isLoading, mutate } = useFetchAuth(url)
 
