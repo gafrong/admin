@@ -2,7 +2,7 @@
 
 import baseURL from '@/assets/common/baseUrl'
 import { ButtonSortable } from '@/components/data-table/data-table-button-sorting'
-import { DataTableProductImage } from '@/components/data-table/data-table-cell-components'
+import { ProductImage } from '@/components/data-table/data-table-cell-components'
 import { filterDateBetween } from '@/components/data-table/data-table-date-range-picker'
 import useUserStore from '@/store/zustand'
 import axios from 'axios'
@@ -162,7 +162,7 @@ const CellEditVendorNote = ({ column, row, table }) => {
 
 // Image
 const CellProductImage = ({ row }) => (
-  <DataTableProductImage productImage={row.original?.product?.image} />
+  <ProductImage src={row.original?.product?.image} />
 )
 
 // CRUD update functions.
