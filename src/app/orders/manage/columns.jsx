@@ -229,32 +229,6 @@ const CellEditVendorNote = ({ column, row, table }) => {
   )
 }
 
-// CRUD update functions.
-// -----------------------------------------------------------------------------
-/*
-  After any CRUD operation, we want to update the table data, without refreshing the page or resetting the 
-  table component.
-  We do this by passing methods to the react-table meta function. This function will update a single item of the table data.
-*/
-
-export const updateTableData = ({ setTableData }) => ({
-  updateVendorNote: (rowIndex, columnId, value) => {
-    setTableData((prevData) =>
-      prevData.map((row, index) => {
-        if (index === rowIndex) {
-          const editedRow = {
-            ...prevData[rowIndex],
-            vendorNote: value,
-          }
-          return editedRow
-        }
-
-        return row
-      }),
-    )
-  },
-})
-
 // Table configuration
 // -------------------
 
