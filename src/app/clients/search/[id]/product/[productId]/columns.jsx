@@ -3,7 +3,6 @@
 import { ButtonSortable } from '@/components/data-table/data-table-button-sorting'
 import { ProductImage } from '@/components/data-table/data-table-cell-components'
 import { filterDateBetween } from '@/components/data-table/data-table-date-range-picker'
-import { Checkbox } from '@/components/ui/checkbox'
 import { format } from 'date-fns'
 
 // Table filters
@@ -58,7 +57,6 @@ const HeaderDateCreated = ({ column }) => (
 
 // Product Description
 const CellProductDescription = ({ row }) => {
-  console.log('row', { row: row.original })
   const { selectedColor, product = {} } = row.original
   const { name, description, richDescription } = product
 
@@ -71,27 +69,6 @@ const CellProductDescription = ({ row }) => {
     </div>
   )
 }
-
-// select all rows in table
-const HeaderSelectAll = ({ table }) => (
-  <Checkbox
-    checked={
-      table.getIsAllPageRowsSelected() ||
-      (table.getIsSomePageRowsSelected() && 'indeterminate')
-    }
-    onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
-    aria-label="Select all"
-  />
-)
-
-// Select
-const CellSelectCheckbox = ({ row }) => (
-  <Checkbox
-    aria-label="Select row"
-    checked={row.getIsSelected()}
-    onCheckedChange={(value) => row.toggleSelected(Boolean(value))}
-  />
-)
 
 // Status
 const getLastCompletedStatus = (orderStatuses) =>

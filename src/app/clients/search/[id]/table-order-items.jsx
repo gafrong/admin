@@ -5,7 +5,7 @@ import { DataTable } from '@/components/data-table/data-table'
 import useUserStore from '@/store/zustand'
 import { useRouter } from 'next/navigation'
 import React from 'react'
-import { columns, updateTableData } from './columns-order-items'
+import { columns } from './columns-order-items'
 
 // clients/search
 // clients/search/123
@@ -35,7 +35,6 @@ export function TableOrderItems({ clientId }) {
       defaultCellStyle="align-top"
       isLoading={isLoading}
       refetchTableData={mutate}
-      updateTableData={updateTableData}
     />
   )
 }
