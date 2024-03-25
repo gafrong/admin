@@ -139,10 +139,10 @@ const CellEditVendorNote = ({ column, row, table }) => {
         },
       )
 
-      console.log(
-        'Successfully updated the order item with vendor note: ',
-        response.data,
-      )
+      console.log('Successfully updated the order item with vendor note: ', {
+        data: response.data,
+        vendorNote,
+      })
     } catch (error) {
       console.error('Error updating order item: ', error)
     } finally {
