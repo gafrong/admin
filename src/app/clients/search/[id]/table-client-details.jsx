@@ -40,14 +40,14 @@ export const TableClientDetails = ({ client }) => (
           <TableHead className="w-40 bg-muted" scope="row">
             Address
           </TableHead>
-          <TableCell colspan="4">{client?.address}</TableCell>
+          <TableCell colSpan="4">{client?.address}</TableCell>
         </TableRow>
 
         <TableRow>
           <TableHead className="w-40 bg-muted" scope="row">
             Email
           </TableHead>
-          <TableCell colspan="4">{client?.email}</TableCell>
+          <TableCell colSpan="4">{client?.email}</TableCell>
         </TableRow>
       </TableBody>
     </Table>
