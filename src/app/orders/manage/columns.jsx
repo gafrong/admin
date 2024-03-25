@@ -1,15 +1,13 @@
 'use client'
 
-import awsURL from '@/assets/common/awsUrl'
 import baseURL from '@/assets/common/baseUrl'
-import { IMG } from '@/assets/common/urls'
 import { ButtonSortable } from '@/components/data-table/data-table-button-sorting'
+import { ProductImage } from '@/components/data-table/data-table-cell-components'
 import { filterDateBetween } from '@/components/data-table/data-table-date-range-picker'
 import { Checkbox } from '@/components/ui/checkbox'
 import useUserStore from '@/store/zustand'
 import axios from 'axios'
 import { format } from 'date-fns'
-import Image from 'next/image'
 import { useState } from 'react'
 import { DialogMemo } from './CellDialogMemo'
 
@@ -141,16 +139,9 @@ const HeaderQuantity = ({ column }) => (
 )
 
 // Image
-const CellProductImage = ({ row }) => {
-  const productImage = row.getValue('product')?.image
-  const img = productImage ? awsURL + productImage : IMG.empty_product
-
-  return (
-    <div className="relative h-12 w-12 overflow-hidden rounded-sm border">
-      <Image alt="product image" fill sizes="48px" src={img} />
-    </div>
-  )
-}
+const CellProductImage = ({ row }) => (
+  <ProductImage src={row.getValue('product')?.image} />
+)
 
 // Amount
 const CellProductPrice = ({ row }) => {
@@ -237,32 +228,6 @@ const CellEditVendorNote = ({ column, row, table }) => {
     />
   )
 }
-
-// CRUD update functions.
-// -----------------------------------------------------------------------------
-/*
-  After any CRUD operation, we want to update the table data, without refreshing the page or resetting the 
-  table component.
-  We do this by passing methods to the react-table meta function. This function will update a single item of the table data.
-*/
-
-export const updateTableData = ({ setTableData }) => ({
-  updateVendorNote: (rowIndex, columnId, value) => {
-    setTableData((prevData) =>
-      prevData.map((row, index) => {
-        if (index === rowIndex) {
-          const editedRow = {
-            ...prevData[rowIndex],
-            vendorNote: value,
-          }
-          return editedRow
-        }
-
-        return row
-      }),
-    )
-  },
-})
 
 // Table configuration
 // -------------------

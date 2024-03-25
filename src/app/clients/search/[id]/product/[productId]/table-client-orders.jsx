@@ -1,33 +1,29 @@
 'use client'
 
+import { useFetchAuth } from '@/app/orders/manage/use-fetch-auth'
 import { DataTable } from '@/components/data-table/data-table'
 import useUserStore from '@/store/zustand'
 import React from 'react'
 import { columns } from './columns'
-import { statuses } from './data/data'
-import { useFetchAuth } from './use-fetch-auth'
 
-export function TableManageOrders() {
+export function TableClientOrders({ productId, clientId }) {
   const vendorId = useUserStore((state) => state.user)?._id
   const url = `orders/get/adminorders/${vendorId}`
-  const { data, isLoading, mutate } = useFetchAuth(url)
+  const { data: orderItems, isLoading, mutate } = useFetchAuth(url)
+  const findClient = (item) => item.buyer._id === clientId
+  const clientOrderItems = orderItems?.filter(findClient)
+  const clientOrder = clientOrderItems?.find(
+    (order) => order.product._id === productId,
+  )
 
   const searchableColumnHeaders = [{ id: 'orderNumber', label: 'Order Number' }]
-  const filterByCategory = {
-    categories: statuses,
-    categoryHeader: 'orderStatus',
-  }
-  const controls = {
-    dateRangePicker: 'dateOrdered',
-    filterByCategory,
-    searchableColumnHeaders,
-  }
+  const controls = { searchableColumnHeaders }
 
   return (
     <DataTable
       columns={columns}
       controls={controls}
-      data={data}
+      data={[clientOrder]}
       defaultCellStyle="align-top"
       isLoading={isLoading}
       refetchTableData={mutate}

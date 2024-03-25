@@ -1,14 +1,9 @@
 'use client'
 
-import baseURL from '@/assets/common/baseUrl'
 import { ButtonSortable } from '@/components/data-table/data-table-button-sorting'
 import { ProductImage } from '@/components/data-table/data-table-cell-components'
 import { filterDateBetween } from '@/components/data-table/data-table-date-range-picker'
-import useUserStore from '@/store/zustand'
-import axios from 'axios'
 import { format } from 'date-fns'
-import { useState } from 'react'
-import { DialogMemo } from './CellDialogMemo'
 
 // Table filters
 // -----------------------------------------------------------------------------
@@ -16,6 +11,12 @@ import { DialogMemo } from './CellDialogMemo'
 // "name": "대호 엄","orderNumber": 1873917702819,
 const filterOrderNumber = (row, id, value) => {
   return row.getValue(id).toString().includes(value)
+}
+
+// "name": "대호 엄","orderNumber": 1873917702819,
+const filterName = (row, id, value) => {
+  const name = row.original.buyer.name
+  return name.includes(value)
 }
 
 function filterStatus(row, id, filterValue) {
@@ -46,13 +47,28 @@ const CellDate = ({ row }) => {
   return (
     <div className="flex flex-col space-y-2">
       <div className="whitespace-nowrap">{date}</div>
-      {/* <div className="whitespace-nowrap">{time}</div> */}
+      <div className="whitespace-nowrap">{time}</div>
     </div>
   )
 }
 const HeaderDateCreated = ({ column }) => (
   <ButtonSortable column={column}>날짜</ButtonSortable>
 )
+
+// Product Description
+const CellProductDescription = ({ row }) => {
+  const { selectedColor, product = {} } = row.original
+  const { name, description, richDescription } = product
+
+  return (
+    <div className="flex max-w-sm flex-col space-y-2">
+      <div>{name}</div>
+      <div>{description}</div>
+      <div>{richDescription}</div>
+      <div>{selectedColor}</div>
+    </div>
+  )
+}
 
 // Status
 const getLastCompletedStatus = (orderStatuses) =>
@@ -74,9 +90,35 @@ const HeaderStatus = () => <div className="w-16">Status</div>
 const CellStatusAccessor = ({ row }) =>
   getLastCompletedStatus(row.getValue('orderStatus'))?.type
 
+// Name
+const HeaderName = ({ column }) => (
+  <ButtonSortable column={column}>User</ButtonSortable>
+)
+
+const CellName = ({ row }) => {
+  const { name, username, email } = row.original.buyer || {}
+  return (
+    <div className="flex-col space-y-2">
+      <div className="lowercase">{name}</div>
+      <div className="lowercase">{username}</div>
+      <div className="lowercase">{email}</div>
+    </div>
+  )
+}
+
+// Quantity
+const HeaderQuantity = ({ column }) => (
+  <ButtonSortable column={column}>Qty</ButtonSortable>
+)
+
+// Image
+const CellProductImage = ({ row }) => (
+  <ProductImage src={row.getValue('product')?.image} />
+)
+
 // Amount
 const CellProductPrice = ({ row }) => {
-  const amount = parseFloat(row.original?.product?.price)
+  const amount = parseFloat(row.getValue('product')?.price) || 0
   // Format the amount as a dollar amount
   const formatted =
     amount === NaN ? '₩0' : (
@@ -116,59 +158,17 @@ const CellProductPayment = ({ row }) => {
   return <div className="text-right font-medium">{formatted}</div>
 }
 
-// Memo button
-const CellEditVendorNote = ({ column, row, table }) => {
-  const [isLoading, setLoading] = useState(false)
-  const token = useUserStore((state) => state?.token)
-
-  const submitVendorNote = async (vendorNote) => {
-    const URL = `${baseURL}orders/updateVendorNote`
-    try {
-      setLoading(true)
-      const response = await axios.patch(
-        URL,
-        {
-          orderItemId: row.original._id,
-          vendorNote,
-        },
-        {
-          headers: {
-            'Content-Type': 'application/json',
-            Authorization: `Bearer ${token}`,
-          },
-        },
-      )
-
-      console.log('Successfully updated the order item with vendor note: ', {
-        data: response.data,
-        vendorNote,
-      })
-    } catch (error) {
-      console.error('Error updating order item: ', error)
-    } finally {
-      table.options.meta?.updateVendorNote(row.index, column.id, vendorNote)
-      setLoading(false)
-    }
-  }
-
-  return (
-    <DialogMemo
-      initialValue={row.original.vendorNote}
-      isLoading={isLoading}
-      submitVendorNote={submitVendorNote}
-    />
-  )
-}
-
-// Image
-const CellProductImage = ({ row }) => (
-  <ProductImage src={row.original?.product?.image} />
-)
-
 // Table configuration
 // -------------------
 
 export const columns = [
+  {
+    accessorKey: 'orderStatus',
+    accessor: CellStatusAccessor,
+    cell: CellStatus,
+    filterFn: filterStatus,
+    header: HeaderStatus,
+  },
   {
     accessorKey: 'dateOrdered',
     cell: CellDate,
@@ -183,11 +183,28 @@ export const columns = [
     filterFn: filterOrderNumber,
   },
   {
-    cell: CellProductImage,
-    header: 'Product',
+    id: 'buyerName',
+    cell: CellName,
+    header: HeaderName,
+    filterFn: filterName,
   },
   {
-    id: 'productPrice',
+    accessorKey: 'product',
+    cell: CellProductImage,
+    header: '',
+    visibilityLabel: 'Product Image',
+  },
+  {
+    id: 'description',
+    cell: CellProductDescription,
+    header: 'Product',
+    visibilityLabel: 'Product Details',
+  },
+  {
+    accessorKey: 'quantity',
+    header: HeaderQuantity,
+  },
+  {
     accessorKey: 'price',
     cell: CellProductPrice,
     header: HeaderProductPrice,
@@ -196,19 +213,5 @@ export const columns = [
     accessorKey: 'paidPrice',
     cell: CellProductPayment,
     header: HeaderProductPayment,
-  },
-  {
-    accessorKey: 'orderStatus',
-    accessor: CellStatusAccessor,
-    cell: CellStatus,
-    filterFn: filterStatus,
-    header: HeaderStatus,
-  },
-  {
-    accessorKey: 'memo',
-    cell: CellEditVendorNote,
-    header: 'Memo',
-    disableFilters: true,
-    disableSortBy: true,
   },
 ]

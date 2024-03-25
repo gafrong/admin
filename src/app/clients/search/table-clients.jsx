@@ -1,6 +1,6 @@
 'use client'
 
-import { useFetchOrders } from '@/app/clients/search/use-fetch-orders'
+import { useFetchAuth } from '@/app/orders/manage/use-fetch-auth'
 import { DataTable } from '@/components/data-table/data-table'
 import useUserStore from '@/store/zustand'
 import React, { useEffect, useState } from 'react'
@@ -22,7 +22,9 @@ const getClients = ({ orderItems = [], vendorId }) => {
 export function TableClients() {
   const [users, setUsers] = useState([])
   const setStoreClients = useUserStore((state) => state.setClients)
-  const { orderItems, isLoading, mutate, vendorId } = useFetchOrders()
+  const vendorId = useUserStore((state) => state.user)?._id
+  const url = `orders/get/adminorders/${vendorId}`
+  const { data: orderItems, isLoading, mutate } = useFetchAuth(url)
 
   useEffect(() => {
     const clients = getClients({ orderItems, vendorId })
