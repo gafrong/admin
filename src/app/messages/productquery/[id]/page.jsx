@@ -1,5 +1,9 @@
+'use client'
+
+import { useFetchAuth } from '@/app/orders/manage/use-fetch-auth'
 import baseURL from '@/assets/common/baseUrl'
 import { ButtonLoader } from '@/components/LoadingSpinner'
+import { PageTitle } from '@/components/typography/PageTitle'
 import { Button } from '@/components/ui/button'
 import { Label } from '@/components/ui/label'
 import {
@@ -10,36 +14,131 @@ import {
   TableRow,
 } from '@/components/ui/table'
 import { Textarea } from '@/components/ui/textarea'
-import { cn } from '@/lib/utils'
+import useUserStore from '@/store/zustand'
 import axios from 'axios'
 import format from 'date-fns/format'
 import { useEffect, useState } from 'react'
 
-export const UserQuestionReply = ({
-  className,
-  replaceRepliesById,
-  selectedUserQuestion,
-  setSelectedUserQuestion,
-  token,
-}) => {
+const findBy = ({ arr, key, value }) =>
+  arr?.find((item) => item[key] === value) || null
+
+export default function Page({ params }) {
+  const token = useUserStore((state) => state?.token)
+  const sellerId = useUserStore((state) => state.user)?._id
+  const url = `questions/vendor/${sellerId}`
+  const { data: questions, mutate } = useFetchAuth(url)
+  const selectedUserQuestion = findBy({
+    arr: questions,
+    key: '_id',
+    value: params.id,
+  })
   const [isReplyEditingActive, setReplyEditingActive] = useState(false)
   const [replyText, setReplyText] = useState(
     selectedUserQuestion?.replies?.[0]?.content || '',
   )
-  const [isLoading, setIsLoading] = useState(false)
-
   const isExistingReply = Boolean(selectedUserQuestion?.replies?.[0])
 
   useEffect(() => {
     setReplyText(selectedUserQuestion?.replies?.[0]?.content || '')
   }, [selectedUserQuestion])
 
+  if (!selectedUserQuestion) return null
+
+  return (
+    <div className="py-10 pl-5 pr-2">
+      <PageTitle>Customer questions</PageTitle>
+
+      <div className="flex flex-col gap-4">
+        <TableQuestionDetail selectedUserQuestion={selectedUserQuestion} />
+        <ReplyEditing
+          isExistingReply={isExistingReply}
+          isReplyEditingActive={isReplyEditingActive}
+          mutate={mutate}
+          replyText={replyText}
+          selectedUserQuestion={selectedUserQuestion}
+          setReplyEditingActive={setReplyEditingActive}
+          setReplyText={setReplyText}
+          token={token}
+        />
+      </div>
+    </div>
+  )
+}
+
+const TableQuestionDetail = ({ selectedUserQuestion }) => {
+  const formattedDate =
+    selectedUserQuestion?.dateCreated ?
+      format(new Date(selectedUserQuestion?.dateCreated), 'yyyy.MM.dd')
+    : 'no date'
+
+  return (
+    <div className="rounded-md border">
+      <Table>
+        <TableBody>
+          <TableRow>
+            <TableHead className="w-40" scope="row">
+              questionType
+            </TableHead>
+            <TableCell>{selectedUserQuestion?.questionType}</TableCell>
+          </TableRow>
+          <TableRow>
+            <TableHead scope="row">Customer</TableHead>
+            <TableCell>
+              {selectedUserQuestion?.userId?.name} (
+              {selectedUserQuestion?.userId?.username})
+            </TableCell>
+          </TableRow>
+          <TableRow>
+            <TableHead scope="row">Date</TableHead>
+            <TableCell>{formattedDate}</TableCell>
+          </TableRow>
+          <TableRow>
+            <TableHead scope="row">Question</TableHead>
+            <TableCell className="py-8 text-base">
+              {selectedUserQuestion.detail}
+            </TableCell>
+          </TableRow>
+        </TableBody>
+      </Table>
+    </div>
+  )
+}
+
+const ReplyEditing = ({
+  isExistingReply,
+  isReplyEditingActive,
+  token,
+  mutate,
+  replyText,
+  selectedUserQuestion,
+  setReplyEditingActive,
+  setReplyText,
+}) => {
+  const [isLoading, setIsLoading] = useState(false)
+
+  const ButtonSend = () => {
+    return (
+      <ButtonLoader
+        className="mt-auto"
+        disabled={!replyText}
+        isLoading={isLoading}
+        onClick={isExistingReply ? handleEditReply : handleCreateReply}
+      >
+        Send
+      </ButtonLoader>
+    )
+  }
+
+  const handleCancel = () => {
+    setReplyEditingActive(false)
+  }
+
   const handleEditReply = async () => {
     if (!isExistingReply) return
     const url = `${baseURL}questions/replies/${selectedUserQuestion.replies[0]._id}`
     try {
       setIsLoading(true)
-      const response = await axios({
+      await axios({
         method: 'put',
         url,
         data: {
@@ -51,16 +150,7 @@ export const UserQuestionReply = ({
           Authorization: `Bearer ${token}`,
         },
       })
-
-      // Update local state
-      setSelectedUserQuestion(() => ({
-        ...selectedUserQuestion,
-        replies: [response.data],
-      }))
-      replaceRepliesById({
-        id: selectedUserQuestion._id,
-        newReply: response.data,
-      })
+      mutate()
       setReplyEditingActive(false)
     } catch (error) {
       console.error(error)
@@ -81,7 +171,7 @@ export const UserQuestionReply = ({
 
     try {
       setIsLoading(true)
-      const response = await axios({
+      await axios({
         method: 'post',
         url,
         data,
@@ -90,16 +180,7 @@ export const UserQuestionReply = ({
           Authorization: `Bearer ${token}`,
         },
       })
-
-      // Update local state
-      setSelectedUserQuestion((prev) => ({
-        ...prev,
-        replies: [response.data],
-      }))
-      replaceRepliesById({
-        id: selectedUserQuestion._id,
-        newReply: response.data,
-      })
+      mutate()
       setReplyText('')
       setReplyEditingActive(false)
     } catch (error) {
@@ -125,16 +206,6 @@ export const UserQuestionReply = ({
           Authorization: `Bearer ${token}`,
         },
       })
-
-      // Update local state
-      setSelectedUserQuestion((prev) => ({
-        ...prev,
-        replies: [],
-      }))
-      replaceRepliesById({
-        id: selectedUserQuestion._id,
-        newReply: null,
-      })
     } catch (error) {
       console.error(error)
     } finally {
@@ -142,63 +213,8 @@ export const UserQuestionReply = ({
     }
   }
 
-  const handleCancel = () => {
-    setReplyEditingActive(false)
-  }
-
-  const formattedDate =
-    selectedUserQuestion?.dateCreated ?
-      format(new Date(selectedUserQuestion?.dateCreated), 'yyyy.MM.dd')
-    : 'no date'
-
-  if (!selectedUserQuestion) return null
-
-  const ButtonSend = () => {
-    return (
-      <ButtonLoader
-        className="mt-auto"
-        disabled={!replyText}
-        isLoading={isLoading}
-        onClick={isExistingReply ? handleEditReply : handleCreateReply}
-      >
-        Send
-      </ButtonLoader>
-    )
-  }
-
   return (
-    <div className={cn('flex flex-col gap-4', className)}>
-      <div className="rounded-md border">
-        <Table>
-          <TableBody>
-            <TableRow>
-              <TableHead className="w-40" scope="row">
-                questionType
-              </TableHead>
-              <TableCell>{selectedUserQuestion?.questionType}</TableCell>
-            </TableRow>
-            <TableRow>
-              <TableHead scope="row">Customer</TableHead>
-              <TableCell>
-                {selectedUserQuestion?.userId?.name} (
-                {selectedUserQuestion?.userId?.username})
-              </TableCell>
-            </TableRow>
-            <TableRow>
-              <TableHead scope="row">Date</TableHead>
-              <TableCell>{formattedDate}</TableCell>
-            </TableRow>
-            <TableRow>
-              <TableHead scope="row">Question</TableHead>
-              <TableCell className="py-8 text-base">
-                {selectedUserQuestion.detail}
-              </TableCell>
-            </TableRow>
-          </TableBody>
-        </Table>
-      </div>
-
-      {/* Reply Component */}
+    <>
       <div className="mt-4 flex flex-col">
         {isReplyEditingActive ?
           <ButtonCancel handleCancel={handleCancel} />
@@ -210,8 +226,12 @@ export const UserQuestionReply = ({
       </div>
 
       {isExistingReply && !isReplyEditingActive && (
-        <QuestionReplyDisplay selectedUserQuestion={selectedUserQuestion} />
+        <QuestionReplyStaticDisplay
+          selectedUserQuestion={selectedUserQuestion}
+        />
       )}
+
+      {/* Live editing */}
       <div className="flex flex-col gap-4">
         {isReplyEditingActive && (
           <div className="rounded border p-4">
@@ -239,10 +259,7 @@ export const UserQuestionReply = ({
           </div>
         )}
       </div>
-      {/* <pre>
-        <br /> {JSON.stringify(selectedUserQuestion, null, 2)}{' '}
-      </pre> */}
-    </div>
+    </>
   )
 }
 
@@ -273,7 +290,7 @@ function ButtonDelete({ handleDeleteReply, selectedUserQuestion }) {
   )
 }
 
-function QuestionReplyDisplay({ selectedUserQuestion }) {
+function QuestionReplyStaticDisplay({ selectedUserQuestion }) {
   return (
     <div className="rounded-md border">
       <Table>
