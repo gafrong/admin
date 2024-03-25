@@ -272,10 +272,19 @@ export function DataTable({
                   className={controls?.onRowClick ? 'cursor-pointer' : ''}
                   data-state={row.getIsSelected() && 'selected'}
                   key={row.id}
-                  onClick={() => handleRowClick({ row })}
                 >
                   {row.getVisibleCells().map((cell) => (
-                    <TableCell key={cell.id} className={defaultCellStyle}>
+                    <TableCell
+                      key={cell.id}
+                      className={defaultCellStyle}
+                      onClick={
+                        cell?.column?.id !== 'memo' ?
+                          () => handleRowClick({ row })
+                        : null
+                      }
+                    >
+                      {cell?.column?.id !== 'memo' &&
+                        console.log({ celll: cell })}
                       {flexRender(
                         cell.column.columnDef.cell,
                         cell.getContext(),
