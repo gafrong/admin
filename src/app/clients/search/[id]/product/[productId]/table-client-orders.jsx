@@ -20,15 +20,13 @@ export function TableClientOrders({ productId, clientId }) {
   const controls = { searchableColumnHeaders }
 
   return (
-    <>
-      <DataTable
-        columns={columns}
-        controls={controls}
-        data={[clientOrder]}
-        defaultCellStyle="align-top"
-        isLoading={isLoading}
-        refetchTableData={mutate}
-      />
-    </>
+    <DataTable
+      columns={columns}
+      controls={controls}
+      data={[clientOrder]}
+      defaultCellStyle="align-top"
+      isLoading={isLoading}
+      refetchTableData={mutate}
+    />
   )
 }
