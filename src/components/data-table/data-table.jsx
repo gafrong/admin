@@ -283,8 +283,6 @@ export function DataTable({
                         : null
                       }
                     >
-                      {cell?.column?.id === 'memo' &&
-                        console.log({ celll: cell })}
                       {flexRender(
                         cell.column.columnDef.cell,
                         cell.getContext(),

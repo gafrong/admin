@@ -11,7 +11,6 @@ const credentialsConfig = CredentialsProvider({
   },
   async authorize(credentials) {
     try {
-      // const user = { email: credentials.email, password: credentials.password }
       const response = await axios.post(`${baseURL}admin/login`, credentials, {
         headers: {
           Accept: 'application/json',
@@ -19,9 +18,10 @@ const credentialsConfig = CredentialsProvider({
         },
       })
       const data = response.data
-      if (data.user) return data.user
+      if (data.user) return data
       throw new Error('Invalid credentials')
     } catch (error) {
+      console.error('auth.js authorize() error:', error)
       throw new Error('Failed to login')
     }
   },
@@ -29,11 +29,27 @@ const credentialsConfig = CredentialsProvider({
 
 const config = {
   providers: [credentialsConfig],
+  // secret: process.env.NEXTAUTH_SECRET,
+  pages: {
+    signIn: '/auth/login/email',
+  },
   callbacks: {
     authorized({ request, auth }) {
-      const { pathname } = request.nextUrl
-      if (pathname === '/middlewareProtected') return !!auth
-      return true
+      return !!auth?.user
+    },
+    async jwt({ token, user }) {
+      if (user) {
+        token.user = user.user
+        token.token = user.token
+      }
+      return token
+    },
+    async session({ session, token }) {
+      if (token) {
+        session.user = token.user
+        session.token = token.token
+      }
+      return session
     },
   },
 }
