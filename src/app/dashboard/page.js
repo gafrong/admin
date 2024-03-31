@@ -52,23 +52,25 @@ function Page() {
   ]
 
   useEffect(() => {
+    if (!userId) {
+      return
+    }
     setLoading(true)
-    userId &&
-      axios
-        .get(`${baseURL}orders/seller/${userId}/totalSales`, {
-          headers: {
-            'Content-Type': 'application/json',
-            Authorization: `Bearer ${token}`,
-          },
-        })
-        .then((res) => {
-          setTotalSales(res.data)
-          setLoading(false)
-        })
-        .catch((error) => {
-          console.log('서버 연결에 문제가 있습니다:', error.message)
-          setLoading(false)
-        })
+    axios
+      .get(`${baseURL}orders/seller/${userId}/totalSales`, {
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`,
+        },
+      })
+      .then((res) => {
+        setTotalSales(res.data)
+        setLoading(false)
+      })
+      .catch((error) => {
+        console.log('서버 연결에 문제가 있습니다:', error.message)
+        setLoading(false)
+      })
   }, [userId, token])
 
   return (
