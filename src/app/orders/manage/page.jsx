@@ -1,7 +1,10 @@
+'use client'
+
+import { protectRoute } from '@/app/auth-components/protect-route'
 import { PageTitle } from '@/components/typography/PageTitle'
 import { TableManageOrders } from './table-manage-orders'
 
-export default async function ManageOrdersPage() {
+function ManageOrdersPage() {
   return (
     <div className="py-10 pl-5 pr-2">
       <PageTitle>Manage Orders</PageTitle>
@@ -9,3 +12,5 @@ export default async function ManageOrdersPage() {
     </div>
   )
 }
+
+export default protectRoute(ManageOrdersPage)

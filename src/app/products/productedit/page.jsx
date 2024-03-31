@@ -1,5 +1,6 @@
 'use client'
 
+import { protectRoute } from '@/app/auth-components/protect-route'
 import { DataTable } from '@/components/data-table/data-table'
 import { PageTitle } from '@/components/typography/PageTitle'
 import React from 'react'
@@ -9,7 +10,7 @@ import { useFetchProductEdit } from './use-fetch-product-edit'
 const dateRangePicker = 'dateCreated'
 export const searchableColumnHeaders = [{ id: 'name', label: 'Name' }]
 
-export default function Page() {
+function Page() {
   const { data, isLoading } = useFetchProductEdit()
 
   return (
@@ -24,3 +25,5 @@ export default function Page() {
     </div>
   )
 }
+
+export default protectRoute(Page)

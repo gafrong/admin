@@ -1,51 +1,62 @@
+'use client'
+
+import { useGetSession } from '@/app/orders/manage/use-fetch-auth'
 import awsURL from '@/assets/common/awsUrl'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
-import useUserStore from '@/store/zustand'
+import { signOut } from 'next-auth/react'
 import Image from 'next/image'
 import Link from 'next/link'
 import React from 'react'
 import { FiBell, FiSettings } from 'react-icons/fi'
+import { Button } from './ui/button'
 
 const Navbar = () => {
-  const user = useUserStore((state) => state.user)
+  const { user } = useGetSession()
   const avatar = awsURL + user?.image
 
+  const handleSignOut = async () => {
+    await signOut({ callbackUrl: `/` })
+  }
+
   return (
-    <div className="h-15 fixed z-30 flex w-full justify-between border-b bg-white">
-      <Link href="/">
+    <div className="NAVBAR h-15 fixed z-30 flex w-full items-center justify-between border-b  bg-white py-4">
+      <Link href="/" className="">
         <Image
           src={
             'https://voutiq-app.s3.ap-northeast-2.amazonaws.com/logo/voutiqblack.png'
           }
-          width={80}
-          height={50}
-          className="mb-5 ml-5 mt-7"
           alt="logo"
+          className="ml-5"
+          height="17"
+          priority
+          style={{ width: 'auto' }}
+          width="80"
         />
       </Link>
-      <div className="mr-5 mt-5 flex flex-row">
-        {user?.isAdmin ?
+      <div className="mr-5 flex flex-row items-center gap-4">
+        {/* {user?.isAdmin ? */}
+        {user && (
           <>
+            <Button variant="outline" onClick={handleSignOut}>
+              Sign out
+            </Button>
+
             <Link href="/profile">
-              <Avatar className="mr-5 h-[30px] w-[30px]">
+              <Avatar className="h-[30px] w-[30px]">
                 <AvatarImage src={avatar} />
                 <AvatarFallback>CN</AvatarFallback>
               </Avatar>
             </Link>
 
             <Link href="#">
-              <FiBell className="mr-5 mt-1" />
+              <FiBell />
             </Link>
+
             <Link href="/setting">
-              <FiSettings className="mt-1" />
+              <FiSettings />
             </Link>
           </>
-          : <>
-            {/* <Link href="/">
-                            login
-                        </Link> */}
-          </>
-        }
+        )}
       </div>
     </div>
   )
