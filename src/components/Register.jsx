@@ -1,8 +1,8 @@
 'use client'
 
 import baseURL from '@/assets/common/baseUrl'
-import useUserStore from '@/store/zustand'
 import axios from 'axios'
+import { signIn } from 'next-auth/react'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { useState } from 'react'
@@ -12,16 +12,18 @@ const Register = () => {
   const [password, setPassword] = useState('')
   const [confirmPassword, setConfirmPassword] = useState('')
   const [error, setError] = useState('')
-  const setUser = useUserStore((state) => state.setUser)
   const router = useRouter()
 
   const handleSubmit = async (e) => {
     e.preventDefault()
     if (email === '' || password === '') {
+      console.error('missing email or password', { email, password })
       setError('정보를 정확히 입력해주세요')
     }
 
     if (password !== confirmPassword) {
+      console.error('different password', { confirmPassword, password })
+
       return setError('비밀번호를 확인해주세요')
     }
     let user = {
@@ -31,13 +33,19 @@ const Register = () => {
 
     try {
       const response = await axios.post(`${baseURL}admin/register`, user)
-      const data = response.data
-      const userData = data
-      const token = data.token
 
-      setUser(userData, token)
+      // Sign in the user after registration
+      const result = await signIn('credentials', {
+        redirect: false,
+        email,
+        password,
+      })
+      if (result.error) {
+        throw new Error(result.error)
+      }
       router.push('/onboarding')
     } catch (error) {
+      console.error(error)
       setError(error.message)
     }
   }
@@ -47,6 +55,7 @@ const Register = () => {
     console.log('value', inputValue)
     setConfirmPassword(inputValue)
   }
+
   return (
     <div className="flex min-h-full w-80 flex-1 flex-col justify-center px-6 py-12 lg:px-8">
       <div className="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">

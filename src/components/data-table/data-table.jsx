@@ -134,7 +134,6 @@ export function DataTable({
   defaultCellStyle = '',
   isLoading,
   refetchTableData,
-  updateTableData,
 }) {
   const [columnFilters, setColumnFilters] = React.useState([])
   const [columnVisibility, setColumnVisibility] = React.useState({})
@@ -146,11 +145,10 @@ export function DataTable({
   const handleRowClick = controls?.onRowClick || (() => null)
 
   React.useEffect(() => {
-    setTableData([...data])
+    data?.length && setTableData([...data])
   }, [data])
 
   const { searchableColumnHeaders, filterByCategory } = controls ?? {}
-  const meta = updateTableData && updateTableData({ setTableData })
   const [searchColumn, setSearchColumn] = React.useState(
     (searchableColumnHeaders && searchableColumnHeaders[0]?.id) ?? null,
   )
@@ -162,7 +160,6 @@ export function DataTable({
   const table = useReactTable({
     data: tableData,
     columns,
-    ...(meta ? { meta } : {}),
     enableRowSelection: true,
     getCoreRowModel: getCoreRowModel(),
     getFilteredRowModel: getFilteredRowModel(),
@@ -275,10 +272,17 @@ export function DataTable({
                   className={controls?.onRowClick ? 'cursor-pointer' : ''}
                   data-state={row.getIsSelected() && 'selected'}
                   key={row.id}
-                  onClick={() => handleRowClick({ row })}
                 >
                   {row.getVisibleCells().map((cell) => (
-                    <TableCell key={cell.id} className={defaultCellStyle}>
+                    <TableCell
+                      key={cell.id}
+                      className={defaultCellStyle}
+                      onClick={
+                        cell?.column?.id !== 'memo' ?
+                          () => handleRowClick({ row })
+                        : null
+                      }
+                    >
                       {flexRender(
                         cell.column.columnDef.cell,
                         cell.getContext(),

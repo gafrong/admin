@@ -3,19 +3,16 @@
 import React, { useEffect, useState } from 'react'
 import StepProgressBar from 'react-step-progress'
 import 'react-step-progress/dist/index.css'
+import { useGetSession } from '@/app/orders/manage/use-fetch-auth'
 import baseURL from '@/assets/common/baseUrl'
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
-import { Button } from '@/components/ui/button'
-import useUserStore from '@/store/zustand'
 import axios from 'axios'
 import { useRouter } from 'next/navigation'
 import { FiCamera } from 'react-icons/fi'
 import LoadingSpinner from './LoadingSpinner'
 
 const Onboardingtrack = () => {
-  const user = useUserStore((state) => state.user)
-  const token = useUserStore((state) => state.token)
-  const userId = user?._id
+  const { token, id: userId } = useGetSession()
+  console.log({ token, userId })
   const router = useRouter()
   const [loading, setLoading] = useState(false)
 

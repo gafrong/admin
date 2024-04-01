@@ -1,26 +1,21 @@
 'use client'
 
-import { useFetchOrders } from '@/app/clients/search/use-fetch-orders'
 import { DataTable } from '@/components/data-table/data-table'
-import React, { useEffect, useState } from 'react'
-import { columns, updateTableData } from './columns'
+import React from 'react'
+import { columns } from './columns'
 import { statuses } from './data/data'
+import { useFetchAuth, useGetSession } from './use-fetch-auth'
 
 export function TableManageOrders() {
-  const [orders, setOrders] = useState([])
-  const { orderItems, isLoading, mutate } = useFetchOrders()
-
-  useEffect(() => {
-    orderItems?.length && setOrders(orderItems)
-  }, [orderItems])
+  const { id: vendorId } = useGetSession('TableManageOrders()')
+  const url = vendorId ? `orders/get/adminorders/${vendorId}` : null
+  const { data, isLoading, mutate } = useFetchAuth(url)
 
   const searchableColumnHeaders = [{ id: 'orderNumber', label: 'Order Number' }]
-
   const filterByCategory = {
     categories: statuses,
     categoryHeader: 'orderStatus',
   }
-
   const controls = {
     dateRangePicker: 'dateOrdered',
     filterByCategory,
@@ -31,11 +26,10 @@ export function TableManageOrders() {
     <DataTable
       columns={columns}
       controls={controls}
-      data={orders}
+      data={data}
       defaultCellStyle="align-top"
       isLoading={isLoading}
       refetchTableData={mutate}
-      updateTableData={updateTableData}
     />
   )
 }
