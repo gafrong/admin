@@ -1,5 +1,6 @@
 'use client'
 
+import { protectRoute } from '@/app/auth-components/protect-route'
 import { PageTitle } from '@/components/typography/PageTitle'
 import { Button } from '@/components/ui/button'
 import { useRouter } from 'next/navigation'
@@ -7,7 +8,7 @@ import React from 'react'
 import { FiArrowLeftCircle } from 'react-icons/fi'
 import { TableProductQuery } from './table-product-query'
 
-export default function Page() {
+function Page() {
   const router = useRouter()
 
   const BackButton = () => (
@@ -33,3 +34,5 @@ export default function Page() {
     </div>
   )
 }
+
+export default protectRoute(Page)

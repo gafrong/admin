@@ -1,18 +1,17 @@
 'use client'
 
-import { useFetchAuth } from '@/app/orders/manage/use-fetch-auth'
+import { protectRoute } from '@/app/auth-components/protect-route'
+import { useFetchAuth, useGetSession } from '@/app/orders/manage/use-fetch-auth'
 import baseURL from '@/assets/common/baseUrl'
 import { DataTable } from '@/components/data-table/data-table'
 import { PageTitle } from '@/components/typography/PageTitle'
-import useUserStore from '@/store/zustand'
 import axios from 'axios'
 import React from 'react'
 import { getColumns, searchableColumnHeaders } from './columns'
 
-export default function Page() {
-  const token = useUserStore((state) => state?.token)
-  const userId = useUserStore((state) => state.user)?._id
-  const url = `videos/user/${userId}/videos`
+function Page() {
+  const { token, id: userId } = useGetSession('videomanage Page()')
+  const url = userId ? `videos/user/${userId}/videos` : null
   const { data, isLoading, mutate } = useFetchAuth(url)
 
   const removeVideo = (video) => {
@@ -47,3 +46,5 @@ export default function Page() {
     </div>
   )
 }
+
+export default protectRoute(Page)

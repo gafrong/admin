@@ -1,18 +1,11 @@
 'use client'
 
 import { Button } from '@/components/ui/button'
-import useUserStore from '@/store/zustand'
-import { useRouter } from 'next/navigation'
+import { signOut } from 'next-auth/react'
 import React from 'react'
+import { protectRoute } from '../auth-components/protect-route'
 
-export default function Page() {
-  const router = useRouter()
-  const user = useUserStore((state) => state.user)
-  const clearUser = useUserStore((state) => state.clearUser)
-  const handleLogout = () => {
-    router.push('/')
-    clearUser()
-  }
+function Page() {
   return (
     <div className="pl-5 pt-5">
       <h1 className="mb-12 mt-8 text-3xl text-blue-500">환영합니다!</h1>
@@ -21,9 +14,11 @@ export default function Page() {
         완료되면 이메일 메시지가 발송될 예정입니다. 감사합니다.
       </p>
 
-      <Button className="mt-8" onClick={handleLogout}>
+      <Button className="mt-8" onClick={() => signOut()}>
         나가기
       </Button>
     </div>
   )
 }
+
+export default protectRoute(Page)
