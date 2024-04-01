@@ -53,7 +53,11 @@ export const DialogMemo = ({ submitVendorNote, initialValue, isLoading }) => {
           <Button
             className="relative"
             variant={isLoading ? 'outline' : 'default'}
-            onClick={() => submitVendorNote({ vendorNote: memo })}
+            onClick={(event) => {
+              console.log('submitVendorNote', { event })
+              event.stopPropagation()
+              submitVendorNote({ vendorNote: memo })
+            }}
           >
             Save
             {isLoading ?

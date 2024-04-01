@@ -3,26 +3,17 @@
 import awsURL from '@/assets/common/awsUrl'
 import baseURL from '@/assets/common/baseUrl'
 import LoadingSpinner from '@/components/LoadingSpinner'
-import useUserStore from '@/store/zustand'
-import { Dialog, Menu, Transition } from '@headlessui/react'
-import {
-  ArrowDownCircleIcon,
-  ArrowPathIcon,
-  ArrowUpCircleIcon,
-  EllipsisHorizontalIcon,
-} from '@heroicons/react/20/solid'
 import axios from 'axios'
-import { Fragment, useEffect, useState } from 'react'
+import { useRouter } from 'next/navigation'
+import { useEffect, useState } from 'react'
 import { v4 as uuidv4 } from 'uuid'
+import { protectRoute } from '../auth-components/protect-route'
+import { useGetSession } from '../orders/manage/use-fetch-auth'
 
 function classNames(...classes) {
   return classes.filter(Boolean).join(' ')
 }
-
-export default function Page() {
-  const user = useUserStore((state) => state.user)
-  const userId = user?._id
-  const token = useUserStore((state) => state.token)
+function Page() {
   const [loading, setLoading] = useState(false)
   const [totalSales, setTotalSales] = useState({})
   const today = totalSales?.totalDailySale
@@ -34,6 +25,9 @@ export default function Page() {
   const sixDaysAgo = totalSales?.totalPrevious6DaySale
   const weeklySale = totalSales?.totalWeeklySale
   const monthlySale = totalSales?.totalMonthlySale
+
+  const { token, id: userId } = useGetSession(7)
+
   const stats = [
     {
       name: '오늘 매출',
@@ -58,6 +52,9 @@ export default function Page() {
   ]
 
   useEffect(() => {
+    if (!userId) {
+      return
+    }
     setLoading(true)
     axios
       .get(`${baseURL}orders/seller/${userId}/totalSales`, {
@@ -74,7 +71,7 @@ export default function Page() {
         console.log('서버 연결에 문제가 있습니다:', error.message)
         setLoading(false)
       })
-  }, [])
+  }, [userId, token])
 
   return (
     <>
@@ -253,3 +250,5 @@ export default function Page() {
     </>
   )
 }
+
+export default protectRoute(Page, 'dashboard')
