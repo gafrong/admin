@@ -13,7 +13,7 @@ import { columns } from './columns-order-items'
 
 export function TableOrderItems({ clientId }) {
   const { data: session } = useSession()
-  const vendorId = session.user?._id
+  const vendorId = session?.user?._id
   const url = vendorId ? `orders/get/adminorders/${vendorId}` : null
   const { data: orderItems, isLoading, mutate } = useFetchAuth(url)
   const findClient = (item) => item.buyer._id === clientId
