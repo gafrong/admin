@@ -2,7 +2,7 @@
 
 import { useFetchAuth } from '@/app/orders/manage/use-fetch-auth'
 import { DataTable } from '@/components/data-table/data-table'
-import useUserStore from '@/store/zustand'
+import { useSession } from 'next-auth/react'
 import { useRouter } from 'next/navigation'
 import React from 'react'
 import { columns } from './columns-order-items'
@@ -12,8 +12,9 @@ import { columns } from './columns-order-items'
 // clients/search/123/product/123
 
 export function TableOrderItems({ clientId }) {
-  const vendorId = useUserStore((state) => state.user)?._id
-  const url = `orders/get/adminorders/${vendorId}`
+  const { data: session } = useSession()
+  const vendorId = session.user?._id
+  const url = vendorId ? `orders/get/adminorders/${vendorId}` : null
   const { data: orderItems, isLoading, mutate } = useFetchAuth(url)
   const findClient = (item) => item.buyer._id === clientId
   const clientOrderItems = orderItems?.filter(findClient)

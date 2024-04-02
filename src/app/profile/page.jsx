@@ -3,12 +3,13 @@
 import awsURL from '@/assets/common/awsUrl'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { Button } from '@/components/ui/button'
-import useUserStore from '@/store/zustand'
+import { useSession } from 'next-auth/react'
 import { useRouter } from 'next/navigation'
 import React from 'react'
 
 export default function Page() {
-  const { user } = useUserStore((state) => state)
+  const { data: session } = useSession()
+  const user = session?.user
   const isAuthenticated = !!user
   const avatar = awsURL + user?.image
   const router = useRouter()

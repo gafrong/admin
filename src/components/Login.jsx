@@ -12,17 +12,22 @@ const Login = () => {
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState('')
   const { data: session, status } = useSession()
+  const user = session?.user
   const router = useRouter()
 
   useEffect(() => {
-    if (session?.user?.isAdmin) {
+    if (!user) {
+      console.log('Login Page: no user')
+      return
+    }
+    if (user?.isAdmin) {
       router.push('/dashboard')
-    } else if (session?.user?.submitted) {
+    } else if (user?.submitted) {
       router.push('/welcome')
     } else if (status === 'authenticated') {
       router.push('/onboarding')
     }
-  }, [session, status, router])
+  }, [user, status, router])
 
   const handleSubmit = async (e) => {
     setIsLoading(true)
