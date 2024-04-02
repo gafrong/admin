@@ -24,7 +24,7 @@ const findBy = ({ arr, key, value }) =>
 
 export default function Page({ params }) {
   const { data: session } = useSession()
-  const sellerId = session.user?._id
+  const sellerId = session?.user?._id
   const token = session?.token
   const url = `questions/vendor/${sellerId}`
   const { data: questions, mutate } = useFetchAuth(url)
