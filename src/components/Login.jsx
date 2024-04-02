@@ -25,6 +25,7 @@ const Login = () => {
     } else if (user?.submitted) {
       router.push('/welcome')
     } else if (status === 'authenticated') {
+      // new user, applying to be a vendor/seller
       router.push('/onboarding')
     }
   }, [user, status, router])
@@ -33,7 +34,7 @@ const Login = () => {
     setIsLoading(true)
     e.preventDefault()
     if (!email || !password) {
-      setError('정확히 입력해주세요 11')
+      setError('정확히 입력해주세요')
       return
     }
 

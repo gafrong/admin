@@ -3,16 +3,17 @@
 import React, { useEffect, useState } from 'react'
 import StepProgressBar from 'react-step-progress'
 import 'react-step-progress/dist/index.css'
-import { useGetSession } from '@/app/orders/manage/use-fetch-auth'
 import baseURL from '@/assets/common/baseUrl'
 import axios from 'axios'
+import { useSession } from 'next-auth/react'
 import { useRouter } from 'next/navigation'
 import { FiCamera } from 'react-icons/fi'
 import LoadingSpinner from './LoadingSpinner'
 
 const Onboardingtrack = () => {
-  const { token, id: userId } = useGetSession()
-  console.log({ token, userId })
+  const { data: session } = useSession()
+  const token = session?.token
+  const userId = session?.user?._id
   const router = useRouter()
   const [loading, setLoading] = useState(false)
 
@@ -464,7 +465,7 @@ const Onboardingtrack = () => {
       })
       .catch((error) => {
         setLoading(false)
-        console.log('Error', error)
+        console.error('Error', error)
       })
   }
 

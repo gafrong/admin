@@ -1,8 +1,9 @@
 'use client'
 
-import { useFetchAuth, useGetSession } from '@/app/orders/manage/use-fetch-auth'
+import { useFetchAuth } from '@/app/orders/manage/use-fetch-auth'
 import { DataTable } from '@/components/data-table/data-table'
 import useUserStore from '@/store/zustand'
+import { useSession } from 'next-auth/react'
 import React, { useEffect, useState } from 'react'
 import { columns, searchableColumnHeaders } from './columns'
 
@@ -22,7 +23,8 @@ const getClients = ({ orderItems = [], vendorId }) => {
 export function TableClients() {
   const [users, setUsers] = useState([])
   const setStoreClients = useUserStore((state) => state.setClients)
-  const { id: vendorId } = useGetSession('TableClients()')
+  const { session } = useSession()
+  const vendorId = session?.user?._id
   const url = vendorId ? `orders/get/adminorders/${vendorId}` : null
   const { data: orderItems, isLoading, mutate } = useFetchAuth(url)
 
