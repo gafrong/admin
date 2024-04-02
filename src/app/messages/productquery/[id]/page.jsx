@@ -14,17 +14,18 @@ import {
   TableRow,
 } from '@/components/ui/table'
 import { Textarea } from '@/components/ui/textarea'
-import useUserStore from '@/store/zustand'
 import axios from 'axios'
 import format from 'date-fns/format'
+import { useSession } from 'next-auth/react'
 import { useEffect, useState } from 'react'
 
 const findBy = ({ arr, key, value }) =>
   arr?.find((item) => item[key] === value) || null
 
 export default function Page({ params }) {
-  const token = useUserStore((state) => state?.token)
-  const sellerId = useUserStore((state) => state.user)?._id
+  const { data: session } = useSession()
+  const sellerId = session.user?._id
+  const token = session?.token
   const url = `questions/vendor/${sellerId}`
   const { data: questions, mutate } = useFetchAuth(url)
   const selectedUserQuestion = findBy({

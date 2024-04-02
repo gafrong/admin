@@ -3,9 +3,9 @@ import baseURL from '@/assets/common/baseUrl'
 import { Button } from '@/components/ui/button'
 import { Label } from '@/components/ui/label'
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group'
-import useUserStore from '@/store/zustand'
 import { MagnifyingGlassIcon } from '@radix-ui/react-icons'
 import axios from 'axios'
+import { useSession } from 'next-auth/react'
 import * as React from 'react'
 import { FiXCircle } from 'react-icons/fi'
 import { SelectCategory } from './data-table-dropdown-select-category'
@@ -42,7 +42,8 @@ function UpdateOrderStatusButton({
 }
 
 function useUpdateStatus({ orderItemIds, refetchTableData, table }) {
-  const token = useUserStore((state) => state?.token)
+  const { data: session } = useSession()
+  const token = session?.token
   const [isLoading, setIsLoading] = React.useState(false)
 
   const updateOrderStatus = async (newStatus) => {
