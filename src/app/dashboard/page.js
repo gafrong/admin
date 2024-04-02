@@ -4,11 +4,10 @@ import awsURL from '@/assets/common/awsUrl'
 import baseURL from '@/assets/common/baseUrl'
 import LoadingSpinner from '@/components/LoadingSpinner'
 import axios from 'axios'
-import { useRouter } from 'next/navigation'
+import { useSession } from 'next-auth/react'
 import { useEffect, useState } from 'react'
 import { v4 as uuidv4 } from 'uuid'
 import { protectRoute } from '../auth-components/protect-route'
-import { useGetSession } from '../orders/manage/use-fetch-auth'
 
 function classNames(...classes) {
   return classes.filter(Boolean).join(' ')
@@ -26,7 +25,9 @@ function Page() {
   const weeklySale = totalSales?.totalWeeklySale
   const monthlySale = totalSales?.totalMonthlySale
 
-  const { token, id: userId } = useGetSession(7)
+  const { data: session } = useSession()
+  const { token, user } = session
+  const userId = user?._id
 
   const stats = [
     {

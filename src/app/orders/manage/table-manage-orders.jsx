@@ -1,13 +1,15 @@
 'use client'
 
 import { DataTable } from '@/components/data-table/data-table'
+import { useSession } from 'next-auth/react'
 import React from 'react'
 import { columns } from './columns'
 import { statuses } from './data/data'
-import { useFetchAuth, useGetSession } from './use-fetch-auth'
+import { useFetchAuth } from './use-fetch-auth'
 
 export function TableManageOrders() {
-  const { id: vendorId } = useGetSession('TableManageOrders()')
+  const { data: session } = useSession()
+  const vendorId = session?.user?._id
   const url = vendorId ? `orders/get/adminorders/${vendorId}` : null
   const { data, isLoading, mutate } = useFetchAuth(url)
 

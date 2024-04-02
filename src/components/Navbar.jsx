@@ -1,9 +1,8 @@
 'use client'
 
-import { useGetSession } from '@/app/orders/manage/use-fetch-auth'
 import awsURL from '@/assets/common/awsUrl'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
-import { signOut } from 'next-auth/react'
+import { signOut, useSession } from 'next-auth/react'
 import Image from 'next/image'
 import Link from 'next/link'
 import React from 'react'
@@ -11,7 +10,8 @@ import { FiBell, FiSettings } from 'react-icons/fi'
 import { Button } from './ui/button'
 
 const Navbar = () => {
-  const { user } = useGetSession()
+  const { data: session } = useSession()
+  const user = session?.user
   const avatar = awsURL + user?.image
 
   const handleSignOut = async () => {
@@ -34,8 +34,7 @@ const Navbar = () => {
         />
       </Link>
       <div className="mr-5 flex flex-row items-center gap-4">
-        {/* {user?.isAdmin ? */}
-        {user && (
+        {user?.isAdmin && (
           <>
             <Button variant="outline" onClick={handleSignOut}>
               Sign out

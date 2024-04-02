@@ -1,16 +1,20 @@
 'use client'
 
 import { protectRoute } from '@/app/auth-components/protect-route'
-import { useFetchAuth, useGetSession } from '@/app/orders/manage/use-fetch-auth'
+import { useFetchAuth } from '@/app/orders/manage/use-fetch-auth'
 import baseURL from '@/assets/common/baseUrl'
 import { DataTable } from '@/components/data-table/data-table'
 import { PageTitle } from '@/components/typography/PageTitle'
 import axios from 'axios'
+import { useSession } from 'next-auth/react'
 import React from 'react'
 import { getColumns, searchableColumnHeaders } from './columns'
 
 function Page() {
-  const { token, id: userId } = useGetSession('videomanage Page()')
+  const { session } = useSession()
+  const token = session?.token
+  const userId = session?.user?._id
+
   const url = userId ? `videos/user/${userId}/videos` : null
   const { data, isLoading, mutate } = useFetchAuth(url)
 

@@ -1,7 +1,6 @@
 'use client'
 
 import { protectRoute } from '@/app/auth-components/protect-route'
-import { useGetSession } from '@/app/orders/manage/use-fetch-auth'
 import awsURL from '@/assets/common/awsUrl'
 import baseURL from '@/assets/common/baseUrl'
 import LoadingSpinner from '@/components/LoadingSpinner'
@@ -21,13 +20,16 @@ import { Label } from '@/components/ui/label'
 import { Textarea } from '@/components/ui/textarea'
 import axios from 'axios'
 import { Plus } from 'lucide-react'
+import { useSession } from 'next-auth/react'
 import { useRouter } from 'next/navigation'
 import React, { useEffect, useRef, useState } from 'react'
 import styles from './videoadd.module.css'
 
 function Page() {
   const router = useRouter()
-  const { user, token, id: userId } = useGetSession('videoadd Page()')
+  const { session } = useSession()
+  const token = session?.token
+  const userId = session?.user?._id
   const [loading, setLoading] = useState(false)
   const [selectedFile, setSelectedFile] = useState()
   const [isFilePicked, setIsFilePicked] = useState(false)

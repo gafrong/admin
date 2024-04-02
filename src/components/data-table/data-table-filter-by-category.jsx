@@ -49,7 +49,7 @@ function useUpdateStatus({ orderItemIds, refetchTableData, table }) {
   const updateOrderStatus = async (newStatus) => {
     const URL = `${baseURL}orders/updateStatus`
     if (!token) {
-      console.log('no vendor token!', { token })
+      console.error('no vendor token!', { token })
       return
     }
     try {
@@ -74,7 +74,7 @@ function useUpdateStatus({ orderItemIds, refetchTableData, table }) {
           table.toggleAllRowsSelected(false)
         })
     } catch (error) {
-      console.log('Error updating orderItem status:', { URL }, error)
+      console.error('Error updating orderItem status:', { URL }, error)
     } finally {
       setIsLoading(false)
     }
