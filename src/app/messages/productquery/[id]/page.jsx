@@ -3,7 +3,7 @@
 import { useFetchAuth } from '@/app/orders/manage/use-fetch-auth'
 import baseURL from '@/assets/common/baseUrl'
 import { ButtonLoader } from '@/components/LoadingSpinner'
-import { PageTitle } from '@/components/typography/PageTitle'
+import { PageContainer, PageTitle } from '@/components/typography/PageTitle'
 import { Button } from '@/components/ui/button'
 import { Label } from '@/components/ui/label'
 import {
@@ -46,7 +46,7 @@ export default function Page({ params }) {
   if (!selectedUserQuestion) return null
 
   return (
-    <div className="py-10 pl-5 pr-2">
+    <PageContainer>
       <PageTitle>Customer questions</PageTitle>
 
       <div className="flex flex-col gap-4">
@@ -62,7 +62,7 @@ export default function Page({ params }) {
           token={token}
         />
       </div>
-    </div>
+    </PageContainer>
   )
 }
 

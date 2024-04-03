@@ -7,7 +7,7 @@ import axios from 'axios'
 import { useSession } from 'next-auth/react'
 import { useEffect, useState } from 'react'
 import { v4 as uuidv4 } from 'uuid'
-import { protectRoute } from '../auth-components/protect-route'
+import { protectRoute } from '../(auth)/_components/protect-route'
 
 function classNames(...classes) {
   return classes.filter(Boolean).join(' ')
@@ -26,7 +26,7 @@ function Page() {
   const monthlySale = totalSales?.totalMonthlySale
 
   const { data: session } = useSession()
-  const { token, user } = session
+  const { token, user } = session || {}
   const userId = user?._id
 
   const stats = [

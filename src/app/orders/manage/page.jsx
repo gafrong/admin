@@ -1,16 +1,16 @@
 'use client'
 
-import { protectRoute } from '@/app/auth-components/protect-route'
-import { PageTitle } from '@/components/typography/PageTitle'
+import { protectRoute } from '@/app/(auth)/_components/protect-route'
+import { PageContainer, PageTitle } from '@/components/typography/PageTitle'
 import { TableManageOrders } from './table-manage-orders'
 
 function ManageOrdersPage() {
   return (
-    <div className="py-10 pl-5 pr-2">
+    <PageContainer>
       <PageTitle>Manage Orders</PageTitle>
       <TableManageOrders />
-    </div>
+    </PageContainer>
   )
 }
 
-export default protectRoute(ManageOrdersPage)
+export default protectRoute(ManageOrdersPage, 'orders/manage')

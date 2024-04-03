@@ -4,16 +4,20 @@ import { useEffect } from 'react'
 
 export function protectRoute(WrappedComponent, name = '') {
   return function ProtectedRoute(props) {
-    // console.log(`ProtectedRoute(${name}):`, { props })
+    // console.log(`ProtectedRoute(${name})`)
     const { data: session, status } = useSession()
     const user = session?.user
     const router = useRouter()
 
     useEffect(() => {
-      const isUnauthenticated =
-        (!user && status === 'unauthenticated') || !user?.verified
-      if (isUnauthenticated) {
+      if (status === 'loading') return
+      const isUnauthenticated = status === 'unauthenticated'
+      // if (isUnauthenticated) return
+      const isUnauthenticatedOrNotVerified =
+        (!user && isUnauthenticated) || !user?.verified
+      if (isUnauthenticatedOrNotVerified) {
         setTimeout(() => {
+          console.log(`Redirecting to root`)
           router.push('/')
         }, 200)
       }

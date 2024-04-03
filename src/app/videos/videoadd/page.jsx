@@ -1,6 +1,6 @@
 'use client'
 
-import { protectRoute } from '@/app/auth-components/protect-route'
+import { protectRoute } from '@/app/(auth)/_components/protect-route'
 import awsURL from '@/assets/common/awsUrl'
 import baseURL from '@/assets/common/baseUrl'
 import LoadingSpinner from '@/components/LoadingSpinner'
@@ -27,7 +27,7 @@ import styles from './videoadd.module.css'
 
 function Page() {
   const router = useRouter()
-  const { session } = useSession()
+  const { data: session } = useSession()
   const token = session?.token
   const userId = session?.user?._id
   const [loading, setLoading] = useState(false)
@@ -358,4 +358,4 @@ function Page() {
   )
 }
 
-export default protectRoute(Page)
+export default protectRoute(Page, 'videoadd')
