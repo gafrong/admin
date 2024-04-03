@@ -11,7 +11,11 @@ export const useFetchAuth = (path) => {
 
   const fetcher = async (url) => {
     if (!token) {
-      console.error('useFetchAuth(): No token found, logging out', { url })
+      console.error('useFetchAuth(): No token found, logging out', {
+        url,
+        token,
+        session,
+      })
     }
     const data = await axios
       .get(url, {

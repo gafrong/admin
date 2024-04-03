@@ -23,7 +23,7 @@ const getClients = ({ orderItems = [], vendorId }) => {
 export function TableClients() {
   const [users, setUsers] = useState([])
   const setStoreClients = useUserStore((state) => state.setClients)
-  const { session } = useSession()
+  const { data: session } = useSession()
   const vendorId = session?.user?._id
   const url = vendorId ? `orders/get/adminorders/${vendorId}` : null
   const { data: orderItems, isLoading, mutate } = useFetchAuth(url)
