@@ -3,7 +3,7 @@
 import { signIn, signOut, useSession } from 'next-auth/react'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import { Button } from '../../@/components/ui/button'
 
 const Login = () => {
@@ -12,37 +12,44 @@ const Login = () => {
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState('')
   const { data: session, status } = useSession()
+  const user = session?.user
   const router = useRouter()
-
-  useEffect(() => {
-    if (session?.user?.isAdmin) {
-      router.push('/dashboard')
-    } else if (session?.user?.submitted) {
-      router.push('/welcome')
-    } else if (status === 'authenticated') {
-      router.push('/onboarding')
-    }
-  }, [session, status, router])
 
   const handleSubmit = async (e) => {
     setIsLoading(true)
     e.preventDefault()
     if (!email || !password) {
-      setError('정확히 입력해주세요 11')
+      setError('정확히 입력해주세요')
       return
     }
 
     try {
       const response =
         (await signIn('credentials', {
-          // callbackUrl: '/dashboard',
+          callbackUrl: '/dashboard',
           email,
           password,
-          redirect: false,
+          redirect: true,
         })) || {}
       if (response.error) {
         console.error('Login page signIn error:', { response })
         setError(response.error)
+      }
+
+      if (!user) {
+        console.log('no user')
+        return
+      }
+      if (user?.isAdmin) {
+        console.log('user is admin', { user, status })
+        router.push('/dashboard')
+      } else if (user?.submitted) {
+        console.log('user is submitted')
+        router.push('/welcome')
+      } else if (status === 'authenticated') {
+        // new user, applying to be a vendor/seller
+        console.log('user is authenticated')
+        router.push('/onboarding')
       }
     } catch (error) {
       setError(error.message)

@@ -4,9 +4,9 @@ import baseURL from '@/assets/common/baseUrl'
 import { ButtonSortable } from '@/components/data-table/data-table-button-sorting'
 import { ProductImage } from '@/components/data-table/data-table-cell-components'
 import { filterDateBetween } from '@/components/data-table/data-table-date-range-picker'
-import useUserStore from '@/store/zustand'
 import axios from 'axios'
 import { format } from 'date-fns'
+import { useSession } from 'next-auth/react'
 import { useState } from 'react'
 import { DialogMemo } from './CellDialogMemo'
 
@@ -119,9 +119,14 @@ const CellProductPayment = ({ row }) => {
 // Memo button
 const CellEditVendorNote = ({ column, row, table }) => {
   const [isLoading, setLoading] = useState(false)
-  const token = useUserStore((state) => state?.token)
-
+  const { data: session } = useSession()
+  const token = session?.token
   const submitVendorNote = async (vendorNote) => {
+    if (!token) {
+      console.error('submitVendorNote() No token found')
+      return
+    }
+
     const URL = `${baseURL}orders/updateVendorNote`
     try {
       setLoading(true)
@@ -144,7 +149,7 @@ const CellEditVendorNote = ({ column, row, table }) => {
         vendorNote,
       })
     } catch (error) {
-      console.error('Error updating order item: ', error)
+      console.error('1 Error updating order item: ', error)
     } finally {
       table.options.meta?.updateVendorNote(row.index, column.id, vendorNote)
       setLoading(false)

@@ -3,3 +3,7 @@ export const PageTitle = ({ children }) => (
     {children}
   </h1>
 )
+
+export const PageContainer = ({ children }) => (
+  <div className="py-10 pl-5 pr-4">{children}</div>
+)

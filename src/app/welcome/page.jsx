@@ -3,7 +3,6 @@
 import { Button } from '@/components/ui/button'
 import { signOut } from 'next-auth/react'
 import React from 'react'
-import { protectRoute } from '../auth-components/protect-route'
 
 function Page() {
   return (
@@ -14,11 +13,11 @@ function Page() {
         완료되면 이메일 메시지가 발송될 예정입니다. 감사합니다.
       </p>
 
-      <Button className="mt-8" onClick={() => signOut()}>
+      <Button className="mt-8" onClick={() => signOut({ callbackUrl: '/' })}>
         나가기
       </Button>
     </div>
   )
 }
 
-export default protectRoute(Page)
+export default Page

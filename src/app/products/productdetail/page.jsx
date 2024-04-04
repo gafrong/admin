@@ -1,6 +1,7 @@
 'use client'
 
 import awsURL from '@/assets/common/awsUrl'
+import baseURL from '@/assets/common/baseUrl'
 import { Button } from '@/components/ui/button'
 import {
   DropdownMenu,
@@ -11,16 +12,16 @@ import {
 import { Input } from '@/components/ui/input'
 import { Switch } from '@/components/ui/switch'
 import { Textarea } from '@/components/ui/textarea'
+import axios from 'axios'
+import { useSession } from 'next-auth/react'
+import { useRouter } from 'next/navigation'
 import { useEffect, useState } from 'react'
 import { HexColorPicker } from 'react-colorful'
-import useUserStore from '@/store/zustand'
-import axios from 'axios'
-import baseURL from '@/assets/common/baseUrl'
-import { useRouter } from 'next/navigation'
 
 export default function Page({ searchParams }) {
-  const token = useUserStore((state) => state?.token);
-  const router = useRouter();
+  const { data: session } = useSession()
+  const token = session?.token
+  const router = useRouter()
   const parsedProduct = JSON.parse(decodeURIComponent(searchParams.product))
 
   const [editedProduct, setEditedProduct] = useState({ ...parsedProduct })
@@ -32,9 +33,9 @@ export default function Page({ searchParams }) {
   const [colorOptions, setColorOptions] = useState({
     hexColor: parsedProduct.colorOptions?.hexColor || '',
     productColor: parsedProduct.colorOptions?.productColor || '',
-    sizes: parsedProduct.colorOptions?.sizes || []
-  });
-  const [error, setError] = useState('');
+    sizes: parsedProduct.colorOptions?.sizes || [],
+  })
+  const [error, setError] = useState('')
 
   const parentCategories = [
     { id: '642d1f4406159dd4f0519464', name: '의류' },
@@ -300,10 +301,10 @@ export default function Page({ searchParams }) {
       parentCategories.find(
         (category) => category.id === selectedParentCategoryId,
       ) ||
-      parentCategories.find(
-        (category) => category.id === editedProduct?.category?.parentId,
-      ) ||
-      null,
+        parentCategories.find(
+          (category) => category.id === editedProduct?.category?.parentId,
+        ) ||
+        null,
     )
   }, [selectedParentCategoryId, editedProduct])
 
@@ -369,66 +370,69 @@ export default function Page({ searchParams }) {
   }
 
   const handleColorInputChange = (e) => {
-    setColorOptions(prevOptions => ({
+    setColorOptions((prevOptions) => ({
       ...prevOptions,
-      productColor: e.target.value
-    }));
+      productColor: e.target.value,
+    }))
   }
 
   const handleStockInputChange = (e, sizeId) => {
-    const inputValue = e.target.value.trim(); // Remove leading and trailing whitespace
-    if (inputValue === '' || /^\d+$/.test(inputValue)) { // Check if the input value is empty or a valid integer
-      const newStockValue = inputValue === '' ? 0 : parseInt(inputValue);
-      setColorOptions(prevOptions => ({
+    const inputValue = e.target.value.trim() // Remove leading and trailing whitespace
+    if (inputValue === '' || /^\d+$/.test(inputValue)) {
+      // Check if the input value is empty or a valid integer
+      const newStockValue = inputValue === '' ? 0 : parseInt(inputValue)
+      setColorOptions((prevOptions) => ({
         ...prevOptions,
-        sizes: prevOptions.sizes.map(size =>
-          size._id === sizeId ? { ...size, stock: newStockValue } : size
-        )
-      }));
-      setError('');
+        sizes: prevOptions.sizes.map((size) =>
+          size._id === sizeId ? { ...size, stock: newStockValue } : size,
+        ),
+      }))
+      setError('')
     } else {
-      setError('Please enter a valid integer value or leave it empty.'); // Set error message
+      setError('Please enter a valid integer value or leave it empty.') // Set error message
     }
-  };
-
+  }
 
   const handleColorChange = (newColor) => {
-    setColorOptions(prevOptions => ({
+    setColorOptions((prevOptions) => ({
       ...prevOptions,
-      hexColor: newColor
-    }));
-  };
+      hexColor: newColor,
+    }))
+  }
 
   const handleSubmit = () => {
     if (
-      editedProduct.name == "" ||
-      editedProduct.price == "" ||
-      editedProduct.description == ""
+      editedProduct.name == '' ||
+      editedProduct.price == '' ||
+      editedProduct.description == ''
     ) {
-      setError("입력한 내용을 확인해주세요");
+      setError('입력한 내용을 확인해주세요')
     }
 
-    const currentDate = new Date();
-    const formData = new FormData();
-    formData.append("category", subCategory.id || editedProduct.category._id);
-    formData.append("colorOptions", JSON.stringify(colorOptions));
-    formData.append("deliveryFee", deliveryFeeOn);
-    formData.append("deliveryFeeAmount", editedProduct.deliveryFeeAmount);
-    formData.append("description", editedProduct.description);
-    formData.append("discount", editedProduct.discount);
-    formData.append("display", displayProduct);
-    formData.append("dropProduct", editedProduct.dropProduct);
-    formData.append("name", editedProduct.name);
-    formData.append("onSale", editedProduct.onSale);
-    formData.append("parentCategory", selectedParentCategoryId || editedProduct.category.parentId);
-    formData.append("preorder", editedProduct.preorder);
-    formData.append("price", editedProduct.price);
-    formData.append("soldout", editedProduct.soldout);
+    const currentDate = new Date()
+    const formData = new FormData()
+    formData.append('category', subCategory.id || editedProduct.category._id)
+    formData.append('colorOptions', JSON.stringify(colorOptions))
+    formData.append('deliveryFee', deliveryFeeOn)
+    formData.append('deliveryFeeAmount', editedProduct.deliveryFeeAmount)
+    formData.append('description', editedProduct.description)
+    formData.append('discount', editedProduct.discount)
+    formData.append('display', displayProduct)
+    formData.append('dropProduct', editedProduct.dropProduct)
+    formData.append('name', editedProduct.name)
+    formData.append('onSale', editedProduct.onSale)
+    formData.append(
+      'parentCategory',
+      selectedParentCategoryId || editedProduct.category.parentId,
+    )
+    formData.append('preorder', editedProduct.preorder)
+    formData.append('price', editedProduct.price)
+    formData.append('soldout', editedProduct.soldout)
 
     axios
       .put(`${baseURL}products/${editedProduct._id}`, formData, {
         headers: {
-          "Content-Type": "multipart/form-data",
+          'Content-Type': 'multipart/form-data',
           Authorization: `Bearer ${token}`,
         },
       })
@@ -438,10 +442,9 @@ export default function Page({ searchParams }) {
         }
       })
       .catch((error) => {
-        console.log('Error!!', error);
-      });
+        console.log('Error!!', error)
+      })
   }
-
 
   return (
     <div className={`p-10 ${displayProduct ? '' : 'bg-gray-300'}`}>
@@ -494,7 +497,7 @@ export default function Page({ searchParams }) {
             />
             <p className="ml-2">원</p>
           </div>
-          : null}
+        : null}
       </div>
       <div className="flex">
         <div className="flex w-1/2 items-center pt-5">
@@ -512,7 +515,7 @@ export default function Page({ searchParams }) {
             />
             <p className="ml-2">%</p>
           </div>
-          : null}
+        : null}
       </div>
       <div className="flex w-1/2 items-center pt-5">
         <p className="w-24">상품 공개:</p>
@@ -574,7 +577,10 @@ export default function Page({ searchParams }) {
       <div className="flex pt-5">
         <div className="flex w-1/2 items-center pt-5">
           <p className="mr-4">제품색:</p>
-          <HexColorPicker color={colorOptions.hexColor} onChange={handleColorChange} />
+          <HexColorPicker
+            color={colorOptions.hexColor}
+            onChange={handleColorChange}
+          />
         </div>
         <div className="flex w-1/2 items-center pt-5">
           <p className="w-16">색명:</p>
@@ -586,8 +592,7 @@ export default function Page({ searchParams }) {
           />
         </div>
       </div>
-      {colorOptions.sizes.length > 0
-        ?
+      {colorOptions.sizes.length > 0 ?
         <div className="mt-5 flex pt-5">
           <p className="mr-8">사이즈:</p>
           <div className="flex flex-col">
@@ -607,7 +612,7 @@ export default function Page({ searchParams }) {
           </div>
           {error && <div style={{ color: 'red' }}>{error}</div>}
         </div>
-        : null}
+      : null}
       <div className="mt-12 flex pb-80">
         <Button className="mt-8 w-60" onClick={handleSubmit}>
           편집 저장

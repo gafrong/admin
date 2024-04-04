@@ -29,7 +29,7 @@ const credentialsConfig = CredentialsProvider({
 
 const config = {
   providers: [credentialsConfig],
-  // secret: process.env.NEXTAUTH_SECRET,
+  secret: process.env.NEXTAUTH_SECRET,
   pages: {
     signIn: '/auth/login/email',
   },

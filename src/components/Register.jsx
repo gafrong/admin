@@ -52,7 +52,6 @@ const Register = () => {
 
   const handleConfirmPasswordChange = (e) => {
     const inputValue = e.target.value
-    console.log('value', inputValue)
     setConfirmPassword(inputValue)
   }
 

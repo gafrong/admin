@@ -1,6 +1,8 @@
 .sidebar {
   margin: 0;
   padding: 0;
+  /* TODO: refactor layout */
+  /* width is ignored, the sidebar stretches to be as long as the longest text content */
   width: 110px;
   background-color: #e7d2d2;
   position: fixed;
@@ -22,7 +24,7 @@
 }
 
 .content {
-  margin-left: 140px;
+  margin-left: 141px;
   padding: 0px;
   padding-top: 60px;
   height: 1000px;

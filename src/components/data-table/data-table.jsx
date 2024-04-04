@@ -187,7 +187,6 @@ export function DataTable({
   }, [rowSelection, table]) // update selected rows
 
   if (!tableData && !tableData?.length && table?.getRowModel()?.rows) {
-    console.log('no table data')
     return <div>no table</div>
   }
 

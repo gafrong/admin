@@ -21,15 +21,17 @@ import styles from './productregister.module.css'
 import 'react-datetime-picker/dist/DateTimePicker.css'
 import 'react-calendar/dist/Calendar.css'
 import 'react-clock/dist/Clock.css'
-import { protectRoute } from '@/app/auth-components/protect-route'
-import { useGetSession } from '@/app/orders/manage/use-fetch-auth'
+import { protectRoute } from '@/app/(auth)/_components/protect-route'
 import baseURL from '@/assets/common/baseUrl'
 import LoadingSpinner from '@/components/LoadingSpinner'
 import axios from 'axios'
+import { useSession } from 'next-auth/react'
 import { useRouter } from 'next/navigation'
 
 function Page() {
-  const { user, token, id: userId } = useGetSession()
+  const { data: session } = useSession()
+  const userId = session?.user?._id
+  const token = session?.token
   const router = useRouter()
 
   const [mainImage, setMainImage] = useState(null)
@@ -1550,4 +1552,4 @@ function Page() {
   )
 }
 
-export default protectRoute(Page)
+export default protectRoute(Page, 'productregister')

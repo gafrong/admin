@@ -1,19 +1,22 @@
 'use client'
 
-import { protectRoute } from '@/app/auth-components/protect-route'
-import { useFetchAuth, useGetSession } from '@/app/orders/manage/use-fetch-auth'
+import { protectRoute } from '@/app/(auth)/_components/protect-route'
+import { useFetchAuth } from '@/app/orders/manage/use-fetch-auth'
 import baseURL from '@/assets/common/baseUrl'
 import { DataTable } from '@/components/data-table/data-table'
-import { PageTitle } from '@/components/typography/PageTitle'
+import { PageContainer, PageTitle } from '@/components/typography/PageTitle'
 import axios from 'axios'
+import { useSession } from 'next-auth/react'
 import React from 'react'
 import { getColumns, searchableColumnHeaders } from './columns'
 
 function Page() {
-  const { token, id: userId } = useGetSession('videomanage Page()')
+  const { data: session } = useSession()
+  const token = session?.token
+  const userId = session?.user?._id
+
   const url = userId ? `videos/user/${userId}/videos` : null
   const { data, isLoading, mutate } = useFetchAuth(url)
-
   const removeVideo = (video) => {
     axios
       .delete(`${baseURL}videos/${video._id}`, {
@@ -35,7 +38,7 @@ function Page() {
   const dateRangePicker = 'dateCreated'
 
   return (
-    <div className="py-10 pl-5 pr-2">
+    <PageContainer>
       <PageTitle>동영상 관리</PageTitle>
       <DataTable
         columns={columns}
@@ -43,8 +46,8 @@ function Page() {
         data={data?.videos}
         isLoading={isLoading}
       />
-    </div>
+    </PageContainer>
   )
 }
 
-export default protectRoute(Page)
+export default protectRoute(Page, 'videomanage')

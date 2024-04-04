@@ -1,7 +1,6 @@
 'use client'
 
-import { protectRoute } from '@/app/auth-components/protect-route'
-import { useGetSession } from '@/app/orders/manage/use-fetch-auth'
+import { protectRoute } from '@/app/(auth)/_components/protect-route'
 import awsURL from '@/assets/common/awsUrl'
 import baseURL from '@/assets/common/baseUrl'
 import LoadingSpinner from '@/components/LoadingSpinner'
@@ -19,16 +18,18 @@ import {
 } from '@/components/ui/dialog'
 import { Label } from '@/components/ui/label'
 import { Textarea } from '@/components/ui/textarea'
-import useUserStore from '@/store/zustand'
 import axios from 'axios'
 import { Plus } from 'lucide-react'
+import { useSession } from 'next-auth/react'
 import { useRouter } from 'next/navigation'
 import React, { useEffect, useRef, useState } from 'react'
 import styles from './videoadd.module.css'
 
 function Page() {
   const router = useRouter()
-  const { user, token, id: userId } = useGetSession('videoadd Page()')
+  const { data: session } = useSession()
+  const token = session?.token
+  const userId = session?.user?._id
   const [loading, setLoading] = useState(false)
   const [selectedFile, setSelectedFile] = useState()
   const [isFilePicked, setIsFilePicked] = useState(false)
@@ -357,4 +358,4 @@ function Page() {
   )
 }
 
-export default protectRoute(Page)
+export default protectRoute(Page, 'videoadd')
