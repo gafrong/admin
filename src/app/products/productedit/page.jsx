@@ -1,8 +1,8 @@
 'use client'
 
-import { protectRoute } from '@/app/auth-components/protect-route'
+import { protectRoute } from '@/app/(auth)/_components/protect-route'
 import { DataTable } from '@/components/data-table/data-table'
-import { PageTitle } from '@/components/typography/PageTitle'
+import { PageContainer, PageTitle } from '@/components/typography/PageTitle'
 import React from 'react'
 import { columns } from './columns'
 import { useFetchProductEdit } from './use-fetch-product-edit'
@@ -14,7 +14,7 @@ function Page() {
   const { data, isLoading } = useFetchProductEdit()
 
   return (
-    <div className="py-10 pl-5 pr-2">
+    <PageContainer>
       <PageTitle>제품 편집</PageTitle>
       <DataTable
         columns={columns}
@@ -22,8 +22,8 @@ function Page() {
         data={data}
         isLoading={isLoading}
       />
-    </div>
+    </PageContainer>
   )
 }
 
-export default protectRoute(Page)
+export default protectRoute(Page, 'products/productedit')

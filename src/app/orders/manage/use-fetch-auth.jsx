@@ -3,32 +3,19 @@ import axios from 'axios'
 import { useSession } from 'next-auth/react'
 import useSWR from 'swr'
 
-export const useGetSession = (msg = '') => {
-  // console.log('useGetSession(): ', msg)
-  const { data: session, status } = useSession()
-
-  if (status === 'loading' || status === 'unauthenticated') {
-    return { token: null, user: null, id: null, status }
-  }
-
-  // If session is null or undefined, return null values
-  if (!session) {
-    console.error('useGetSession(): No session found')
-    return { token: null, user: null, id: null }
-  }
-
-  const { user, token } = session || {}
-  const id = user?._id
-  return { token, user, id, status }
-}
-
 export const useFetchAuth = (path) => {
   const url = path ? `${baseURL}${path}` : null
-  const { token, id: vendorId } = useGetSession('useFetchAuth()')
+  const { data: session } = useSession()
+  const token = session?.token
+  const vendorId = session?.user?._id
 
   const fetcher = async (url) => {
     if (!token) {
-      console.error('useFetchAuth(): No token found, logging out', { url })
+      console.error('useFetchAuth(): No token found, logging out', {
+        url,
+        token,
+        session,
+      })
     }
     const data = await axios
       .get(url, {

@@ -3,7 +3,7 @@
 import { useFetchAuth } from '@/app/orders/manage/use-fetch-auth'
 import baseURL from '@/assets/common/baseUrl'
 import { ButtonLoader } from '@/components/LoadingSpinner'
-import { PageTitle } from '@/components/typography/PageTitle'
+import { PageContainer, PageTitle } from '@/components/typography/PageTitle'
 import { Button } from '@/components/ui/button'
 import { Label } from '@/components/ui/label'
 import {
@@ -14,17 +14,18 @@ import {
   TableRow,
 } from '@/components/ui/table'
 import { Textarea } from '@/components/ui/textarea'
-import useUserStore from '@/store/zustand'
 import axios from 'axios'
 import format from 'date-fns/format'
+import { useSession } from 'next-auth/react'
 import { useEffect, useState } from 'react'
 
 const findBy = ({ arr, key, value }) =>
   arr?.find((item) => item[key] === value) || null
 
 export default function Page({ params }) {
-  const token = useUserStore((state) => state?.token)
-  const sellerId = useUserStore((state) => state.user)?._id
+  const { data: session } = useSession()
+  const sellerId = session?.user?._id
+  const token = session?.token
   const url = `questions/vendor/${sellerId}`
   const { data: questions, mutate } = useFetchAuth(url)
   const selectedUserQuestion = findBy({
@@ -45,7 +46,7 @@ export default function Page({ params }) {
   if (!selectedUserQuestion) return null
 
   return (
-    <div className="py-10 pl-5 pr-2">
+    <PageContainer>
       <PageTitle>Customer questions</PageTitle>
 
       <div className="flex flex-col gap-4">
@@ -61,7 +62,7 @@ export default function Page({ params }) {
           token={token}
         />
       </div>
-    </div>
+    </PageContainer>
   )
 }
 

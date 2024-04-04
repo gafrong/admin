@@ -1,9 +1,9 @@
 'use client'
 
+import baseURL from '@/assets/common/baseUrl'
 import axios from 'axios'
 import Link from 'next/link'
 import { useState } from 'react'
-import baseURL from '../../assets/common/baseUrl'
 
 export default function Page() {
   const [email, setEmail] = useState('')
