@@ -5,7 +5,10 @@ export default async function ClientOrdersPage({ params }) {
   return (
     <PageContainer>
       <PageTitle>Client Order</PageTitle>
-      <TableClientOrders productId={params.productId} clientId={params.id} />
+      <TableClientOrders
+        productId={params.productId}
+        clientId={params.client_id}
+      />
     </PageContainer>
   )
 }
