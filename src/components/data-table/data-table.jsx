@@ -145,7 +145,12 @@ export function DataTable({
   const handleRowClick = controls?.onRowClick || (() => null)
 
   React.useEffect(() => {
-    data?.length && setTableData([...data])
+    if (!data?.length) return
+    if (data.length === 1 && data[0] === undefined) {
+      console.error('table items are undefined')
+      return setTableData([])
+    }
+    setTableData([...data])
   }, [data])
 
   const { searchableColumnHeaders, filterByCategory } = controls ?? {}
@@ -290,7 +295,7 @@ export function DataTable({
                   ))}
                 </TableRow>
               ))}
-            {isNoData && <EmptyTableRows columns={columns} />}
+            {!isLoading && isNoData && <EmptyTableRows columns={columns} />}
             {isLoading && <LoadingTableRows columns={columns} />}
           </TableBody>
         </Table>
