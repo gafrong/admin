@@ -1,7 +1,7 @@
 'use client'
 
 import { protectRoute } from '@/app/(auth)/_components/protect-route'
-import { useFetchAuth } from '@/app/orders/manage/use-fetch-auth'
+import { useFetchAuth } from '@/app/fetch/use-fetch-auth'
 import baseURL from '@/assets/common/baseUrl'
 import { DataTable } from '@/components/data-table/data-table'
 import { PageContainer, PageTitle } from '@/components/typography/PageTitle'
@@ -11,7 +11,7 @@ import React from 'react'
 import { getColumns, searchableColumnHeaders } from './columns'
 
 function Page() {
-  const { data: session } = useSession()
+  const { data: session, status } = useSession()
   const token = session?.token
   const userId = session?.user?._id
 
@@ -44,7 +44,7 @@ function Page() {
         columns={columns}
         controls={{ dateRangePicker, searchableColumnHeaders }}
         data={data?.videos}
-        isLoading={isLoading}
+        isLoading={isLoading || status === 'loading'}
       />
     </PageContainer>
   )

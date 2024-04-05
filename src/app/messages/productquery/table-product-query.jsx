@@ -1,6 +1,6 @@
 'use client'
 
-import { useFetchAuth } from '@/app/orders/manage/use-fetch-auth'
+import { useFetchAuth } from '@/app/fetch/use-fetch-auth'
 import { DataTable } from '@/components/data-table/data-table'
 import { useSession } from 'next-auth/react'
 import React from 'react'

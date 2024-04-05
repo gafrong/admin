@@ -12,5 +12,5 @@ export function useFetchProductEdit() {
   const vendorId = session?.user?._id
   const url = vendorId ? `${baseURL}products/admin/${vendorId}` : null
   const { data, error, isLoading } = useSWR(url, fetcher)
-  return { data, error, isLoading }
+  return { data, error, isLoading, sessionStatus: session?.status }
 }

@@ -25,9 +25,15 @@ export const useFetchAuth = (path) => {
         },
       })
       .then((res) => res.data)
+      .catch((error) => {
+        console.error('useFetchAuth() error:', { error, url })
+        return null
+      })
+
     return data
   }
 
+  // useFetchAuth() uses isLoading, useSession uses status === 'loading'
   // swr will not fetch if url is null, ie if token is not present
   const { data, error, isLoading, mutate } = useSWR(url, fetcher)
   if (error) {
