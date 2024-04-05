@@ -9,6 +9,7 @@ import { useSession } from 'next-auth/react'
 import { useRouter } from 'next/navigation'
 import { FiCamera } from 'react-icons/fi'
 import LoadingSpinner from './LoadingSpinner'
+import { PageTitle } from './typography/PageTitle'
 
 const Onboardingtrack = () => {
   const { data: session } = useSession()
@@ -471,7 +472,7 @@ const Onboardingtrack = () => {
 
   return (
     <main className="mr-[140px]">
-      <h1 className="text-xl font-bold">회원가입 진행</h1>
+      <PageTitle>회원가입 진행</PageTitle>
       {!loading ?
         <StepProgressBar
           key={stepProgressBarKey}

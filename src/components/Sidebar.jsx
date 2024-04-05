@@ -1,24 +1,29 @@
+'use client'
+
 import {
   Accordion,
   AccordionContent,
   AccordionItem,
   AccordionTrigger,
 } from '@/components/ui/accordion'
+import { useSession } from 'next-auth/react'
 import Link from 'next/link'
 import {
   FiBarChart2,
+  FiEdit,
   FiGift,
+  FiHelpCircle,
   FiHome,
   FiLayout,
   FiMessageCircle,
   FiShoppingCart,
   FiUsers,
   FiVideo,
-  FiEdit,
-  FiHelpCircle,
 } from 'react-icons/fi'
 
 const Sidebar = () => {
+  const { data: session } = useSession()
+  if (!session?.user?.isAdmin) return null
   return (
     <>
       <Link
@@ -113,7 +118,8 @@ const Sidebar = () => {
         <AccordionItem value="item-1" className="block pl-5 pr-2 text-black">
           <AccordionTrigger>
             <div className="flex flex-row">
-              <FiMessageCircle className="mr-2 mt-1" /> <div className='mr-4'>고객 문의</div>
+              <FiMessageCircle className="mr-2 mt-1" />{' '}
+              <div className="mr-4">고객 문의</div>
             </div>
           </AccordionTrigger>
           <AccordionContent>
