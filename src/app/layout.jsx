@@ -12,11 +12,11 @@ export default async function RootLayout({ children }) {
         <body>
           <Navbar />
           <div
-            className={`w-34 fixed m-0 mt-16 h-full overflow-auto border-r border-slate-300 p-0`}
+            className={`fixed m-0 mt-20 h-full w-40 overflow-auto border-r border-slate-300 p-0`}
           >
             <Sidebar />
           </div>
-          <div className={styles.content}>{children}</div>
+          <div className="ml-40 border-0 pt-[79px]">{children}</div>
         </body>
       </ProviderAuth>
     </html>

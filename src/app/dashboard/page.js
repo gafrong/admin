@@ -81,7 +81,7 @@ function Page() {
       : <main>
           <div className="relative isolate overflow-hidden">
             {/* Stats */}
-            <div className="border-b border-b-gray-900/10 lg:border-t lg:border-t-gray-900/5">
+            <div className="border-b border-b-gray-900/10">
               <dl className="mx-auto grid max-w-7xl grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 lg:px-2 xl:px-0">
                 {stats.map((stat, statIdx) => (
                   <div
@@ -90,7 +90,7 @@ function Page() {
                       statIdx % 2 === 1 ? 'sm:border-l'
                       : statIdx === 2 ? 'lg:border-l'
                       : '',
-                      'flex flex-wrap items-baseline justify-between gap-x-4 gap-y-2 border-t border-gray-900/5 px-4 py-10 sm:px-6 lg:border-t-0 xl:px-8',
+                      'flex h-40 flex-wrap items-baseline justify-between gap-x-4 gap-y-2 border-gray-900/10 px-4 py-10 sm:px-6 xl:px-8',
                     )}
                   >
                     <dt className="text-sm font-medium leading-6 text-gray-500">

@@ -27,7 +27,7 @@ const Sidebar = () => {
   return (
     <>
       <Link
-        className="block border-b border-b-slate-200 p-5 text-black hover:bg-slate-200"
+        className="block border-b border-b-slate-200 p-4 text-black hover:bg-slate-200"
         href="/dashboard"
       >
         <div className="flex flex-row">
@@ -170,25 +170,25 @@ const Sidebar = () => {
           </AccordionTrigger>
           <AccordionContent>
             <Link
-              href="/statistics/daily"
+              href="/settings/general"
               className="flex flex-col pb-3 pl-3 pt-3 hover:bg-slate-200"
             >
               기본 정보
             </Link>
             <Link
-              href="/statistics/weekly"
+              href="/settings/contacts"
               className="flex flex-col pb-3 pl-3 pt-3 hover:bg-slate-200"
             >
               담당자 정보
             </Link>
             <Link
-              href="/statistics/monthly"
+              href="/settings/delivery"
               className="flex flex-col pb-3 pl-3 pt-3 hover:bg-slate-200"
             >
               배송 정보
             </Link>
             <Link
-              href="/statistics/monthly"
+              href="/settings/business"
               className="flex flex-col pb-3 pl-3 pt-3 hover:bg-slate-200"
             >
               사업자 정보
