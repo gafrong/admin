@@ -1,6 +1,7 @@
 'use client'
 
 import baseURL from '@/assets/common/baseUrl'
+import { PageTitle } from '@/components/typography/PageTitle'
 import useUserStore from '@/store/zustand'
 import axios from 'axios'
 import Link from 'next/link'
@@ -47,7 +48,8 @@ export default function Page() {
   }
 
   return (
-    <main className="ml-[-120px] grid min-h-screen place-items-center">
+    <main className="-ml-40 mt-14 grid place-items-center">
+      <PageTitle>Reset Password Page</PageTitle>
       <div className="flex min-h-full w-80 flex-1 flex-col justify-center px-6 py-12 lg:px-8">
         <div className="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
           <form className="space-y-6" onSubmit={handleSubmit}>
