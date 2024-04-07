@@ -61,7 +61,7 @@ const Login = () => {
   if (!!session?.user) return <YouAreAuthenticated user={session.user} />
 
   return (
-    <div className="ml-[30px] w-80 px-6 py-12 text-center lg:px-8">
+    <div className="w-80 px-6 text-center lg:px-8">
       <div className="flex min-h-full flex-1 flex-col justify-center  ">
         <div className="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
           <form className="space-y-6" onSubmit={handleSubmit}>

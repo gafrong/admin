@@ -25,7 +25,7 @@ const Sidebar = () => {
   const { data: session } = useSession()
   if (!session?.user?.isAdmin) return null
   return (
-    <>
+    <div className="fixed z-10 m-0 mt-20 h-full w-40 overflow-auto border-r border-slate-300 bg-white p-0">
       <Link
         className="block border-b border-b-slate-200 p-4 text-black hover:bg-slate-200"
         href="/dashboard"
@@ -219,7 +219,7 @@ const Sidebar = () => {
           </AccordionContent>
         </AccordionItem>
       </Accordion>
-    </>
+    </div>
   )
 }
 
