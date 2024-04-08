@@ -5,5 +5,5 @@ export const PageTitle = ({ children }) => (
 )
 
 export const PageContainer = ({ children }) => (
-  <div className="py-10 pl-5 pr-4">{children}</div>
+  <div className="mt-5 py-10 pl-5">{children}</div>
 )

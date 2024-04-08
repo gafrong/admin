@@ -19,7 +19,7 @@ const Navbar = () => {
   }
 
   return (
-    <div className="h-15 fixed z-30 flex w-full items-center justify-between border-b  bg-white py-4">
+    <div className="fixed z-30 flex h-20 w-full items-center justify-between border-b border-t-transparent  bg-white py-4">
       <Link href="/" className="">
         <Image
           src={

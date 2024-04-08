@@ -1,28 +1,33 @@
+'use client'
+
 import {
   Accordion,
   AccordionContent,
   AccordionItem,
   AccordionTrigger,
 } from '@/components/ui/accordion'
+import { useSession } from 'next-auth/react'
 import Link from 'next/link'
 import {
   FiBarChart2,
+  FiEdit,
   FiGift,
+  FiHelpCircle,
   FiHome,
   FiLayout,
   FiMessageCircle,
   FiShoppingCart,
   FiUsers,
   FiVideo,
-  FiEdit,
-  FiHelpCircle,
 } from 'react-icons/fi'
 
 const Sidebar = () => {
+  const { data: session } = useSession()
+  if (!session?.user?.isAdmin) return null
   return (
-    <>
+    <div className="fixed z-10 m-0 mt-20 h-full w-40 overflow-auto border-r border-slate-300 bg-white p-0">
       <Link
-        className="block border-b border-b-slate-200 p-5 text-black hover:bg-slate-200"
+        className="block border-b border-b-slate-200 p-4 text-black hover:bg-slate-200"
         href="/dashboard"
       >
         <div className="flex flex-row">
@@ -113,7 +118,8 @@ const Sidebar = () => {
         <AccordionItem value="item-1" className="block pl-5 pr-2 text-black">
           <AccordionTrigger>
             <div className="flex flex-row">
-              <FiMessageCircle className="mr-2 mt-1" /> <div className='mr-4'>고객 문의</div>
+              <FiMessageCircle className="mr-2 mt-1" />{' '}
+              <div className="mr-4">고객 문의</div>
             </div>
           </AccordionTrigger>
           <AccordionContent>
@@ -164,25 +170,25 @@ const Sidebar = () => {
           </AccordionTrigger>
           <AccordionContent>
             <Link
-              href="/statistics/daily"
+              href="/settings/general"
               className="flex flex-col pb-3 pl-3 pt-3 hover:bg-slate-200"
             >
               기본 정보
             </Link>
             <Link
-              href="/statistics/weekly"
+              href="/settings/contacts"
               className="flex flex-col pb-3 pl-3 pt-3 hover:bg-slate-200"
             >
               담당자 정보
             </Link>
             <Link
-              href="/statistics/monthly"
+              href="/settings/delivery"
               className="flex flex-col pb-3 pl-3 pt-3 hover:bg-slate-200"
             >
               배송 정보
             </Link>
             <Link
-              href="/statistics/monthly"
+              href="/settings/business"
               className="flex flex-col pb-3 pl-3 pt-3 hover:bg-slate-200"
             >
               사업자 정보
@@ -213,7 +219,7 @@ const Sidebar = () => {
           </AccordionContent>
         </AccordionItem>
       </Accordion>
-    </>
+    </div>
   )
 }
 
