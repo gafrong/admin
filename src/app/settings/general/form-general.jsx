@@ -1,5 +1,6 @@
 'use client'
 
+import { ProfileImage } from '@/components/typography/ProfileImage'
 import { Button } from '@/components/ui/button'
 import {
   Card,
@@ -11,6 +12,7 @@ import {
 import { Form } from '@/components/ui/form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import * as React from 'react'
+import { useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { FormTextInputs } from '../_components/form-text-inputs'
 import { formGeneralSchema } from './form-general-schema'
@@ -22,19 +24,17 @@ const fields = [
     name: 'name',
     type: 'text',
     placeholder: 'John Doe',
-    description: 'Enter your first name.',
   },
   {
-    // description: "This is your public display name.",
     autocomplete: 'username',
-    label: 'Username',
+    label: 'Username*',
     name: 'username',
     type: 'text',
     placeholder: 'JohnDoe',
   },
   {
     description: 'Describe your shop in a few words.',
-    label: 'Shop Description',
+    label: 'Shop Description*',
     name: 'shopDescription',
     type: 'text',
   },
@@ -44,7 +44,7 @@ const fields = [
     type: 'text',
   },
   {
-    label: 'Brand',
+    label: 'Brand*',
     name: 'brand',
     type: 'text',
   },
@@ -61,18 +61,21 @@ export function FormGeneral() {
     console.log(data)
   }
 
+  // const [file, setFile] = useState(null)
+  const [image, setImage] = useState()
   return (
     <Card className="mx-auto max-w-screen-xl">
       <CardHeader>
         <CardTitle>General Info</CardTitle>
-        <CardDescription>Start the journey with us today.</CardDescription>
       </CardHeader>
-      <CardContent className="p-0">
+      <CardContent className="">
         <Form {...form}>
           <form
             onSubmit={form.handleSubmit(onSubmit)}
-            className="flex flex-col gap-6 p-6"
+            className="mt-6 flex flex-col gap-6"
           >
+            <ProfileImage image={image} setImage={setImage} />
+
             <FormTextInputs fields={fields} form={form} />
 
             <div className="flex">
