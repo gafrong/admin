@@ -80,7 +80,7 @@ export function FormGeneral() {
 
             <div className="flex">
               <Button type="submit" className="ml-44">
-                Submit
+                Save
               </Button>
             </div>
           </form>

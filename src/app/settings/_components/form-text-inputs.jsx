@@ -15,17 +15,16 @@ export const Check = ({ label, name, description = '', form }) => (
     control={form.control}
     name={name}
     render={({ field }) => (
-      <FormItem className=" grid grid-cols-[160px_auto] gap-4">
-        <FormLabel className="mt-5">{label}</FormLabel>
-        <div>
+      <FormItem className="grid grid-cols-[160px_auto] gap-4">
+        <FormLabel className="mt-3">{label}</FormLabel>
+        <div className="flex gap-2">
           <FormControl>
             <Checkbox {...field} />
           </FormControl>
 
           {description && <FormDescription>{description}</FormDescription>}
-
-          <FormMessage />
         </div>
+        <FormMessage />
       </FormItem>
     )}
   />
