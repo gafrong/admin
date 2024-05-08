@@ -1,10 +1,10 @@
 'use client'
 
+import { Button } from '@/components/ui/button'
 import { signIn, signOut, useSession } from 'next-auth/react'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { useState } from 'react'
-import { Button } from '../../@/components/ui/button'
 
 const Login = () => {
   const [email, setEmail] = useState('')
