@@ -1,14 +1,47 @@
+import parsePhoneNumberFromString from 'libphonenumber-js'
 import { z } from 'zod'
 
+const validationPhone = z.string().transform((arg, ctx) => {
+  const phone = parsePhoneNumberFromString(arg, {
+    // set this to use a default country when the phone number omits country code
+    defaultCountry: 'KR', //south korea country code. ISO standard
+
+    // we don't need to extract phone number from inside the string
+    extract: false,
+  })
+
+  if (!phone?.isValid()) {
+    ctx.addIssue({
+      code: z.ZodIssueCode.custom,
+      message: 'Invalid phone number',
+    })
+    return z.NEVER
+  }
+
+  return phone.number
+})
+
+const validationName = z.string().trim().min(1, { message: 'Name is required' })
+
+const validationEmail = z
+  .string({ required_error: 'Email is required' })
+  .email('Please enter a valid email address')
+
 export const formStoreManagerSchema = z.object({
-  name: z
-    .string()
-    .trim()
-    .min(1, { message: 'Name must be longer than 3 characters' })
-    .max(255, { message: 'Name must be shorter than 255 characters' }),
-  username: z
-    .string()
-    .trim()
-    .min(1, { message: 'Name must be longer than 3 characters' })
-    .max(255, { message: 'Name must be shorter than 255 characters' }),
+  managerName: validationName,
+  managerEmail: validationEmail,
+  managerMobileNumber: validationPhone,
+
+  // Customer Service Manager
+  //------------------------------------
+
+  CSmanagerName: validationName,
+  CSmanagerContactNumber: validationPhone,
+
+  // Finance Manager
+  //------------------------------------
+
+  financeManagerName: validationName,
+  financeManagerEmail: validationEmail,
+  financeManagerNumber: validationPhone,
 })

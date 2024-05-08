@@ -33,7 +33,7 @@ const fieldsStoreManager = [
   },
   {
     description: 'Your phone number will not be exposed to the public.',
-    label: 'Mobile Number',
+    label: 'Mobile Number*',
     name: 'managerMobileNumber',
     type: 'tel',
     placeholder: '123 456 7890',
@@ -60,7 +60,7 @@ const fieldsCSManager = [
     label: 'Contact Number*',
     name: 'CSmanagerContactNumber',
     type: 'tel',
-    placeholder: '123 456 7890',
+    placeholder: '+82 12 1234 5678',
   },
 ]
 
