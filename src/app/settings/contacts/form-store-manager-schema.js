@@ -4,7 +4,7 @@ import { z } from 'zod'
 const validationPhone = z.string().transform((arg, ctx) => {
   const phone = parsePhoneNumberFromString(arg, {
     // set this to use a default country when the phone number omits country code
-    defaultCountry: 'KR', //south korea country code. ISO standard
+    defaultCountry: 'KR', //ISO standard South Korea country code.
 
     // we don't need to extract phone number from inside the string
     extract: false,
@@ -13,11 +13,11 @@ const validationPhone = z.string().transform((arg, ctx) => {
   if (!phone?.isValid()) {
     ctx.addIssue({
       code: z.ZodIssueCode.custom,
-      message: 'Invalid phone number',
+      message: 'Invalid Korean phone number',
     })
     return z.NEVER
   }
-
+  // return phone.formatInternational()
   return phone.number
 })
 
