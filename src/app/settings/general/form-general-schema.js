@@ -25,11 +25,16 @@ export const formGeneralSchema = z.object({
     .trim()
     .min(3, { message: 'Name must be longer than 3 characters' })
     .max(255, { message: 'Name must be shorter than 255 characters' }),
-  shopDescription: z
+  brandDescription: z
     .string()
     .trim()
     .min(5, { message: 'Name must be longer than 5 characters' })
     .max(255, { message: 'Name must be shorter than 255 characters' }),
+  link: z
+    .string()
+    .trim()
+    .max(255, { message: 'Name must be shorter than 255 characters' })
+    .optional(),
   brand: z
     .string()
     .trim()
