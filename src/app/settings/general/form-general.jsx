@@ -1,5 +1,7 @@
 'use client'
 
+import awsURL from '@/assets/common/awsUrl'
+import baseURL from '@/assets/common/baseUrl'
 import { ProfileImage } from '@/components/typography/ProfileImage'
 import { Button } from '@/components/ui/button'
 import {
@@ -11,6 +13,8 @@ import {
 } from '@/components/ui/card'
 import { Form } from '@/components/ui/form'
 import { zodResolver } from '@hookform/resolvers/zod'
+import axios from 'axios'
+import { useSession } from 'next-auth/react'
 import * as React from 'react'
 import { useState } from 'react'
 import { useForm } from 'react-hook-form'
@@ -35,7 +39,7 @@ const fields = [
   {
     description: 'Describe your shop in a few words.',
     label: 'Shop Description*',
-    name: 'shopDescription',
+    name: 'brandDescription',
     type: 'text',
   },
   {
@@ -50,19 +54,73 @@ const fields = [
   },
 ]
 
+const convertBase64ToFile = (imageBase64) => {
+  // Convert image base64 string to a Blob
+  // a blob is the same as a file, which is what the backend expects.
+  // the base64 image is needed for previewing the image in the browser.
+
+  const isBase64 = /^data:image\/[a-zA-Z+]*;base64,/.test(imageBase64)
+  if (!isBase64) {
+    return imageBase64
+  }
+
+  const byteString = atob(imageBase64.split(',')[1])
+  const mimeString = imageBase64.split(',')[0].split(':')[1].split(';')[0]
+  const ab = new ArrayBuffer(byteString.length)
+  const ia = new Uint8Array(ab)
+  for (let i = 0; i < byteString.length; i++) {
+    ia[i] = byteString.charCodeAt(i)
+  }
+  const blob = new Blob([ab], { type: mimeString })
+  return blob
+}
+
 export function FormGeneral() {
+  const { data: session } = useSession()
+  const token = session?.token
+  const isExistingImage = session?.user?.image
+  const existingImage = isExistingImage && awsURL + isExistingImage
   const form = useForm({
     resolver: zodResolver(formGeneralSchema),
+
+    // defaultValues are used to prefill form.
     defaultValues: {
       // name: '',
     },
   })
+
   const onSubmit = (data) => {
-    console.log(data)
+    const URL = `${baseURL}vendor/general`
+    const headers = {
+      Authorization: `Bearer ${token}`,
+    }
+    if (!token) {
+      console.error('FormGeneral() No token found')
+      return
+    }
+
+    // Create a FormData object
+    const formData = new FormData()
+    const blob = convertBase64ToFile(image)
+    formData.append('image', blob)
+    formData.append('brand', data.brand)
+    formData.append('link', data.link)
+    formData.append('name', data.name)
+    formData.append('brandDescription', data.brandDescription)
+    formData.append('username', data.username)
+
+    axios
+      .patch(URL, formData, { headers: headers })
+      .then((response) => {
+        console.log(response.data)
+      })
+      .catch((error) => {
+        console.error('Error:', error)
+      })
   }
 
   // const [file, setFile] = useState(null)
-  const [image, setImage] = useState()
+  const [image, setImage] = useState(existingImage)
   return (
     <Card className="mx-auto max-w-screen-xl">
       <CardHeader>

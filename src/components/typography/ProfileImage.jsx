@@ -4,7 +4,7 @@ import { FiCamera } from 'react-icons/fi'
 
 const isValidImage = (file) => {
   const maxSize = 2 * 1024 * 1024 // 2MB in bytes
-  return file && file.size < maxSize && file.type.includes('image')
+  return file && file?.size < maxSize && file?.type.includes('image')
 }
 
 const srcDefaultImage =
