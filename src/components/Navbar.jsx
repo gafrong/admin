@@ -2,6 +2,7 @@
 
 import awsURL from '@/assets/common/awsUrl'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
+import useUserStore from '@/store/zustand'
 import { signOut, useSession } from 'next-auth/react'
 import Image from 'next/image'
 import Link from 'next/link'
@@ -12,7 +13,17 @@ import { Button } from './ui/button'
 const Navbar = () => {
   const { data: session } = useSession()
   const user = session?.user
-  const avatar = awsURL + user?.image
+  const cacheBuster = useUserStore((state) => state.cacheBuster)
+  // const avatar = `${awsURL + user?.image}?${cacheBuster}`
+  console.log('Cache buster in Navbar:', cacheBuster)
+
+  const [avatar, setAvatar] = React.useState(
+    `${awsURL + user?.image}?${cacheBuster}`,
+  )
+
+  React.useEffect(() => {
+    setAvatar(`${awsURL + user?.image}?${cacheBuster}`)
+  }, [cacheBuster, user?.image])
 
   const handleSignOut = async () => {
     await signOut({ callbackUrl: `/` })
