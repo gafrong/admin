@@ -2,6 +2,7 @@
 
 import awsURL from '@/assets/common/awsUrl'
 import baseURL from '@/assets/common/baseUrl'
+import { LoadingSpinnerButton } from '@/components/LoadingSpinner'
 import { ProfileImage } from '@/components/typography/ProfileImage'
 import { Button } from '@/components/ui/button'
 import {
@@ -97,7 +98,7 @@ export function FormGeneral() {
     },
   })
 
-  const onSubmit = (data) => {
+  const onSubmit = async (data) => {
     const URL = `${baseURL}vendor/general`
     const headers = {
       Authorization: `Bearer ${token}`,
@@ -120,13 +121,16 @@ export function FormGeneral() {
     axios
       .patch(URL, formData, { headers: headers })
       .then((response) => {
-        console.log(response.data)
         setCacheBuster() // Update the cacheBuster state
         console.log('Cache buster updated in FormGeneral:', cacheBuster)
+        // update the session with the new image
+        session.user.image = response.data?.user?.image
       })
       .catch((error) => {
         console.error('Error:', error)
       })
+    // add a delay to show spinner until the image is updated
+    await new Promise((resolve) => setTimeout(resolve, 2000))
   }
 
   // const [file, setFile] = useState(null)
@@ -146,9 +150,12 @@ export function FormGeneral() {
 
             <FormTextInputs fields={fields} form={form} />
 
-            <div className="flex">
+            <div>
               <Button type="submit" className="ml-44">
                 Save
+                {form.formState.isSubmitting ?
+                  <LoadingSpinnerButton color="#fff" />
+                : null}
               </Button>
             </div>
           </form>

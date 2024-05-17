@@ -19,9 +19,14 @@ const cssButtonSpinner = {
   margin: 'auto',
 }
 
-export const LoadingSpinnerButton = ({ className }) => (
+export const LoadingSpinnerButton = ({ className, color = '#000' }) => (
   <div className={cn('absolute ', className)}>
-    <ClipLoader color="#000" cssOverride={cssButtonSpinner} loading size={24} />
+    <ClipLoader
+      color={color}
+      cssOverride={cssButtonSpinner}
+      loading
+      size={24}
+    />
   </div>
 )
 

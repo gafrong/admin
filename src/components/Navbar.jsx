@@ -15,7 +15,7 @@ const Navbar = () => {
   const user = session?.user
   const cacheBuster = useUserStore((state) => state.cacheBuster)
   // const avatar = `${awsURL + user?.image}?${cacheBuster}`
-  console.log('Cache buster in Navbar:', cacheBuster)
+  // console.log('Cache buster in Navbar:', cacheBuster)
 
   const [avatar, setAvatar] = React.useState(
     `${awsURL + user?.image}?${cacheBuster}`,

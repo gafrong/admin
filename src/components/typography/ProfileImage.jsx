@@ -24,7 +24,7 @@ export const ProfileImage = ({
       }
       reader.readAsDataURL(file)
     } else {
-      console.error('Invalid image file')
+      console.error('handleProfileImageChange(): Invalid image file')
     }
   }
 
