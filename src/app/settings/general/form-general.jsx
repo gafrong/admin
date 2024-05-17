@@ -12,6 +12,7 @@ import {
   CardTitle,
 } from '@/components/ui/card'
 import { Form } from '@/components/ui/form'
+import useUserStore from '@/store/zustand'
 import { zodResolver } from '@hookform/resolvers/zod'
 import axios from 'axios'
 import { useSession } from 'next-auth/react'
@@ -80,12 +81,19 @@ export function FormGeneral() {
   const token = session?.token
   const isExistingImage = session?.user?.image
   const existingImage = isExistingImage && awsURL + isExistingImage
+  const user = session?.user
+  const cacheBuster = useUserStore((state) => state.cacheBuster)
+  const setCacheBuster = useUserStore((state) => state.setCacheBuster)
+
   const form = useForm({
     resolver: zodResolver(formGeneralSchema),
-
     // defaultValues are used to prefill form.
     defaultValues: {
-      // name: '',
+      name: user?.name || '',
+      username: user?.username || '',
+      brandDescription: user?.brandDescription || '',
+      link: (user?.link && user?.link !== 'undefined') || '',
+      brand: user?.brand || '',
     },
   })
 
@@ -113,6 +121,8 @@ export function FormGeneral() {
       .patch(URL, formData, { headers: headers })
       .then((response) => {
         console.log(response.data)
+        setCacheBuster() // Update the cacheBuster state
+        console.log('Cache buster updated in FormGeneral:', cacheBuster)
       })
       .catch((error) => {
         console.error('Error:', error)
