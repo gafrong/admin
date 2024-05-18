@@ -1,11 +1,23 @@
 import { cn } from '@/lib/utils'
 import Image from 'next/image'
+import React from 'react'
 import { FiCamera } from 'react-icons/fi'
+import { z } from 'zod'
+import { ToastDestructive } from '../ui/toast-destructive'
 
-const isValidImage = (file) => {
-  const maxSize = 2 * 1024 * 1024 // 2MB in bytes
-  return file && file?.size < maxSize && file?.type.includes('image')
-}
+const MB = 1024 * 1024
+const maxSize = 2 * MB
+
+const imageFileSchema = z.object({
+  file: z
+    .unknown()
+    .refine((file) => file && file.type.includes('image'), {
+      message: 'Invalid file type. Please upload an image file.',
+    })
+    .refine((file) => file && file.size < maxSize, {
+      message: 'File size too large. Please upload a file smaller than 2MB.',
+    }),
+})
 
 const srcDefaultImage =
   'https://voutiq-app.s3.ap-northeast-2.amazonaws.com/000SiteImages/profile.png'
@@ -15,16 +27,25 @@ export const ProfileImage = ({
   setImage,
   className = '',
 }) => {
+  const [imageError, setImageError] = React.useState(null)
+
   const handleProfileImageChange = (e) => {
     const file = e.target.files[0]
-    if (isValidImage(file)) {
+    const result = imageFileSchema.safeParse({ file })
+
+    if (result.success) {
       const reader = new FileReader()
       reader.onloadend = () => {
         setImage(reader.result)
       }
       reader.readAsDataURL(file)
     } else {
+      setImageError(result.error.errors[0].message)
       console.error('handleProfileImageChange(): Invalid image file')
+
+      setTimeout(() => {
+        setImageError(null)
+      }, 5000)
     }
   }
 
@@ -54,6 +75,13 @@ export const ProfileImage = ({
           onChange={handleProfileImageChange}
         />
       </label>
+      {imageError && (
+        <ToastDestructive
+          title="Image file upload error"
+          message={imageError}
+          // actionMsg="Try again"
+        />
+      )}
     </div>
   )
 }
