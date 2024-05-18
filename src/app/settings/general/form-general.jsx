@@ -82,9 +82,15 @@ export function FormGeneral() {
   const token = session?.token
   const isExistingImage = session?.user?.image
   const existingImage = isExistingImage && awsURL + isExistingImage
+  const [image, setImage] = useState(existingImage)
   const user = session?.user
   const cacheBuster = useUserStore((state) => state.cacheBuster)
   const setCacheBuster = useUserStore((state) => state.setCacheBuster)
+
+  React.useEffect(() => {
+    const currentImage = session?.user?.image
+    currentImage && setImage(awsURL + currentImage)
+  }, [session])
 
   const form = useForm({
     resolver: zodResolver(formGeneralSchema),
@@ -110,20 +116,16 @@ export function FormGeneral() {
 
     // Create a FormData object
     const formData = new FormData()
-    const blob = convertBase64ToFile(image)
-    formData.append('image', blob)
+    formData.append('image', convertBase64ToFile(image))
     formData.append('brand', data.brand)
     formData.append('link', data.link)
     formData.append('name', data.name)
     formData.append('brandDescription', data.brandDescription)
     formData.append('username', data.username)
-
     axios
       .patch(URL, formData, { headers: headers })
-      .then((response) => {
-        setCacheBuster() // Update the cacheBuster state
-        console.log('Cache buster updated in FormGeneral:', cacheBuster)
-        // update the session with the new image
+      .then(async (response) => {
+        setCacheBuster()
         session.user.image = response.data?.user?.image
       })
       .catch((error) => {
@@ -134,7 +136,7 @@ export function FormGeneral() {
   }
 
   // const [file, setFile] = useState(null)
-  const [image, setImage] = useState(existingImage)
+
   return (
     <Card className="mx-auto max-w-screen-xl">
       <CardHeader>

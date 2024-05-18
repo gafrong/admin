@@ -11,19 +11,31 @@ import { FiBell, FiSettings } from 'react-icons/fi'
 import { Button } from './ui/button'
 
 const Navbar = () => {
-  const { data: session } = useSession()
-  const user = session?.user
+  const { data: session, status } = useSession()
   const cacheBuster = useUserStore((state) => state.cacheBuster)
-  // const avatar = `${awsURL + user?.image}?${cacheBuster}`
-  // console.log('Cache buster in Navbar:', cacheBuster)
+  const isLoading = status === 'loading'
+  const user = session?.user
 
-  const [avatar, setAvatar] = React.useState(
-    `${awsURL + user?.image}?${cacheBuster}`,
-  )
+  const [avatar, setAvatar] = React.useState(null)
+  // console.log( {image:user?.image})
+  React.useEffect(() => {
+    if (status !== 'loading' && user?.image) {
+      setAvatar(`${awsURL}${user?.image}?${cacheBuster}`)
+      console.log({ image: user?.image })
+    }
+  }, [cacheBuster, user?.image, status])
 
   React.useEffect(() => {
-    setAvatar(`${awsURL + user?.image}?${cacheBuster}`)
-  }, [cacheBuster, user?.image])
+    console.log({ avatar })
+  }, [avatar])
+
+  React.useEffect(() => {
+    const user = session?.user
+    if (user?.image) {
+      console.log('there is a user image')
+      setAvatar(`${awsURL}${user.image}?${cacheBuster}`)
+    }
+  }, [session, session?.user?.image, cacheBuster])
 
   const handleSignOut = async () => {
     await signOut({ callbackUrl: `/` })
@@ -44,9 +56,10 @@ const Navbar = () => {
           width="80"
         />
       </Link>
-      <div className="mr-5 flex flex-row items-center gap-4">
-        {user?.isAdmin && (
-          <>
+
+      {user?.isAdmin && !isLoading && (
+        <>
+          <div className="mr-5 flex flex-row items-center gap-4">
             <Button variant="outline" onClick={handleSignOut}>
               Sign out
             </Button>
@@ -57,17 +70,15 @@ const Navbar = () => {
                 <AvatarFallback>CN</AvatarFallback>
               </Avatar>
             </Link>
-
             <Link href="#">
               <FiBell />
             </Link>
-
             <Link href="/setting">
               <FiSettings />
             </Link>
-          </>
-        )}
-      </div>
+          </div>
+        </>
+      )}
     </div>
   )
 }
