@@ -13,12 +13,11 @@ import {
   CardTitle,
 } from '@/components/ui/card'
 import { Form } from '@/components/ui/form'
-import useUserStore from '@/store/zustand'
+import { usePersistedStore } from '@/store/persisted-store'
 import { zodResolver } from '@hookform/resolvers/zod'
 import axios from 'axios'
 import { useSession } from 'next-auth/react'
 import * as React from 'react'
-import { useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { FormTextInputs } from '../_components/form-text-inputs'
 import { formGeneralSchema } from './form-general-schema'
@@ -55,7 +54,11 @@ const fields = [
     type: 'text',
   },
 ]
-
+const getImage = (currentImage) => {
+  const imageUrl =
+    currentImage.startsWith('http') ? currentImage : awsURL + currentImage
+  return imageUrl
+}
 const convertBase64ToFile = (imageBase64) => {
   // Convert image base64 string to a Blob
   // a blob is the same as a file, which is what the backend expects.
@@ -63,6 +66,7 @@ const convertBase64ToFile = (imageBase64) => {
 
   const isBase64 = /^data:image\/[a-zA-Z+]*;base64,/.test(imageBase64)
   if (!isBase64) {
+    console.error('convertBase64ToFile(): Invalid base64 string')
     return imageBase64
   }
 
@@ -77,19 +81,25 @@ const convertBase64ToFile = (imageBase64) => {
   return blob
 }
 
+const fallbackImage =
+  'https://voutiq-app.s3.ap-northeast-2.amazonaws.com/000SiteImages/profile.png'
+
 export function FormGeneral() {
+  console.log('FormGeneral()')
   const { data: session } = useSession()
-  const token = session?.token
-  const isExistingImage = session?.user?.image
-  const existingImage = isExistingImage && awsURL + isExistingImage
-  const [image, setImage] = useState(existingImage)
-  const user = session?.user
-  const cacheBuster = useUserStore((state) => state.cacheBuster)
-  const setCacheBuster = useUserStore((state) => state.setCacheBuster)
+  const { token, user } = session || {}
+  const imageUrl = usePersistedStore((state) => state.imageUrl)
+  const setImageUrl = usePersistedStore((state) => state.setImageUrl)
+  const [previewImage, setPreviewImage] = React.useState(fallbackImage) // New state for the preview image
+  let imageInitialised
 
   React.useEffect(() => {
     const currentImage = session?.user?.image
-    currentImage && setImage(awsURL + currentImage)
+    if (currentImage) {
+      !imageInitialised && setPreviewImage(getImage(currentImage))
+      imageInitialised = true
+      console.log('1. updated previewImage:', { previewImage })
+    }
   }, [session])
 
   const form = useForm({
@@ -105,6 +115,8 @@ export function FormGeneral() {
   })
 
   const onSubmit = async (data) => {
+    console.log('onSubmit:')
+
     const URL = `${baseURL}vendor/general`
     const headers = {
       Authorization: `Bearer ${token}`,
@@ -114,9 +126,10 @@ export function FormGeneral() {
       return
     }
 
-    // Create a FormData object
     const formData = new FormData()
-    formData.append('image', convertBase64ToFile(image))
+    const image = convertBase64ToFile(previewImage)
+    formData.append('image', image)
+    console.log('image::', image)
     formData.append('brand', data.brand)
     formData.append('link', data.link)
     formData.append('name', data.name)
@@ -125,44 +138,90 @@ export function FormGeneral() {
     axios
       .patch(URL, formData, { headers: headers })
       .then(async (response) => {
-        setCacheBuster()
-        session.user.image = response.data?.user?.image
+        const image = response.data?.user?.image
+        console.log('session image:', { image })
+        setImageUrl(awsURL + image)
+        setPreviewImage(awsURL + image)
+        session.user.image = image
       })
       .catch((error) => {
         console.error('Error:', error)
       })
-    // add a delay to show spinner until the image is updated
+    // add a delay to show spinner until the image is updloaded to s3
     await new Promise((resolve) => setTimeout(resolve, 2000))
   }
 
-  // const [file, setFile] = useState(null)
-
   return (
-    <Card className="mx-auto max-w-screen-xl">
-      <CardHeader>
-        <CardTitle>General Info</CardTitle>
-      </CardHeader>
-      <CardContent className="">
-        <Form {...form}>
-          <form
-            onSubmit={form.handleSubmit(onSubmit)}
-            className="mt-6 flex flex-col gap-6"
-          >
-            <ProfileImage image={image} setImage={setImage} />
+    <>
+      <Card className="mx-auto max-w-screen-xl">
+        <CardHeader>
+          <CardTitle>General Info</CardTitle>
+        </CardHeader>
+        <CardContent className="">
+          <Form {...form}>
+            <form
+              onSubmit={form.handleSubmit(onSubmit)}
+              className="mt-6 flex flex-col gap-6"
+            >
+              <ProfileImage
+                previewImage={previewImage}
+                setPreviewImage={setPreviewImage}
+              />
 
-            <FormTextInputs fields={fields} form={form} />
+              <FormTextInputs fields={fields} form={form} />
 
-            <div>
-              <Button type="submit" className="ml-44">
-                Save
-                {form.formState.isSubmitting ?
-                  <LoadingSpinnerButton color="#fff" />
-                : null}
-              </Button>
-            </div>
-          </form>
-        </Form>
-      </CardContent>
-    </Card>
+              <div>
+                <Button type="submit" className="ml-44">
+                  Save
+                  {form.formState.isSubmitting ?
+                    <LoadingSpinnerButton color="#fff" />
+                  : null}
+                </Button>
+              </div>
+            </form>
+          </Form>
+        </CardContent>
+      </Card>
+      <h1 className="bold text-xl">imageUrl: </h1>
+      <div className="text-sm">{imageUrl}</div>
+
+      <br></br>
+
+      <h1 className="bold text-xl">session image: </h1>
+      <div className="text-sm">{session?.user?.image}</div>
+
+      <br></br>
+
+      <h1 className="bold text-xl">previewImage: </h1>
+      <div className="text-sm">
+        {JSON.stringify(previewImage).substring(0, 100)}
+      </div>
+      {/* <Debug
+        imageUrl={imageUrl}
+        previewImage={previewImage}
+        session={session}
+      /> */}
+    </>
+  )
+}
+
+function Debug({ imageUrl, session, previewImage }) {
+  return (
+    <div>
+      <h1 className="bold text-xl">imageUrl: </h1>
+      <div className="text-sm">{imageUrl}</div>
+
+      <br></br>
+
+      <h1 className="bold text-xl">session image: </h1>
+      <div className="text-sm">{session?.user?.image}</div>
+
+      <br></br>
+
+      <h1 className="bold text-xl">previewImage: </h1>
+      <div className="text-sm">
+        {JSON.stringify(previewImage).substring(0, 100)}
+      </div>
+    </div>
   )
 }

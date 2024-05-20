@@ -2,7 +2,7 @@
 
 import awsURL from '@/assets/common/awsUrl'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
-import useUserStore from '@/store/zustand'
+import { usePersistedStore } from '@/store/persisted-store'
 import { signOut, useSession } from 'next-auth/react'
 import Image from 'next/image'
 import Link from 'next/link'
@@ -11,35 +11,24 @@ import { FiBell, FiSettings } from 'react-icons/fi'
 import { Button } from './ui/button'
 
 const Navbar = () => {
+  console.log('Navbar')
   const { data: session, status } = useSession()
-  const cacheBuster = useUserStore((state) => state.cacheBuster)
+  const imageUrl = usePersistedStore((state) => state.imageUrl)
+  const setImageUrl = usePersistedStore((state) => state.setImageUrl)
   const isLoading = status === 'loading'
   const user = session?.user
-
-  const [avatar, setAvatar] = React.useState(null)
-  // console.log( {image:user?.image})
-  React.useEffect(() => {
-    if (status !== 'loading' && user?.image) {
-      setAvatar(`${awsURL}${user?.image}?${cacheBuster}`)
-      console.log({ image: user?.image })
-    }
-  }, [cacheBuster, user?.image, status])
-
-  React.useEffect(() => {
-    console.log({ avatar })
-  }, [avatar])
-
-  React.useEffect(() => {
-    const user = session?.user
-    if (user?.image) {
-      console.log('there is a user image')
-      setAvatar(`${awsURL}${user.image}?${cacheBuster}`)
-    }
-  }, [session, session?.user?.image, cacheBuster])
 
   const handleSignOut = async () => {
     await signOut({ callbackUrl: `/` })
   }
+
+  React.useEffect(() => {
+    const currentImage = session?.user?.image
+    if (!currentImage) return
+    const image = awsURL + currentImage
+    // console.log('navbar currentImage', currentImage)
+    setImageUrl(image)
+  }, [session, setImageUrl])
 
   return (
     <div className="fixed z-30 flex h-20 w-full items-center justify-between border-b border-t-transparent  bg-white py-4">
@@ -66,7 +55,7 @@ const Navbar = () => {
 
             <Link href="/profile">
               <Avatar className="h-[30px] w-[30px]">
-                <AvatarImage src={avatar} />
+                <AvatarImage src={imageUrl} />
                 <AvatarFallback>CN</AvatarFallback>
               </Avatar>
             </Link>
