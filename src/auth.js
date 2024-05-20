@@ -37,11 +37,18 @@ const config = {
     authorized({ request, auth }) {
       return !!auth?.user
     },
-    async jwt({ token, user }) {
+    async jwt({ token, user, trigger, session }) {
       if (user) {
         token.user = user.user
         token.token = user.token
       }
+      // ***************************************************************
+      // add functionality to update the session.user after a CRUD operation
+      if (trigger === 'update' && session) {
+        token.user = session.user
+        return token
+      }
+      // **************************************************************
       return token
     },
     async session({ session, token }) {
@@ -54,4 +61,4 @@ const config = {
   },
 }
 
-export const { handlers, auth, signIn, signOut } = NextAuth(config)
+export const { auth, handlers, signIn, signOut, update } = NextAuth(config)
