@@ -56,6 +56,16 @@ const fields = [
   },
 ]
 
+// const ValidateUsernameButton = ({ username, validateUsername }) => {
+//   return (
+//     <div>
+//       <Button variant="outline" onClick={() => validateUsername(username)}>
+//         Validate username
+//       </Button>
+//     </div>
+//   )
+// }
+
 const convertBase64ToFile = (imageBase64) => {
   // Convert image base64 string to a Blob
   // a blob is the same as a file, which is what the backend expects.
@@ -64,7 +74,7 @@ const convertBase64ToFile = (imageBase64) => {
   const isBase64 = /^data:image\/[a-zA-Z+]*;base64,/.test(imageBase64)
   if (!isBase64) {
     console.error('convertBase64ToFile(): Invalid base64 string')
-    return imageBase64
+    return false
   }
 
   const byteString = atob(imageBase64.split(',')[1])
@@ -87,6 +97,34 @@ export function FormGeneral() {
   const [previewImage, setPreviewImage] = React.useState(fallbackImage) // New state for the preview image
   let isInitialImageLoaded
 
+  const validateUsername = (username) => {
+    return new Promise((resolve, reject) => {
+      const URL = `${baseURL}vendor/validate-username/${username}`
+      const headers = {
+        Authorization: `Bearer ${token}`,
+      }
+      const body = {
+        userId: user._id, // assuming user._id contains the current user's ID
+      }
+      if (!token) {
+        console.error('validateUsername() No token found')
+        reject('No token found')
+        return
+      }
+
+      axios
+        .post(URL, body, { headers })
+        .then((response) => {
+          const isValid = Boolean(response.data?.valid)
+          resolve(isValid)
+        })
+        .catch((error) => {
+          console.error('Error:', error)
+          reject(error)
+        })
+    })
+  }
+
   React.useEffect(() => {
     if (session?.user?.image && !isInitialImageLoaded) {
       setPreviewImage(awsURL + user?.image)
@@ -96,6 +134,13 @@ export function FormGeneral() {
 
   const form = useForm({
     resolver: zodResolver(formGeneralSchema),
+    defaultValues: {
+      name: '',
+      username: '',
+      brandDescription: '',
+      link: '',
+      brand: '',
+    },
   })
 
   // Pre-fill form data on page refresh
@@ -105,14 +150,23 @@ export function FormGeneral() {
         name: user?.name || '',
         username: user?.username || '',
         brandDescription: user?.brandDescription || '',
-        link: (user?.link && user?.link !== 'undefined') || '',
+        link: user?.link && user?.link !== 'undefined' ? user?.link : '',
         brand: user?.brand || '',
       })
     }
   }, [user, form])
 
   const onSubmit = async (data) => {
-    const URL = `${baseURL}vendor/general`
+    const isValid = await validateUsername(data.username)
+    if (!isValid) {
+      console.error('Username is not valid.')
+      form.setError('username', {
+        type: 'manual',
+        message: 'Username is already taken.',
+      })
+      return
+    }
+    const URL = `${baseURL}vendor/profile-form/general`
     const headers = {
       Authorization: `Bearer ${token}`,
     }
@@ -124,7 +178,7 @@ export function FormGeneral() {
     const image = convertBase64ToFile(previewImage)
 
     const formData = new FormData()
-    formData.append('image', image)
+    image && formData.append('image', image)
     console.log('image::', image)
     formData.append('brand', data.brand)
     formData.append('link', data.link)
@@ -134,10 +188,21 @@ export function FormGeneral() {
     axios
       .patch(URL, formData, { headers: headers })
       .then(async (response) => {
-        const image = response.data?.user?.image
+        const updatedUser = response.data?.user
         setPreviewImage(awsURL + image)
         await update({
-          user: { ...user, image },
+          user: {
+            ...user,
+            image: updatedUser?.image,
+            name: updatedUser?.name,
+            username: updatedUser?.username,
+            brandDescription: updatedUser?.brandDescription,
+            link:
+              updatedUser?.link && updatedUser?.link !== 'undefined' ?
+                updatedUser?.link
+              : '',
+            brand: updatedUser?.brand,
+          },
         })
       })
       .catch((error) => {
@@ -167,7 +232,10 @@ export function FormGeneral() {
             />
 
             <FormTextInputs fields={fields} form={form} />
-
+            {/* <ValidateUsernameButton
+              username={form.watch('username')}
+              validateUsername={validateUsername}
+            /> */}
             <div>
               <Button type="submit" className="ml-44">
                 Save
