@@ -8,7 +8,7 @@ import { z } from 'zod'
 import { ToastDestructive } from '../ui/toast-destructive'
 
 const MB = 1024 * 1024
-const maxSize = 2 * MB
+const maxSize = 5 * MB
 const VALID_IMAGE_TYPES = ['image/png', 'image/jpeg', 'image/jpg']
 
 const imageFileSchema = z.object({
@@ -19,7 +19,7 @@ const imageFileSchema = z.object({
         'Invalid image file type. Please upload a PNG, JPEG, or JPG file.',
     })
     .refine((file) => file && file.size < maxSize, {
-      message: 'Image too large. Please upload an image smaller than 2MB.',
+      message: 'Image too large. Please upload an image smaller than 5MB.',
     }),
 })
 
@@ -32,6 +32,7 @@ export const ProfileImage = ({
   setPreviewImage,
 }) => {
   const [imageError, setImageError] = React.useState(null)
+
   const handleProfileImageChange = (e) => {
     const file = e.target.files[0]
     const result = imageFileSchema.safeParse({ file })
@@ -51,6 +52,8 @@ export const ProfileImage = ({
       }, 5000)
     }
   }
+  // clear up a temporary network error when the FilerReader is used
+  const isImageLoaded = typeof previewImage === 'string'
   return (
     <div className={cn('flex', className)}>
       <div className="relative h-36 w-36 overflow-hidden rounded-full">
@@ -60,7 +63,7 @@ export const ProfileImage = ({
           fill
           priority={true}
           sizes="144px"
-          src={previewImage}
+          src={isImageLoaded ? previewImage : ''}
         />
       </div>
       <label
