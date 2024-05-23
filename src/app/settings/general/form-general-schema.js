@@ -24,7 +24,8 @@ export const formGeneralSchema = z.object({
     .string()
     .trim()
     .min(3, { message: 'Name must be longer than 3 characters' })
-    .max(255, { message: 'Name must be shorter than 255 characters' }),
+    .max(255, { message: 'Name must be shorter than 255 characters' })
+    .regex(/^[a-zA-Z0-9]*$/, 'Username can only contain letters and numbers'),
   brandDescription: z
     .string()
     .trim()
