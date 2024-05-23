@@ -5,10 +5,10 @@ import Image from 'next/image'
 import React from 'react'
 import { FiCamera } from 'react-icons/fi'
 import { z } from 'zod'
-import { ToastDestructive } from '../ui/toast-destructive'
+import { FormMessage } from '../ui/form'
 
-const MB = 1024 * 1024
-const maxSize = 5 * MB
+const MEGABYTES = 1024 * 1024
+const maxSize = 2 * MEGABYTES
 const VALID_IMAGE_TYPES = ['image/png', 'image/jpeg', 'image/jpg']
 
 const imageFileSchema = z.object({
@@ -19,7 +19,7 @@ const imageFileSchema = z.object({
         'Invalid image file type. Please upload a PNG, JPEG, or JPG file.',
     })
     .refine((file) => file && file.size < maxSize, {
-      message: 'Image too large. Please upload an image smaller than 5MB.',
+      message: 'Image too large. Please upload an image smaller than 2MB.',
     }),
 })
 
@@ -28,12 +28,12 @@ const srcDefaultImage =
 
 export const ProfileImage = ({
   className = '',
+  form,
   previewImage = srcDefaultImage,
   setPreviewImage,
 }) => {
-  const [imageError, setImageError] = React.useState(null)
-
   const handleProfileImageChange = (e) => {
+    form.clearErrors('image')
     const file = e.target.files[0]
     const result = imageFileSchema.safeParse({ file })
 
@@ -44,49 +44,47 @@ export const ProfileImage = ({
       }
       reader.readAsDataURL(file)
     } else {
-      setImageError(result.error.errors[0].message)
       console.error('handleProfileImageChange(): Invalid image file')
-
-      setTimeout(() => {
-        setImageError(null)
-      }, 5000)
+      form.setError('image', {
+        type: 'manual',
+        message: result.error.errors[0].message,
+      })
     }
   }
   // clear up a temporary network error when the FilerReader is used
   const isImageLoaded = typeof previewImage === 'string'
   return (
-    <div className={cn('flex', className)}>
-      <div className="relative h-36 w-36 overflow-hidden rounded-full">
-        <Image
-          alt="profile image"
-          className="object-cover object-center"
-          fill
-          priority={true}
-          sizes="144px"
-          src={isImageLoaded ? previewImage : ''}
-        />
+    <>
+      <div className={cn('flex', className)}>
+        <div className="relative h-36 w-36 overflow-hidden rounded-full">
+          <Image
+            alt="profile image"
+            className="object-cover object-center"
+            fill
+            priority={true}
+            sizes="144px"
+            src={isImageLoaded ? previewImage : ''}
+          />
+        </div>
+        <label
+          htmlFor="upload"
+          className="absolute ml-[108px] cursor-pointer self-end rounded-full bg-slate-800 p-2 text-white"
+        >
+          <FiCamera />
+          <input
+            id="upload"
+            type="file"
+            name="image"
+            className="hidden"
+            accept="image/*, .png, .jpg, .jpeg"
+            onChange={handleProfileImageChange}
+          />
+        </label>
       </div>
-      <label
-        htmlFor="upload"
-        className="absolute ml-[108px] cursor-pointer self-end rounded-full bg-slate-800 p-2 text-white"
-      >
-        <FiCamera />
-        <input
-          id="upload"
-          type="file"
-          name="image"
-          className="hidden"
-          accept="image/*, .png, .jpg, .jpeg"
-          onChange={handleProfileImageChange}
-        />
-      </label>
-      {imageError && (
-        <ToastDestructive
-          title="Image file upload error"
-          message={imageError}
-          // actionMsg="Try again"
-        />
+
+      {form.formState.errors.image && (
+        <FormMessage>{form.formState.errors.image.message}</FormMessage>
       )}
-    </div>
+    </>
   )
 }
