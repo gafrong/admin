@@ -135,15 +135,17 @@ export function FormGeneral() {
 
   // Pre-fill form data on page refresh
   React.useEffect(() => {
-    if (user) {
-      form.reset({
-        name: user?.name || '',
-        username: user?.username || '',
-        brandDescription: user?.brandDescription || '',
-        link: user?.link && user?.link !== 'undefined' ? user?.link : '',
-        brand: user?.brand || '',
-      })
+    if (!user) {
+      console.error('No user found')
+      return
     }
+    form.reset({
+      name: user?.name || '',
+      username: user?.username || '',
+      brandDescription: user?.brandDescription || '',
+      link: user?.link && user?.link !== 'undefined' ? user?.link : '',
+      brand: user?.brand || '',
+    })
   }, [user, form])
 
   const onSubmit = async (data) => {
@@ -156,7 +158,7 @@ export function FormGeneral() {
       })
       return
     }
-    const URL = `${baseURL}vendor/profile-form/general`
+    const URL_ENDPOINT = `${baseURL}vendor/profile-form/general`
     const headers = {
       Authorization: `Bearer ${token}`,
     }
@@ -176,11 +178,12 @@ export function FormGeneral() {
     formData.append('brandDescription', data.brandDescription)
     formData.append('username', data.username)
     axios
-      .patch(URL, formData, { headers: headers })
+      .patch(URL_ENDPOINT, formData, { headers: headers })
       .then(async (response) => {
         const updatedUser = response.data?.user
-        setPreviewImage(URL.createObjectURL(image))
-
+        if (image) {
+          setPreviewImage(URL.createObjectURL(image))
+        }
         await update({
           user: {
             ...user,
@@ -204,7 +207,7 @@ export function FormGeneral() {
   }
 
   return (
-    <Card className="relative mx-auto max-w-screen-xl">
+    <Card className="relative mx-auto max-w-screen-xl p-6">
       {(status === 'loading' || form.formState.isSubmitting) && (
         <LoadingSpinner className="absolute inset-0 flex h-full items-center justify-center bg-black bg-opacity-5" />
       )}

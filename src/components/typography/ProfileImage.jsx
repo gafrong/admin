@@ -8,7 +8,7 @@ import { z } from 'zod'
 import { FormMessage } from '../ui/form'
 
 const MEGABYTES = 1024 * 1024
-const maxSize = 2 * MEGABYTES
+const maxSize = 10 * MEGABYTES
 const VALID_IMAGE_TYPES = ['image/png', 'image/jpeg', 'image/jpg']
 
 const imageFileSchema = z.object({
@@ -23,16 +23,20 @@ const imageFileSchema = z.object({
     }),
 })
 
+const srcDefaultImageDocs =
+  'https://voutiq-app.s3.ap-northeast-2.amazonaws.com/000SiteImages/docs.jpg'
+
 const srcDefaultImage =
   'https://voutiq-app.s3.ap-northeast-2.amazonaws.com/000SiteImages/profile.png'
 
 export const ProfileImage = ({
   className = '',
   form,
-  previewImage = srcDefaultImage,
+  type = 'profile', // new prop
+  previewImage = type === 'profile' ? srcDefaultImage : srcDefaultImageDocs,
   setPreviewImage,
 }) => {
-  const handleProfileImageChange = (e) => {
+  const handleImageChange = (e) => {
     form.clearErrors('image')
     const file = e.target.files[0]
     const result = imageFileSchema.safeParse({ file })
@@ -44,21 +48,22 @@ export const ProfileImage = ({
       }
       reader.readAsDataURL(file)
     } else {
-      console.error('handleProfileImageChange(): Invalid image file')
+      console.error('handleImageChange(): Invalid image file')
       form.setError('image', {
         type: 'manual',
         message: result.error.errors[0].message,
       })
     }
   }
-  // clear up a temporary network error when the FilerReader is used
+
   const isImageLoaded = typeof previewImage === 'string'
+  const imageStyle = type === 'profile' ? 'h-36 w-36 rounded-full' : 'h-44 w-36'
   return (
     <>
       <div className={cn('flex', className)}>
-        <div className="relative h-36 w-36 overflow-hidden rounded-full">
+        <div className={`relative ${imageStyle}`}>
           <Image
-            alt="profile image"
+            alt={`${type} image`}
             className="object-cover object-center"
             fill
             priority={true}
@@ -77,7 +82,7 @@ export const ProfileImage = ({
             name="image"
             className="hidden"
             accept="image/*, .png, .jpg, .jpeg"
-            onChange={handleProfileImageChange}
+            onChange={handleImageChange}
           />
         </label>
       </div>
