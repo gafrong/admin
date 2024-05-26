@@ -1,7 +1,7 @@
 import parsePhoneNumberFromString from 'libphonenumber-js'
 import { z } from 'zod'
 
-const validationPhone = z.string().transform((arg, ctx) => {
+export const validationKoreanPhone = z.string().transform((arg, ctx) => {
   const phone = parsePhoneNumberFromString(arg, {
     // set this to use a default country when the phone number omits country code
     defaultCountry: 'KR', //ISO standard South Korea country code.
@@ -21,27 +21,10 @@ const validationPhone = z.string().transform((arg, ctx) => {
   return phone.number
 })
 
+//examples
+
 const validationName = z.string().trim().min(1, { message: 'Name is required' })
 
 const validationEmail = z
   .string({ required_error: 'Email is required' })
   .email('Please enter a valid email address')
-
-export const formStoreManagerSchema = z.object({
-  managerName: validationName,
-  managerEmail: validationEmail,
-  managerMobileNumber: validationPhone,
-
-  // Customer Service Manager
-  //------------------------------------
-
-  CSmanagerName: validationName,
-  CSmanagerContactNumber: validationPhone,
-
-  // Finance Manager
-  //------------------------------------
-
-  financeManagerName: validationName,
-  financeManagerEmail: validationEmail,
-  financeManagerNumber: validationPhone,
-})
