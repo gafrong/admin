@@ -32,6 +32,7 @@ export const Check = ({ label, name, description = '', form }) => (
 
 const TextInputField = ({
   description,
+  disabled,
   form,
   label,
   name,
@@ -46,7 +47,12 @@ const TextInputField = ({
         <FormLabel className="mt-5">{label}</FormLabel>
         <div>
           <FormControl>
-            <Input placeholder={placeholder} {...field} type={type} />
+            <Input
+              {...field}
+              disabled={disabled}
+              placeholder={placeholder}
+              type={type}
+            />
           </FormControl>
 
           {description && <FormDescription>{description}</FormDescription>}
@@ -58,7 +64,7 @@ const TextInputField = ({
   />
 )
 
-export const FormTextInputs = ({ fields, form }) => (
+export const FormTextInputs = ({ fields, form, disabled }) => (
   <>
     {fields.map((field) => (
       <TextInputField
@@ -70,6 +76,7 @@ export const FormTextInputs = ({ fields, form }) => (
         name={field.name}
         placeholder={field.placeholder}
         type={field?.type}
+        disabled={disabled}
       />
     ))}
   </>
