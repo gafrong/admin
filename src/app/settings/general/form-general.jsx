@@ -56,16 +56,6 @@ const fields = [
   },
 ]
 
-// const ValidateUsernameButton = ({ username, validateUsername }) => {
-//   return (
-//     <div>
-//       <Button variant="outline" onClick={() => validateUsername(username)}>
-//         Validate username
-//       </Button>
-//     </div>
-//   )
-// }
-
 const convertBase64ToFile = (imageBase64) => {
   // Convert image base64 string to a Blob
   // a blob is the same as a file, which is what the backend expects.
@@ -145,15 +135,17 @@ export function FormGeneral() {
 
   // Pre-fill form data on page refresh
   React.useEffect(() => {
-    if (user) {
-      form.reset({
-        name: user?.name || '',
-        username: user?.username || '',
-        brandDescription: user?.brandDescription || '',
-        link: user?.link && user?.link !== 'undefined' ? user?.link : '',
-        brand: user?.brand || '',
-      })
+    if (!user) {
+      console.error('No user found')
+      return
     }
+    form.reset({
+      name: user?.name || '',
+      username: user?.username || '',
+      brandDescription: user?.brandDescription || '',
+      link: user?.link && user?.link !== 'undefined' ? user?.link : '',
+      brand: user?.brand || '',
+    })
   }, [user, form])
 
   const onSubmit = async (data) => {
@@ -166,7 +158,7 @@ export function FormGeneral() {
       })
       return
     }
-    const URL = `${baseURL}vendor/profile-form/general`
+    const URL_ENDPOINT = `${baseURL}vendor/profile-form/general`
     const headers = {
       Authorization: `Bearer ${token}`,
     }
@@ -186,10 +178,12 @@ export function FormGeneral() {
     formData.append('brandDescription', data.brandDescription)
     formData.append('username', data.username)
     axios
-      .patch(URL, formData, { headers: headers })
+      .patch(URL_ENDPOINT, formData, { headers: headers })
       .then(async (response) => {
         const updatedUser = response.data?.user
-        setPreviewImage(awsURL + image)
+        if (image) {
+          setPreviewImage(URL.createObjectURL(image))
+        }
         await update({
           user: {
             ...user,
@@ -208,12 +202,12 @@ export function FormGeneral() {
       .catch((error) => {
         console.error('Error:', error)
       })
-    // add a delay to show spinner until the image is updloaded to s3
+    // add a delay to show spinner until the image is uploaded to s3
     await new Promise((resolve) => setTimeout(resolve, 2000))
   }
 
   return (
-    <Card className="relative mx-auto max-w-screen-xl">
+    <Card className="relative mx-auto max-w-screen-xl p-6">
       {(status === 'loading' || form.formState.isSubmitting) && (
         <LoadingSpinner className="absolute inset-0 flex h-full items-center justify-center bg-black bg-opacity-5" />
       )}
@@ -227,15 +221,13 @@ export function FormGeneral() {
             className="mt-6 flex flex-col gap-6"
           >
             <ProfileImage
+              form={form}
               previewImage={previewImage}
               setPreviewImage={setPreviewImage}
             />
 
             <FormTextInputs fields={fields} form={form} />
-            {/* <ValidateUsernameButton
-              username={form.watch('username')}
-              validateUsername={validateUsername}
-            /> */}
+
             <div>
               <Button type="submit" className="ml-44">
                 Save

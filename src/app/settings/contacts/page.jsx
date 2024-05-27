@@ -1,10 +1,10 @@
-import { PageContainer, PageTitle } from '@/components/typography/PageTitle'
-import { FormStoreManager } from './form-store-manager'
+import { PageContainer } from '@/components/typography/PageTitle'
+import { FormManagerDetails } from './form-manager-details'
 
 export default function Page() {
   return (
     <PageContainer>
-      <FormStoreManager />
+      <FormManagerDetails />
     </PageContainer>
   )
 }
