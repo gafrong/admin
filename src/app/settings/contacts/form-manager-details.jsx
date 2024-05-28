@@ -2,6 +2,7 @@
 
 import { useFetchAuth } from '@/app/fetch/use-fetch-auth'
 import baseURL from '@/assets/common/baseUrl'
+import LoadingSpinner from '@/components/LoadingSpinner'
 import { Button } from '@/components/ui/button'
 import {
   Card,
@@ -32,75 +33,75 @@ const formManagerDetailsSchema = z.object({
   financeManagerMobile: z.string(),
 })
 
-const storeManagerFields = [
-  {
-    autocomplete: 'name',
-    label: 'Name*',
-    name: 'storeManagerName',
-    type: 'text',
-  },
-  {
-    autocomplete: 'email',
-    label: 'Email*',
-    name: 'storeManagerEmail',
-    type: 'email',
-  },
-  {
-    autocomplete: 'tel',
-    description: 'Your phone number will not be exposed to the public.',
-    label: 'Mobile Number*',
-    name: 'storeManagerMobile',
-    placeholder: '+82 12 1234 5678',
-    type: 'tel',
-  },
-  {
-    autocomplete: 'tel',
-    label: 'Phone Number',
-    name: 'storeManagerPhone',
-    placeholder: '+82 12 1234 5678',
-    type: 'tel',
-  },
-]
-
-const customerServiceManagerFields = [
-  {
-    autocomplete: 'name',
-    label: 'Name*',
-    name: 'customerServiceManagerName',
-    type: 'text',
-  },
-  {
-    autocomplete: 'tel',
-    description: 'Your phone number will not be exposed to the public.',
-    label: 'Contact Number*',
-    name: 'customerServiceManagerContactNumber',
-    placeholder: '+82 12 1234 5678',
-    type: 'tel',
-  },
-]
-
-const financeManagerFields = [
-  {
-    autocomplete: 'name',
-    label: 'Name*',
-    name: 'financeManagerName',
-    type: 'text',
-  },
-  {
-    autocomplete: 'email',
-    label: 'Email*',
-    name: 'financeManagerEmail',
-    type: 'email',
-  },
-  {
-    autocomplete: 'tel',
-    description: 'Your phone number will not be exposed to the public.',
-    label: 'Mobile Number*',
-    name: 'financeManagerMobile',
-    placeholder: '+82 12 1234 5678',
-    type: 'tel',
-  },
-]
+const formFields = {
+  store: [
+    {
+      autocomplete: 'name',
+      label: 'Name*',
+      name: 'storeManagerName',
+      type: 'text',
+    },
+    {
+      autocomplete: 'email',
+      label: 'Email*',
+      name: 'storeManagerEmail',
+      type: 'email',
+    },
+    {
+      autocomplete: 'tel',
+      description: 'Your phone number will not be exposed to the public.',
+      label: 'Mobile Number*',
+      name: 'storeManagerMobile',
+      placeholder: '+82 12 1234 5678',
+      type: 'tel',
+    },
+    {
+      autocomplete: 'tel',
+      label: 'Phone Number',
+      name: 'storeManagerPhone',
+      placeholder: '+82 12 1234 5678',
+      type: 'tel',
+    },
+  ],
+  customerService: [
+    {
+      autocomplete: 'name',
+      label: 'Name*',
+      name: 'customerServiceManagerName',
+      type: 'text',
+    },
+    {
+      autocomplete: 'tel',
+      description: 'Your phone number will not be exposed to the public.',
+      label: 'Contact Number*',
+      name: 'customerServiceManagerContactNumber',
+      placeholder: '+82 12 1234 5678',
+      type: 'tel',
+    },
+  ],
+  finance: [
+    {
+      autocomplete: 'name',
+      label: 'Name*',
+      name: 'financeManagerName',
+      type: 'text',
+    },
+    {
+      autocomplete: 'email',
+      label: 'Email*',
+      name: 'financeManagerEmail',
+      type: 'email',
+    },
+    {
+      autocomplete: 'tel',
+      description: 'Your phone number will not be exposed to the public.',
+      label: 'Mobile Number*',
+      name: 'financeManagerMobile',
+      placeholder: '+82 12 1234 5678',
+      type: 'tel',
+    },
+  ],
+}
 
 export const HeaderTitleDescription = ({ title, description }) => (
   <CardHeader className="pt-12">
@@ -110,12 +111,15 @@ export const HeaderTitleDescription = ({ title, description }) => (
 )
 
 export function FormManagerDetails() {
-  const { data: session } = useSession()
+  const { data: session, status } = useSession()
   const { token, user } = session || {}
   const userId = user?._id
   const url = userId ? `vendor/user-id/${userId}` : null
+  const { data: vendor, isLoading: isLoadingAuth, mutate } = useFetchAuth(url)
 
-  const { data: vendor, isLoading, mutate } = useFetchAuth(url)
+  const [isSameAsStoreManagerCS, setIsSameAsStoreManagerCS] =
+    React.useState(false)
+
   // START pre-fill form data
   const form = useForm({
     resolver: zodResolver(formManagerDetailsSchema),
@@ -129,10 +133,9 @@ export function FormManagerDetails() {
       financeManagerName: '',
       financeManagerEmail: '',
       financeManagerMobile: '',
-      sameAsStoreManager: false,
+      sameAsStoreManagerCS: false,
     },
   })
-  const isSameAsStoreManager = form.watch('sameAsStoreManager')
 
   // Pre-fill form data on page refresh
   React.useEffect(() => {
@@ -153,9 +156,10 @@ export function FormManagerDetails() {
       financeManagerName: finance.name || '',
       financeManagerEmail: finance.email || '',
       financeManagerMobile: finance.mobile || '',
-      sameAsStoreManager: isSameAsStoreManager || false,
+      sameAsStoreManagerCS: isSameAsStoreManagerCS || false,
     })
-  }, [vendor, form, isSameAsStoreManager])
+  }, [vendor, form])
+
   // END pre-fill form data
 
   const onSubmit = async (formData) => {
@@ -169,61 +173,63 @@ export function FormManagerDetails() {
       console.error('FormManagerDetails() No token found')
       return
     }
+
     const data = formatData(formData)
+
     try {
       const response = await axios.patch(URL_ENDPOINT, data, { headers })
-
       if (response.status !== 200) {
         throw new Error('Error updating vendor')
       }
-
-      const updatedVendor = response.data
-      console.log(updatedVendor)
     } catch (error) {
       console.error(error)
     }
   }
-  const onSubmitTest = () => {
-    console.log('test')
-  }
+  const isLoading =
+    isLoadingAuth || status === 'loading' || form.formState.isSubmitting
+
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)}>
-        <Card className="mx-auto max-w-screen-xl px-6 pb-10">
+        <Card className="relative mx-auto max-w-screen-xl px-6 pb-10">
+          {isLoading && (
+            <LoadingSpinner className="absolute inset-0 flex h-full items-center justify-center bg-black bg-opacity-5" />
+          )}
           <HeaderTitleDescription
             title="Store Manager"
             description="Please insert the contact information of the store manager."
           />
           <CardContent className="mt-6 flex flex-col gap-6">
-            <FormTextInputs fields={storeManagerFields} form={form} />
+            <FormTextInputs fields={formFields.store} form={form} />
           </CardContent>
-
           <HeaderTitleDescription
             title="Customer Service Manager"
             description="Please insert the contact information of the store manager."
           />
           <CardContent className="mt-6 flex flex-col gap-6">
             <div className="ml-44 flex gap-2">
-              <SameAsStoreManagerCheckbox form={form} />
+              <SameAsStoreManagerCheckbox
+                form={form}
+                vendor={vendor}
+                setIsSameAsStoreManagerCS={setIsSameAsStoreManagerCS}
+              />
 
               <FormDescription>Same as store manager</FormDescription>
             </div>
             <FormTextInputs
-              disabled={isSameAsStoreManager}
-              fields={customerServiceManagerFields}
+              disabled={isSameAsStoreManagerCS}
+              fields={formFields.customerService}
               form={form}
-              key={isSameAsStoreManager ? 'same' : 'unique'}
+              key={isSameAsStoreManagerCS ? 'same' : 'unique'}
             />
           </CardContent>
-
           <HeaderTitleDescription
             title="Finance Manager"
             description="We send the tax information to the respective manager."
           />
           <CardContent className="mt-6 flex flex-col gap-6">
-            <FormTextInputs fields={financeManagerFields} form={form} />
+            <FormTextInputs fields={formFields.finance} form={form} />
           </CardContent>
-
           <div className="ml-[200px] mt-8 flex gap-4">
             <Button type="submit" className="ml-44-off">
               Save
@@ -232,9 +238,9 @@ export function FormManagerDetails() {
               type="button"
               variant="outline"
               className=""
-              onClick={onSubmitTest}
+              onClick={() => console.log('test')}
             >
-              Test
+              What does cancel do?
             </Button>
           </div>
         </Card>
@@ -243,37 +249,39 @@ export function FormManagerDetails() {
   )
 }
 
-function SameAsStoreManagerCheckbox({ form }) {
+function SameAsStoreManagerCheckbox({
+  form,
+  setIsSameAsStoreManagerCS,
+  vendor,
+}) {
+  const handleCheckboxChange = (checked) => {
+    setIsSameAsStoreManagerCS(checked)
+    const { storeManagerName, storeManagerMobile, storeManagerPhone } =
+      form.getValues()
+
+    if (checked) {
+      const storeManagerNumber = storeManagerMobile || storeManagerPhone
+      form.setValue('customerServiceManagerName', storeManagerName)
+      form.setValue('customerServiceManagerContactNumber', storeManagerNumber)
+    } else {
+      // after un-checking, reset the data to db
+      const {
+        contacts: { customerService },
+      } = vendor
+      form.setValue('customerServiceManagerName', customerService.name || '')
+      form.setValue(
+        'customerServiceManagerContactNumber',
+        customerService.contactNumber || '',
+      )
+    }
+  }
+
   return (
     <Controller
       control={form.control}
-      name="sameAsStoreManager"
+      name="sameAsStoreManagerCS"
       render={({ field }) => (
-        <Checkbox
-          {...field}
-          onCheckedChange={(checked) => {
-            field.onChange(checked)
-            if (checked) {
-              const [storeManagerName, storeManagerMobile, storeManagerPhone] =
-                form.getValues([
-                  'storeManagerName',
-                  'storeManagerMobile',
-                  'storeManagerPhone',
-                ])
-              console.log('SameAsStoreManagerCheckbox() storeManagerName:', {
-                storeManagerName,
-                storeManagerMobile,
-                storeManagerPhone,
-              })
-              const storeManagerNumber = storeManagerMobile || storeManagerPhone
-              form.setValue('customerServiceManagerName', storeManagerName)
-              form.setValue(
-                'customerServiceManagerContactNumber',
-                storeManagerNumber,
-              )
-            }
-          }}
-        />
+        <Checkbox {...field} onCheckedChange={handleCheckboxChange} />
       )}
     />
   )

@@ -20,13 +20,24 @@ import axios from 'axios'
 import { useSession } from 'next-auth/react'
 import * as React from 'react'
 import { useForm } from 'react-hook-form'
+import { z } from 'zod'
 import { FormTextInputs } from '../_components/form-text-inputs'
-import { formGeneralSchema } from './form-general-schema'
+
+export const formGeneralSchema = z.object({
+  name: z.string(),
+  username: z.string(),
+  brandDescription: z.string(),
+  link: z.string().optional(),
+  brand: z.string(),
+  email: z.string().email(),
+  password: z.string().optional(),
+  confirmPassword: z.string().optional(),
+})
 
 const fields = [
   {
-    autocomplete: 'name',
-    label: 'First name*',
+    autocomplete: 'nope',
+    label: 'Name*',
     name: 'name',
     type: 'text',
     // placeholder: 'John Doe',
@@ -53,6 +64,22 @@ const fields = [
     label: 'Brand*',
     name: 'brand',
     type: 'text',
+  },
+  {
+    label: 'Email*',
+    name: 'email',
+    type: 'email',
+  },
+  {
+    autocomplete: 'new-password',
+    label: 'Password',
+    name: 'password',
+    type: 'password',
+  },
+  {
+    label: 'Confirm Password*',
+    name: 'confirmPassword',
+    type: 'password',
   },
 ]
 
@@ -87,34 +114,6 @@ export function FormGeneral() {
   const [previewImage, setPreviewImage] = React.useState(fallbackImage) // New state for the preview image
   let isInitialImageLoaded
 
-  const validateUsername = (username) => {
-    return new Promise((resolve, reject) => {
-      const URL = `${baseURL}vendor/validate-username/${username}`
-      const headers = {
-        Authorization: `Bearer ${token}`,
-      }
-      const body = {
-        userId: user._id, // assuming user._id contains the current user's ID
-      }
-      if (!token) {
-        console.error('validateUsername() No token found')
-        reject('No token found')
-        return
-      }
-
-      axios
-        .post(URL, body, { headers })
-        .then((response) => {
-          const isValid = Boolean(response.data?.valid)
-          resolve(isValid)
-        })
-        .catch((error) => {
-          console.error('Error:', error)
-          reject(error)
-        })
-    })
-  }
-
   React.useEffect(() => {
     if (session?.user?.image && !isInitialImageLoaded) {
       setPreviewImage(awsURL + user?.image)
@@ -130,14 +129,19 @@ export function FormGeneral() {
       brandDescription: '',
       link: '',
       brand: '',
+      email: '',
+      password: '',
+      confirmPassword: '',
     },
   })
 
   // Pre-fill form data on page refresh
   React.useEffect(() => {
     if (!user) {
-      console.error('No user found')
+      console.log('No user found')
       return
+    } else {
+      console.log('Found user')
     }
     form.reset({
       name: user?.name || '',
@@ -145,38 +149,48 @@ export function FormGeneral() {
       brandDescription: user?.brandDescription || '',
       link: user?.link && user?.link !== 'undefined' ? user?.link : '',
       brand: user?.brand || '',
+      email: user?.email || '',
+      password: '',
+      confirmPassword: '',
     })
   }, [user, form])
 
   const onSubmit = async (data) => {
-    const isValid = await validateUsername(data.username)
-    if (!isValid) {
-      console.error('Username is not valid.')
-      form.setError('username', {
-        type: 'manual',
-        message: 'Username is already taken.',
-      })
+    // Validate the data
+    const { username } = data
+    if (validatePasswordEntered({ data, form })) {
+      form.setError('confirmPassword', errorMessages.password)
       return
     }
-    const URL_ENDPOINT = `${baseURL}vendor/profile-form/general`
-    const headers = {
-      Authorization: `Bearer ${token}`,
+    const isValidUsername = await validateUsername({
+      username,
+      token,
+      user,
+    })
+    if (!isValidUsername) {
+      form.setError('username', errorMessages.username)
+      return
     }
     if (!token) {
       console.error('FormGeneral() No token found')
       return
     }
 
+    const URL_ENDPOINT = `${baseURL}vendor/profile-form/general`
+    const headers = {
+      Authorization: `Bearer ${token}`,
+    }
     const image = convertBase64ToFile(previewImage)
-
     const formData = new FormData()
     image && formData.append('image', image)
-    console.log('image::', image)
     formData.append('brand', data.brand)
     formData.append('link', data.link)
     formData.append('name', data.name)
     formData.append('brandDescription', data.brandDescription)
     formData.append('username', data.username)
+    formData.append('email', data.email)
+    formData.append('password', data.password)
+
     axios
       .patch(URL_ENDPOINT, formData, { headers: headers })
       .then(async (response) => {
@@ -191,10 +205,7 @@ export function FormGeneral() {
             name: updatedUser?.name,
             username: updatedUser?.username,
             brandDescription: updatedUser?.brandDescription,
-            link:
-              updatedUser?.link && updatedUser?.link !== 'undefined' ?
-                updatedUser?.link
-              : '',
+            link: validateLink(updatedUser) ? updatedUser?.link : '',
             brand: updatedUser?.brand,
           },
         })
@@ -217,8 +228,8 @@ export function FormGeneral() {
       <CardContent className="">
         <Form {...form}>
           <form
-            onSubmit={form.handleSubmit(onSubmit)}
             className="mt-6 flex flex-col gap-6"
+            onSubmit={form.handleSubmit(onSubmit)}
           >
             <ProfileImage
               form={form}
@@ -241,4 +252,53 @@ export function FormGeneral() {
       </CardContent>
     </Card>
   )
+}
+
+function validateLink(updatedUser) {
+  return updatedUser?.link && updatedUser?.link !== 'undefined'
+}
+
+function validatePasswordEntered({ data, form }) {
+  data.password !== data.confirmPassword &&
+    form.formState.dirtyFields.password &&
+    data.password.trim().length < 6
+}
+
+function validateUsername({ username, token, user }) {
+  return new Promise((resolve, reject) => {
+    const URL_USERNAME = `${baseURL}vendor/validate-username/${username}`
+    const headers = {
+      Authorization: `Bearer ${token}`,
+    }
+    const body = {
+      userId: user._id, // assuming user._id contains the current user's ID
+    }
+    if (!token) {
+      console.error('validateUsername() No token found')
+      reject('No token found')
+      return
+    }
+
+    axios
+      .post(URL_USERNAME, body, { headers })
+      .then((response) => {
+        const isValid = Boolean(response.data?.valid)
+        resolve(isValid)
+      })
+      .catch((error) => {
+        console.error('Validate Username Error:', error)
+        reject(error)
+      })
+  })
+}
+
+const errorMessages = {
+  password: {
+    type: 'manual',
+    message: 'Passwords do not match.',
+  },
+  username: {
+    type: 'manual',
+    message: 'Username is already taken.',
+  },
 }

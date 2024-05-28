@@ -93,7 +93,7 @@ export function FormDelivery() {
       <form onSubmit={form.handleSubmit(onSubmit)}>
         <Card className="mx-auto max-w-screen-xl px-6 pb-10">
           <HeaderTitleDescription
-            title="Delivery Address"
+            title="Delivery address for returns"
             description="출고지와 반품에 사용할 주소를 등록합니다."
           />
           <CardContent className="mt-6 flex flex-col gap-6">
