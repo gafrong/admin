@@ -22,17 +22,29 @@ import * as React from 'react'
 import { useForm } from 'react-hook-form'
 import { z } from 'zod'
 import { FormTextInputs } from '../_components/form-text-inputs'
+import { convertBase64ToFile } from '../_components/image'
 
 export const formGeneralSchema = z.object({
-  name: z.string(),
-  username: z.string(),
-  brandDescription: z.string(),
-  link: z.string().optional(),
   brand: z.string(),
-  email: z.string().email(),
-  password: z.string().optional(),
+  brandDescription: z.string(),
   confirmPassword: z.string().optional(),
+  email: z.string().email(),
+  link: z.string().optional(),
+  name: z.string(),
+  password: z.string().optional(),
+  username: z.string(),
 })
+
+const errorMessages = {
+  password: {
+    type: 'manual',
+    message: 'Passwords do not match.',
+  },
+  username: {
+    type: 'manual',
+    message: 'Username is already taken.',
+  },
+}
 
 const fields = [
   {
@@ -83,28 +95,6 @@ const fields = [
   },
 ]
 
-const convertBase64ToFile = (imageBase64) => {
-  // Convert image base64 string to a Blob
-  // a blob is the same as a file, which is what the backend expects.
-  // the base64 image is needed for previewing the image in the browser.
-
-  const isBase64 = /^data:image\/[a-zA-Z+]*;base64,/.test(imageBase64)
-  if (!isBase64) {
-    console.error('convertBase64ToFile(): Invalid base64 string')
-    return false
-  }
-
-  const byteString = atob(imageBase64.split(',')[1])
-  const mimeString = imageBase64.split(',')[0].split(':')[1].split(';')[0]
-  const ab = new ArrayBuffer(byteString.length)
-  const ia = new Uint8Array(ab)
-  for (let i = 0; i < byteString.length; i++) {
-    ia[i] = byteString.charCodeAt(i)
-  }
-  const blob = new Blob([ab], { type: mimeString })
-  return blob
-}
-
 const fallbackImage =
   'https://voutiq-app.s3.ap-northeast-2.amazonaws.com/000SiteImages/profile.png'
 
@@ -124,14 +114,14 @@ export function FormGeneral() {
   const form = useForm({
     resolver: zodResolver(formGeneralSchema),
     defaultValues: {
-      name: '',
-      username: '',
-      brandDescription: '',
-      link: '',
       brand: '',
-      email: '',
-      password: '',
+      brandDescription: '',
       confirmPassword: '',
+      email: '',
+      link: '',
+      name: '',
+      password: '',
+      username: '',
     },
   })
 
@@ -144,14 +134,14 @@ export function FormGeneral() {
       console.log('Found user')
     }
     form.reset({
-      name: user?.name || '',
-      username: user?.username || '',
-      brandDescription: user?.brandDescription || '',
-      link: user?.link && user?.link !== 'undefined' ? user?.link : '',
       brand: user?.brand || '',
-      email: user?.email || '',
-      password: '',
+      brandDescription: user?.brandDescription || '',
       confirmPassword: '',
+      email: user?.email || '',
+      link: user?.link && user?.link !== 'undefined' ? user?.link : '',
+      name: user?.name || '',
+      password: '',
+      username: user?.username || '',
     })
   }, [user, form])
 
@@ -163,9 +153,9 @@ export function FormGeneral() {
       return
     }
     const isValidUsername = await validateUsername({
-      username,
       token,
       user,
+      username,
     })
     if (!isValidUsername) {
       form.setError('username', errorMessages.username)
@@ -184,12 +174,12 @@ export function FormGeneral() {
     const formData = new FormData()
     image && formData.append('image', image)
     formData.append('brand', data.brand)
+    formData.append('brandDescription', data.brandDescription)
+    formData.append('email', data.email)
     formData.append('link', data.link)
     formData.append('name', data.name)
-    formData.append('brandDescription', data.brandDescription)
-    formData.append('username', data.username)
-    formData.append('email', data.email)
     formData.append('password', data.password)
+    formData.append('username', data.username)
 
     axios
       .patch(URL_ENDPOINT, formData, { headers: headers })
@@ -290,15 +280,4 @@ function validateUsername({ username, token, user }) {
         reject(error)
       })
   })
-}
-
-const errorMessages = {
-  password: {
-    type: 'manual',
-    message: 'Passwords do not match.',
-  },
-  username: {
-    type: 'manual',
-    message: 'Username is already taken.',
-  },
 }

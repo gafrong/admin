@@ -4,13 +4,7 @@ import { useFetchAuth } from '@/app/fetch/use-fetch-auth'
 import baseURL from '@/assets/common/baseUrl'
 import LoadingSpinner from '@/components/LoadingSpinner'
 import { Button } from '@/components/ui/button'
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from '@/components/ui/card'
+import { Card, CardContent } from '@/components/ui/card'
 import { Checkbox } from '@/components/ui/checkbox' // Import Checkbox component
 
 import { Form, FormDescription } from '@/components/ui/form'
@@ -20,6 +14,7 @@ import { useSession } from 'next-auth/react'
 import * as React from 'react'
 import { Controller, useForm } from 'react-hook-form'
 import { z } from 'zod'
+import { CardTitleDescription } from '../_components/card-title-description'
 import { FormTextInputs } from '../_components/form-text-inputs'
 
 const formManagerDetailsSchema = z.object({
@@ -29,7 +24,7 @@ const formManagerDetailsSchema = z.object({
   customerServiceManagerName: z.string(),
   customerServiceManagerContactNumber: z.string(),
   financeManagerName: z.string(),
-  financeManagerEmail: z.string().email(),
+  financeManagerEmail: z.string().email('Please enter a valid email address'),
   financeManagerMobile: z.string(),
 })
 
@@ -103,13 +98,6 @@ const formFields = {
   ],
 }
 
-export const HeaderTitleDescription = ({ title, description }) => (
-  <CardHeader className="pt-12">
-    <CardTitle>{title}</CardTitle>
-    <CardDescription>{description}</CardDescription>
-  </CardHeader>
-)
-
 export function FormManagerDetails() {
   const { data: session, status } = useSession()
   const { token, user } = session || {}
@@ -118,6 +106,9 @@ export function FormManagerDetails() {
   const { data: vendor, isLoading: isLoadingAuth, mutate } = useFetchAuth(url)
 
   const [isSameAsStoreManagerCS, setIsSameAsStoreManagerCS] =
+    React.useState(false)
+
+  const [isSameAsStoreManagerFM, setIsSameAsStoreManagerFM] =
     React.useState(false)
 
   // START pre-fill form data
@@ -195,27 +186,25 @@ export function FormManagerDetails() {
           {isLoading && (
             <LoadingSpinner className="absolute inset-0 flex h-full items-center justify-center bg-black bg-opacity-5" />
           )}
-          <HeaderTitleDescription
+
+          <CardTitleDescription
             title="Store Manager"
             description="Please insert the contact information of the store manager."
           />
           <CardContent className="mt-6 flex flex-col gap-6">
             <FormTextInputs fields={formFields.store} form={form} />
           </CardContent>
-          <HeaderTitleDescription
+
+          <CardTitleDescription
             title="Customer Service Manager"
             description="Please insert the contact information of the store manager."
           />
           <CardContent className="mt-6 flex flex-col gap-6">
-            <div className="ml-44 flex gap-2">
-              <SameAsStoreManagerCheckbox
-                form={form}
-                vendor={vendor}
-                setIsSameAsStoreManagerCS={setIsSameAsStoreManagerCS}
-              />
-
-              <FormDescription>Same as store manager</FormDescription>
-            </div>
+            <SameAsStoreManagerCheckboxCS
+              form={form}
+              vendor={vendor}
+              setIsSameAsStoreManagerCS={setIsSameAsStoreManagerCS}
+            />
             <FormTextInputs
               disabled={isSameAsStoreManagerCS}
               fields={formFields.customerService}
@@ -223,13 +212,24 @@ export function FormManagerDetails() {
               key={isSameAsStoreManagerCS ? 'same' : 'unique'}
             />
           </CardContent>
-          <HeaderTitleDescription
+
+          <CardTitleDescription
             title="Finance Manager"
             description="We send the tax information to the respective manager."
           />
           <CardContent className="mt-6 flex flex-col gap-6">
-            <FormTextInputs fields={formFields.finance} form={form} />
+            <SameAsStoreManagerCheckboxFM
+              form={form}
+              vendor={vendor}
+              setIsSameAsStoreManagerFM={setIsSameAsStoreManagerFM}
+            />
+            <FormTextInputs
+              disabled={isSameAsStoreManagerFM}
+              fields={formFields.finance}
+              form={form}
+            />
           </CardContent>
+
           <div className="ml-[200px] mt-8 flex gap-4">
             <Button type="submit" className="ml-44-off">
               Save
@@ -249,7 +249,7 @@ export function FormManagerDetails() {
   )
 }
 
-function SameAsStoreManagerCheckbox({
+function SameAsStoreManagerCheckboxCS({
   form,
   setIsSameAsStoreManagerCS,
   vendor,
@@ -264,10 +264,7 @@ function SameAsStoreManagerCheckbox({
       form.setValue('customerServiceManagerName', storeManagerName)
       form.setValue('customerServiceManagerContactNumber', storeManagerNumber)
     } else {
-      // after un-checking, reset the data to db
-      const {
-        contacts: { customerService },
-      } = vendor
+      const customerService = vendor.contacts.customerService
       form.setValue('customerServiceManagerName', customerService.name || '')
       form.setValue(
         'customerServiceManagerContactNumber',
@@ -277,13 +274,60 @@ function SameAsStoreManagerCheckbox({
   }
 
   return (
-    <Controller
-      control={form.control}
-      name="sameAsStoreManagerCS"
-      render={({ field }) => (
-        <Checkbox {...field} onCheckedChange={handleCheckboxChange} />
-      )}
-    />
+    <div className="ml-44 flex gap-2">
+      <Controller
+        control={form.control}
+        name="sameAsStoreManagerCS"
+        render={({ field }) => (
+          <Checkbox {...field} onCheckedChange={handleCheckboxChange} />
+        )}
+      />
+
+      <FormDescription>Same as store manager</FormDescription>
+    </div>
+  )
+}
+
+function SameAsStoreManagerCheckboxFM({
+  form,
+  setIsSameAsStoreManagerFM,
+  vendor,
+}) {
+  const handleCheckboxChangeFM = (checked) => {
+    setIsSameAsStoreManagerFM(checked)
+    const {
+      storeManagerName,
+      storeManagerEmail,
+      storeManagerMobile,
+      // storeManagerPhone,
+    } = form.getValues()
+
+    if (checked) {
+      form.setValue('financeManagerName', storeManagerName)
+      form.setValue('financeManagerEmail', storeManagerEmail)
+      form.setValue('financeManagerMobile', storeManagerMobile)
+      // form.setValue('financeManagerPhone', storeManagerPhone)
+    } else {
+      const finance = vendor.contacts.finance
+      form.setValue('financeManagerName', finance.name || '')
+      form.setValue('financeManagerEmail', finance.email || '')
+      form.setValue('financeManagerMobile', finance.mobile || '')
+      // form.setValue('financeManagerPhone', finance.phone || '')
+    }
+  }
+
+  return (
+    <div className="ml-44 flex gap-2">
+      <Controller
+        control={form.control}
+        name="sameAsStoreManagerFM"
+        render={({ field }) => (
+          <Checkbox {...field} onCheckedChange={handleCheckboxChangeFM} />
+        )}
+      />
+
+      <FormDescription>Same as store manager</FormDescription>
+    </div>
   )
 }
 

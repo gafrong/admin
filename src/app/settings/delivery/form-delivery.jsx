@@ -11,8 +11,8 @@ import { useSession } from 'next-auth/react'
 import React from 'react'
 import { useForm } from 'react-hook-form'
 import { z } from 'zod'
+import { CardTitleDescription } from '../_components/card-title-description'
 import { FormTextInputs } from '../_components/form-text-inputs'
-import { HeaderTitleDescription } from '../contacts/form-manager-details'
 
 const formDeliverySchema = z.object({
   address1: z.string(),
@@ -62,7 +62,7 @@ export function FormDelivery() {
   }, [user, form, vendor])
   // END pre-fill form data
 
-  const onSubmit = async (formData) => {
+  const onSubmit = async (formValues) => {
     const URL_ENDPOINT = `${baseURL}vendor/profile-form/delivery`
     const headers = {
       'Content-Type': 'application/json',
@@ -75,14 +75,11 @@ export function FormDelivery() {
     }
 
     try {
-      const response = await axios.patch(URL_ENDPOINT, formData, { headers })
+      const response = await axios.patch(URL_ENDPOINT, formValues, { headers })
 
       if (response.status !== 200) {
         throw new Error('Error updating vendor')
       }
-
-      const updatedVendor = response.data
-      console.log(updatedVendor)
     } catch (error) {
       console.error(error)
     }
@@ -92,7 +89,7 @@ export function FormDelivery() {
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)}>
         <Card className="mx-auto max-w-screen-xl px-6 pb-10">
-          <HeaderTitleDescription
+          <CardTitleDescription
             title="Delivery address for returns"
             description="출고지와 반품에 사용할 주소를 등록합니다."
           />
@@ -117,7 +114,7 @@ export function FormDelivery() {
         </Card>
 
         <Card className="mt-10">
-          <HeaderTitleDescription
+          <CardTitleDescription
             title="Goods Flow Registration"
             description="굿스플로 송장출력 서비스 및 반품 택배 자동 수거 서비스를 이용할 수 있습니다. 
             출고지와 반품지 주소가 동일한 경우에만 굿스플로를 사용할 수 있습니다. "
