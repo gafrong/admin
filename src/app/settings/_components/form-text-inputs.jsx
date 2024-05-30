@@ -31,6 +31,7 @@ export const Check = ({ label, name, description = '', form }) => (
 )
 
 const TextInputField = ({
+  autocomplete,
   description,
   disabled,
   form,
@@ -49,6 +50,7 @@ const TextInputField = ({
           <FormControl>
             <Input
               {...field}
+              autoComplete={autocomplete}
               disabled={disabled}
               placeholder={placeholder}
               type={type}
@@ -69,14 +71,17 @@ export const FormTextInputs = ({ fields, form, disabled }) => (
     {fields.map((field) => (
       <TextInputField
         // {...{ ...(field?.type ? { type: field.type } : []) }}
+        {...{
+          ...(field?.autocomplete ? { autocomplete: field.autocomplete } : []),
+        }}
         description={field.description || ''}
+        disabled={disabled}
         form={form}
         key={field.name}
         label={field.label}
         name={field.name}
         placeholder={field.placeholder}
         type={field?.type}
-        disabled={disabled}
       />
     ))}
   </>

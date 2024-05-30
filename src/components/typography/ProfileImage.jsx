@@ -33,9 +33,11 @@ export const ProfileImage = ({
   className = '',
   form,
   type = 'profile', // new prop
-  previewImage = type === 'profile' ? srcDefaultImage : srcDefaultImageDocs,
+  previewImage = srcDefaultImage,
   setPreviewImage,
 }) => {
+  const defaultImage =
+    type === 'profile' ? srcDefaultImage : srcDefaultImageDocs
   const handleImageChange = (e) => {
     form.clearErrors('image')
     const file = e.target.files[0]
@@ -44,11 +46,12 @@ export const ProfileImage = ({
     if (result.success) {
       const reader = new FileReader()
       reader.onloadend = () => {
-        setPreviewImage(reader.result) // Update the preview image immediately
+        if (typeof setPreviewImage === 'function') {
+          setPreviewImage(reader.result) // Update the preview image immediately
+        }
       }
       reader.readAsDataURL(file)
     } else {
-      console.error('handleImageChange(): Invalid image file')
       form.setError('image', {
         type: 'manual',
         message: result.error.errors[0].message,
@@ -57,7 +60,7 @@ export const ProfileImage = ({
   }
 
   const isImageLoaded = typeof previewImage === 'string'
-  const imageStyle = type === 'profile' ? 'h-36 w-36 rounded-full' : 'h-44 w-36'
+  const imageStyle = type === 'profile' ? 'h-36 w-36 rounded-full' : 'h-36 w-36'
   return (
     <>
       <div className={cn('flex', className)}>
@@ -68,7 +71,7 @@ export const ProfileImage = ({
             fill
             priority={true}
             sizes="144px"
-            src={isImageLoaded ? previewImage : ''}
+            src={isImageLoaded ? previewImage : defaultImage}
           />
         </div>
         <label

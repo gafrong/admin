@@ -20,13 +20,36 @@ import axios from 'axios'
 import { useSession } from 'next-auth/react'
 import * as React from 'react'
 import { useForm } from 'react-hook-form'
+import { z } from 'zod'
 import { FormTextInputs } from '../_components/form-text-inputs'
-import { formGeneralSchema } from './form-general-schema'
+import { convertBase64ToFile } from '../_components/image'
+
+export const formGeneralSchema = z.object({
+  brand: z.string(),
+  brandDescription: z.string(),
+  confirmPassword: z.string().optional(),
+  email: z.string().email(),
+  link: z.string().optional(),
+  name: z.string(),
+  password: z.string().optional(),
+  username: z.string(),
+})
+
+const errorMessages = {
+  password: {
+    type: 'manual',
+    message: 'Passwords do not match.',
+  },
+  username: {
+    type: 'manual',
+    message: 'Username is already taken.',
+  },
+}
 
 const fields = [
   {
-    autocomplete: 'name',
-    label: 'First name*',
+    autocomplete: 'nope',
+    label: 'Name*',
     name: 'name',
     type: 'text',
     // placeholder: 'John Doe',
@@ -54,29 +77,23 @@ const fields = [
     name: 'brand',
     type: 'text',
   },
+  {
+    label: 'Email*',
+    name: 'email',
+    type: 'email',
+  },
+  {
+    autocomplete: 'new-password',
+    label: 'Password',
+    name: 'password',
+    type: 'password',
+  },
+  {
+    label: 'Confirm Password*',
+    name: 'confirmPassword',
+    type: 'password',
+  },
 ]
-
-const convertBase64ToFile = (imageBase64) => {
-  // Convert image base64 string to a Blob
-  // a blob is the same as a file, which is what the backend expects.
-  // the base64 image is needed for previewing the image in the browser.
-
-  const isBase64 = /^data:image\/[a-zA-Z+]*;base64,/.test(imageBase64)
-  if (!isBase64) {
-    console.error('convertBase64ToFile(): Invalid base64 string')
-    return false
-  }
-
-  const byteString = atob(imageBase64.split(',')[1])
-  const mimeString = imageBase64.split(',')[0].split(':')[1].split(';')[0]
-  const ab = new ArrayBuffer(byteString.length)
-  const ia = new Uint8Array(ab)
-  for (let i = 0; i < byteString.length; i++) {
-    ia[i] = byteString.charCodeAt(i)
-  }
-  const blob = new Blob([ab], { type: mimeString })
-  return blob
-}
 
 const fallbackImage =
   'https://voutiq-app.s3.ap-northeast-2.amazonaws.com/000SiteImages/profile.png'
@@ -86,34 +103,6 @@ export function FormGeneral() {
   const { token, user } = session || {}
   const [previewImage, setPreviewImage] = React.useState(fallbackImage) // New state for the preview image
   let isInitialImageLoaded
-
-  const validateUsername = (username) => {
-    return new Promise((resolve, reject) => {
-      const URL = `${baseURL}vendor/validate-username/${username}`
-      const headers = {
-        Authorization: `Bearer ${token}`,
-      }
-      const body = {
-        userId: user._id, // assuming user._id contains the current user's ID
-      }
-      if (!token) {
-        console.error('validateUsername() No token found')
-        reject('No token found')
-        return
-      }
-
-      axios
-        .post(URL, body, { headers })
-        .then((response) => {
-          const isValid = Boolean(response.data?.valid)
-          resolve(isValid)
-        })
-        .catch((error) => {
-          console.error('Error:', error)
-          reject(error)
-        })
-    })
-  }
 
   React.useEffect(() => {
     if (session?.user?.image && !isInitialImageLoaded) {
@@ -125,58 +114,73 @@ export function FormGeneral() {
   const form = useForm({
     resolver: zodResolver(formGeneralSchema),
     defaultValues: {
-      name: '',
-      username: '',
-      brandDescription: '',
-      link: '',
       brand: '',
+      brandDescription: '',
+      confirmPassword: '',
+      email: '',
+      link: '',
+      name: '',
+      password: '',
+      username: '',
     },
   })
 
   // Pre-fill form data on page refresh
   React.useEffect(() => {
     if (!user) {
-      console.error('No user found')
+      console.log('No user found')
       return
+    } else {
+      console.log('Found user')
     }
     form.reset({
-      name: user?.name || '',
-      username: user?.username || '',
-      brandDescription: user?.brandDescription || '',
-      link: user?.link && user?.link !== 'undefined' ? user?.link : '',
       brand: user?.brand || '',
+      brandDescription: user?.brandDescription || '',
+      confirmPassword: '',
+      email: user?.email || '',
+      link: user?.link && user?.link !== 'undefined' ? user?.link : '',
+      name: user?.name || '',
+      password: '',
+      username: user?.username || '',
     })
   }, [user, form])
 
   const onSubmit = async (data) => {
-    const isValid = await validateUsername(data.username)
-    if (!isValid) {
-      console.error('Username is not valid.')
-      form.setError('username', {
-        type: 'manual',
-        message: 'Username is already taken.',
-      })
+    // Validate the data
+    const { username } = data
+    if (validatePasswordEntered({ data, form })) {
+      form.setError('confirmPassword', errorMessages.password)
       return
     }
-    const URL_ENDPOINT = `${baseURL}vendor/profile-form/general`
-    const headers = {
-      Authorization: `Bearer ${token}`,
+    const isValidUsername = await validateUsername({
+      token,
+      user,
+      username,
+    })
+    if (!isValidUsername) {
+      form.setError('username', errorMessages.username)
+      return
     }
     if (!token) {
       console.error('FormGeneral() No token found')
       return
     }
 
+    const URL_ENDPOINT = `${baseURL}vendor/profile-form/general`
+    const headers = {
+      Authorization: `Bearer ${token}`,
+    }
     const image = convertBase64ToFile(previewImage)
-
     const formData = new FormData()
     image && formData.append('image', image)
-    console.log('image::', image)
     formData.append('brand', data.brand)
+    formData.append('brandDescription', data.brandDescription)
+    formData.append('email', data.email)
     formData.append('link', data.link)
     formData.append('name', data.name)
-    formData.append('brandDescription', data.brandDescription)
+    formData.append('password', data.password)
     formData.append('username', data.username)
+
     axios
       .patch(URL_ENDPOINT, formData, { headers: headers })
       .then(async (response) => {
@@ -191,10 +195,7 @@ export function FormGeneral() {
             name: updatedUser?.name,
             username: updatedUser?.username,
             brandDescription: updatedUser?.brandDescription,
-            link:
-              updatedUser?.link && updatedUser?.link !== 'undefined' ?
-                updatedUser?.link
-              : '',
+            link: validateLink(updatedUser) ? updatedUser?.link : '',
             brand: updatedUser?.brand,
           },
         })
@@ -217,8 +218,8 @@ export function FormGeneral() {
       <CardContent className="">
         <Form {...form}>
           <form
-            onSubmit={form.handleSubmit(onSubmit)}
             className="mt-6 flex flex-col gap-6"
+            onSubmit={form.handleSubmit(onSubmit)}
           >
             <ProfileImage
               form={form}
@@ -241,4 +242,42 @@ export function FormGeneral() {
       </CardContent>
     </Card>
   )
+}
+
+function validateLink(updatedUser) {
+  return updatedUser?.link && updatedUser?.link !== 'undefined'
+}
+
+function validatePasswordEntered({ data, form }) {
+  data.password !== data.confirmPassword &&
+    form.formState.dirtyFields.password &&
+    data.password.trim().length < 6
+}
+
+function validateUsername({ username, token, user }) {
+  return new Promise((resolve, reject) => {
+    const URL_USERNAME = `${baseURL}vendor/validate-username/${username}`
+    const headers = {
+      Authorization: `Bearer ${token}`,
+    }
+    const body = {
+      userId: user._id, // assuming user._id contains the current user's ID
+    }
+    if (!token) {
+      console.error('validateUsername() No token found')
+      reject('No token found')
+      return
+    }
+
+    axios
+      .post(URL_USERNAME, body, { headers })
+      .then((response) => {
+        const isValid = Boolean(response.data?.valid)
+        resolve(isValid)
+      })
+      .catch((error) => {
+        console.error('Validate Username Error:', error)
+        reject(error)
+      })
+  })
 }
