@@ -15,12 +15,6 @@ import { format } from 'date-fns'
 import React from 'react'
 import { CardTitleDescription } from '../../_components/card-title-description'
 
-// <BankHistory
-//   token={token}
-//   vendor={vendor}
-//   isBankHistory={isBankHistory}
-// />
-
 export function BankHistoryTable({ bankHistory }) {
   return (
     <>
