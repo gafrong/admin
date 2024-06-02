@@ -48,7 +48,7 @@ const errorMessages = {
 
 const fields = [
   {
-    autocomplete: 'nope',
+    // autocomplete: 'nope',
     label: 'Name*',
     name: 'name',
     type: 'text',
@@ -89,6 +89,8 @@ const fields = [
     type: 'password',
   },
   {
+    autocomplete: 'new-password',
+
     label: 'Confirm Password*',
     name: 'confirmPassword',
     type: 'password',
