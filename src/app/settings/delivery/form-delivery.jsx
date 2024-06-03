@@ -3,7 +3,7 @@
 import { useFetchAuth } from '@/app/fetch/use-fetch-auth'
 import baseURL from '@/assets/common/baseUrl'
 import { Button } from '@/components/ui/button'
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { Card, CardContent } from '@/components/ui/card'
 import { Form } from '@/components/ui/form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import axios from 'axios'
@@ -113,7 +113,7 @@ export function FormDelivery() {
           </div>
         </Card>
 
-        <Card className="mt-10">
+        <Card className="mx-auto mt-10 max-w-screen-xl px-6 pt-0">
           <CardTitleDescription
             title="Goods Flow Registration"
             description="굿스플로 송장출력 서비스 및 반품 택배 자동 수거 서비스를 이용할 수 있습니다. 

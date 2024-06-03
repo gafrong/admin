@@ -1,13 +1,18 @@
 'use client'
 
 import { useFetchAuth } from '@/app/fetch/use-fetch-auth'
-import awsURL from '@/assets/common/awsUrl'
 import baseURL from '@/assets/common/baseUrl'
 import LoadingSpinner from '@/components/LoadingSpinner'
-import { ProfileImage } from '@/components/typography/ProfileImage'
 import { Button } from '@/components/ui/button'
-import { Card, CardContent } from '@/components/ui/card'
+import { Card, CardContent, CardDescription } from '@/components/ui/card'
 import { Form } from '@/components/ui/form'
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableRow,
+} from '@/components/ui/table'
 import { zodResolver } from '@hookform/resolvers/zod'
 import axios from 'axios'
 import { useSession } from 'next-auth/react'
@@ -16,7 +21,10 @@ import { useForm } from 'react-hook-form'
 import { z } from 'zod'
 import { CardTitleDescription } from '../_components/card-title-description'
 import { FormTextInputs } from '../_components/form-text-inputs'
-import { convertBase64ToFile } from '../_components/image'
+import { BankHistory } from './_components/bank-history'
+import { BusinessRegistrationDocument } from './_components/business-registration-document'
+import { DebuggingTools } from './_components/debug'
+import { DocumentHistory } from './_components/document-history'
 
 export const formFinanceSchema = z.object({
   bankName: z.string().min(1, { message: 'Required' }), // if you need a custom message
@@ -25,7 +33,7 @@ export const formFinanceSchema = z.object({
   image: z.any(), // You might want to add more specific validation for the image
 })
 
-const fields = [
+const bankFields = [
   {
     label: 'Bank Name',
     name: 'bankName',
@@ -48,9 +56,7 @@ export function FormBusiness() {
   const { token, user } = session || {}
   const userId = user?._id
   const url = userId ? `vendor/user-id/${userId}` : null
-  const { data: vendor, isLoading: isLoadingAuth } = useFetchAuth(url)
-  const [previewImage, setPreviewImage] = React.useState(null)
-  let isInitialImageLoaded
+  const { data: vendor, isLoading: isLoadingAuth, mutate } = useFetchAuth(url)
 
   const form = useForm({
     resolver: zodResolver(formFinanceSchema), // You need to create this schema
@@ -61,93 +67,149 @@ export function FormBusiness() {
     },
   })
 
-  // Pre-fill image on page refresh
-  React.useEffect(() => {
-    if (vendor?.document && !isInitialImageLoaded) {
-      setPreviewImage(awsURL + vendor.document)
-      isInitialImageLoaded = true
-    }
-  }, [session, vendor])
-
   // Pre-fill form data on page refresh
   React.useEffect(() => {
-    if (!vendor?.bank) {
+    const bankData =
+      vendor?.isPendingBank ? vendor?.pending?.bank : vendor?.bank
+    if (!bankData) {
       return
     }
-    const {
-      bank: { bankName, accountNumber, accountName },
-    } = vendor
+    const { bankName, accountNumber, accountName } = bankData
     form.reset({
       accountName: accountName || '',
       accountNumber: `${accountNumber}` || '',
       bankName: bankName || '',
     })
-  }, [vendor, form])
+  }, [vendor, form, vendor?.isPendingBank])
 
-  const onSubmit = async (data) => {
-    const URL_ENDPOINT = `${baseURL}vendor/profile-form/business`
+  const isLoading =
+    isLoadingAuth || status === 'loading' || form.formState.isSubmitting
+
+  // First form submit handler
+  const onSubmitBank = async (data) => {
+    console.log('data', data)
+    const URL_ENDPOINT = `${baseURL}vendor/profile-form/bank`
     const headers = {
+      'Content-Type': 'application/json',
       Authorization: `Bearer ${token}`,
     }
-    const image = convertBase64ToFile(previewImage)
     const formData = new FormData()
-    image && formData.append('document', image)
     formData.append('bankName', data.bankName)
     formData.append('accountNumber', `${data.accountNumber}`) // account number should be a string
     formData.append('accountName', data.accountName)
-
+    console.log(
+      'formData',
+      formData.get('bankName'),
+      formData.get('accountNumber'),
+      formData.get('accountName'),
+    )
+    const formValues = formatData(formData)
     try {
-      const response = await axios.patch(URL_ENDPOINT, formData, { headers })
+      const response = await axios.patch(URL_ENDPOINT, formValues, { headers })
 
       if (response.status !== 200) {
         throw new Error('Error updating vendor')
       }
 
       const updatedVendor = response.data
-      console.log('Success:', updatedVendor)
+      console.log('Success submit pending bank account:', updatedVendor)
+      mutate()
     } catch (error) {
       console.error('Error:', error)
     }
   }
-  const isLoading =
-    isLoadingAuth || status === 'loading' || form.formState.isSubmitting
 
   return (
-    <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)}>
-        <Card className="relative mx-auto max-w-screen-xl p-6">
-          {isLoading && (
-            <LoadingSpinner className="absolute inset-0 flex h-full items-center justify-center bg-black bg-opacity-5" />
-          )}
+    <>
+      <Form {...form}>
+        <Card className="relative mx-auto max-w-screen-xl p-6 pt-0">
           <CardTitleDescription
             title="Business Information"
             description="정산 계좌 변경은 ‘정보 변경 신청 메뉴에서 서류 제출이 필요합니다.
           Request Information Change"
           />
-          <CardContent className="mt-6 flex flex-col gap-6">
-            <FormTextInputs fields={fields} form={form} />
-          </CardContent>
 
-          <CardTitleDescription
-            title="Business Registration"
-            description="Request Business Registration Change"
-          />
-          <CardContent className="my-6">
-            <ProfileImage
-              form={form}
-              // type="docs"
-              previewImage={previewImage}
-              setPreviewImage={setPreviewImage}
-            />
-          </CardContent>
+          <CurrentBankDetailsTable vendor={vendor} />
 
-          <div>
-            <Button type="submit" className="ml-44">
-              Save
-            </Button>
-          </div>
+          <form onSubmit={form.handleSubmit(onSubmitBank)}>
+            {isLoading && (
+              <LoadingSpinner className="absolute inset-0 flex h-full items-center justify-center bg-black bg-opacity-5" />
+            )}
+
+            <CardDescription className="pl-6 pt-6">
+              {vendor?.isPendingBank ? 'Pending Bank Details' : 'Bank Details'}
+            </CardDescription>
+            <CardContent className="mt-6 flex flex-col gap-6">
+              <FormTextInputs fields={bankFields} form={form} />
+            </CardContent>
+            <div>
+              <Button type="submit" className="ml-6">
+                Save
+              </Button>
+            </div>
+          </form>
         </Card>
-      </form>
-    </Form>
+
+        <BusinessRegistrationDocument
+          form={form}
+          isLoading={isLoading}
+          mutate={mutate}
+          token={token}
+          vendor={vendor}
+        />
+      </Form>
+
+      <BankHistory token={token} vendor={vendor} />
+
+      <DocumentHistory userId={userId} token={token} />
+
+      <DebuggingTools mutate={mutate} token={token} userId={userId} />
+
+      {/* <pre>{JSON.stringify(vendor, null, 2)}</pre> */}
+    </>
+  )
+}
+
+function formatData(formData) {
+  return {
+    bankName: formData.get('bankName'),
+    accountNumber: formData.get('accountNumber'),
+    accountName: formData.get('accountName'),
+  }
+}
+
+export function CurrentBankDetailsTable({ vendor }) {
+  if (!vendor) return null
+  const bank = vendor.bank
+  if (!vendor?.bank || !vendor?.isPendingBank) return null
+
+  const bankDetails = [
+    {
+      item: 'Bank',
+      value: bank.bankName,
+    },
+    {
+      item: 'Account Name',
+      value: bank.accountName,
+    },
+    {
+      item: 'Account Number',
+      value: bank.accountNumber,
+    },
+  ]
+  return (
+    <div className="p-6">
+      <CardDescription className="pb-6">Current Bank Details</CardDescription>
+      <Table className="">
+        <TableBody>
+          {bankDetails.map((bankDetail) => (
+            <TableRow key={bankDetail.item}>
+              <TableHead className="font-medium">{bankDetail.item}</TableHead>
+              <TableCell>{bankDetail.value}</TableCell>
+            </TableRow>
+          ))}
+        </TableBody>
+      </Table>
+    </div>
   )
 }
