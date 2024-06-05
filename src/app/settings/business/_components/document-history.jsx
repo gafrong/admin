@@ -1,5 +1,4 @@
 import awsURL from '@/assets/common/awsUrl'
-import baseURL from '@/assets/common/baseUrl'
 import { Card } from '@/components/ui/card'
 import {
   Table,
@@ -9,11 +8,14 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table'
-import axios from 'axios'
 import { format } from 'date-fns'
 import Image from 'next/image'
 import React from 'react'
 import { CardTitleDescription } from '../../_components/card-title-description'
+
+function ifDate(date, msg = 'no date') {
+  return date ? format(new Date(date), 'dd/MM/yyyy') : msg
+}
 
 export function DocumentHistoryTable({ documentHistory }) {
   return (
@@ -22,8 +24,9 @@ export function DocumentHistoryTable({ documentHistory }) {
         <TableHeader>
           <TableRow>
             <TableHead>Image</TableHead>
-            <TableHead>Document path</TableHead>
-            <TableHead>Upload Date</TableHead>
+            {/* <TableHead>Document path</TableHead> */}
+            <TableHead>Uploaded Date</TableHead>
+            <TableHead>Approved Date</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
@@ -37,14 +40,13 @@ export function DocumentHistoryTable({ documentHistory }) {
                     fill
                     sizes="144px"
                     priority={true}
-                    src={`${awsURL}${history.document}`}
+                    src={`${awsURL}${history.s3Key}`}
                   />
                 </div>
               </TableCell>
-              <TableCell>{history.document}</TableCell>
-              <TableCell>
-                {format(new Date(history.updatedAt), 'dd/MM/yyyy')}
-              </TableCell>
+              {/* <TableCell>{history.s3Key}</TableCell> */}
+              <TableCell>{ifDate(history.uploadedAt)}</TableCell>
+              <TableCell>{ifDate(history.approvedAt)}</TableCell>
             </TableRow>
           ))}
         </TableBody>
@@ -53,30 +55,7 @@ export function DocumentHistoryTable({ documentHistory }) {
   )
 }
 
-export const DocumentHistory = ({ userId, token }) => {
-  const [documentHistory, setDocumentHistory] = React.useState([])
-  const URL_ENDPOINT = `${baseURL}vendor/document-history/${userId}`
-  const headers = { Authorization: `Bearer ${token}` }
-
-  React.useEffect(() => {
-    const fetchDocumentHistory = async () => {
-      try {
-        const res = await axios.get(URL_ENDPOINT, { headers })
-        setDocumentHistory(res.data.documentHistory)
-      } catch (err) {
-        console.error(err)
-      }
-    }
-
-    userId && fetchDocumentHistory()
-  }, [userId, token])
-
-  if (!userId) {
-    console.log('userId is undefined')
-    return
-  }
-  console.log('userId is defined')
-
+export const DocumentHistory = ({ documentHistory = [] }) => {
   if (documentHistory.length === 0) {
     return null
   }
@@ -89,10 +68,7 @@ export const DocumentHistory = ({ userId, token }) => {
           description="History of changes made to the documents"
         />
         <div className="p-6">
-          <DocumentHistoryTable
-            documentHistory={documentHistory}
-            token={token}
-          />
+          <DocumentHistoryTable documentHistory={documentHistory} />
         </div>
       </div>
     </Card>

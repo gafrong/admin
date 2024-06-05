@@ -126,7 +126,39 @@ export function DEBUG_DeleteBankHistory({ token, mutate, userId }) {
   )
 }
 
-export function DebuggingTools({ mutate, token, userId }) {
+export function DEBUG_DeleteDocumentHistory({ token, mutate, userId }) {
+  const [isLoading, setIsLoading] = React.useState(false)
+
+  const deleteDocumentHistory = async () => {
+    setIsLoading(true)
+    const URL_ENDPOINT = `${baseURL}vendor/document-history/${userId}`
+    const headers = {
+      Authorization: `Bearer ${token}`,
+    }
+    try {
+      const response = await axios.delete(URL_ENDPOINT, { headers })
+      if (response.status === 200) {
+        alert('Document history deleted successfully')
+        mutate()
+      }
+    } catch (error) {
+      console.error('Error deleting document history', error)
+    } finally {
+      setIsLoading(false)
+    }
+  }
+
+  return (
+    <Button variant="destructive" onClick={deleteDocumentHistory}>
+      Delete Document History
+      {isLoading ?
+        <LoadingSpinnerButton />
+      : ''}
+    </Button>
+  )
+}
+
+export function DebuggingTools({ refetchVendor, token, userId }) {
   const isDevelopment = process.env.NODE_ENV === 'development'
   if (!isDevelopment) return null
   return (
@@ -137,22 +169,27 @@ export function DebuggingTools({ mutate, token, userId }) {
       />
       <div className="flex flex-wrap gap-6 p-6">
         <DEBUG_DeletePendingAccount
-          mutate={mutate}
+          mutate={refetchVendor}
           token={token}
           userId={userId}
         />
         <DEBUG_DeleteBankHistory
-          mutate={mutate}
+          mutate={refetchVendor}
+          token={token}
+          userId={userId}
+        />
+        <DEBUG_DeleteDocumentHistory
+          mutate={refetchVendor}
           token={token}
           userId={userId}
         />
         <DEBUG_PromotePendingAccount
-          mutate={mutate}
+          mutate={refetchVendor}
           token={token}
           userId={userId}
         />
         <DEBUG_PromotePendingDocument
-          mutate={mutate}
+          mutate={refetchVendor}
           token={token}
           userId={userId}
         />

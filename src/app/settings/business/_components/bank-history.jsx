@@ -15,6 +15,9 @@ import { format } from 'date-fns'
 import React from 'react'
 import { CardTitleDescription } from '../../_components/card-title-description'
 
+function ifDate(date, msg = '') {
+  return date ? format(new Date(date), 'dd/MM/yyyy') : msg
+}
 export function BankHistoryTable({ bankHistory }) {
   return (
     <>
@@ -33,9 +36,8 @@ export function BankHistoryTable({ bankHistory }) {
               <TableCell>{history.bankName}</TableCell>
               <TableCell>{history.accountName}</TableCell>
               <TableCell>{history.accountNumber}</TableCell>
-              <TableCell>
-                {format(new Date(history.updatedAt), 'dd/MM/yyyy')}
-              </TableCell>
+              <TableCell>{ifDate(history.uploadedAt)}</TableCell>
+              <TableCell>{ifDate(history.approvedAt)}</TableCell>
             </TableRow>
           ))}
         </TableBody>
@@ -44,8 +46,8 @@ export function BankHistoryTable({ bankHistory }) {
   )
 }
 
-export function BankHistory({ token, vendor }) {
-  const isBankHistory = vendor?.bankHistory && vendor?.bankHistory.length > 0
+export function BankHistory({ bankHistory }) {
+  const isBankHistory = bankHistory && bankHistory.length > 0
   if (!isBankHistory) {
     return null
   }
@@ -57,7 +59,7 @@ export function BankHistory({ token, vendor }) {
           description="History of changes made to the bank account"
         />
         <div className="p-6">
-          <BankHistoryTable bankHistory={vendor.bankHistory} token={token} />
+          <BankHistoryTable bankHistory={bankHistory} />
         </div>
       </div>
     </Card>

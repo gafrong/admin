@@ -56,7 +56,11 @@ export function FormBusiness() {
   const { token, user } = session || {}
   const userId = user?._id
   const url = userId ? `vendor/user-id/${userId}` : null
-  const { data: vendor, isLoading: isLoadingAuth, mutate } = useFetchAuth(url)
+  const {
+    data: vendor,
+    isLoading: isLoadingAuth,
+    mutate: refetchVendor,
+  } = useFetchAuth(url)
 
   const form = useForm({
     resolver: zodResolver(formFinanceSchema), // You need to create this schema
@@ -97,12 +101,6 @@ export function FormBusiness() {
     formData.append('bankName', data.bankName)
     formData.append('accountNumber', `${data.accountNumber}`) // account number should be a string
     formData.append('accountName', data.accountName)
-    console.log(
-      'formData',
-      formData.get('bankName'),
-      formData.get('accountNumber'),
-      formData.get('accountName'),
-    )
     const formValues = formatData(formData)
     try {
       const response = await axios.patch(URL_ENDPOINT, formValues, { headers })
@@ -111,9 +109,7 @@ export function FormBusiness() {
         throw new Error('Error updating vendor')
       }
 
-      const updatedVendor = response.data
-      console.log('Success submit pending bank account:', updatedVendor)
-      mutate()
+      refetchVendor()
     } catch (error) {
       console.error('Error:', error)
     }
@@ -129,41 +125,57 @@ export function FormBusiness() {
           Request Information Change"
           />
 
-          <CurrentBankDetailsTable vendor={vendor} />
+          {vendor?.isPendingBank ?
+            <>
+              <BankDetailsTable
+                bank={vendor?.bank}
+                title="Current Bank Details"
+              />
 
-          <form onSubmit={form.handleSubmit(onSubmitBank)}>
-            {isLoading && (
-              <LoadingSpinner className="absolute inset-0 flex h-full items-center justify-center bg-black bg-opacity-5" />
-            )}
+              <BankDetailsTable
+                bank={vendor?.pending?.bank}
+                title="Pending Bank Details"
+              />
+            </>
+          : <form onSubmit={form.handleSubmit(onSubmitBank)}>
+              {isLoading && (
+                <LoadingSpinner className="absolute inset-0 flex h-full items-center justify-center bg-black bg-opacity-5" />
+              )}
 
-            <CardDescription className="pl-6 pt-6">
-              {vendor?.isPendingBank ? 'Pending Bank Details' : 'Bank Details'}
-            </CardDescription>
-            <CardContent className="mt-6 flex flex-col gap-6">
-              <FormTextInputs fields={bankFields} form={form} />
-            </CardContent>
-            <div>
-              <Button type="submit" className="ml-6">
-                Save
-              </Button>
-            </div>
-          </form>
+              <CardDescription className="pl-6 pt-6">
+                Bank Details
+              </CardDescription>
+              <CardContent className="mt-6 flex flex-col gap-6">
+                <FormTextInputs fields={bankFields} form={form} />
+              </CardContent>
+
+              <div>
+                <Button type="submit" className="ml-6">
+                  Save
+                </Button>
+              </div>
+            </form>
+          }
         </Card>
 
         <BusinessRegistrationDocument
           form={form}
           isLoading={isLoading}
-          mutate={mutate}
+          refetchVendor={refetchVendor}
           token={token}
           vendor={vendor}
         />
       </Form>
 
-      <BankHistory token={token} vendor={vendor} />
+      <BankHistory bankHistory={vendor?.bankHistory} />
 
-      <DocumentHistory userId={userId} token={token} />
+      <DocumentHistory documentHistory={vendor?.documentHistory} />
 
-      <DebuggingTools mutate={mutate} token={token} userId={userId} />
+      <DebuggingTools
+        refetchVendor={refetchVendor}
+        token={token}
+        userId={userId}
+      />
 
       {/* <pre>{JSON.stringify(vendor, null, 2)}</pre> */}
     </>
@@ -177,11 +189,8 @@ function formatData(formData) {
     accountName: formData.get('accountName'),
   }
 }
-
-export function CurrentBankDetailsTable({ vendor }) {
-  if (!vendor) return null
-  const bank = vendor.bank
-  if (!vendor?.bank || !vendor?.isPendingBank) return null
+export function BankDetailsTable({ bank, title }) {
+  if (!bank) return null
 
   const bankDetails = [
     {
@@ -197,9 +206,10 @@ export function CurrentBankDetailsTable({ vendor }) {
       value: bank.accountNumber,
     },
   ]
+
   return (
     <div className="p-6">
-      <CardDescription className="pb-6">Current Bank Details</CardDescription>
+      <CardDescription className="pb-6">{title}</CardDescription>
       <Table className="">
         <TableBody>
           {bankDetails.map((bankDetail) => (

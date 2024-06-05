@@ -11,22 +11,22 @@ import Image from 'next/image'
 import React from 'react'
 import { CardTitleDescription } from '../../_components/card-title-description'
 import { convertBase64ToFile } from '../../_components/image'
+import { ImageZoomDialog } from './image-zoom-dialog'
 
 function PendingDocument({ vendor }) {
-  if (!vendor?.pending?.document) return null
-
+  if (!vendor?.pending?.document?.s3Key) return null
+  const imageSrc = `${awsURL}${vendor.pending.document.s3Key}`
   return (
-    <div>
-      <CardDescription className="pb-6">
-        New document pending approval
-      </CardDescription>
+    <div className="flex flex-col gap-6">
+      <CardDescription>New document</CardDescription>
       <Image
         alt="document image"
         className="h-auto object-cover"
         height={144}
-        src={`${awsURL}${vendor.pending.document}`}
+        src={imageSrc}
         width={144}
       />
+      <ImageZoomDialog documentImage={imageSrc} altText={'altText'} />
     </div>
   )
 }
@@ -34,12 +34,17 @@ function PendingDocument({ vendor }) {
 export function BusinessRegistrationDocument({
   form,
   isLoading,
-  mutate,
+  refetchVendor,
   token,
   vendor,
 }) {
   const [previewImage, setPreviewImage] = React.useState(null)
-  const [isInitialImageLoaded, setIsInitialImageLoaded] = React.useState(false)
+
+  React.useEffect(() => {
+    if (vendor?.document?.s3Key) {
+      setPreviewImage(awsURL + vendor.document.s3Key)
+    }
+  }, [vendor?.document?.s3Key])
 
   // Second form submit handler
   const onSubmitDocument = async (data) => {
@@ -50,27 +55,19 @@ export function BusinessRegistrationDocument({
     const image = convertBase64ToFile(previewImage)
     const formData = new FormData()
     image && formData.append('document', image)
-
     try {
       const response = await axios.patch(URL_ENDPOINT, formData, { headers })
 
       if (response.status !== 200) {
         throw new Error('Error updating vendor')
       }
-      mutate()
-      setPreviewImage(awsURL + vendor.document)
+
+      const updatedVendor = await refetchVendor()
+      setPreviewImage(awsURL + updatedVendor.document.s3Key)
     } catch (error) {
       console.error('Error:', error)
     }
   }
-
-  // Pre-fill image on page refresh
-  React.useEffect(() => {
-    if (vendor?.document && !isInitialImageLoaded) {
-      setPreviewImage(awsURL + vendor.document)
-      setIsInitialImageLoaded(true)
-    }
-  }, [vendor?.document, isInitialImageLoaded])
 
   return (
     <Card className="relative mx-auto mt-10 max-w-screen-xl p-6 pt-0">
@@ -85,15 +82,17 @@ export function BusinessRegistrationDocument({
         />
         <CardContent className="my-6">
           <div className="flex gap-12">
-            <div>
-              <CardDescription className="pb-6">
-                Current document
-              </CardDescription>
+            <div className="flex flex-col gap-6">
+              <CardDescription>Current document</CardDescription>
               <ProfileImage
                 form={form}
                 // type="docs"
                 previewImage={previewImage}
                 setPreviewImage={setPreviewImage}
+              />
+              <ImageZoomDialog
+                documentImage={previewImage}
+                altText={'altText'}
               />
             </div>
 
