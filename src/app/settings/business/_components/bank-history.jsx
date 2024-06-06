@@ -21,13 +21,15 @@ function ifDate(date, msg = '') {
 export function BankHistoryTable({ bankHistory }) {
   return (
     <>
+      {/* <pre>{JSON.stringify(bankHistory, null, 2)}</pre> */}
       <Table className="">
         <TableHeader>
           <TableRow>
             <TableHead>Bank</TableHead>
             <TableHead>Account Name</TableHead>
             <TableHead>Account Number</TableHead>
-            <TableHead>Date</TableHead>
+            <TableHead>Date uploaded</TableHead>
+            <TableHead>Date approved</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>

@@ -102,6 +102,21 @@ export function FormBusiness() {
     formData.append('accountNumber', `${data.accountNumber}`) // account number should be a string
     formData.append('accountName', data.accountName)
     const formValues = formatData(formData)
+
+    // Check if new data is the same as previous data
+    // const bankData = vendor?.bank
+
+    // leave duplicate check for now
+    // const errorConfig = {
+    //   type: 'manual',
+    //   message: 'Bank details are identical to previous.',
+    // }
+    // if (bankData && JSON.stringify(formValues) === JSON.stringify(bankData)) {
+    //   form.setError('bankName', errorConfig)
+    //   form.setError('accountName', errorConfig)
+    //   form.setError('accountNumber', errorConfig)
+    //   return
+    // }
     try {
       const response = await axios.patch(URL_ENDPOINT, formValues, { headers })
 
