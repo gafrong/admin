@@ -45,7 +45,7 @@ export function DEBUG_PromotePendingAccount({ token, mutate, userId }) {
   const promotePendingBank = async () => {
     setIsLoading(true)
     console.log('Promoting pending bank account')
-    const URL_ENDPOINT = `${baseURL}vendor/bank-account/pending/${userId}/promote`
+    const URL_ENDPOINT = `${baseURL}vendor/bank-account/pending/${userId}/approve`
     const headers = { Authorization: `Bearer ${token}` }
     try {
       const response = await axios.patch(URL_ENDPOINT, {}, { headers }) // assuming the request type is POST
@@ -73,7 +73,7 @@ export function DEBUG_PromotePendingDocument({ token, mutate, userId }) {
   const promotePendingDocument = async () => {
     setIsLoading(true)
     console.log('Promoting pending document')
-    const URL_ENDPOINT = `${baseURL}vendor/document/pending/${userId}/promote`
+    const URL_ENDPOINT = `${baseURL}vendor/document/pending/${userId}/approve`
     const headers = { Authorization: `Bearer ${token}` }
     try {
       const response = await axios.patch(URL_ENDPOINT, {}, { headers })
