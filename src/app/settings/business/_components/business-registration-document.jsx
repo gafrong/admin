@@ -39,6 +39,7 @@ export function BusinessRegistrationDocument({
   vendor,
 }) {
   const [previewImage, setPreviewImage] = React.useState(null)
+  const [newImageSelected, setNewImageSelected] = React.useState(false)
 
   React.useEffect(() => {
     if (vendor?.document?.s3Key) {
@@ -48,6 +49,10 @@ export function BusinessRegistrationDocument({
 
   // Second form submit handler
   const onSubmitDocument = async (data) => {
+    if (!newImageSelected) {
+      console.error('No new document selected')
+      return
+    }
     const URL_ENDPOINT = `${baseURL}vendor/profile-form/registration-document`
     const headers = {
       Authorization: `Bearer ${token}`,
@@ -88,7 +93,10 @@ export function BusinessRegistrationDocument({
                 form={form}
                 // type="docs"
                 previewImage={previewImage}
-                setPreviewImage={setPreviewImage}
+                setPreviewImage={(image) => {
+                  setPreviewImage(image)
+                  setNewImageSelected(true)
+                }}
               />
               <ImageZoomDialog
                 documentImage={previewImage}
