@@ -18,7 +18,7 @@ function PendingDocument({ vendor }) {
   const imageSrc = `${awsURL}${vendor.pending.document.s3Key}`
   return (
     <div className="flex flex-col gap-6">
-      <CardDescription>New document</CardDescription>
+      <CardDescription>Document pending approval</CardDescription>
       <Image
         alt="document image"
         className="h-auto object-cover"
