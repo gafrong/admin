@@ -1,5 +1,6 @@
 'use client'
 
+import { DEBUG_DeleteBankHistory } from '@/app/settings/business/_components/debug'
 import { DataCard } from '@/components/simple-table'
 import { format } from 'date-fns'
 import React from 'react'
@@ -35,6 +36,10 @@ export function BankHistory({ bankHistory }) {
       description="History of changes made to the bank account"
       headers={headers}
       title="Bank History"
-    />
+    >
+      <div className="m-6 my-12">
+        <DEBUG_DeleteBankHistory className="" />
+      </div>
+    </DataCard>
   )
 }
