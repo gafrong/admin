@@ -31,7 +31,7 @@ const srcDefaultImage =
 export const ProfileImageUpload = ({
   className = '',
   form,
-  type = 'profile', // new prop
+  type = 'profile', // 'profile` | 'document'
   previewImage = srcDefaultImage,
   setPreviewImage,
 }) => {
@@ -60,12 +60,18 @@ export const ProfileImageUpload = ({
   }
 
   const isImageLoaded = typeof previewImage === 'string'
+  const isProfileImage = type === 'profile'
+  const styleImage = isProfileImage ? 'rounded-full overflow-hidden' : ''
+  const styleUploadIcon =
+    isProfileImage ? 'bottom-1 right-1 ' : (
+      'bottom-0 right-0 translate-x-1/2 translate-y-1/2'
+    )
   return (
     <>
-      <div className={`relative ${className} h-36 w-36`}>
+      <div className={`relative ${className} h-36 w-36 `}>
         <Image
           alt={`${type} image`}
-          className={`h-36 w-36 object-cover object-center`}
+          className={`h-36 w-36 object-cover object-center ${styleImage}`}
           height={144}
           src={isImageLoaded ? previewImage : defaultImage}
           width={144}
@@ -73,7 +79,7 @@ export const ProfileImageUpload = ({
 
         <label
           htmlFor="upload"
-          className="absolute bottom-0 right-0 translate-x-1/2 translate-y-1/2 cursor-pointer rounded-full bg-slate-800 p-2 text-white"
+          className={`absolute ${styleUploadIcon} cursor-pointer rounded-full bg-slate-800 p-2 text-white`}
         >
           <FiCamera />
           <input
