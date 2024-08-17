@@ -5,7 +5,7 @@ import baseURL from '@/assets/common/baseUrl'
 import LoadingSpinner, {
   LoadingSpinnerButton,
 } from '@/components/LoadingSpinner'
-import { ProfileImage } from '@/components/typography/ProfileImage'
+import { ProfileImage } from '@/components/typography/ProfileImageUpload'
 import { Button } from '@/components/ui/button'
 import {
   Card,

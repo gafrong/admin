@@ -1,6 +1,5 @@
 'use client'
 
-import { cn } from '@/lib/utils'
 import Image from 'next/image'
 import React from 'react'
 import { FiCamera } from 'react-icons/fi'
@@ -23,7 +22,7 @@ const imageFileSchema = z.object({
     }),
 })
 
-const srcDefaultImageDocs =
+export const srcDefaultImageDocs =
   'https://voutiq-app.s3.ap-northeast-2.amazonaws.com/000SiteImages/docs.jpg'
 
 const srcDefaultImage =
@@ -38,6 +37,7 @@ export const ProfileImage = ({
 }) => {
   const defaultImage =
     type === 'profile' ? srcDefaultImage : srcDefaultImageDocs
+
   const handleImageChange = (e) => {
     form.clearErrors('image')
     const file = e.target.files[0]
@@ -60,23 +60,20 @@ export const ProfileImage = ({
   }
 
   const isImageLoaded = typeof previewImage === 'string'
-  const imageStyle = type === 'profile' ? 'h-36 w-36 rounded-full' : 'h-36 w-36'
   return (
     <>
-      <div className={cn('flex', className)}>
-        <div className={`relative ${imageStyle}`}>
-          <Image
-            alt={`${type} image`}
-            className="object-cover object-center"
-            fill
-            priority={true}
-            sizes="144px"
-            src={isImageLoaded ? previewImage : defaultImage}
-          />
-        </div>
+      <div className={`relative ${className} h-36 w-36`}>
+        <Image
+          alt={`${type} image`}
+          className={`h-36 w-36 object-cover object-center`}
+          height={144}
+          src={isImageLoaded ? previewImage : defaultImage}
+          width={144}
+        />
+
         <label
           htmlFor="upload"
-          className="absolute ml-[108px] cursor-pointer self-end rounded-full bg-slate-800 p-2 text-white"
+          className="absolute bottom-0 right-0 translate-x-1/2 translate-y-1/2 cursor-pointer rounded-full bg-slate-800 p-2 text-white"
         >
           <FiCamera />
           <input

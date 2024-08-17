@@ -3,7 +3,7 @@
 import awsURL from '@/assets/common/awsUrl'
 import baseURL from '@/assets/common/baseUrl'
 import LoadingSpinner from '@/components/LoadingSpinner'
-import { ProfileImage } from '@/components/typography/ProfileImage'
+import { ProfileImage } from '@/components/typography/ProfileImageUpload'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription } from '@/components/ui/card'
 import axios from 'axios'
@@ -21,7 +21,7 @@ function PendingDocument({ vendor }) {
       <CardDescription>Document pending approval</CardDescription>
       <Image
         alt="document image"
-        className="h-auto object-cover"
+        className="h-36 w-36 object-cover object-center"
         height={144}
         src={imageSrc}
         width={144}
