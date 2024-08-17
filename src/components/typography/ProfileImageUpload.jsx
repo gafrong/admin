@@ -28,7 +28,7 @@ export const srcDefaultImageDocs =
 const srcDefaultImage =
   'https://voutiq-app.s3.ap-northeast-2.amazonaws.com/000SiteImages/profile.png'
 
-export const ProfileImage = ({
+export const ProfileImageUpload = ({
   className = '',
   form,
   type = 'profile', // new prop

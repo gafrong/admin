@@ -3,7 +3,7 @@
 import awsURL from '@/assets/common/awsUrl'
 import baseURL from '@/assets/common/baseUrl'
 import LoadingSpinner from '@/components/LoadingSpinner'
-import { ProfileImage } from '@/components/typography/ProfileImageUpload'
+import { ProfileImageUpload } from '@/components/typography/ProfileImageUpload'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription } from '@/components/ui/card'
 import axios from 'axios'
@@ -89,9 +89,8 @@ export function BusinessRegistrationDocument({
           <div className="flex gap-12">
             <div className="flex flex-col gap-6">
               <CardDescription>Current document</CardDescription>
-              <ProfileImage
+              <ProfileImageUpload
                 form={form}
-                // type="docs"
                 previewImage={previewImage}
                 setPreviewImage={(image) => {
                   setPreviewImage(image)

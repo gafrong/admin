@@ -5,7 +5,7 @@ import baseURL from '@/assets/common/baseUrl'
 import LoadingSpinner, {
   LoadingSpinnerButton,
 } from '@/components/LoadingSpinner'
-import { ProfileImage } from '@/components/typography/ProfileImageUpload'
+import { ProfileImageUpload } from '@/components/typography/ProfileImageUpload'
 import { Button } from '@/components/ui/button'
 import {
   Card,
@@ -223,7 +223,7 @@ export function FormGeneral() {
             className="mt-6 flex flex-col gap-6"
             onSubmit={form.handleSubmit(onSubmit)}
           >
-            <ProfileImage
+            <ProfileImageUpload
               form={form}
               previewImage={previewImage}
               setPreviewImage={setPreviewImage}
