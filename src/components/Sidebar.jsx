@@ -16,6 +16,7 @@ import {
   FiHome,
   FiLayout,
   FiMessageCircle,
+  FiSettings,
   FiShoppingCart,
   FiUsers,
   FiVideo,
@@ -196,6 +197,32 @@ const Sidebar = () => {
           </AccordionContent>
         </AccordionItem>
       </Accordion>
+
+      <Accordion type="single" collapsible>
+        <AccordionItem value="item-1" className="block pl-5 pr-2 text-black">
+          <AccordionTrigger>
+            <div className="flex flex-row">
+              <FiSettings className="mr-2 mt-1" />
+              <div>Superuser</div>
+            </div>
+          </AccordionTrigger>
+          <AccordionContent>
+            <Link
+              href="/superuser/vendors"
+              className="flex flex-col pb-3 pl-3 pt-3 hover:bg-slate-200"
+            >
+              vendors
+            </Link>
+            <Link
+              href="/superuser/users"
+              className="flex flex-col pb-3 pl-3 pt-3 hover:bg-slate-200"
+            >
+              users
+            </Link>
+          </AccordionContent>
+        </AccordionItem>
+      </Accordion>
+
       <Accordion type="single" collapsible>
         <AccordionItem value="item-1" className="block pl-5 pr-2 text-black">
           <AccordionTrigger>
