@@ -10,32 +10,31 @@ export const useFetchAuth = (path) => {
   const vendorId = session?.user?._id
 
   const fetcher = async (url) => {
-    if (!token) {
-      console.error('useFetchAuth(): No token found, logging out', {
-        url,
-        token,
-        session,
-      })
+    console.log(`useFetchAuth(): ${token ? 'A' : 'No'} token found for ${url}`)
+    const headers = {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${token}`,
     }
-    const data = await axios
-      .get(url, {
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${token}`,
-        },
-      })
-      .then((res) => res.data)
-      .catch((error) => {
+    try {
+      const response = await axios.get(url, { headers })
+      console.log('useFetchAuth() url:', { url })
+      return response.data
+    } catch (error) {
+      if (error.response && error.response.status === 401) {
+        // TODO: Handle 401 Unauthorized error, e.g., redirect to login or refresh token
+        console.error('Authentication error. Please login again.')
+      } else {
         console.error('useFetchAuth() error:', { error, url })
-        return null
-      })
-
-    return data
+      }
+      return null
+    }
   }
 
-  // useFetchAuth() uses isLoading, useSession uses status === 'loading'
+  // useSWR() uses isLoading, useSession uses status === 'loading'
   // swr will not fetch if url is null, ie if token is not present
-  const { data, error, isLoading, mutate } = useSWR(url, fetcher)
+  const { data, error, isLoading, mutate } = useSWR(url, fetcher, {
+    revalidateOnFocus: false,
+  })
   if (error) {
     console.error('useFetchAuth() error:', { error, url })
   }
