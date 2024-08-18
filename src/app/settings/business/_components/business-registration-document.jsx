@@ -91,6 +91,7 @@ export function BusinessRegistrationDocument({
               <CardDescription>Current document</CardDescription>
               <ProfileImageUpload
                 form={form}
+                type="document"
                 previewImage={previewImage}
                 setPreviewImage={(image) => {
                   setPreviewImage(image)

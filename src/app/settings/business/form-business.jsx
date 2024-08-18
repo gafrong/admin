@@ -3,6 +3,7 @@
 import { useFetchAuth } from '@/app/fetch/use-fetch-auth'
 import baseURL from '@/assets/common/baseUrl'
 import LoadingSpinner from '@/components/LoadingSpinner'
+import { SimpleTable } from '@/components/simple-table'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription } from '@/components/ui/card'
 import { Form } from '@/components/ui/form'
@@ -103,20 +104,6 @@ export function FormBusiness() {
     formData.append('accountName', data.accountName)
     const formValues = formatData(formData)
 
-    // Check if new data is the same as previous data
-    // const bankData = vendor?.bank
-
-    // leave duplicate check for now
-    // const errorConfig = {
-    //   type: 'manual',
-    //   message: 'Bank details are identical to previous.',
-    // }
-    // if (bankData && JSON.stringify(formValues) === JSON.stringify(bankData)) {
-    //   form.setError('bankName', errorConfig)
-    //   form.setError('accountName', errorConfig)
-    //   form.setError('accountNumber', errorConfig)
-    //   return
-    // }
     try {
       const response = await axios.patch(URL_ENDPOINT, formValues, { headers })
 
@@ -142,15 +129,29 @@ export function FormBusiness() {
 
           {vendor?.isPendingBank ?
             <>
-              <BankDetailsTable
-                bank={vendor?.bank}
-                title="Current Bank Details"
-              />
+              <div className="flex flex-col gap-12 p-6">
+                <SimpleTable
+                  className=""
+                  title="Current bank details"
+                  data={[vendor?.bank]}
+                  headers={[
+                    { label: 'Bank', key: 'bankName' },
+                    { label: 'Account Name', key: 'accountName' },
+                    { label: 'Account Number', key: 'accountNumber' },
+                  ]}
+                />
 
-              <BankDetailsTable
-                bank={vendor?.pending?.bank}
-                title="Pending Bank Details"
-              />
+                <SimpleTable
+                  className=""
+                  title="Pending bank details"
+                  data={[vendor?.pending?.bank]}
+                  headers={[
+                    { label: 'Bank', key: 'bankName' },
+                    { label: 'Account Name', key: 'accountName' },
+                    { label: 'Account Number', key: 'accountNumber' },
+                  ]}
+                />
+              </div>
             </>
           : <form onSubmit={form.handleSubmit(onSubmitBank)}>
               {isLoading && (
