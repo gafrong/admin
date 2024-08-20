@@ -24,7 +24,6 @@ import { CardTitleDescription } from '../_components/card-title-description'
 import { FormTextInputs } from '../_components/form-text-inputs'
 import { BankHistory } from './_components/bank-history'
 import { BusinessRegistrationDocument } from './_components/business-registration-document'
-import { DebuggingTools } from './_components/debug'
 import { DocumentHistory } from './_components/document-history'
 
 export const formFinanceSchema = z.object({
@@ -186,12 +185,6 @@ export function FormBusiness() {
       <BankHistory bankHistory={vendor?.bankHistory} />
 
       <DocumentHistory documentHistory={vendor?.documentHistory} />
-
-      <DebuggingTools
-        refetchVendor={refetchVendor}
-        token={token}
-        userId={userId}
-      />
 
       {/* <pre>{JSON.stringify(vendor, null, 2)}</pre> */}
     </>

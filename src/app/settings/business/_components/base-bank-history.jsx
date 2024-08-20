@@ -1,15 +1,10 @@
 'use client'
 
-import { DEBUG_DeleteBankHistory } from '@/app/settings/business/_components/debug'
 import { DataCard } from '@/components/simple-table'
-import { format } from 'date-fns'
+import { ifDate } from '@/lib/utils'
 import React from 'react'
 
-export function ifDate(date, msg = '') {
-  return date ? format(new Date(date), 'dd.MM.yyyy') : msg
-}
-
-export function BankHistory({ bankHistory }) {
+export function BaseBankHistory({ bankHistory, children }) {
   const isBankHistory = bankHistory && bankHistory.length > 0
 
   if (!isBankHistory) {
@@ -37,9 +32,7 @@ export function BankHistory({ bankHistory }) {
       headers={headers}
       title="Bank History"
     >
-      <div className="m-6 my-12">
-        <DEBUG_DeleteBankHistory className="" />
-      </div>
+      {children}
     </DataCard>
   )
 }
