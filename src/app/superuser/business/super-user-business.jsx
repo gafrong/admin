@@ -3,14 +3,7 @@
 import { useFetchAuth } from '@/app/fetch/use-fetch-auth'
 import { CardTitleDescription } from '@/app/settings/_components/card-title-description'
 import { SimpleTable } from '@/components/simple-table'
-import { Card, CardContent, CardDescription } from '@/components/ui/card'
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableRow,
-} from '@/components/ui/table'
+import { Card } from '@/components/ui/card'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useSession } from 'next-auth/react'
 import React from 'react'
@@ -32,12 +25,16 @@ export const formFinanceSchema = z.object({
   image: z.any(), // You might want to add more specific validation for the image
 })
 
+const bankTableHeaders = [
+  { label: 'Bank', key: 'bankName' },
+  { label: 'Account Name', key: 'accountName' },
+  { label: 'Account Number', key: 'accountNumber' },
+  { label: 'Edited At', key: 'uploadedAt' },
+]
+
 export function SuperuserBusiness({ userId }) {
-  console.log('<SuperuserBusiness>::', { userId })
   const { data: session, status } = useSession()
   const { token } = session || {}
-
-  // const userId = user?._id
   const url = userId ? `vendor/user-id/${userId}` : null
   console.log({ userId, url })
   const {
@@ -73,12 +70,7 @@ export function SuperuserBusiness({ userId }) {
             className=""
             title="Current bank details"
             data={vendor?.bank ? [vendor?.bank] : null}
-            headers={[
-              { label: 'Bank', key: 'bankName' },
-              { label: 'Account Name', key: 'accountName' },
-              { label: 'Account Number', key: 'accountNumber' },
-              { label: 'Edited At', key: 'uploadedAt' },
-            ]}
+            headers={bankTableHeaders}
           />
         </div>
 
@@ -89,11 +81,7 @@ export function SuperuserBusiness({ userId }) {
                 className=""
                 title="Pending bank details"
                 data={[vendor?.pending?.bank]}
-                headers={[
-                  { label: 'Bank', key: 'bankName' },
-                  { label: 'Account Name', key: 'accountName' },
-                  { label: 'Account Number', key: 'accountNumber' },
-                ]}
+                headers={bankTableHeaders}
               />
             </div>
             <div className="flex gap-6 p-6">
@@ -132,47 +120,5 @@ export function SuperuserBusiness({ userId }) {
 
       {/* <pre>{JSON.stringify(vendor, null, 2)}</pre> */}
     </>
-  )
-}
-
-function formatData(formData) {
-  return {
-    bankName: formData.get('bankName'),
-    accountNumber: formData.get('accountNumber'),
-    accountName: formData.get('accountName'),
-  }
-}
-export function BankDetailsTable({ bank, title }) {
-  if (!bank) return null
-
-  const bankDetails = [
-    {
-      item: 'Bank',
-      value: bank.bankName,
-    },
-    {
-      item: 'Account Name',
-      value: bank.accountName,
-    },
-    {
-      item: 'Account Number',
-      value: bank.accountNumber,
-    },
-  ]
-
-  return (
-    <div className="p-6">
-      <CardDescription className="pb-6">{title}</CardDescription>
-      <Table className="">
-        <TableBody>
-          {bankDetails.map((bankDetail) => (
-            <TableRow key={bankDetail.item}>
-              <TableHead className="font-medium">{bankDetail.item}</TableHead>
-              <TableCell>{bankDetail.value}</TableCell>
-            </TableRow>
-          ))}
-        </TableBody>
-      </Table>
-    </div>
   )
 }

@@ -75,10 +75,13 @@ export function FormBusiness() {
   React.useEffect(() => {
     const bankData =
       vendor?.isPendingBank ? vendor?.pending?.bank : vendor?.bank
+
     if (!bankData) {
       return
     }
+
     const { bankName, accountNumber, accountName } = bankData
+
     form.reset({
       accountName: accountName || '',
       accountNumber: `${accountNumber}` || '',
@@ -127,31 +130,7 @@ export function FormBusiness() {
           />
 
           {vendor?.isPendingBank ?
-            <>
-              <div className="flex flex-col gap-12 p-6">
-                <SimpleTable
-                  className=""
-                  title="Current bank details"
-                  data={[vendor?.bank]}
-                  headers={[
-                    { label: 'Bank', key: 'bankName' },
-                    { label: 'Account Name', key: 'accountName' },
-                    { label: 'Account Number', key: 'accountNumber' },
-                  ]}
-                />
-
-                <SimpleTable
-                  className=""
-                  title="Pending bank details"
-                  data={[vendor?.pending?.bank]}
-                  headers={[
-                    { label: 'Bank', key: 'bankName' },
-                    { label: 'Account Name', key: 'accountName' },
-                    { label: 'Account Number', key: 'accountNumber' },
-                  ]}
-                />
-              </div>
-            </>
+            <PendingBankLayout vendor={vendor} />
           : <form onSubmit={form.handleSubmit(onSubmitBank)}>
               {isLoading && (
                 <LoadingSpinner className="absolute inset-0 flex h-full items-center justify-center bg-black bg-opacity-5" />
@@ -198,37 +177,28 @@ function formatData(formData) {
     accountName: formData.get('accountName'),
   }
 }
-export function BankDetailsTable({ bank, title }) {
-  if (!bank) return null
 
-  const bankDetails = [
-    {
-      item: 'Bank',
-      value: bank.bankName,
-    },
-    {
-      item: 'Account Name',
-      value: bank.accountName,
-    },
-    {
-      item: 'Account Number',
-      value: bank.accountNumber,
-    },
+function PendingBankLayout({ vendor }) {
+  const headers = [
+    { label: 'Bank', key: 'bankName' },
+    { label: 'Account Name', key: 'accountName' },
+    { label: 'Account Number', key: 'accountNumber' },
   ]
-
   return (
-    <div className="p-6">
-      <CardDescription className="pb-6">{title}</CardDescription>
-      <Table className="">
-        <TableBody>
-          {bankDetails.map((bankDetail) => (
-            <TableRow key={bankDetail.item}>
-              <TableHead className="font-medium">{bankDetail.item}</TableHead>
-              <TableCell>{bankDetail.value}</TableCell>
-            </TableRow>
-          ))}
-        </TableBody>
-      </Table>
+    <div className="flex flex-col gap-12 p-6">
+      <SimpleTable
+        className=""
+        title="Current bank details"
+        data={[vendor?.bank]}
+        headers={headers}
+      />
+
+      <SimpleTable
+        className=""
+        title="Pending bank details"
+        data={[vendor?.pending?.bank]}
+        headers={headers}
+      />
     </div>
   )
 }

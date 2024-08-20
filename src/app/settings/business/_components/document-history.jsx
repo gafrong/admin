@@ -13,6 +13,19 @@ import Image from 'next/image'
 import React from 'react'
 import { CardTitleDescription } from '../../_components/card-title-description'
 
+const DocumentHistoryImage = ({ s3Key }) => (
+  <div className="relative h-36 w-36">
+    <Image
+      alt="document image"
+      className="object-cover object-center"
+      fill
+      sizes="144px"
+      priority={true}
+      src={`${awsURL}${s3Key}`}
+    />
+  </div>
+)
+
 export function DocumentHistoryTable({ documentHistory }) {
   return (
     <>
@@ -29,16 +42,7 @@ export function DocumentHistoryTable({ documentHistory }) {
           {documentHistory.map((history, index) => (
             <TableRow key={index}>
               <TableCell>
-                <div className="relative h-[144px] w-[144px]">
-                  <Image
-                    alt="document image"
-                    className="object-cover object-center"
-                    fill
-                    sizes="144px"
-                    priority={true}
-                    src={`${awsURL}${history.s3Key}`}
-                  />
-                </div>
+                <DocumentHistoryImage s3Key={history.s3Key} />
               </TableCell>
               {/* <TableCell>{history.s3Key}</TableCell> */}
               <TableCell>{ifDate(history.uploadedAt)}</TableCell>
