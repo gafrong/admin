@@ -1,5 +1,6 @@
 import { CardTitleDescription } from '@/app/settings/_components/card-title-description'
 import awsURL from '@/assets/common/awsUrl'
+import { ImageDocument } from '@/components/image-profile'
 import { Card } from '@/components/ui/card'
 import {
   Table,
@@ -10,24 +11,12 @@ import {
   TableRow,
 } from '@/components/ui/table'
 import { ifDate } from '@/lib/utils'
-import Image from 'next/image'
 import React from 'react'
 import { DEBUG_DeleteDocumentHistory } from './debug'
 
-function DocumentHistoryImage({ s3Key }) {
-  return (
-    <div className="relative h-36 w-36">
-      <Image
-        alt="document image"
-        className="object-cover object-center"
-        fill
-        sizes="144px"
-        priority={true}
-        src={`${awsURL}${s3Key}`}
-      />
-    </div>
-  )
-}
+const DocumentHistoryImage = ({ s3Key }) => (
+  <ImageDocument src={`${awsURL}${s3Key}`} size={144} />
+)
 
 export function DocumentHistoryTable({ documentHistory }) {
   return (

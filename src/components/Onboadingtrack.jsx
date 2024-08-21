@@ -8,6 +8,7 @@ import axios from 'axios'
 import { useSession } from 'next-auth/react'
 import { useRouter } from 'next/navigation'
 import { FiCamera } from 'react-icons/fi'
+import { ImageProfile } from './image-profile'
 import LoadingSpinner from './LoadingSpinner'
 import { PageTitle } from './typography/PageTitle'
 
@@ -105,11 +106,7 @@ const Onboardingtrack = () => {
       <div className="mb-5 flex flex-row">
         <div className="ml-3.5 text-sm font-medium">상점 대표 이미지: </div>
 
-        <img
-          src={profileImage}
-          alt="Profile"
-          style={{ width: '140px', height: '140px', borderRadius: '50%' }}
-        />
+        <ImageProfile size={140} src={profileImage} />
 
         <label
           htmlFor="upload"
@@ -384,11 +381,7 @@ const Onboardingtrack = () => {
         <h1 className="mb-5 mt-0 font-bold">입력 내용 확인</h1>
         <div className="mb-5 flex flex-row">
           <div className="ml-10 text-sm font-medium">상점 대표 이미지: </div>
-          <img
-            src={profileImage}
-            alt="Profile"
-            style={{ width: '140px', height: '140px', borderRadius: '50%' }}
-          />
+          <ImageProfile size={140} src={profileImage} />
         </div>
         <div className="mb-10 ml-10">
           <p className="text-sm font-medium">브랜드 정보: </p>

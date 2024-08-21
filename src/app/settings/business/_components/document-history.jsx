@@ -1,4 +1,5 @@
 import awsURL from '@/assets/common/awsUrl'
+import { ImageDocument } from '@/components/image-profile'
 import { Card } from '@/components/ui/card'
 import {
   Table,
@@ -9,22 +10,8 @@ import {
   TableRow,
 } from '@/components/ui/table'
 import { ifDate } from '@/lib/utils'
-import Image from 'next/image'
 import React from 'react'
 import { CardTitleDescription } from '../../_components/card-title-description'
-
-const DocumentHistoryImage = ({ s3Key }) => (
-  <div className="relative h-36 w-36">
-    <Image
-      alt="document image"
-      className="object-cover object-center"
-      fill
-      sizes="144px"
-      priority={true}
-      src={`${awsURL}${s3Key}`}
-    />
-  </div>
-)
 
 export function DocumentHistoryTable({ documentHistory }) {
   return (
@@ -42,7 +29,11 @@ export function DocumentHistoryTable({ documentHistory }) {
           {documentHistory.map((history, index) => (
             <TableRow key={index}>
               <TableCell>
-                <DocumentHistoryImage s3Key={history.s3Key} />
+                <ImageDocument
+                  size={144}
+                  src={`${awsURL}${history.s3Key}`}
+                  className={'red'}
+                />
               </TableCell>
               {/* <TableCell>{history.s3Key}</TableCell> */}
               <TableCell>{ifDate(history.uploadedAt)}</TableCell>

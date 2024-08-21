@@ -18,7 +18,7 @@ export function SimpleTable({ data, headers, title, className = '' }) {
   if (!data || data.length === 0) {
     return null
   }
-  console.log('SimpleTable data:', data)
+
   return (
     <Table className={className}>
       {title ?

@@ -36,7 +36,10 @@ const Sidebar = () => {
         </div>
       </Link>
       <Accordion type="single" collapsible>
-        <AccordionItem value="item-1" className="block pl-5 pr-2 text-black">
+        <AccordionItem
+          value="item-video"
+          className="block pl-5 pr-2 text-black"
+        >
           <AccordionTrigger>
             <div className="flex flex-row">
               <FiVideo className="mr-2 mt-1" /> <div>영상</div>
@@ -59,7 +62,10 @@ const Sidebar = () => {
         </AccordionItem>
       </Accordion>
       <Accordion type="single" collapsible>
-        <AccordionItem value="item-1" className="block pl-5 pr-2 text-black">
+        <AccordionItem
+          value="item-goods"
+          className="block pl-5 pr-2 text-black"
+        >
           <AccordionTrigger>
             <div className="flex flex-row">
               <FiGift className="mr-2 mt-1" /> <div>상품</div>
@@ -82,7 +88,10 @@ const Sidebar = () => {
         </AccordionItem>
       </Accordion>
       <Accordion type="single" collapsible>
-        <AccordionItem value="item-1" className="block pl-5 pr-2 text-black">
+        <AccordionItem
+          value="item-order"
+          className="block pl-5 pr-2 text-black"
+        >
           <AccordionTrigger>
             <div className="flex flex-row">
               <FiShoppingCart className="mr-2 mt-1" /> <div>주문</div>
@@ -99,7 +108,10 @@ const Sidebar = () => {
         </AccordionItem>
       </Accordion>
       <Accordion type="single" collapsible>
-        <AccordionItem value="item-1" className="block pl-5 pr-2 text-black">
+        <AccordionItem
+          value="item-customer"
+          className="block pl-5 pr-2 text-black"
+        >
           <AccordionTrigger>
             <div className="flex flex-row">
               <FiUsers className="mr-2 mt-1" /> <div>고객</div>
@@ -116,7 +128,10 @@ const Sidebar = () => {
         </AccordionItem>
       </Accordion>
       <Accordion type="single" collapsible>
-        <AccordionItem value="item-1" className="block pl-5 pr-2 text-black">
+        <AccordionItem
+          value="item-customer-enquiry"
+          className="block pl-5 pr-2 text-black"
+        >
           <AccordionTrigger>
             <div className="flex flex-row">
               <FiMessageCircle className="mr-2 mt-1" />{' '}
@@ -134,7 +149,10 @@ const Sidebar = () => {
         </AccordionItem>
       </Accordion>
       <Accordion type="single" collapsible>
-        <AccordionItem value="item-1" className="block pl-5 pr-2 text-black">
+        <AccordionItem
+          value="item-statistics"
+          className="block pl-5 pr-2 text-black"
+        >
           <AccordionTrigger>
             <div className="flex flex-row">
               <FiBarChart2 className="mr-2 mt-1" /> <div>통계</div>
@@ -163,7 +181,10 @@ const Sidebar = () => {
         </AccordionItem>
       </Accordion>
       <Accordion type="single" collapsible>
-        <AccordionItem value="item-1" className="block pl-5 pr-2 text-black">
+        <AccordionItem
+          value="item-store-settings"
+          className="block pl-5 pr-2 text-black"
+        >
           <AccordionTrigger>
             <div className="flex flex-row">
               <FiEdit className="mr-2 mt-1" /> <div>스토어 설정</div>
@@ -199,7 +220,10 @@ const Sidebar = () => {
       </Accordion>
 
       <Accordion type="single" collapsible>
-        <AccordionItem value="item-1" className="block pl-5 pr-2 text-black">
+        <AccordionItem
+          value="item-super-user"
+          className="block pl-5 pr-2 text-black"
+        >
           <AccordionTrigger>
             <div className="flex flex-row">
               <FiSettings className="mr-2 mt-1" />
@@ -224,7 +248,10 @@ const Sidebar = () => {
       </Accordion>
 
       <Accordion type="single" collapsible>
-        <AccordionItem value="item-1" className="block pl-5 pr-2 text-black">
+        <AccordionItem
+          value="item-enquiry"
+          className="block pl-5 pr-2 text-black"
+        >
           <AccordionTrigger>
             <div className="flex flex-row">
               <FiHelpCircle className="mr-2 mt-1" /> <div>1:1 문의</div>
