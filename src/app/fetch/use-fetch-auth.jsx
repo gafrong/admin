@@ -17,7 +17,6 @@ export const useFetchAuth = (path) => {
     }
     try {
       const response = await axios.get(url, { headers })
-      console.log('useFetchAuth() url:', { url })
       return response.data
     } catch (error) {
       if (error.response && error.response.status === 401) {
