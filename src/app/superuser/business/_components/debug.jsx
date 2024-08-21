@@ -1,12 +1,14 @@
 'use client'
 
+import { CardTitleDescription } from '@/app/settings/_components/card-title-description'
 import baseURL from '@/assets/common/baseUrl'
 import { LoadingSpinnerButton } from '@/components/LoadingSpinner'
 import { Button } from '@/components/ui/button'
 import { Card } from '@/components/ui/card'
 import axios from 'axios'
 import React from 'react'
-import { CardTitleDescription } from '../../_components/card-title-description'
+
+// import { CardTitleDescription } from '../../_components/card-title-description'
 
 export function DEBUG_DeletePendingAccount({ token, mutate, userId }) {
   const [isLoading, setIsLoading] = React.useState(false)
@@ -58,8 +60,8 @@ export function DEBUG_PromotePendingAccount({ token, mutate, userId }) {
   }
 
   return (
-    <Button variant="outline" onClick={promotePendingBank}>
-      Promote Pending Bank Account
+    <Button onClick={promotePendingBank}>
+      Approve Pending Bank Account
       {isLoading ?
         <LoadingSpinnerButton />
       : ''}
@@ -86,8 +88,8 @@ export function DEBUG_PromotePendingDocument({ token, mutate, userId }) {
   }
 
   return (
-    <Button variant="outline" onClick={promotePendingDocument}>
-      Promote Pending Document
+    <Button onClick={promotePendingDocument}>
+      Approve Pending Document
       {isLoading ?
         <LoadingSpinnerButton />
       : ''}
@@ -126,7 +128,12 @@ export function DEBUG_DeleteBankHistory({ token, mutate, userId }) {
   )
 }
 
-export function DEBUG_DeleteDocumentHistory({ token, mutate, userId }) {
+export function DEBUG_DeleteDocumentHistory({
+  className,
+  token,
+  mutate,
+  userId,
+}) {
   const [isLoading, setIsLoading] = React.useState(false)
 
   const deleteDocumentHistory = async () => {
@@ -149,7 +156,11 @@ export function DEBUG_DeleteDocumentHistory({ token, mutate, userId }) {
   }
 
   return (
-    <Button variant="destructive" onClick={deleteDocumentHistory}>
+    <Button
+      variant="destructive"
+      className={className}
+      onClick={deleteDocumentHistory}
+    >
       Delete Document History
       {isLoading ?
         <LoadingSpinnerButton />
@@ -173,6 +184,11 @@ export function DebuggingTools({ refetchVendor, token, userId }) {
           token={token}
           userId={userId}
         />
+        <DEBUG_PromotePendingAccount
+          mutate={refetchVendor}
+          token={token}
+          userId={userId}
+        />
         <DEBUG_DeleteBankHistory
           mutate={refetchVendor}
           token={token}
@@ -183,11 +199,7 @@ export function DebuggingTools({ refetchVendor, token, userId }) {
           token={token}
           userId={userId}
         />
-        <DEBUG_PromotePendingAccount
-          mutate={refetchVendor}
-          token={token}
-          userId={userId}
-        />
+
         <DEBUG_PromotePendingDocument
           mutate={refetchVendor}
           token={token}

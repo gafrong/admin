@@ -4,6 +4,7 @@ import { useEffect } from 'react'
 
 export function protectRoute(WrappedComponent, name = '') {
   return function ProtectedRoute(props) {
+    // name is for debugging.
     // console.log(`ProtectedRoute(${name})`)
     const { data: session, status } = useSession()
     const user = session?.user

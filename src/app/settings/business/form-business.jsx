@@ -3,6 +3,7 @@
 import { useFetchAuth } from '@/app/fetch/use-fetch-auth'
 import baseURL from '@/assets/common/baseUrl'
 import LoadingSpinner from '@/components/LoadingSpinner'
+import { SimpleTable } from '@/components/simple-table'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription } from '@/components/ui/card'
 import { Form } from '@/components/ui/form'
@@ -23,7 +24,6 @@ import { CardTitleDescription } from '../_components/card-title-description'
 import { FormTextInputs } from '../_components/form-text-inputs'
 import { BankHistory } from './_components/bank-history'
 import { BusinessRegistrationDocument } from './_components/business-registration-document'
-import { DebuggingTools } from './_components/debug'
 import { DocumentHistory } from './_components/document-history'
 
 export const formFinanceSchema = z.object({
@@ -75,10 +75,13 @@ export function FormBusiness() {
   React.useEffect(() => {
     const bankData =
       vendor?.isPendingBank ? vendor?.pending?.bank : vendor?.bank
+
     if (!bankData) {
       return
     }
+
     const { bankName, accountNumber, accountName } = bankData
+
     form.reset({
       accountName: accountName || '',
       accountNumber: `${accountNumber}` || '',
@@ -103,20 +106,6 @@ export function FormBusiness() {
     formData.append('accountName', data.accountName)
     const formValues = formatData(formData)
 
-    // Check if new data is the same as previous data
-    // const bankData = vendor?.bank
-
-    // leave duplicate check for now
-    // const errorConfig = {
-    //   type: 'manual',
-    //   message: 'Bank details are identical to previous.',
-    // }
-    // if (bankData && JSON.stringify(formValues) === JSON.stringify(bankData)) {
-    //   form.setError('bankName', errorConfig)
-    //   form.setError('accountName', errorConfig)
-    //   form.setError('accountNumber', errorConfig)
-    //   return
-    // }
     try {
       const response = await axios.patch(URL_ENDPOINT, formValues, { headers })
 
@@ -141,17 +130,7 @@ export function FormBusiness() {
           />
 
           {vendor?.isPendingBank ?
-            <>
-              <BankDetailsTable
-                bank={vendor?.bank}
-                title="Current Bank Details"
-              />
-
-              <BankDetailsTable
-                bank={vendor?.pending?.bank}
-                title="Pending Bank Details"
-              />
-            </>
+            <PendingBankLayout vendor={vendor} />
           : <form onSubmit={form.handleSubmit(onSubmitBank)}>
               {isLoading && (
                 <LoadingSpinner className="absolute inset-0 flex h-full items-center justify-center bg-black bg-opacity-5" />
@@ -186,12 +165,6 @@ export function FormBusiness() {
 
       <DocumentHistory documentHistory={vendor?.documentHistory} />
 
-      <DebuggingTools
-        refetchVendor={refetchVendor}
-        token={token}
-        userId={userId}
-      />
-
       {/* <pre>{JSON.stringify(vendor, null, 2)}</pre> */}
     </>
   )
@@ -204,37 +177,28 @@ function formatData(formData) {
     accountName: formData.get('accountName'),
   }
 }
-export function BankDetailsTable({ bank, title }) {
-  if (!bank) return null
 
-  const bankDetails = [
-    {
-      item: 'Bank',
-      value: bank.bankName,
-    },
-    {
-      item: 'Account Name',
-      value: bank.accountName,
-    },
-    {
-      item: 'Account Number',
-      value: bank.accountNumber,
-    },
+function PendingBankLayout({ vendor }) {
+  const headers = [
+    { label: 'Bank', key: 'bankName' },
+    { label: 'Account Name', key: 'accountName' },
+    { label: 'Account Number', key: 'accountNumber' },
   ]
-
   return (
-    <div className="p-6">
-      <CardDescription className="pb-6">{title}</CardDescription>
-      <Table className="">
-        <TableBody>
-          {bankDetails.map((bankDetail) => (
-            <TableRow key={bankDetail.item}>
-              <TableHead className="font-medium">{bankDetail.item}</TableHead>
-              <TableCell>{bankDetail.value}</TableCell>
-            </TableRow>
-          ))}
-        </TableBody>
-      </Table>
+    <div className="flex flex-col gap-12 p-6">
+      <SimpleTable
+        className=""
+        title="Current bank details"
+        data={[vendor?.bank]}
+        headers={headers}
+      />
+
+      <SimpleTable
+        className=""
+        title="Pending bank details"
+        data={[vendor?.pending?.bank]}
+        headers={headers}
+      />
     </div>
   )
 }

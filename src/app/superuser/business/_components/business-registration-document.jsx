@@ -1,32 +1,50 @@
 'use client'
 
+import { CardTitleDescription } from '@/app/settings/_components/card-title-description'
+import { convertBase64ToFile } from '@/app/settings/_components/image'
 import awsURL from '@/assets/common/awsUrl'
 import baseURL from '@/assets/common/baseUrl'
 import LoadingSpinner from '@/components/LoadingSpinner'
-import { ProfileImageUpload } from '@/components/typography/ProfileImageUpload'
-import { Button } from '@/components/ui/button'
+import {
+  ProfileImageUpload,
+  srcDefaultImageDocs,
+} from '@/components/typography/ProfileImageUpload'
 import { Card, CardContent, CardDescription } from '@/components/ui/card'
 import axios from 'axios'
 import Image from 'next/image'
 import React from 'react'
-import { CardTitleDescription } from '../../_components/card-title-description'
-import { convertBase64ToFile } from '../../_components/image'
+import { DEBUG_PromotePendingDocument } from './debug'
 import { ImageZoomDialog } from './image-zoom-dialog'
 
 function PendingDocument({ vendor }) {
-  if (!vendor?.pending?.document?.s3Key) return null
-  const imageSrc = `${awsURL}${vendor.pending.document.s3Key}`
+  const imageDoc = vendor?.pending?.document?.s3Key
+  const isNonEmptyString = typeof imageDoc === 'string' && imageDoc.length > 0
+  const imageSrc = isNonEmptyString ? `${awsURL}${imageDoc}` : null
+  const isImageLoaded = typeof imageDoc === 'string'
+  const img = isImageLoaded && isNonEmptyString ? imageSrc : srcDefaultImageDocs
+  console.log({
+    img,
+    imageSrc,
+    imageDoc,
+    srcDefaultImageDocs,
+    isNonEmptyString,
+  })
   return (
     <div className="flex flex-col gap-6">
       <CardDescription>Document pending approval</CardDescription>
-      <Image
-        alt="document image"
-        className="h-36 w-36 object-cover object-center"
-        height={144}
-        src={imageSrc}
-        width={144}
-      />
+      <div className="relative h-36 w-36">
+        <Image
+          alt="document image"
+          className="object-cover object-center"
+          fill
+          priority={true}
+          sizes="144px"
+          src={img}
+        />
+      </div>
+
       <ImageZoomDialog documentImage={imageSrc} altText={'altText'} />
+      <DEBUG_PromotePendingDocument />
     </div>
   )
 }
@@ -38,7 +56,7 @@ export function BusinessRegistrationDocument({
   token,
   vendor,
 }) {
-  const [previewImage, setPreviewImage] = React.useState(null)
+  const [previewImage, setPreviewImage] = React.useState(srcDefaultImageDocs)
   const [newImageSelected, setNewImageSelected] = React.useState(false)
 
   React.useEffect(() => {
@@ -91,12 +109,12 @@ export function BusinessRegistrationDocument({
               <CardDescription>Current document</CardDescription>
               <ProfileImageUpload
                 form={form}
-                type="document"
                 previewImage={previewImage}
                 setPreviewImage={(image) => {
                   setPreviewImage(image)
                   setNewImageSelected(true)
                 }}
+                type={'docs'}
               />
               <ImageZoomDialog
                 documentImage={previewImage}
@@ -108,11 +126,7 @@ export function BusinessRegistrationDocument({
           </div>
         </CardContent>
 
-        <div>
-          <Button type="submit" className="ml-6">
-            Save
-          </Button>
-        </div>
+        <div></div>
       </form>
     </Card>
   )

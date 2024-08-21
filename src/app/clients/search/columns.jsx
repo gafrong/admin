@@ -20,6 +20,7 @@ const filterId = (row, id, value) => row.original._id.includes(value)
 const filterUserName = (row, id, value) => row.original.username.includes(value)
 const filterName = (row, id, value) => row.original.name.includes(value)
 
+// Table components
 // -----------------------------------------------------------------------------
 
 const CellEdit = ({ row }) => (
