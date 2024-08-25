@@ -8,6 +8,8 @@ import { cn, ifDate } from '@/lib/utils'
 import Link from 'next/link'
 import React from 'react'
 import { ProfileMini } from '../users/page'
+import { Button } from '@/components/ui/button'
+import { useToast } from '@/components/ui/use-toast'
 
 // Filters
 function filterByBankAccountName(rows, id, filterValue) {
@@ -42,6 +44,21 @@ const HeaderIsPending = ({ column }) => (
 const HeaderUserId = ({ column }) => (
   <ButtonSortable column={column}>User Id</ButtonSortable>
 )
+
+const deleteVendor = async (userId) => {
+  try {
+    const response = await fetch(`/api/vendor/${userId}`, {
+      method: 'DELETE',
+    });
+    if (!response.ok) {
+      throw new Error('Failed to delete vendor');
+    }
+    return true;
+  } catch (error) {
+    console.error('Error deleting vendor:', error);
+    return false;
+  }
+};
 
 export const columns = [
   // CellUser
@@ -171,6 +188,19 @@ export const columns = [
       return ifDate(bank.approvedAt)
     },
   },
+  {
+    id: 'delete',
+    header: 'Delete',
+    cell: ({ row }) => (
+      <Button
+        onClick={() => row.deleteVendor(row.original.userId)}
+        variant="destructive"
+        size="sm"
+      >
+        Delete
+      </Button>
+    ),
+  },
 ]
 
 // import { columns, searchableColumnHeaders } from './columns'
@@ -183,6 +213,7 @@ export const searchableColumnHeaders = [
 ]
 
 export function VendorList() {
+  const { toast } = useToast()
   const {
     data: vendors,
     error,
@@ -190,6 +221,23 @@ export function VendorList() {
     mutate: refetchVendors,
   } = useFetchAuth('vendor/all')
   console.log('<VendorList>',vendors)
+
+  const handleDeleteVendor = async (userId) => {
+    const success = await deleteVendor(userId);
+    if (success) {
+      toast({
+        title: "Vendor deleted",
+        description: "The vendor has been successfully deleted.",
+      });
+      refetchVendors();
+    } else {
+      toast({
+        title: "Error",
+        description: "Failed to delete the vendor. Please try again.",
+        variant: "destructive",
+      });
+    }
+  };
 
   const controls = {
     isSearchAlwaysShown: true,
@@ -205,7 +253,15 @@ export function VendorList() {
   return (
     <>
       <DataTable
-        columns={columns}
+        columns={columns.map(col => col.id === 'delete' ? {...col, cell: ({ row }) => (
+          <Button
+            onClick={() => handleDeleteVendor(row.original.userId)}
+            variant="destructive"
+            size="sm"
+          >
+            Delete
+          </Button>
+        )} : col)}
         controls={controls}
         data={vendors}
         defaultCellStyle="align-top"
