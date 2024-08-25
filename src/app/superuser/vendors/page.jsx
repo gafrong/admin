@@ -124,13 +124,20 @@ export const columns = [
     accessorKey: 'bank.accountName',
     id: 'Bank account name',
     header: 'Bank Account Name',
+    cell: ({ row }) => row.original.bank?.accountName,
+    filter: filterByBankAccountName,
+  },
+  {
+    // accessorKey: 'bank.accountName',
+    id: 'View Business Details',
+    header: 'View Business Details',
     cell: ({ row }) => {
       return (
         <Link
           href={`/superuser/vendor/pending/${row.original.userId}`}
           className="text-blue-500 underline"
         >
-          {row.original.bank.accountName}
+          view
         </Link>
       )
     },
@@ -140,19 +147,19 @@ export const columns = [
     accessorKey: 'bank.accountNumber',
     id: 'Bank account number',
     header: 'Bank Account Number',
-    cell: ({ row }) => row.original.bank.accountNumber,
+    cell: ({ row }) => row.original.bank?.accountNumber,
   },
   {
     accessorKey: 'bank.bankName',
     id: 'Bank name',
     header: 'Bank Name',
-    cell: ({ row }) => row.original.bank.bankName,
+    cell: ({ row }) => row.original.bank?.bankName,
   },
   {
     accessorKey: 'bank.uploadedAt',
     id: 'bank upload date',
     header: 'Bank details Uploaded',
-    cell: ({ row }) => ifDate(row.original.bank.uploadedAt),
+    cell: ({ row }) => ifDate(row.original.bank?.uploadedAt),
   },
   {
     id: 'bank details approval Date',
@@ -176,13 +183,13 @@ export const searchableColumnHeaders = [
 ]
 
 export function VendorList() {
-  console.log('<VendorList>')
   const {
     data: vendors,
     error,
     isLoading,
     mutate: refetchVendors,
   } = useFetchAuth('vendor/all')
+  console.log('<VendorList>',vendors)
 
   const controls = {
     isSearchAlwaysShown: true,
