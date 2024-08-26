@@ -2,12 +2,12 @@
 
 import awsURL from '@/assets/common/awsUrl'
 import baseURL from '@/assets/common/baseUrl'
+import { ImageDocument } from '@/components/image-profile'
 import LoadingSpinner from '@/components/LoadingSpinner'
 import { ProfileImageUpload } from '@/components/typography/ProfileImageUpload'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription } from '@/components/ui/card'
 import axios from 'axios'
-import Image from 'next/image'
 import React from 'react'
 import { CardTitleDescription } from '../../_components/card-title-description'
 import { convertBase64ToFile } from '../../_components/image'
@@ -19,13 +19,7 @@ function PendingDocument({ vendor }) {
   return (
     <div className="flex flex-col gap-6">
       <CardDescription>Document pending approval</CardDescription>
-      <Image
-        alt="document image"
-        className="h-36 w-36 object-cover object-center"
-        height={144}
-        src={imageSrc}
-        width={144}
-      />
+      <ImageDocument src={imageSrc} size={144} />
       <ImageZoomDialog documentImage={imageSrc} altText={'altText'} />
     </div>
   )

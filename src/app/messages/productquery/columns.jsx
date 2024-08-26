@@ -5,8 +5,8 @@ import {
   filterDateBetween,
   formatDate,
 } from '@/components/data-table/data-table-date-range-picker'
+import { ImageProfile } from '@/components/image-profile'
 import { Button } from '@/components/ui/button'
-import Image from 'next/image'
 import Link from 'next/link'
 import React from 'react'
 
@@ -21,15 +21,7 @@ const CellUser = ({ row }) => {
   const user = row.original.userId // Access the original row data
   return (
     <div className="flex gap-4">
-      <div className="h-10 w-10 overflow-hidden rounded-full border">
-        <Image
-          src={awsURL + user.image} // Access nested object value
-          width={48}
-          height={48}
-          style={{ objectFit: 'contain' }}
-          alt="product image"
-        />
-      </div>
+      <ImageProfile size={48} src={awsURL + user.image} />
       <div className="mr-4">
         <p className="">{user.name}</p>
         <p className="mt-1 text-xs">@{user.username}</p>

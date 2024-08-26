@@ -4,6 +4,7 @@ import { CardTitleDescription } from '@/app/settings/_components/card-title-desc
 import { convertBase64ToFile } from '@/app/settings/_components/image'
 import awsURL from '@/assets/common/awsUrl'
 import baseURL from '@/assets/common/baseUrl'
+import { ImageDocument } from '@/components/image-profile'
 import LoadingSpinner from '@/components/LoadingSpinner'
 import {
   ProfileImageUpload,
@@ -11,7 +12,6 @@ import {
 } from '@/components/typography/ProfileImageUpload'
 import { Card, CardContent, CardDescription } from '@/components/ui/card'
 import axios from 'axios'
-import Image from 'next/image'
 import React from 'react'
 import { DEBUG_PromotePendingDocument } from './debug'
 import { ImageZoomDialog } from './image-zoom-dialog'
@@ -22,25 +22,12 @@ function PendingDocument({ vendor }) {
   const imageSrc = isNonEmptyString ? `${awsURL}${imageDoc}` : null
   const isImageLoaded = typeof imageDoc === 'string'
   const img = isImageLoaded && isNonEmptyString ? imageSrc : srcDefaultImageDocs
-  console.log({
-    img,
-    imageSrc,
-    imageDoc,
-    srcDefaultImageDocs,
-    isNonEmptyString,
-  })
+
   return (
     <div className="flex flex-col gap-6">
-      <CardDescription>Document pending approval</CardDescription>
+      <CardDescription>Document pending approval hub</CardDescription>
       <div className="relative h-36 w-36">
-        <Image
-          alt="document image"
-          className="object-cover object-center"
-          fill
-          priority={true}
-          sizes="144px"
-          src={img}
-        />
+        <ImageDocument src={img} size={144} />
       </div>
 
       <ImageZoomDialog documentImage={imageSrc} altText={'altText'} />

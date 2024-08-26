@@ -6,8 +6,14 @@ import { ButtonSortable } from '@/components/data-table/data-table-button-sortin
 import { PageContainer, PageTitle } from '@/components/typography/PageTitle'
 import { cn, ifDate } from '@/lib/utils'
 import Link from 'next/link'
-import React from 'react'
+import React, { useState } from 'react'
 import { ProfileMini } from '../users/page'
+import { Button } from '@/components/ui/button'
+import { useToast } from '@/components/ui/use-toast'
+import axios from 'axios'
+import baseURL from '@/assets/common/baseUrl'
+import { useSession } from 'next-auth/react'
+import { LoadingSpinnerButton } from '@/components/LoadingSpinner'
 
 // Filters
 function filterByBankAccountName(rows, id, filterValue) {
@@ -42,6 +48,21 @@ const HeaderIsPending = ({ column }) => (
 const HeaderUserId = ({ column }) => (
   <ButtonSortable column={column}>User Id</ButtonSortable>
 )
+
+const deleteVendor = async (userId) => {
+  try {
+    const response = await fetch(`/api/vendor/${userId}`, {
+      method: 'DELETE',
+    });
+    if (!response.ok) {
+      throw new Error('Failed to delete vendor');
+    }
+    return true;
+  } catch (error) {
+    console.error('Error deleting vendor:', error);
+    return false;
+  }
+};
 
 export const columns = [
   // CellUser
@@ -124,13 +145,20 @@ export const columns = [
     accessorKey: 'bank.accountName',
     id: 'Bank account name',
     header: 'Bank Account Name',
+    cell: ({ row }) => row.original.bank?.accountName,
+    filter: filterByBankAccountName,
+  },
+  {
+    // accessorKey: 'bank.accountName',
+    id: 'View Business Details',
+    header: 'View Business Details',
     cell: ({ row }) => {
       return (
         <Link
           href={`/superuser/vendor/pending/${row.original.userId}`}
           className="text-blue-500 underline"
         >
-          {row.original.bank.accountName}
+          view
         </Link>
       )
     },
@@ -140,19 +168,19 @@ export const columns = [
     accessorKey: 'bank.accountNumber',
     id: 'Bank account number',
     header: 'Bank Account Number',
-    cell: ({ row }) => row.original.bank.accountNumber,
+    cell: ({ row }) => row.original.bank?.accountNumber,
   },
   {
     accessorKey: 'bank.bankName',
     id: 'Bank name',
     header: 'Bank Name',
-    cell: ({ row }) => row.original.bank.bankName,
+    cell: ({ row }) => row.original.bank?.bankName,
   },
   {
     accessorKey: 'bank.uploadedAt',
     id: 'bank upload date',
     header: 'Bank details Uploaded',
-    cell: ({ row }) => ifDate(row.original.bank.uploadedAt),
+    cell: ({ row }) => ifDate(row.original.bank?.uploadedAt),
   },
   {
     id: 'bank details approval Date',
@@ -163,6 +191,19 @@ export const columns = [
       if (!(bank && bank.approvedAt)) return ''
       return ifDate(bank.approvedAt)
     },
+  },
+  {
+    id: 'delete',
+    header: 'Delete',
+    cell: ({ row }) => (
+      <Button
+        onClick={() => row.deleteVendor(row.original.userId)}
+        variant="destructive"
+        size="sm"
+      >
+        Delete
+      </Button>
+    ),
   },
 ]
 
@@ -176,13 +217,48 @@ export const searchableColumnHeaders = [
 ]
 
 export function VendorList() {
-  console.log('<VendorList>')
+  const { toast } = useToast()
+  const { data: session, status } = useSession()
+  const { token } = session || {}
+
   const {
     data: vendors,
     error,
     isLoading,
     mutate: refetchVendors,
   } = useFetchAuth('vendor/all')
+  console.log('<VendorList>', vendors)
+
+  const handleDeleteVendor = async (userId) => {
+    const URL_ENDPOINT = `${baseURL}vendor/${userId}`
+    const headers = { Authorization: `Bearer ${token}` }
+    
+    try {
+      const response = await axios.delete(URL_ENDPOINT, { headers })
+      if (response.status === 200) {
+        toast({
+          title: "Vendor deleted",
+          description: "The vendor has been successfully deleted.",
+        })
+        refetchVendors()
+      }
+    } catch (error) {
+      console.error('Error deleting vendor:', error)
+      if (error.response && error.response.status === 404) {
+        toast({
+          title: "Error",
+          description: "Vendor not found. It may have already been deleted.",
+          variant: "destructive",
+        })
+      } else {
+        toast({
+          title: "Error",
+          description: `Failed to delete the vendor: ${error.message}`,
+          variant: "destructive",
+        })
+      }
+    }
+  }
 
   const controls = {
     isSearchAlwaysShown: true,
@@ -195,10 +271,35 @@ export function VendorList() {
     ],
   }
 
+  const DeleteButton = ({ userId }) => {
+    const [isLoading, setIsLoading] = useState(false)
+
+    const onDelete = async () => {
+      setIsLoading(true)
+      await handleDeleteVendor(userId)
+      setIsLoading(false)
+    }
+
+    return (
+      <Button
+        onClick={onDelete}
+        variant="destructive"
+        size="sm"
+        disabled={isLoading}
+      >
+        Delete
+        {isLoading && <LoadingSpinnerButton />}
+      </Button>
+    )
+  }
+
   return (
     <>
       <DataTable
-        columns={columns}
+        columns={columns.map(col => col.id === 'delete' ? {
+          ...col,
+          cell: ({ row }) => <DeleteButton userId={row.original.userId} />
+        } : col)}
         controls={controls}
         data={vendors}
         defaultCellStyle="align-top"

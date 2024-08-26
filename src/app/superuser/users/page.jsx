@@ -4,9 +4,9 @@ import { useFetchAuth } from '@/app/fetch/use-fetch-auth'
 import awsURL from '@/assets/common/awsUrl'
 import { DataTable } from '@/components/data-table/data-table'
 import { ButtonSortable } from '@/components/data-table/data-table-button-sorting'
+import { ImageProfile } from '@/components/image-profile'
 import { PageContainer, PageTitle } from '@/components/typography/PageTitle'
 import { cn } from '@/lib/utils'
-import Image from 'next/image'
 import Link from 'next/link'
 import React from 'react'
 
@@ -53,15 +53,7 @@ export const ProfileMini = ({ user }) => {
 
   return (
     <div className="flex gap-4">
-      <div className="h-10 w-10 overflow-hidden rounded-full border">
-        <Image
-          src={imageUrl} // Updated to use template string for full image path
-          width={48}
-          height={48}
-          style={{ objectFit: 'contain' }}
-          alt="user profile image" // Updated alt text for clarity
-        />
-      </div>
+      <ImageProfile size={48} src={imageUrl} />
       <div className="mr-4">
         <p>{user.name}</p>
         <p className="mt-1 text-xs">@{user.username}</p>
