@@ -103,7 +103,7 @@ export function FormManagerDetails() {
   const { token, user } = session || {}
   const userId = user?._id
   const url = userId ? `vendor/user-id/${userId}` : null
-  const { data: vendor, isLoading: isLoadingAuth, mutate } = useFetchAuth(url)
+  const { data: vendor, isLoading: isLoadingAuth } = useFetchAuth(url)
 
   const [isSameAsStoreManagerCS, setIsSameAsStoreManagerCS] =
     React.useState(false)
