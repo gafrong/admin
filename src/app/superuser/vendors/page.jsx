@@ -6,10 +6,13 @@ import { ButtonSortable } from '@/components/data-table/data-table-button-sortin
 import { PageContainer, PageTitle } from '@/components/typography/PageTitle'
 import { cn, ifDate } from '@/lib/utils'
 import Link from 'next/link'
-import React from 'react'
+import React, { useState } from 'react'
 import { ProfileMini } from '../users/page'
 import { Button } from '@/components/ui/button'
 import { useToast } from '@/components/ui/use-toast'
+import axios from 'axios'
+import { baseURL } from '@/lib/api-config'
+import { LoadingSpinnerButton } from '@/components/ui/loading-spinner'
 
 // Filters
 function filterByBankAccountName(rows, id, filterValue) {
@@ -220,24 +223,30 @@ export function VendorList() {
     isLoading,
     mutate: refetchVendors,
   } = useFetchAuth('vendor/all')
-  console.log('<VendorList>',vendors)
+  console.log('<VendorList>', vendors)
 
   const handleDeleteVendor = async (userId) => {
-    const success = await deleteVendor(userId);
-    if (success) {
-      toast({
-        title: "Vendor deleted",
-        description: "The vendor has been successfully deleted.",
-      });
-      refetchVendors();
-    } else {
+    const URL_ENDPOINT = `${baseURL}vendor/${userId}`
+    const headers = { Authorization: `Bearer ${localStorage.getItem('token')}` }
+    
+    try {
+      const response = await axios.delete(URL_ENDPOINT, { headers })
+      if (response.status === 200) {
+        toast({
+          title: "Vendor deleted",
+          description: "The vendor has been successfully deleted.",
+        })
+        refetchVendors()
+      }
+    } catch (error) {
+      console.error('Error deleting vendor:', error)
       toast({
         title: "Error",
         description: "Failed to delete the vendor. Please try again.",
         variant: "destructive",
-      });
+      })
     }
-  };
+  }
 
   const controls = {
     isSearchAlwaysShown: true,
@@ -250,18 +259,35 @@ export function VendorList() {
     ],
   }
 
+  const DeleteButton = ({ userId }) => {
+    const [isLoading, setIsLoading] = useState(false)
+
+    const onDelete = async () => {
+      setIsLoading(true)
+      await handleDeleteVendor(userId)
+      setIsLoading(false)
+    }
+
+    return (
+      <Button
+        onClick={onDelete}
+        variant="destructive"
+        size="sm"
+        disabled={isLoading}
+      >
+        Delete
+        {isLoading && <LoadingSpinnerButton />}
+      </Button>
+    )
+  }
+
   return (
     <>
       <DataTable
-        columns={columns.map(col => col.id === 'delete' ? {...col, cell: ({ row }) => (
-          <Button
-            onClick={() => handleDeleteVendor(row.original.userId)}
-            variant="destructive"
-            size="sm"
-          >
-            Delete
-          </Button>
-        )} : col)}
+        columns={columns.map(col => col.id === 'delete' ? {
+          ...col,
+          cell: ({ row }) => <DeleteButton userId={row.original.userId} />
+        } : col)}
         controls={controls}
         data={vendors}
         defaultCellStyle="align-top"
