@@ -11,8 +11,9 @@ import { ProfileMini } from '../users/page'
 import { Button } from '@/components/ui/button'
 import { useToast } from '@/components/ui/use-toast'
 import axios from 'axios'
-import { baseURL } from '@/lib/api-config'
-import { LoadingSpinnerButton } from '@/components/ui/loading-spinner'
+import baseURL from '@/assets/common/baseUrl'
+import { useSession } from 'next-auth/react'
+import { LoadingSpinnerButton } from '@/components/LoadingSpinner'
 
 // Filters
 function filterByBankAccountName(rows, id, filterValue) {
@@ -217,6 +218,9 @@ export const searchableColumnHeaders = [
 
 export function VendorList() {
   const { toast } = useToast()
+  const { data: session, status } = useSession()
+  const { token } = session || {}
+
   const {
     data: vendors,
     error,
@@ -227,7 +231,7 @@ export function VendorList() {
 
   const handleDeleteVendor = async (userId) => {
     const URL_ENDPOINT = `${baseURL}vendor/${userId}`
-    const headers = { Authorization: `Bearer ${localStorage.getItem('token')}` }
+    const headers = { Authorization: `Bearer ${token}` }
     
     try {
       const response = await axios.delete(URL_ENDPOINT, { headers })
