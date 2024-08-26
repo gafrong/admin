@@ -230,7 +230,7 @@ export function VendorList() {
   console.log('<VendorList>', vendors)
 
   const handleDeleteVendor = async (userId) => {
-    const URL_ENDPOINT = `${baseURL}vendor/${userId}`
+    const URL_ENDPOINT = `${baseURL}api/v1/vendor/${userId}`
     const headers = { Authorization: `Bearer ${token}` }
     
     try {
@@ -244,11 +244,19 @@ export function VendorList() {
       }
     } catch (error) {
       console.error('Error deleting vendor:', error)
-      toast({
-        title: "Error",
-        description: "Failed to delete the vendor. Please try again.",
-        variant: "destructive",
-      })
+      if (error.response && error.response.status === 404) {
+        toast({
+          title: "Error",
+          description: "Vendor not found. It may have already been deleted.",
+          variant: "destructive",
+        })
+      } else {
+        toast({
+          title: "Error",
+          description: "Failed to delete the vendor. Please try again.",
+          variant: "destructive",
+        })
+      }
     }
   }
 
