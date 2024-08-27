@@ -49,21 +49,6 @@ const HeaderUserId = ({ column }) => (
   <ButtonSortable column={column}>User Id</ButtonSortable>
 )
 
-const deleteVendor = async (userId) => {
-  try {
-    const response = await fetch(`/api/vendor/${userId}`, {
-      method: 'DELETE',
-    });
-    if (!response.ok) {
-      throw new Error('Failed to delete vendor');
-    }
-    return true;
-  } catch (error) {
-    console.error('Error deleting vendor:', error);
-    return false;
-  }
-};
-
 export const getColumns = (handleDeleteVendor) => [
   // CellUser
   {
@@ -198,14 +183,23 @@ export const getColumns = (handleDeleteVendor) => [
   },
 ]
 
-// import { columns, searchableColumnHeaders } from './columns'
-
 export const searchableColumnHeaders = [
   { id: 'userId', label: 'user id' },
   { id: 'id', label: 'vendor id' },
   { id: 'Bank account name', label: 'bank account' },
   // { id: 'isPending', label: 'pending' },
 ]
+
+const controls = {
+  isSearchAlwaysShown: true,
+  searchableColumnHeaders,
+  columnVisibilityToggles: true,
+  columnBooleanFilterToggle: [
+    { id: 'isPending', label: 'Pending' },
+    { id: 'submitted', label: 'Submitted' },
+    { id: 'confirmed', label: 'Confirmed' },
+  ],
+}
 
 export function VendorList() {
   const { toast } = useToast()
@@ -251,16 +245,7 @@ export function VendorList() {
     }
   }
 
-  const controls = {
-    isSearchAlwaysShown: true,
-    searchableColumnHeaders,
-    columnVisibilityToggles: true,
-    columnBooleanFilterToggle: [
-      { id: 'isPending', label: 'Pending' },
-      { id: 'submitted', label: 'Submitted' },
-      { id: 'confirmed', label: 'Confirmed' },
-    ],
-  }
+
 
   const columns = getColumns(handleDeleteVendor)
 
