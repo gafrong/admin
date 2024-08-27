@@ -64,12 +64,12 @@ const deleteVendor = async (userId) => {
   }
 };
 
-export const columns = [
+export const getColumns = (handleDeleteVendor) => [
   // CellUser
   {
     header: 'User',
-    accessorKey: 'user', // This is a placeholder; it's not used but helps identify the column
-    id: 'user', // This is a placeholder; it's not used but helps identify the column
+    accessorKey: 'user',
+    id: 'user',
     cell: CellUser,
   },
   {
@@ -78,7 +78,7 @@ export const columns = [
     id: 'id',
     cell: ({ row }) => {
       if (!row.original._id)
-        return <div className=" text-red-900">Invalid vendor id</div>
+        return <div className="text-red-900">Invalid vendor id</div>
       return (
         <Link
           className="text-blue-500 underline"
@@ -88,7 +88,6 @@ export const columns = [
         </Link>
       )
     },
-    // filterFn: filterId,
   },
   {
     accessorKey: 'userId',
@@ -96,7 +95,7 @@ export const columns = [
     header: HeaderUserId,
     cell: ({ row }) => {
       if (!row.original.userId)
-        return <div className=" text-red-900">Invalid user id</div>
+        return <div className="text-red-900">Invalid user id</div>
       return (
         <Link
           className="text-blue-500 underline"
@@ -106,40 +105,35 @@ export const columns = [
         </Link>
       )
     },
-    // filterFn: filterUserName,
   },
   {
     accessorKey: 'isPending',
     id: 'isPending',
     header: HeaderIsPending,
-    // filterFn: filterPending,
-
-    // header: 'pending',
     cell: ({ row }) => {
-      return row.original.isPending ?
-          <Link
-            href={`/superuser/vendor/pending/${row.original.userId}`}
-            className="text-blue-500 underline"
-          >
-            view pending
-          </Link>
-        : <BooleanDot isTrue={row.original.isPending} />
+      return row.original.isPending ? (
+        <Link
+          href={`/superuser/vendor/pending/${row.original.userId}`}
+          className="text-blue-500 underline"
+        >
+          view pending
+        </Link>
+      ) : (
+        <BooleanDot isTrue={row.original.isPending} />
+      )
     },
   },
-
   {
     accessorKey: 'submitted',
     id: 'submitted',
     header: 'submitted',
     cell: ({ row }) => <BooleanDot isTrue={row.original.submitted} />,
-    // filterFn: filterUserName,
   },
   {
     accessorKey: 'confirmed',
     id: 'confirmed',
     header: 'confirmed',
     cell: ({ row }) => <BooleanDot isTrue={row.original.confirmed} />,
-    // filterFn: filterUserName,
   },
   {
     accessorKey: 'bank.accountName',
@@ -149,7 +143,6 @@ export const columns = [
     filter: filterByBankAccountName,
   },
   {
-    // accessorKey: 'bank.accountName',
     id: 'View Business Details',
     header: 'View Business Details',
     cell: ({ row }) => {
@@ -184,10 +177,8 @@ export const columns = [
   },
   {
     id: 'bank details approval Date',
-
     header: 'Bank Details Approved',
     accessor: ({ bank }) => {
-      // Check if bank is defined and has an approvedAt property
       if (!(bank && bank.approvedAt)) return ''
       return ifDate(bank.approvedAt)
     },
@@ -197,7 +188,7 @@ export const columns = [
     header: 'Delete',
     cell: ({ row }) => (
       <Button
-        onClick={() => row.deleteVendor(row.original.userId)}
+        onClick={() => handleDeleteVendor(row.original.userId)}
         variant="destructive"
         size="sm"
       >
@@ -271,35 +262,12 @@ export function VendorList() {
     ],
   }
 
-  const DeleteButton = ({ userId }) => {
-    const [isLoading, setIsLoading] = useState(false)
-
-    const onDelete = async () => {
-      setIsLoading(true)
-      await handleDeleteVendor(userId)
-      setIsLoading(false)
-    }
-
-    return (
-      <Button
-        onClick={onDelete}
-        variant="destructive"
-        size="sm"
-        disabled={isLoading}
-      >
-        Delete
-        {isLoading && <LoadingSpinnerButton />}
-      </Button>
-    )
-  }
+  const columns = getColumns(handleDeleteVendor)
 
   return (
     <>
       <DataTable
-        columns={columns.map(col => col.id === 'delete' ? {
-          ...col,
-          cell: ({ row }) => <DeleteButton userId={row.original.userId} />
-        } : col)}
+        columns={columns}
         controls={controls}
         data={vendors}
         defaultCellStyle="align-top"
