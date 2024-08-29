@@ -2,6 +2,7 @@ import Link from 'next/link'
 import { ButtonSortable } from '@/components/data-table/data-table-button-sorting'
 import { cn, ifDate } from '@/lib/utils'
 import { Button } from '@/components/ui/button'
+import { ProfileMini } from '../users/page'
 
 // Components
 export const CellUser = ({ row }) => {
