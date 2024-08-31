@@ -1,6 +1,6 @@
 'use client'
 
-import { useFetchAuth } from '@/app/orders/manage/use-fetch-auth'
+import { useFetchAuth } from '@/app/fetch/use-fetch-auth'
 import baseURL from '@/assets/common/baseUrl'
 import { ButtonLoader } from '@/components/LoadingSpinner'
 import { PageContainer, PageTitle } from '@/components/typography/PageTitle'
