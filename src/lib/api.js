@@ -12,9 +12,8 @@ export const useVendorSupportQueryMessages = (id) => {
   return useFetchAuth(`vendor-support-query/${id}/messages`)
 }
 
-export const useCreateVendorSupportQuery = () => {
-  const { executeRequest } = useFetchAuth('vendor-support-query/')
-  return (data) => executeRequest('POST', data)
+export const useCreateVendorSupportQuery = (data) => {
+  return useFetchAuth('vendor-support-query/', { method: 'POST', data })
 }
 
 export const useUpdateVendorSupportQuery = (id) => {
