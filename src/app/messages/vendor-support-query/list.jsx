@@ -1,31 +1,19 @@
 'use client'
 
-import React, { useState, useEffect } from 'react'
+import React from 'react'
 import { useSession } from 'next-auth/react'
 import Link from 'next/link'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
 import { Button } from '@/components/ui/button'
-import { getVendorSupportQueries } from '@/lib/api'
+import { useVendorSupportQueries } from '@/lib/api'
 
 export default function ListVendorSupportQueries() {
   const { data: session } = useSession()
-  const [queries, setQueries] = useState([])
+  const { data: queries, error, isLoading } = useVendorSupportQueries(session?.user?.id)
 
-  useEffect(() => {
-    if (session?.user?.id) {
-      fetchQueries(session.user.id)
-    }
-  }, [session])
-
-  const fetchQueries = async (userId) => {
-    try {
-      const data = await getVendorSupportQueries(userId)
-      setQueries(data)
-    } catch (error) {
-      console.error('Error fetching queries:', error)
-    }
-  }
+  if (isLoading) return <div>Loading...</div>
+  if (error) return <div>Error: {error.message}</div>
 
   return (
     <Card>
@@ -43,7 +31,7 @@ export default function ListVendorSupportQueries() {
             </TableRow>
           </TableHeader>
           <TableBody>
-            {queries.map((query) => (
+            {queries?.map((query) => (
               <TableRow key={query.id}>
                 <TableCell>{query.id}</TableCell>
                 <TableCell>{query.subject}</TableCell>

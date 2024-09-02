@@ -1,39 +1,61 @@
-import axios from 'axios';
+import { useFetchAuth } from '@/app/fetch/use-fetch-auth'
 
-const baseURL = 'http://localhost:3001/api/v1/';
-const api = axios.create({ baseURL });
+const baseURL = 'http://localhost:3001/api/v1/'
 
-export const createVendorSupportQuery = async (data) => {
-  const response = await api.post('vendor-support-query/', data);
-  return response.data;
-};
+export const useVendorSupportQueries = (userId) => {
+  return useFetchAuth(`vendor-support-query/user/${userId}`)
+}
 
-export const getVendorSupportQueries = async (userId) => {
-  const response = await api.get(`vendor-support-query/user/${userId}`);
-  return response.data;
-};
+export const useVendorSupportQuery = (id) => {
+  return useFetchAuth(`vendor-support-query/${id}`)
+}
 
-export const getVendorSupportQuery = async (id) => {
-  const response = await api.get(`vendor-support-query/${id}`);
-  return response.data;
-};
+export const useVendorSupportQueryMessages = (id) => {
+  return useFetchAuth(`vendor-support-query/${id}/messages`)
+}
 
-export const updateVendorSupportQuery = async (id, data) => {
-  const response = await api.put(`vendor-support-query/${id}`, data);
-  return response.data;
-};
+export const createVendorSupportQuery = async (data, token) => {
+  const response = await fetch(`${baseURL}vendor-support-query/`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${token}`,
+    },
+    body: JSON.stringify(data),
+  })
+  return response.json()
+}
 
-export const deleteVendorSupportQuery = async (id) => {
-  const response = await api.delete(`vendor-support-query/${id}`);
-  return response.data;
-};
+export const updateVendorSupportQuery = async (id, data, token) => {
+  const response = await fetch(`${baseURL}vendor-support-query/${id}`, {
+    method: 'PUT',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${token}`,
+    },
+    body: JSON.stringify(data),
+  })
+  return response.json()
+}
 
-export const addMessageToVendorSupportQuery = async (id, data) => {
-  const response = await api.post(`vendor-support-query/${id}/messages`, data);
-  return response.data;
-};
+export const deleteVendorSupportQuery = async (id, token) => {
+  const response = await fetch(`${baseURL}vendor-support-query/${id}`, {
+    method: 'DELETE',
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  })
+  return response.json()
+}
 
-export const getMessagesForVendorSupportQuery = async (id) => {
-  const response = await api.get(`vendor-support-query/${id}/messages`);
-  return response.data;
-};
+export const addMessageToVendorSupportQuery = async (id, data, token) => {
+  const response = await fetch(`${baseURL}vendor-support-query/${id}/messages`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${token}`,
+    },
+    body: JSON.stringify(data),
+  })
+  return response.json()
+}

@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useState, useEffect } from 'react'
+import React from 'react'
 import { useSession } from 'next-auth/react'
 import { useParams } from 'next/navigation'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
@@ -10,7 +10,7 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import * as z from 'zod'
-import { getVendorSupportQuery, addMessageToVendorSupportQuery, getMessagesForVendorSupportQuery } from '@/lib/api'
+import { useVendorSupportQuery, useVendorSupportQueryMessages, addMessageToVendorSupportQuery } from '@/lib/api'
 
 const replySchema = z.object({
   content: z.string().min(1, 'Reply is required'),
@@ -19,8 +19,8 @@ const replySchema = z.object({
 export default function VendorSupportQueryDetails() {
   const { data: session } = useSession()
   const params = useParams()
-  const [query, setQuery] = useState(null)
-  const [messages, setMessages] = useState([])
+  const { data: query, error: queryError, isLoading: queryLoading, mutate: mutateQuery } = useVendorSupportQuery(params.id)
+  const { data: messages, error: messagesError, isLoading: messagesLoading, mutate: mutateMessages } = useVendorSupportQueryMessages(params.id)
 
   const form = useForm({
     resolver: zodResolver(replySchema),
@@ -29,44 +29,25 @@ export default function VendorSupportQueryDetails() {
     },
   })
 
-  useEffect(() => {
-    fetchQueryDetails()
-    fetchMessages()
-  }, [params.id])
-
-  const fetchQueryDetails = async () => {
-    try {
-      const data = await getVendorSupportQuery(params.id)
-      setQuery(data)
-    } catch (error) {
-      console.error('Error fetching query details:', error)
-    }
-  }
-
-  const fetchMessages = async () => {
-    try {
-      const data = await getMessagesForVendorSupportQuery(params.id)
-      setMessages(data)
-    } catch (error) {
-      console.error('Error fetching messages:', error)
-    }
-  }
-
   const onSubmit = async (values) => {
     try {
       await addMessageToVendorSupportQuery(params.id, {
         senderId: session.user.id,
         ...values,
-      })
+      }, session.token)
       form.reset()
-      fetchMessages() // Refresh the messages
+      mutateMessages() // Refresh the messages
     } catch (error) {
       console.error('Error submitting reply:', error)
     }
   }
 
-  if (!query) {
+  if (queryLoading || messagesLoading) {
     return <div>Loading...</div>
+  }
+
+  if (queryError || messagesError) {
+    return <div>Error: {queryError?.message || messagesError?.message}</div>
   }
 
   return (
@@ -81,7 +62,7 @@ export default function VendorSupportQueryDetails() {
           <p><strong>Message:</strong> {query.message}</p>
         </div>
         <h3 className="text-lg font-semibold mb-2">Messages</h3>
-        {messages.length > 0 ? (
+        {messages?.length > 0 ? (
           <ul className="mb-4 space-y-2">
             {messages.map((message, index) => (
               <li key={index} className="p-2 bg-gray-100 rounded">
