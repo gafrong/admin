@@ -11,6 +11,7 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '
 import { Input } from '@/components/ui/input'
 import { Textarea } from '@/components/ui/textarea'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { createVendorSupportQuery } from '@/lib/api'
 
 const formSchema = z.object({
   subject: z.string().min(1, 'Subject is required'),
@@ -31,19 +32,12 @@ export default function NewVendorSupportQuery() {
 
   const onSubmit = async (values) => {
     try {
-      const response = await fetch('/api/vendor-support-queries', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(values),
-      })
-
-      if (response.ok) {
-        router.push('/messages/vendor-support-query/list')
-      } else {
-        console.error('Failed to submit query')
+      const data = {
+        userId: session.user.id,
+        ...values,
       }
+      await createVendorSupportQuery(data)
+      router.push('/messages/vendor-support-query/list')
     } catch (error) {
       console.error('Error submitting query:', error)
     }

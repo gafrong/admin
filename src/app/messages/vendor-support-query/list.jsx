@@ -6,24 +6,22 @@ import Link from 'next/link'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
 import { Button } from '@/components/ui/button'
+import { getVendorSupportQueries } from '@/lib/api'
 
 export default function ListVendorSupportQueries() {
   const { data: session } = useSession()
   const [queries, setQueries] = useState([])
 
   useEffect(() => {
-    fetchQueries()
-  }, [])
+    if (session?.user?.id) {
+      fetchQueries(session.user.id)
+    }
+  }, [session])
 
-  const fetchQueries = async () => {
+  const fetchQueries = async (userId) => {
     try {
-      const response = await fetch('/api/vendor-support-queries')
-      if (response.ok) {
-        const data = await response.json()
-        setQueries(data)
-      } else {
-        console.error('Failed to fetch queries')
-      }
+      const data = await getVendorSupportQueries(userId)
+      setQueries(data)
     } catch (error) {
       console.error('Error fetching queries:', error)
     }
