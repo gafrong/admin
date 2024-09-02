@@ -31,15 +31,16 @@ export default function NewVendorSupportQuery() {
   })
 
   const onSubmit = async (values) => {
-    try {
-      const data = {
-        userId: session.user.id,
-        ...values,
-      }
-      await createVendorSupportQuery(data)
-      router.push('/messages/vendor-support-query/list')
-    } catch (error) {
+    const data = {
+      userId: session.user.id,
+      ...values,
+    }
+    const { error } = await useCreateVendorSupportQuery(data)
+    
+    if (error) {
       console.error('Error submitting query:', error)
+    } else {
+      router.push('/messages/vendor-support-query/list')
     }
   }
 
