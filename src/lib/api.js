@@ -3,7 +3,7 @@ import { useFetchAuth } from '@/app/fetch/use-fetch-auth'
 const baseURL = 'http://localhost:3001/api/v1/'
 
 export const useVendorSupportQueries = (userId) => {
-  return useFetchAuth(`vendor-support-query/user/${userId}`)
+  return useFetchAuth(userId ? `vendor-support-query/user/${userId}` : null)
 }
 
 export const useVendorSupportQuery = (id) => {

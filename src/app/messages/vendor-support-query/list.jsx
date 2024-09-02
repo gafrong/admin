@@ -9,11 +9,12 @@ import { Button } from '@/components/ui/button'
 import { useVendorSupportQueries } from '@/lib/api'
 
 export default function ListVendorSupportQueries() {
-  const { data: session } = useSession()
+  const { data: session, status } = useSession()
   const { data: queries, error, isLoading } = useVendorSupportQueries(session?.user?.id)
 
-  if (isLoading) return <div>Loading...</div>
+  if (status === 'loading' || isLoading) return <div>Loading...</div>
   if (error) return <div>Error: {error.message}</div>
+  if (!session) return <div>Please sign in to view your support queries.</div>
 
   return (
     <Card>
@@ -21,32 +22,36 @@ export default function ListVendorSupportQueries() {
         <CardTitle>Support Queries</CardTitle>
       </CardHeader>
       <CardContent>
-        <Table>
-          <TableHeader>
-            <TableRow>
-              <TableHead>ID</TableHead>
-              <TableHead>Subject</TableHead>
-              <TableHead>Status</TableHead>
-              <TableHead>Actions</TableHead>
-            </TableRow>
-          </TableHeader>
-          <TableBody>
-            {queries?.map((query) => (
-              <TableRow key={query.id}>
-                <TableCell>{query.id}</TableCell>
-                <TableCell>{query.subject}</TableCell>
-                <TableCell>{query.status}</TableCell>
-                <TableCell>
-                  <Button asChild variant="link">
-                    <Link href={`/messages/vendor-support-query/${query.id}`}>
-                      View
-                    </Link>
-                  </Button>
-                </TableCell>
+        {queries && queries.length > 0 ? (
+          <Table>
+            <TableHeader>
+              <TableRow>
+                <TableHead>ID</TableHead>
+                <TableHead>Subject</TableHead>
+                <TableHead>Status</TableHead>
+                <TableHead>Actions</TableHead>
               </TableRow>
-            ))}
-          </TableBody>
-        </Table>
+            </TableHeader>
+            <TableBody>
+              {queries.map((query) => (
+                <TableRow key={query.id}>
+                  <TableCell>{query.id}</TableCell>
+                  <TableCell>{query.subject}</TableCell>
+                  <TableCell>{query.status}</TableCell>
+                  <TableCell>
+                    <Button asChild variant="link">
+                      <Link href={`/messages/vendor-support-query/${query.id}`}>
+                        View
+                      </Link>
+                    </Button>
+                  </TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        ) : (
+          <p>No support queries found.</p>
+        )}
       </CardContent>
     </Card>
   )
