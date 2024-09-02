@@ -1,24 +1,42 @@
 'use client'
 
-import React, { useState } from 'react'
+import React from 'react'
 import { useSession } from 'next-auth/react'
 import { useRouter } from 'next/navigation'
+import { useForm } from 'react-hook-form'
+import { zodResolver } from '@hookform/resolvers/zod'
+import * as z from 'zod'
+import { Button } from '@/components/ui/button'
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form'
+import { Input } from '@/components/ui/input'
+import { Textarea } from '@/components/ui/textarea'
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+
+const formSchema = z.object({
+  subject: z.string().min(1, 'Subject is required'),
+  message: z.string().min(1, 'Message is required'),
+})
 
 export default function NewVendorSupportQuery() {
   const { data: session } = useSession()
   const router = useRouter()
-  const [subject, setSubject] = useState('')
-  const [message, setMessage] = useState('')
 
-  const handleSubmit = async (e) => {
-    e.preventDefault()
+  const form = useForm({
+    resolver: zodResolver(formSchema),
+    defaultValues: {
+      subject: '',
+      message: '',
+    },
+  })
+
+  const onSubmit = async (values) => {
     try {
       const response = await fetch('/api/vendor-support-queries', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ subject, message }),
+        body: JSON.stringify(values),
       })
 
       if (response.ok) {
@@ -32,35 +50,43 @@ export default function NewVendorSupportQuery() {
   }
 
   return (
-    <div>
-      <h2 className="text-xl font-semibold mb-4">New Support Query</h2>
-      <form onSubmit={handleSubmit} className="space-y-4">
-        <div>
-          <label htmlFor="subject" className="block mb-1">Subject</label>
-          <input
-            type="text"
-            id="subject"
-            value={subject}
-            onChange={(e) => setSubject(e.target.value)}
-            className="w-full p-2 border rounded"
-            required
-          />
-        </div>
-        <div>
-          <label htmlFor="message" className="block mb-1">Message</label>
-          <textarea
-            id="message"
-            value={message}
-            onChange={(e) => setMessage(e.target.value)}
-            className="w-full p-2 border rounded"
-            rows="4"
-            required
-          ></textarea>
-        </div>
-        <button type="submit" className="bg-blue-500 text-white px-4 py-2 rounded">
-          Submit Query
-        </button>
-      </form>
-    </div>
+    <Card>
+      <CardHeader>
+        <CardTitle>New Support Query</CardTitle>
+      </CardHeader>
+      <CardContent>
+        <Form {...form}>
+          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+            <FormField
+              control={form.control}
+              name="subject"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Subject</FormLabel>
+                  <FormControl>
+                    <Input placeholder="Enter subject" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="message"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Message</FormLabel>
+                  <FormControl>
+                    <Textarea placeholder="Enter your message" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <Button type="submit">Submit Query</Button>
+          </form>
+        </Form>
+      </CardContent>
+    </Card>
   )
 }

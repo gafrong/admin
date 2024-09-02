@@ -3,12 +3,29 @@
 import React, { useState, useEffect } from 'react'
 import { useSession } from 'next-auth/react'
 import { useParams } from 'next/navigation'
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { Button } from '@/components/ui/button'
+import { Textarea } from '@/components/ui/textarea'
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form'
+import { useForm } from 'react-hook-form'
+import { zodResolver } from '@hookform/resolvers/zod'
+import * as z from 'zod'
+
+const replySchema = z.object({
+  reply: z.string().min(1, 'Reply is required'),
+})
 
 export default function VendorSupportQueryDetails() {
   const { data: session } = useSession()
   const params = useParams()
   const [query, setQuery] = useState(null)
-  const [reply, setReply] = useState('')
+
+  const form = useForm({
+    resolver: zodResolver(replySchema),
+    defaultValues: {
+      reply: '',
+    },
+  })
 
   useEffect(() => {
     fetchQueryDetails()
@@ -28,19 +45,18 @@ export default function VendorSupportQueryDetails() {
     }
   }
 
-  const handleReply = async (e) => {
-    e.preventDefault()
+  const onSubmit = async (values) => {
     try {
       const response = await fetch(`/api/vendor-support-queries/${params.id}/reply`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ reply }),
+        body: JSON.stringify(values),
       })
 
       if (response.ok) {
-        setReply('')
+        form.reset()
         fetchQueryDetails() // Refresh the query details
       } else {
         console.error('Failed to submit reply')
@@ -55,42 +71,48 @@ export default function VendorSupportQueryDetails() {
   }
 
   return (
-    <div>
-      <h2 className="text-xl font-semibold mb-4">Query Details</h2>
-      <div className="mb-4">
-        <p><strong>Subject:</strong> {query.subject}</p>
-        <p><strong>Status:</strong> {query.status}</p>
-        <p><strong>Message:</strong> {query.message}</p>
-      </div>
-      <h3 className="text-lg font-semibold mb-2">Replies</h3>
-      {query.replies && query.replies.length > 0 ? (
-        <ul className="mb-4">
-          {query.replies.map((reply, index) => (
-            <li key={index} className="mb-2">
-              <p><strong>{reply.isAdmin ? 'Admin' : 'You'}:</strong> {reply.message}</p>
-              <p className="text-sm text-gray-500">{new Date(reply.createdAt).toLocaleString()}</p>
-            </li>
-          ))}
-        </ul>
-      ) : (
-        <p className="mb-4">No replies yet.</p>
-      )}
-      <form onSubmit={handleReply} className="space-y-4">
-        <div>
-          <label htmlFor="reply" className="block mb-1">Your Reply</label>
-          <textarea
-            id="reply"
-            value={reply}
-            onChange={(e) => setReply(e.target.value)}
-            className="w-full p-2 border rounded"
-            rows="4"
-            required
-          ></textarea>
+    <Card>
+      <CardHeader>
+        <CardTitle>Query Details</CardTitle>
+      </CardHeader>
+      <CardContent>
+        <div className="mb-4">
+          <p><strong>Subject:</strong> {query.subject}</p>
+          <p><strong>Status:</strong> {query.status}</p>
+          <p><strong>Message:</strong> {query.message}</p>
         </div>
-        <button type="submit" className="bg-blue-500 text-white px-4 py-2 rounded">
-          Send Reply
-        </button>
-      </form>
-    </div>
+        <h3 className="text-lg font-semibold mb-2">Replies</h3>
+        {query.replies && query.replies.length > 0 ? (
+          <ul className="mb-4 space-y-2">
+            {query.replies.map((reply, index) => (
+              <li key={index} className="p-2 bg-gray-100 rounded">
+                <p><strong>{reply.isAdmin ? 'Admin' : 'You'}:</strong> {reply.message}</p>
+                <p className="text-sm text-gray-500">{new Date(reply.createdAt).toLocaleString()}</p>
+              </li>
+            ))}
+          </ul>
+        ) : (
+          <p className="mb-4">No replies yet.</p>
+        )}
+        <Form {...form}>
+          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+            <FormField
+              control={form.control}
+              name="reply"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Your Reply</FormLabel>
+                  <FormControl>
+                    <Textarea placeholder="Enter your reply" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <Button type="submit">Send Reply</Button>
+          </form>
+        </Form>
+      </CardContent>
+    </Card>
   )
 }
