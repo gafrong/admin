@@ -260,10 +260,16 @@ const Sidebar = () => {
           </AccordionTrigger>
           <AccordionContent>
             <Link
-              href="/messages/vendor-support-query"
+              href="/messages/vendor-support-query/list"
               className="flex flex-col pb-3 pl-3 pt-3 hover:bg-slate-200"
             >
-              Vendor Support
+              List Queries
+            </Link>
+            <Link
+              href="/messages/vendor-support-query/new"
+              className="flex flex-col pb-3 pl-3 pt-3 hover:bg-slate-200"
+            >
+              New Query
             </Link>
           </AccordionContent>
         </AccordionItem>
