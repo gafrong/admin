@@ -1,6 +1,6 @@
 'use client'
 
-import React from 'react'
+import React, { useState } from 'react'
 import { useSession } from 'next-auth/react'
 import { useRouter } from 'next/navigation'
 import NewVendorSupportQuery from './new'
@@ -9,6 +9,7 @@ import ListVendorSupportQueries from './list'
 export default function VendorSupportQueryPage({ params }) {
   const { data: session, status } = useSession()
   const router = useRouter()
+  const [currentView, setCurrentView] = useState('list')
 
   React.useEffect(() => {
     if (status === 'loading') return // Do nothing while loading
@@ -28,13 +29,25 @@ export default function VendorSupportQueryPage({ params }) {
   return (
     <div className="p-4">
       <h1 className="text-2xl font-bold mb-4">Vendor Support Query</h1>
-      {params.action === 'new' ? (
-        <NewVendorSupportQuery />
-      ) : params.action === 'list' ? (
-        <ListVendorSupportQueries />
-      ) : (
-        <p>Invalid action. Please use /new or /list.</p>
-      )}
+      <div className="mb-4">
+        <button
+          onClick={() => setCurrentView('list')}
+          className={`mr-2 px-4 py-2 rounded ${
+            currentView === 'list' ? 'bg-blue-500 text-white' : 'bg-gray-200'
+          }`}
+        >
+          List Queries
+        </button>
+        <button
+          onClick={() => setCurrentView('new')}
+          className={`px-4 py-2 rounded ${
+            currentView === 'new' ? 'bg-blue-500 text-white' : 'bg-gray-200'
+          }`}
+        >
+          New Query
+        </button>
+      </div>
+      {currentView === 'new' ? <NewVendorSupportQuery /> : <ListVendorSupportQueries />}
     </div>
   )
 }
