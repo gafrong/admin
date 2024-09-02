@@ -3,20 +3,26 @@ import axios from 'axios'
 import { useSession } from 'next-auth/react'
 import useSWR from 'swr'
 
-export const useFetchAuth = (path) => {
+export const useFetchAuth = (path, options = {}) => {
   const url = path ? `${baseURL}${path}` : null
   const { data: session } = useSession()
   const token = session?.token
   const vendorId = session?.user?._id
 
-  const fetcher = async (url) => {
+  const fetcher = async (url, method = 'GET', data = null) => {
     console.log(`useFetchAuth(): ${token ? 'A' : 'No'} token found for ${url}`)
     const headers = {
       'Content-Type': 'application/json',
       Authorization: `Bearer ${token}`,
     }
     try {
-      const response = await axios.get(url, { headers })
+      const config = {
+        method,
+        url,
+        headers,
+        data: data ? JSON.stringify(data) : undefined,
+      }
+      const response = await axios(config)
       return response.data
     } catch (error) {
       if (error.response && error.response.status === 401) {
@@ -25,23 +31,40 @@ export const useFetchAuth = (path) => {
       } else {
         console.error('useFetchAuth() error:', { error, url })
       }
-      return null
+      throw error
     }
   }
 
-  // useSWR() uses isLoading, useSession uses status === 'loading'
-  // swr will not fetch if url is null, ie if token is not present
-  const { data, error, isLoading, mutate } = useSWR(url, fetcher, {
-    revalidateOnFocus: false,
-  })
+  const { data, error, isLoading, mutate } = useSWR(
+    url ? [url, options.method, options.data] : null,
+    ([url, method, data]) => fetcher(url, method, data),
+    {
+      revalidateOnFocus: false,
+      ...options,
+    }
+  )
+
   if (error) {
     console.error('useFetchAuth() error:', { error, url })
   }
+
+  const executeRequest = async (method, data) => {
+    try {
+      const result = await fetcher(url, method, data)
+      mutate()
+      return result
+    } catch (error) {
+      console.error('executeRequest error:', error)
+      throw error
+    }
+  }
+
   return {
     data,
     error,
     isLoading,
     mutate,
     vendorId,
+    executeRequest,
   }
 }
