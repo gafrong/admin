@@ -1,17 +1,48 @@
 'use client'
 
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { useSession } from 'next-auth/react'
+import { useRouter } from 'next/navigation'
+import io from 'socket.io-client'
+
+let socket
 
 export default function NewVendorSupportQuery() {
   const { data: session } = useSession()
+  const router = useRouter()
   const [subject, setSubject] = useState('')
   const [message, setMessage] = useState('')
 
+  useEffect(() => {
+    // Connect to the WebSocket server
+    socket = io()
+    
+    return () => {
+      if (socket) socket.disconnect()
+    }
+  }, [])
+
   const handleSubmit = async (e) => {
     e.preventDefault()
-    // TODO: Implement the API call to submit the new query
-    console.log('Submitting new query:', { subject, message })
+    try {
+      const response = await fetch('/api/vendor-support-queries', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ subject, message }),
+      })
+
+      if (response.ok) {
+        const newQuery = await response.json()
+        socket.emit('new-query', newQuery)
+        router.push('/messages/vendor-support-query/list')
+      } else {
+        console.error('Failed to submit query')
+      }
+    } catch (error) {
+      console.error('Error submitting query:', error)
+    }
   }
 
   return (

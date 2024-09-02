@@ -2,19 +2,52 @@
 
 import React, { useState, useEffect } from 'react'
 import { useSession } from 'next-auth/react'
+import io from 'socket.io-client'
+
+let socket
 
 export default function ListVendorSupportQueries() {
   const { data: session } = useSession()
   const [queries, setQueries] = useState([])
 
   useEffect(() => {
-    // TODO: Implement the API call to fetch the list of queries
-    // For now, we'll use dummy data
-    setQueries([
-      { id: 1, subject: 'Sample Query 1', status: 'Open' },
-      { id: 2, subject: 'Sample Query 2', status: 'Closed' },
-    ])
+    // Connect to the WebSocket server
+    socket = io()
+
+    // Fetch initial queries
+    fetchQueries()
+
+    // Listen for real-time updates
+    socket.on('new-query', (newQuery) => {
+      setQueries((prevQueries) => [...prevQueries, newQuery])
+    })
+
+    socket.on('update-query', (updatedQuery) => {
+      setQueries((prevQueries) =>
+        prevQueries.map((query) =>
+          query.id === updatedQuery.id ? updatedQuery : query
+        )
+      )
+    })
+
+    return () => {
+      if (socket) socket.disconnect()
+    }
   }, [])
+
+  const fetchQueries = async () => {
+    try {
+      const response = await fetch('/api/vendor-support-queries')
+      if (response.ok) {
+        const data = await response.json()
+        setQueries(data)
+      } else {
+        console.error('Failed to fetch queries')
+      }
+    } catch (error) {
+      console.error('Error fetching queries:', error)
+    }
+  }
 
   return (
     <div>
