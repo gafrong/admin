@@ -2,37 +2,14 @@
 
 import React, { useState, useEffect } from 'react'
 import { useSession } from 'next-auth/react'
-import io from 'socket.io-client'
-
-let socket
+import Link from 'next/link'
 
 export default function ListVendorSupportQueries() {
   const { data: session } = useSession()
   const [queries, setQueries] = useState([])
 
   useEffect(() => {
-    // Connect to the WebSocket server
-    socket = io()
-
-    // Fetch initial queries
     fetchQueries()
-
-    // Listen for real-time updates
-    socket.on('new-query', (newQuery) => {
-      setQueries((prevQueries) => [...prevQueries, newQuery])
-    })
-
-    socket.on('update-query', (updatedQuery) => {
-      setQueries((prevQueries) =>
-        prevQueries.map((query) =>
-          query.id === updatedQuery.id ? updatedQuery : query
-        )
-      )
-    })
-
-    return () => {
-      if (socket) socket.disconnect()
-    }
   }, [])
 
   const fetchQueries = async () => {
@@ -58,6 +35,7 @@ export default function ListVendorSupportQueries() {
             <th className="border p-2 text-left">ID</th>
             <th className="border p-2 text-left">Subject</th>
             <th className="border p-2 text-left">Status</th>
+            <th className="border p-2 text-left">Actions</th>
           </tr>
         </thead>
         <tbody>
@@ -66,6 +44,11 @@ export default function ListVendorSupportQueries() {
               <td className="border p-2">{query.id}</td>
               <td className="border p-2">{query.subject}</td>
               <td className="border p-2">{query.status}</td>
+              <td className="border p-2">
+                <Link href={`/messages/vendor-support-query/${query.id}`}>
+                  <a className="text-blue-500 hover:underline">View</a>
+                </Link>
+              </td>
             </tr>
           ))}
         </tbody>

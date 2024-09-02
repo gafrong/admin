@@ -1,26 +1,14 @@
 'use client'
 
-import React, { useState, useEffect } from 'react'
+import React, { useState } from 'react'
 import { useSession } from 'next-auth/react'
 import { useRouter } from 'next/navigation'
-import io from 'socket.io-client'
-
-let socket
 
 export default function NewVendorSupportQuery() {
   const { data: session } = useSession()
   const router = useRouter()
   const [subject, setSubject] = useState('')
   const [message, setMessage] = useState('')
-
-  useEffect(() => {
-    // Connect to the WebSocket server
-    socket = io()
-    
-    return () => {
-      if (socket) socket.disconnect()
-    }
-  }, [])
 
   const handleSubmit = async (e) => {
     e.preventDefault()
@@ -34,8 +22,6 @@ export default function NewVendorSupportQuery() {
       })
 
       if (response.ok) {
-        const newQuery = await response.json()
-        socket.emit('new-query', newQuery)
         router.push('/messages/vendor-support-query/list')
       } else {
         console.error('Failed to submit query')
