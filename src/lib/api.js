@@ -1,6 +1,5 @@
 import { useFetchAuth } from '@/app/fetch/use-fetch-auth'
 import { authRequest } from '@/utils/authRequest'
-import { useSession } from 'next-auth/react'
 
 export const useVendorSupportQueries = (userId) => {
   return useFetchAuth(userId ? `vendor-support-query/user/${userId}` : null)
