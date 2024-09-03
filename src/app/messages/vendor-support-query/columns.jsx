@@ -1,6 +1,7 @@
 import Link from 'next/link'
 import { ButtonSortable } from '@/components/data-table/data-table-button-sorting'
 import { ProfileMini } from '../../superuser/users/page'
+import { ifDate } from '@/lib/utils'
 
 // Components
 export const CellUser = ({ row }) => {
@@ -59,7 +60,13 @@ export const getColumns = () => [
       const lastMessageAt = row.original.lastMessageAt;
       if (lastMessageAt) {
         try {
-          return new Date(lastMessageAt).toLocaleString();
+          const date = new Date(lastMessageAt);
+          return (
+            <div>
+              <div>{ifDate(date)}</div>
+              <div className="text-xs text-gray-500">{date.toLocaleTimeString()}</div>
+            </div>
+          );
         } catch (error) {
           console.error('Error parsing date:', error);
           return 'Invalid date';
