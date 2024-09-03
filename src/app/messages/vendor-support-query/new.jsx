@@ -14,15 +14,17 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { createVendorSupportQuery } from '@/lib/api'
 
 const subjectOptions = [
-  { value: 'general', label: 'General Inquiry' },
-  { value: 'technical', label: 'Technical Support' },
-  { value: 'billing', label: 'Billing Issue' },
-  { value: 'feature', label: 'Feature Request' },
-  { value: 'other', label: 'Other' },
+  { value: 'Product', label: 'Product Query' },
+  { value: 'Customer', label: 'Customer Query' },
+  { value: 'Settlement', label: 'Settlement Query' },
+  { value: 'Order', label: 'Order Query' },
+  { value: 'Video', label: 'Video Query' },
 ]
 
 const formSchema = z.object({
-  subject: z.string().min(1, 'Subject is required'),
+  subject: z.enum(['Product', 'Customer', 'Settlement', 'Order', 'Video'], {
+    required_error: 'Please select a query type',
+  }),
   message: z.string().min(1, 'Message is required'),
 })
 
@@ -68,7 +70,7 @@ export default function NewVendorSupportQuery() {
               name="subject"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Subject</FormLabel>
+                  <FormLabel>Query Type</FormLabel>
                   <Select onValueChange={field.onChange} defaultValue={field.value}>
                     <FormControl>
                       <SelectTrigger>
