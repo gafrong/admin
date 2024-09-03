@@ -14,37 +14,33 @@ export const useVendorSupportQueryMessages = (id) => {
   return useFetchAuth(`vendor-support-query/${id}/messages`)
 }
 
-export const createVendorSupportQuery = async (data) => {
-  const { data: session } = useSession()
+export const createVendorSupportQuery = async (data, token) => {
   return authRequest('vendor-support-query/', {
     method: 'POST',
     data,
-    headers: { 'Authorization': `Bearer ${session.token}` }
+    headers: { 'Authorization': `Bearer ${token}` }
   })
 }
 
-export const updateVendorSupportQuery = async (id, data) => {
-  const { data: session } = useSession()
+export const updateVendorSupportQuery = async (id, data, token) => {
   return authRequest(`vendor-support-query/${id}`, {
     method: 'PUT',
     data,
-    headers: { 'Authorization': `Bearer ${session.token}` }
+    headers: { 'Authorization': `Bearer ${token}` }
   })
 }
 
-export const deleteVendorSupportQuery = async (id) => {
-  const { data: session } = useSession()
+export const deleteVendorSupportQuery = async (id, token) => {
   return authRequest(`vendor-support-query/${id}`, {
     method: 'DELETE',
-    headers: { 'Authorization': `Bearer ${session.token}` }
+    headers: { 'Authorization': `Bearer ${token}` }
   })
 }
 
-export const addMessageToVendorSupportQuery = async (id, data) => {
-  const { data: session } = useSession()
+export const addMessageToVendorSupportQuery = async (id, data, token) => {
   return authRequest(`vendor-support-query/${id}/messages`, {
     method: 'POST',
     data,
-    headers: { 'Authorization': `Bearer ${session.token}` }
+    headers: { 'Authorization': `Bearer ${token}` }
   })
 }

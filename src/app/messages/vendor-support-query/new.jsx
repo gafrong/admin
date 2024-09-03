@@ -31,16 +31,19 @@ export default function NewVendorSupportQuery() {
   })
 
   const onSubmit = async (values) => {
+    if (!session) {
+      console.error('No session found')
+      return
+    }
     const data = {
       userId: session.user.id,
       ...values,
     }
-    const { error } = await useCreateVendorSupportQuery(data)
-    
-    if (error) {
-      console.error('Error submitting query:', error)
-    } else {
+    try {
+      await createVendorSupportQuery(data, session.token)
       router.push('/messages/vendor-support-query/list')
+    } catch (error) {
+      console.error('Error submitting query:', error)
     }
   }
 
