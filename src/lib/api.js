@@ -14,8 +14,6 @@ export const useVendorSupportQueryMessages = (id) => {
 }
 
 export const createVendorSupportQuery = async (data, token) => {
-  console.log('Sending data:', JSON.stringify(data, null, 2))
-  console.log('Token:', token) // Log the token for debugging
   try {
     const response = await authRequest('vendor-support-query/', {
       method: 'POST',
@@ -25,7 +23,6 @@ export const createVendorSupportQuery = async (data, token) => {
         'Content-Type': 'application/json'
       }
     })
-    console.log('Response:', JSON.stringify(response, null, 2))
     return response
   } catch (error) {
     console.error('Full error:', error)
