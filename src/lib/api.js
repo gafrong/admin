@@ -5,7 +5,7 @@ export const useVendorSupportQueries = () => {
   const { data, error } = useFetchAuth('vendor-support-query')
   console.log('Vendor Support Queries:', data)
   console.log('Fetch Error:', error)
-  return { data, error }
+  return { data: data?.data || [], error }
 }
 
 export const useVendorSupportQuery = (id) => {
