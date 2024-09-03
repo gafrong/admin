@@ -8,10 +8,18 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import * as z from 'zod'
 import { Button } from '@/components/ui/button'
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form'
-import { Input } from '@/components/ui/input'
 import { Textarea } from '@/components/ui/textarea'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { createVendorSupportQuery } from '@/lib/api'
+
+const subjectOptions = [
+  { value: 'general', label: 'General Inquiry' },
+  { value: 'technical', label: 'Technical Support' },
+  { value: 'billing', label: 'Billing Issue' },
+  { value: 'feature', label: 'Feature Request' },
+  { value: 'other', label: 'Other' },
+]
 
 const formSchema = z.object({
   subject: z.string().min(1, 'Subject is required'),
@@ -61,9 +69,20 @@ export default function NewVendorSupportQuery() {
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Subject</FormLabel>
-                  <FormControl>
-                    <Input placeholder="Enter subject" {...field} />
-                  </FormControl>
+                  <Select onValueChange={field.onChange} defaultValue={field.value}>
+                    <FormControl>
+                      <SelectTrigger>
+                        <SelectValue placeholder="Select a subject" />
+                      </SelectTrigger>
+                    </FormControl>
+                    <SelectContent>
+                      {subjectOptions.map((option) => (
+                        <SelectItem key={option.value} value={option.value}>
+                          {option.label}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
                   <FormMessage />
                 </FormItem>
               )}
