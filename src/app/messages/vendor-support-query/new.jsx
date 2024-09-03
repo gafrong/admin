@@ -46,13 +46,17 @@ export default function NewVendorSupportQuery() {
       return
     }
     const data = {
-      userId: session.user.id,
       queryType: values.queryType,
       initialMessage: values.initialMessage,
     }
     try {
       console.log('Submitting data:', data)
-      await createVendorSupportQuery(data, session.token)
+      console.log('Session:', session) // Log the entire session object
+      if (!session.accessToken) {
+        console.error('No access token found in session')
+        return
+      }
+      await createVendorSupportQuery(data, session.accessToken)
       router.push('/messages/vendor-support-query/list')
     } catch (error) {
       console.error('Error submitting query:', error)
