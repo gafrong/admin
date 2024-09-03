@@ -5,8 +5,8 @@ const HeaderQueryType = ({ column }) => (
   <ButtonSortable column={column}>Query Type</ButtonSortable>
 )
 
-const HeaderLastMessage = ({ column }) => (
-  <ButtonSortable column={column}>Last Message Time</ButtonSortable>
+const HeaderMessageCount = ({ column }) => (
+  <ButtonSortable column={column}>Messages</ButtonSortable>
 )
 
 const HeaderLastMessageContent = ({ column }) => (
@@ -24,10 +24,10 @@ export const getColumns = () => [
     id: 'queryType',
   },
   {
-    accessorKey: 'lastMessage',
-    header: HeaderLastMessage,
-    id: 'lastMessage',
-    cell: ({ row }) => new Date(row.original.lastMessage).toLocaleString(),
+    accessorKey: 'messageCount',
+    header: HeaderMessageCount,
+    id: 'messageCount',
+    cell: ({ row }) => row.original.messages.length,
   },
   {
     accessorKey: 'lastMessageContent',
