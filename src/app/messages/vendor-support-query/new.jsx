@@ -41,8 +41,8 @@ export default function NewVendorSupportQuery() {
   })
 
   const onSubmit = async (values) => {
-    if (!session) {
-      console.error('No session found')
+    if (!session || !session.user) {
+      console.error('No session or user found')
       return
     }
     console.log({session})
@@ -57,7 +57,7 @@ export default function NewVendorSupportQuery() {
         console.error('No access token found in session')
         return
       }
-      await createVendorSupportQuery(data, session.token)
+      await createVendorSupportQuery(data, session.token, session.user._id)
       router.push('/messages/vendor-support-query/list')
     } catch (error) {
       console.error('Error submitting query:', error)
