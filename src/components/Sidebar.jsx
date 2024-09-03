@@ -255,21 +255,21 @@ const Sidebar = () => {
           <AccordionTrigger>
             <div className="flex flex-row">
               <FiHelpCircle className="mr-2 mt-1" />
-              <div>Vendor Support</div>
+              <div>1:1 문의</div>
             </div>
           </AccordionTrigger>
           <AccordionContent>
-            <Link
-              href="/messages/vendor-support-query/list"
-              className="flex flex-col pb-3 pl-3 pt-3 hover:bg-slate-200"
-            >
-              List Queries
-            </Link>
             <Link
               href="/messages/vendor-support-query/new"
               className="flex flex-col pb-3 pl-3 pt-3 hover:bg-slate-200"
             >
               New Query
+            </Link>
+            <Link
+              href="/messages/vendor-support-query/list"
+              className="flex flex-col pb-3 pl-3 pt-3 hover:bg-slate-200"
+            >
+              List Queries
             </Link>
           </AccordionContent>
         </AccordionItem>

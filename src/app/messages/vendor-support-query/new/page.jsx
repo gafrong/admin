@@ -1,8 +1,9 @@
 'use client'
 
-import React from 'react'
+import { PageContainer, PageTitle } from '@/components/typography/PageTitle'
 import { useSession } from 'next-auth/react'
 import { useRouter } from 'next/navigation'
+import React from 'react'
 import NewVendorSupportQuery from '../new'
 
 export default function NewVendorSupportQueryPage() {
@@ -25,9 +26,9 @@ export default function NewVendorSupportQueryPage() {
   }
 
   return (
-    <div className="p-4">
-      <h1 className="text-2xl font-bold mb-4">New Vendor Support Query</h1>
+    <PageContainer>
+      <PageTitle>New Vendor Support Query</PageTitle>
       <NewVendorSupportQuery />
-    </div>
+    </PageContainer>
   )
 }

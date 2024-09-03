@@ -1,8 +1,9 @@
 'use client'
 
-import React from 'react'
+import { PageContainer, PageTitle } from '@/components/typography/PageTitle'
 import { useSession } from 'next-auth/react'
 import { useRouter } from 'next/navigation'
+import React from 'react'
 import ListVendorSupportQueries from '../list'
 
 export default function ListVendorSupportQueryPage() {
@@ -25,9 +26,9 @@ export default function ListVendorSupportQueryPage() {
   }
 
   return (
-    <div className="p-4">
-      <h1 className="text-2xl font-bold mb-4">List Vendor Support Queries</h1>
+    <PageContainer>
+      <PageTitle>List Vendor Support Queries</PageTitle>
       <ListVendorSupportQueries />
-    </div>
+    </PageContainer>
   )
 }
