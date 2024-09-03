@@ -22,10 +22,10 @@ const subjectOptions = [
 ]
 
 const formSchema = z.object({
-  subject: z.enum(['Product', 'Customer', 'Settlement', 'Order', 'Video'], {
+  queryType: z.enum(['Product', 'Customer', 'Settlement', 'Order', 'Video'], {
     required_error: 'Please select a query type',
   }),
-  message: z.string().min(1, 'Message is required'),
+  initialMessage: z.string().min(1, 'Message is required').max(1000, 'Message must be less than 1000 characters'),
 })
 
 export default function NewVendorSupportQuery() {
@@ -35,8 +35,8 @@ export default function NewVendorSupportQuery() {
   const form = useForm({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      subject: '',
-      message: '',
+      queryType: '',
+      initialMessage: '',
     },
   })
 
@@ -47,7 +47,8 @@ export default function NewVendorSupportQuery() {
     }
     const data = {
       userId: session.user.id,
-      ...values,
+      queryType: values.queryType,
+      initialMessage: values.initialMessage,
     }
     try {
       console.log('Submitting data:', data)
@@ -70,7 +71,7 @@ export default function NewVendorSupportQuery() {
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
             <FormField
               control={form.control}
-              name="subject"
+              name="queryType"
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Query Type</FormLabel>
@@ -94,7 +95,7 @@ export default function NewVendorSupportQuery() {
             />
             <FormField
               control={form.control}
-              name="message"
+              name="initialMessage"
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Message</FormLabel>

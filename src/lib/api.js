@@ -14,18 +14,25 @@ export const useVendorSupportQueryMessages = (id) => {
 }
 
 export const createVendorSupportQuery = async (data, token) => {
-  console.log('Sending data:', data)
+  console.log('Sending data:', JSON.stringify(data, null, 2))
   try {
     const response = await authRequest('vendor-support-query/', {
       method: 'POST',
       data,
       headers: { 'Authorization': `Bearer ${token}` }
     })
-    console.log('Response:', response)
+    console.log('Response:', JSON.stringify(response, null, 2))
     return response
   } catch (error) {
     console.error('Full error:', error)
-    console.error('Error response:', error.response?.data)
+    if (error.response) {
+      console.error('Error status:', error.response.status)
+      console.error('Error data:', JSON.stringify(error.response.data, null, 2))
+    } else if (error.request) {
+      console.error('No response received:', error.request)
+    } else {
+      console.error('Error message:', error.message)
+    }
     throw error
   }
 }
