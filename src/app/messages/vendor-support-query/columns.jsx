@@ -1,5 +1,12 @@
 import Link from 'next/link'
 import { ButtonSortable } from '@/components/data-table/data-table-button-sorting'
+import { ProfileMini } from '../../superuser/users/page'
+
+// Components
+export const CellUser = ({ row }) => {
+  const user = row?.original?.participants[0] || {}
+  return <ProfileMini user={user} />
+}
 
 const HeaderQueryType = ({ column }) => (
   <ButtonSortable column={column}>Query Type</ButtonSortable>
@@ -18,6 +25,12 @@ const HeaderLastMessageTime = ({ column }) => (
 )
 
 export const getColumns = () => [
+  {
+    header: 'User',
+    accessorKey: 'participants',
+    id: 'user',
+    cell: CellUser,
+  },
   {
     accessorKey: 'queryType',
     header: HeaderQueryType,
