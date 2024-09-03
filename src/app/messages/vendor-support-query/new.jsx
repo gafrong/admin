@@ -33,6 +33,8 @@ export default function VendorSupportQueryPage() {
   const { data: session } = useSession()
   const router = useRouter()
   const { data: queries, error } = useVendorSupportQueries()
+  
+  console.log('Queries:', queries)
 
   const form = useForm({
     resolver: zodResolver(formSchema),
@@ -131,7 +133,7 @@ export default function VendorSupportQueryPage() {
               <TableHeader>
                 <TableRow>
                   <TableHead>Query Type</TableHead>
-                  <TableHead>Last Message</TableHead>
+                  <TableHead>Initial Message</TableHead>
                   <TableHead>Created At</TableHead>
                   <TableHead>Actions</TableHead>
                 </TableRow>
@@ -140,7 +142,7 @@ export default function VendorSupportQueryPage() {
                 {queries.map((query) => (
                   <TableRow key={query._id}>
                     <TableCell>{query.queryType}</TableCell>
-                    <TableCell>{new Date(query.lastMessage).toLocaleString()}</TableCell>
+                    <TableCell>{query.initialMessage}</TableCell>
                     <TableCell>{new Date(query.createdAt).toLocaleString()}</TableCell>
                     <TableCell>
                       <Button onClick={() => router.push(`/messages/vendor-support-query/${query._id}`)}>
