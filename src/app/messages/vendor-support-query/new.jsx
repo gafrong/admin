@@ -45,14 +45,11 @@ export default function NewVendorSupportQuery() {
       console.error('No session or user found')
       return
     }
-    console.log({session})
     const data = {
       queryType: values.queryType,
       initialMessage: values.initialMessage,
     }
     try {
-      console.log('Submitting data:', data)
-      console.log('Session:', session) // Log the entire session object
       if (!session.token) {
         console.error('No access token found in session')
         return
