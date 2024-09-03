@@ -21,9 +21,15 @@ export const useUpdateVendorSupportQuery = (id) => {
   return (data) => executeRequest('PUT', data)
 }
 
-export const useDeleteVendorSupportQuery = (id) => {
-  const { executeRequest } = useFetchAuth(`vendor-support-query/${id}`)
-  return () => executeRequest('DELETE')
+import { authRequest } from '@/utils/authRequest'
+
+export const deleteVendorSupportQuery = async (id, token) => {
+  return authRequest(`vendor-support-query/${id}`, {
+    method: 'DELETE',
+    headers: {
+      'Authorization': `Bearer ${token}`
+    }
+  })
 }
 
 export const useAddMessageToVendorSupportQuery = (id) => {
