@@ -33,7 +33,10 @@ export const getColumns = () => [
     accessorKey: 'lastMessageContent',
     header: HeaderLastMessageContent,
     id: 'lastMessageContent',
-    cell: ({ row }) => row.original.lastMessageContent,
+    cell: ({ row }) => {
+      const messages = row.original.messages;
+      return messages.length > 0 ? messages[messages.length - 1].content : 'No messages';
+    },
   },
   {
     accessorKey: 'createdAt',
