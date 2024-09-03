@@ -56,3 +56,62 @@ export default function ListVendorSupportQueries() {
     </Card>
   )
 }
+'use client'
+
+import React from 'react'
+import { useSession } from 'next-auth/react'
+import { useRouter } from 'next/navigation'
+import { Button } from '@/components/ui/button'
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { useVendorSupportQueries } from '@/lib/api'
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
+
+export default function VendorSupportQueryListPage() {
+  const { data: session } = useSession()
+  const router = useRouter()
+  const { data: queries, error } = useVendorSupportQueries()
+
+  console.log('Queries:', queries)
+
+  if (error) {
+    return <div>Error loading queries: {error.message}</div>
+  }
+
+  return (
+    <Card>
+      <CardHeader>
+        <CardTitle>Support Queries</CardTitle>
+      </CardHeader>
+      <CardContent>
+        {queries && queries.length > 0 ? (
+          <Table>
+            <TableHeader>
+              <TableRow>
+                <TableHead>Query Type</TableHead>
+                <TableHead>Initial Message</TableHead>
+                <TableHead>Created At</TableHead>
+                <TableHead>Actions</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {queries.map((query) => (
+                <TableRow key={query._id}>
+                  <TableCell>{query.queryType}</TableCell>
+                  <TableCell>{query.initialMessage}</TableCell>
+                  <TableCell>{new Date(query.createdAt).toLocaleString()}</TableCell>
+                  <TableCell>
+                    <Button onClick={() => router.push(`/messages/vendor-support-query/${query._id}`)}>
+                      View
+                    </Button>
+                  </TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        ) : (
+          <div>No support queries found.</div>
+        )}
+      </CardContent>
+    </Card>
+  )
+}
