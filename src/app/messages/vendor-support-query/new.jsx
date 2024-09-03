@@ -1,18 +1,30 @@
 'use client'
 
-import React from 'react'
+import { Button } from '@/components/ui/button'
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from '@/components/ui/form'
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select'
+import { Textarea } from '@/components/ui/textarea'
+import { createVendorSupportQuery } from '@/lib/api'
+import { zodResolver } from '@hookform/resolvers/zod'
 import { useSession } from 'next-auth/react'
 import { useRouter } from 'next/navigation'
+import React from 'react'
 import { useForm } from 'react-hook-form'
-import { zodResolver } from '@hookform/resolvers/zod'
 import * as z from 'zod'
-import { Button } from '@/components/ui/button'
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form'
-import { Textarea } from '@/components/ui/textarea'
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
-import { createVendorSupportQuery, useVendorSupportQueries } from '@/lib/api'
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
 
 const subjectOptions = [
   { value: 'Product', label: 'Product Query' },
@@ -26,10 +38,13 @@ const formSchema = z.object({
   queryType: z.enum(['Product', 'Customer', 'Settlement', 'Order', 'Video'], {
     required_error: 'Please select a query type',
   }),
-  initialMessage: z.string().min(1, 'Message is required').max(1000, 'Message must be less than 1000 characters'),
+  initialMessage: z
+    .string()
+    .min(1, 'Message is required')
+    .max(1000, 'Message must be less than 1000 characters'),
 })
 
-export default function NewVendorSupportQueryPage() {
+export default function NewVendorSupportQuery() {
   const { data: session } = useSession()
   const router = useRouter()
 
@@ -64,62 +79,58 @@ export default function NewVendorSupportQueryPage() {
     }
   }
 
-  if (error) {
-    return <div>Error loading queries: {error.message}</div>
-  }
-
   return (
-    <div className="space-y-8">
-      <Card>
-        <CardHeader>
-          <CardTitle>New Support Query</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <Form {...form}>
-            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
-              <FormField
-                control={form.control}
-                name="queryType"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Query Type</FormLabel>
-                    <Select onValueChange={field.onChange} defaultValue={field.value}>
-                      <FormControl>
-                        <SelectTrigger>
-                          <SelectValue placeholder="Select a subject" />
-                        </SelectTrigger>
-                      </FormControl>
-                      <SelectContent>
-                        {subjectOptions.map((option) => (
-                          <SelectItem key={option.value} value={option.value}>
-                            {option.label}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
-                name="initialMessage"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Message</FormLabel>
+    <Card>
+      <CardHeader>
+        <CardTitle>New Support Query</CardTitle>
+      </CardHeader>
+      <CardContent>
+        <Form {...form}>
+          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+            <FormField
+              control={form.control}
+              name="queryType"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Query Type</FormLabel>
+                  <Select
+                    onValueChange={field.onChange}
+                    defaultValue={field.value}
+                  >
                     <FormControl>
-                      <Textarea placeholder="Enter your message" {...field} />
+                      <SelectTrigger>
+                        <SelectValue placeholder="Select a subject" />
+                      </SelectTrigger>
                     </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <Button type="submit">Submit Query</Button>
-            </form>
-          </Form>
-        </CardContent>
-      </Card>
-
-    </div>
+                    <SelectContent>
+                      {subjectOptions.map((option) => (
+                        <SelectItem key={option.value} value={option.value}>
+                          {option.label}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="initialMessage"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Message</FormLabel>
+                  <FormControl>
+                    <Textarea placeholder="Enter your message" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <Button type="submit">Submit Query</Button>
+          </form>
+        </Form>
+      </CardContent>
+    </Card>
   )
 }
