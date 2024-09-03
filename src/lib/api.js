@@ -14,11 +14,20 @@ export const useVendorSupportQueryMessages = (id) => {
 }
 
 export const createVendorSupportQuery = async (data, token) => {
-  return authRequest('vendor-support-query/', {
-    method: 'POST',
-    data,
-    headers: { 'Authorization': `Bearer ${token}` }
-  })
+  console.log('Sending data:', data)
+  try {
+    const response = await authRequest('vendor-support-query/', {
+      method: 'POST',
+      data,
+      headers: { 'Authorization': `Bearer ${token}` }
+    })
+    console.log('Response:', response)
+    return response
+  } catch (error) {
+    console.error('Full error:', error)
+    console.error('Error response:', error.response?.data)
+    throw error
+  }
 }
 
 export const updateVendorSupportQuery = async (id, data, token) => {
