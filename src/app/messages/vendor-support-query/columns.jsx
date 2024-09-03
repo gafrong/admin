@@ -39,21 +39,17 @@ export const getColumns = () => [
     },
   },
   {
-    accessorKey: 'lastMessageTime',
+    accessorKey: 'lastMessage',
     header: HeaderLastMessageTime,
     id: 'lastMessageTime',
     cell: ({ row }) => {
-      const messages = row.original.messages;
-      if (messages.length > 0) {
-        const lastMessage = messages[messages.length - 1];
-        const timestamp = lastMessage.createdAt || lastMessage.timestamp || lastMessage.date;
-        if (timestamp) {
-          try {
-            return new Date(timestamp).toLocaleString();
-          } catch (error) {
-            console.error('Error parsing date:', error);
-            return 'Invalid date';
-          }
+      const lastMessage = row.original.lastMessage;
+      if (lastMessage) {
+        try {
+          return new Date(lastMessage).toLocaleString();
+        } catch (error) {
+          console.error('Error parsing date:', error);
+          return 'Invalid date';
         }
       }
       return 'No messages';
