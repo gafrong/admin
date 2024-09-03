@@ -13,8 +13,8 @@ const HeaderLastMessageContent = ({ column }) => (
   <ButtonSortable column={column}>Last Message</ButtonSortable>
 )
 
-const HeaderCreatedAt = ({ column }) => (
-  <ButtonSortable column={column}>Created At</ButtonSortable>
+const HeaderLastMessageTime = ({ column }) => (
+  <ButtonSortable column={column}>Last Message Time</ButtonSortable>
 )
 
 export const getColumns = () => [
@@ -39,10 +39,15 @@ export const getColumns = () => [
     },
   },
   {
-    accessorKey: 'createdAt',
-    header: HeaderCreatedAt,
-    id: 'createdAt',
-    cell: ({ row }) => new Date(row.original.createdAt).toLocaleString(),
+    accessorKey: 'lastMessageTime',
+    header: HeaderLastMessageTime,
+    id: 'lastMessageTime',
+    cell: ({ row }) => {
+      const messages = row.original.messages;
+      return messages.length > 0 
+        ? new Date(messages[messages.length - 1].createdAt).toLocaleString() 
+        : 'No messages';
+    },
   },
   {
     id: 'actions',
