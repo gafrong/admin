@@ -57,12 +57,7 @@ export default function NewVendorSupportQuery() {
         console.error('No access token found in session')
         return
       }
-      if (!session.user._id) {
-        console.error('No user ID found in session')
-        return
-      }
-      console.log('User ID:', session.user._id) // Log the user ID
-      await createVendorSupportQuery(data, session.token, session.user._id)
+      await createVendorSupportQuery(data, session.token)
       router.push('/messages/vendor-support-query/list')
     } catch (error) {
       console.error('Error submitting query:', error)

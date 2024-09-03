@@ -13,15 +13,13 @@ export const useVendorSupportQueryMessages = (id) => {
   return useFetchAuth(`vendor-support-query/${id}/messages`)
 }
 
-export const createVendorSupportQuery = async (data, token, userId) => {
-  console.log('Sending data:', JSON.stringify({ ...data, userId }, null, 2))
+export const createVendorSupportQuery = async (data, token) => {
+  console.log('Sending data:', JSON.stringify(data, null, 2))
   console.log('Token:', token) // Log the token for debugging
   try {
-    const requestData = { ...data, userId }
-    console.log('Request data:', JSON.stringify(requestData, null, 2))
     const response = await authRequest('vendor-support-query/', {
       method: 'POST',
-      data: requestData,
+      data,
       headers: { 
         'Authorization': `Bearer ${token}`,
         'Content-Type': 'application/json'
