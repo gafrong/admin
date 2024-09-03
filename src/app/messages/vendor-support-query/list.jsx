@@ -26,21 +26,21 @@ console.log({queries})
           <Table>
             <TableHeader>
               <TableRow>
-                <TableHead>ID</TableHead>
-                <TableHead>Subject</TableHead>
-                <TableHead>Status</TableHead>
+                <TableHead>Query Type</TableHead>
+                <TableHead>Last Message</TableHead>
+                <TableHead>Created At</TableHead>
                 <TableHead>Actions</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
               {queries.map((query) => (
-                <TableRow key={query.id}>
-                  <TableCell>{query.id}</TableCell>
-                  <TableCell>{query.subject}</TableCell>
-                  <TableCell>{query.status}</TableCell>
+                <TableRow key={query._id}>
+                  <TableCell>{query.queryType}</TableCell>
+                  <TableCell>{new Date(query.lastMessage).toLocaleString()}</TableCell>
+                  <TableCell>{new Date(query.createdAt).toLocaleString()}</TableCell>
                   <TableCell>
                     <Button asChild variant="link">
-                      <Link href={`/messages/vendor-support-query/${query.id}`}>
+                      <Link href={`/messages/vendor-support-query/${query._id}`}>
                         View
                       </Link>
                     </Button>
