@@ -126,30 +126,34 @@ export default function VendorSupportQueryPage() {
           <CardTitle>Support Queries</CardTitle>
         </CardHeader>
         <CardContent>
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead>Query Type</TableHead>
-                <TableHead>Last Message</TableHead>
-                <TableHead>Created At</TableHead>
-                <TableHead>Actions</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {queries && queries.map((query) => (
-                <TableRow key={query._id}>
-                  <TableCell>{query.queryType}</TableCell>
-                  <TableCell>{new Date(query.lastMessage).toLocaleString()}</TableCell>
-                  <TableCell>{new Date(query.createdAt).toLocaleString()}</TableCell>
-                  <TableCell>
-                    <Button onClick={() => router.push(`/messages/vendor-support-query/${query._id}`)}>
-                      View
-                    </Button>
-                  </TableCell>
+          {queries && queries.length > 0 ? (
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  <TableHead>Query Type</TableHead>
+                  <TableHead>Last Message</TableHead>
+                  <TableHead>Created At</TableHead>
+                  <TableHead>Actions</TableHead>
                 </TableRow>
-              ))}
-            </TableBody>
-          </Table>
+              </TableHeader>
+              <TableBody>
+                {queries.map((query) => (
+                  <TableRow key={query._id}>
+                    <TableCell>{query.queryType}</TableCell>
+                    <TableCell>{new Date(query.lastMessage).toLocaleString()}</TableCell>
+                    <TableCell>{new Date(query.createdAt).toLocaleString()}</TableCell>
+                    <TableCell>
+                      <Button onClick={() => router.push(`/messages/vendor-support-query/${query._id}`)}>
+                        View
+                      </Button>
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          ) : (
+            <div>No support queries found.</div>
+          )}
         </CardContent>
       </Card>
     </div>
