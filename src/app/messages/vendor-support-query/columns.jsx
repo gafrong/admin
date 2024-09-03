@@ -2,6 +2,7 @@ import Link from 'next/link'
 import { ButtonSortable } from '@/components/data-table/data-table-button-sorting'
 import { ProfileMini } from '../../superuser/users/page'
 import { ifDate } from '@/lib/utils'
+import { Badge } from '@/components/ui/badge'
 
 // Components
 export const CellUser = ({ row }) => {
@@ -36,6 +37,9 @@ export const getColumns = () => [
     accessorKey: 'queryType',
     header: HeaderQueryType,
     id: 'queryType',
+    cell: ({ row }) => (
+      <Badge variant="outline">{row.original.queryType}</Badge>
+    ),
   },
   {
     accessorKey: 'messageCount',
