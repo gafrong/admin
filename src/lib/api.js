@@ -1,4 +1,6 @@
 import { useFetchAuth } from '@/app/fetch/use-fetch-auth'
+import { authRequest } from '@/utils/authRequest'
+import { useSession } from 'next-auth/react'
 
 export const useVendorSupportQueries = (userId) => {
   return useFetchAuth(userId ? `vendor-support-query/user/${userId}` : null)
@@ -12,27 +14,37 @@ export const useVendorSupportQueryMessages = (id) => {
   return useFetchAuth(`vendor-support-query/${id}/messages`)
 }
 
-export const useCreateVendorSupportQuery = (data) => {
-  return useFetchAuth('vendor-support-query/', { method: 'POST', data })
-}
-
-export const useUpdateVendorSupportQuery = (id) => {
-  const { executeRequest } = useFetchAuth(`vendor-support-query/${id}`)
-  return (data) => executeRequest('PUT', data)
-}
-
-import { authRequest } from '@/utils/authRequest'
-
-export const deleteVendorSupportQuery = async (id, token) => {
-  return authRequest(`vendor-support-query/${id}`, {
-    method: 'DELETE',
-    headers: {
-      'Authorization': `Bearer ${token}`
-    }
+export const createVendorSupportQuery = async (data) => {
+  const { data: session } = useSession()
+  return authRequest('vendor-support-query/', {
+    method: 'POST',
+    data,
+    headers: { 'Authorization': `Bearer ${session.token}` }
   })
 }
 
-export const useAddMessageToVendorSupportQuery = (id) => {
-  const { executeRequest } = useFetchAuth(`vendor-support-query/${id}/messages`)
-  return (data) => executeRequest('POST', data)
+export const updateVendorSupportQuery = async (id, data) => {
+  const { data: session } = useSession()
+  return authRequest(`vendor-support-query/${id}`, {
+    method: 'PUT',
+    data,
+    headers: { 'Authorization': `Bearer ${session.token}` }
+  })
+}
+
+export const deleteVendorSupportQuery = async (id) => {
+  const { data: session } = useSession()
+  return authRequest(`vendor-support-query/${id}`, {
+    method: 'DELETE',
+    headers: { 'Authorization': `Bearer ${session.token}` }
+  })
+}
+
+export const addMessageToVendorSupportQuery = async (id, data) => {
+  const { data: session } = useSession()
+  return authRequest(`vendor-support-query/${id}/messages`, {
+    method: 'POST',
+    data,
+    headers: { 'Authorization': `Bearer ${session.token}` }
+  })
 }
