@@ -19,7 +19,7 @@ export const createVendorSupportQuery = async (data, token, userId) => {
   try {
     const response = await authRequest('vendor-support-query/', {
       method: 'POST',
-      data: { ...data, userId },
+      data: { ...data, userId: userId },
       headers: { 
         'Authorization': `Bearer ${token}`,
         'Content-Type': 'application/json'
