@@ -1,8 +1,11 @@
 import { useFetchAuth } from '@/app/fetch/use-fetch-auth'
 import { authRequest } from '@/utils/authRequest'
 
-export const useVendorSupportQueries = (userId) => {
-  return useFetchAuth(userId ? `vendor-support-query/user/${userId}` : null)
+export const useVendorSupportQueries = () => {
+  const { data, error } = useFetchAuth('vendor-support-query')
+  console.log('Vendor Support Queries:', data)
+  console.log('Fetch Error:', error)
+  return { data, error }
 }
 
 export const useVendorSupportQuery = (id) => {
