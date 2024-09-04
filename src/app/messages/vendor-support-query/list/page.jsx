@@ -4,7 +4,7 @@ import { PageContainer, PageTitle } from '@/components/typography/PageTitle'
 import { useSession } from 'next-auth/react'
 import { useRouter } from 'next/navigation'
 import React from 'react'
-import ListVendorSupportQueries from '../list'
+import ListVendorSupportQueries from './list'
 
 export default function ListVendorSupportQueryPage() {
   const { data: session, status } = useSession()
@@ -27,7 +27,7 @@ export default function ListVendorSupportQueryPage() {
 
   return (
     <PageContainer>
-      <PageTitle>List Vendor Support Queries</PageTitle>
+      <PageTitle>Vendor Support Queries</PageTitle>
       <ListVendorSupportQueries />
     </PageContainer>
   )

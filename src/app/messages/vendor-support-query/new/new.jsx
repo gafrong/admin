@@ -80,10 +80,10 @@ export default function NewVendorSupportQuery() {
   }
 
   return (
-    <Card>
-      <CardHeader>
+    <Card className="pt-4">
+      {/* <CardHeader>
         <CardTitle>New Support Query</CardTitle>
-      </CardHeader>
+      </CardHeader> */}
       <CardContent>
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">

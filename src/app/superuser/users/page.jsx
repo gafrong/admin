@@ -56,7 +56,7 @@ export const ProfileMini = ({ user }) => {
       <ImageProfile size={48} src={imageUrl} />
       <div className="mr-4">
         <p>{user.name}</p>
-        <p className="mt-1 text-xs">@{user.username}</p>
+        <p className="mt-1 text-xs text-gray-500">@{user.username}</p>
       </div>
     </div>
   )
