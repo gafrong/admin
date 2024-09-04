@@ -161,6 +161,7 @@ export function DataTable({
         <DataTableFilterByCategory
           categories={filterByCategory.categories}
           categoryHeader={filterByCategory.categoryHeader}
+          isIconHidden={filterByCategory.isIconHidden}
           isSearchBarOpen={isSearchBarOpen}
           orderItemIds={rowSelectionIds}
           refetchTableData={refetchTableData}

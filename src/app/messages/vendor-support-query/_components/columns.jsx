@@ -15,11 +15,11 @@ const HeaderQueryType = ({ column }) => (
 )
 
 const HeaderMessageCount = ({ column }) => (
-  <ButtonSortable column={column}>Messages</ButtonSortable>
+  <ButtonSortable column={column}>No.</ButtonSortable>
 )
 
-const HeaderLastMessageContent = ({ column }) => (
-  <ButtonSortable column={column}>Last Message</ButtonSortable>
+const HeaderFirstMessage = ({ column }) => (
+  <ButtonSortable column={column}>Query</ButtonSortable>
 )
 
 const HeaderLastMessageTime = ({ column }) => (
@@ -48,14 +48,12 @@ export const getColumns = () => [
     cell: ({ row }) => row.original.messages.length,
   },
   {
-    accessorKey: 'lastMessageContent',
-    header: HeaderLastMessageContent,
-    id: 'lastMessageContent',
+    accessorKey: 'firstMessageContent',
+    header: HeaderFirstMessage,
+    id: 'firstMessageContent',
     cell: ({ row }) => {
       const messages = row.original.messages
-      return messages.length > 0 ?
-          messages[messages.length - 1].content
-        : 'No messages'
+      return messages.length > 0 ? messages[0].content : 'No messages'
     },
   },
   {
@@ -99,11 +97,11 @@ export const getColumns = () => [
 
 export const searchableColumnHeaders = [
   { id: 'queryType', label: 'Query Type' },
-  { id: 'lastMessageContent', label: 'Last Message' },
+  { id: 'firstMessageContent', label: 'Query' },
 ]
 
 export const controls = {
   isSearchAlwaysShown: true,
   searchableColumnHeaders,
-  columnVisibilityToggles: true,
+  // columnVisibilityToggles: true,
 }

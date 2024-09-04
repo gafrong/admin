@@ -243,6 +243,12 @@ const Sidebar = () => {
             >
               users
             </Link>
+            <Link
+              href="/messages/vendor-support-query/superuser"
+              className="flex flex-col pb-3 pl-3 pt-3 hover:bg-slate-200"
+            >
+              vendor queries
+            </Link>
           </AccordionContent>
         </AccordionItem>
       </Accordion>
@@ -270,33 +276,6 @@ const Sidebar = () => {
               className="flex flex-col pb-3 pl-3 pt-3 hover:bg-slate-200"
             >
               List Queries
-            </Link>
-          </AccordionContent>
-        </AccordionItem>
-      </Accordion>
-
-      <Accordion type="single" collapsible>
-        <AccordionItem
-          value="item-enquiry"
-          className="block pl-5 pr-2 text-black"
-        >
-          <AccordionTrigger>
-            <div className="flex flex-row">
-              <FiHelpCircle className="mr-2 mt-1" /> <div>1:1 문의</div>
-            </div>
-          </AccordionTrigger>
-          <AccordionContent>
-            <Link
-              href="/statistics/daily"
-              className="flex flex-col pb-3 pl-3 pt-3 hover:bg-slate-200"
-            >
-              문의
-            </Link>
-            <Link
-              href="/statistics/weekly"
-              className="flex flex-col pb-3 pl-3 pt-3 hover:bg-slate-200"
-            >
-              답변
             </Link>
           </AccordionContent>
         </AccordionItem>
