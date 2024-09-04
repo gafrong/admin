@@ -4,7 +4,7 @@ import { DataTable } from '@/components/data-table/data-table'
 import { useVendorSupportQueries } from '@/lib/api'
 import { useSession } from 'next-auth/react'
 import React from 'react'
-import { controls, getColumns } from '../columns'
+import { controls, getColumns } from './columns'
 
 export default function List() {
   const { data: session } = useSession()

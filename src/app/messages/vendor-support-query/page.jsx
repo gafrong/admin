@@ -4,7 +4,7 @@ import { PageContainer, PageTitle } from '@/components/typography/PageTitle'
 import { useSession } from 'next-auth/react'
 import { useRouter } from 'next/navigation'
 import React from 'react'
-import ListVendorSupportQueries from './list'
+import ListVendorSupportQueries from './_components/list'
 
 export default function ListVendorSupportQueryPage() {
   const { data: session, status } = useSession()

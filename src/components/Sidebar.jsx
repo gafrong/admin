@@ -266,7 +266,7 @@ const Sidebar = () => {
               New Query
             </Link>
             <Link
-              href="/messages/vendor-support-query/list"
+              href="/messages/vendor-support-query"
               className="flex flex-col pb-3 pl-3 pt-3 hover:bg-slate-200"
             >
               List Queries

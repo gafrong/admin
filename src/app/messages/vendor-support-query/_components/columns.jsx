@@ -1,8 +1,8 @@
-import Link from 'next/link'
+import { ProfileMini } from '@/app/superuser/users/page'
 import { ButtonSortable } from '@/components/data-table/data-table-button-sorting'
-import { ProfileMini } from '../../superuser/users/page'
-import { ifDate } from '@/lib/utils'
 import { Badge } from '@/components/ui/badge'
+import { ifDate } from '@/lib/utils'
+import Link from 'next/link'
 
 // Components
 export const CellUser = ({ row }) => {
@@ -52,8 +52,10 @@ export const getColumns = () => [
     header: HeaderLastMessageContent,
     id: 'lastMessageContent',
     cell: ({ row }) => {
-      const messages = row.original.messages;
-      return messages.length > 0 ? messages[messages.length - 1].content : 'No messages';
+      const messages = row.original.messages
+      return messages.length > 0 ?
+          messages[messages.length - 1].content
+        : 'No messages'
     },
   },
   {
@@ -61,22 +63,24 @@ export const getColumns = () => [
     header: HeaderLastMessageTime,
     id: 'lastMessageTime',
     cell: ({ row }) => {
-      const lastMessageAt = row.original.lastMessageAt;
+      const lastMessageAt = row.original.lastMessageAt
       if (lastMessageAt) {
         try {
-          const date = new Date(lastMessageAt);
+          const date = new Date(lastMessageAt)
           return (
             <div>
               <div>{ifDate(date)}</div>
-              <div className="text-xs text-gray-500">{date.toLocaleTimeString()}</div>
+              <div className="text-xs text-gray-500">
+                {date.toLocaleTimeString()}
+              </div>
             </div>
-          );
+          )
         } catch (error) {
-          console.error('Error parsing date:', error);
-          return 'Invalid date';
+          console.error('Error parsing date:', error)
+          return 'Invalid date'
         }
       }
-      return 'No messages';
+      return 'No messages'
     },
   },
   {
