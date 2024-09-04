@@ -14,33 +14,6 @@ const queryTypes = [
   { value: 'Video', label: 'Video' },
 ]
 
-// Custom filter functions
-const filterFirstMessageContent = (row, id, value) => {
-  console.log('filterFirstMessageContent')
-
-  return row.original.messages[0].content
-    .toLowerCase()
-    .includes(value.toLowerCase())
-}
-
-const filterUser = (row, id, value) => {
-  const participants = row.original.participants
-  if (participants && participants.length > 0) {
-    const user = participants[0]
-    return (
-      (user?.name && user.name.toLowerCase().includes(value.toLowerCase())) ||
-      (user?.email && user.email.toLowerCase().includes(value.toLowerCase()))
-    )
-  }
-  return false
-}
-
-const filterQueryType = (row, id, value) => {
-  console.log('filterQueryType')
-
-  return row.original.queryType.toLowerCase().includes(value.toLowerCase())
-}
-
 export default function SuperuserList() {
   const {
     data: queries,
@@ -49,20 +22,6 @@ export default function SuperuserList() {
   } = useVendorSupportQueries()
 
   const columns = getColumns()
-
-  // Add custom filter functions to columns
-  const columnsWithFilters = columns.map((column) => {
-    switch (column.accessorKey) {
-      case 'firstMessageContent':
-        return { ...column, filterFn: filterFirstMessageContent }
-      case 'participants':
-        return { ...column, filterFn: filterUser }
-      case 'queryType':
-        return { ...column, filterFn: filterQueryType }
-      default:
-        return column
-    }
-  })
 
   const superuserControls = {
     ...controls,
@@ -80,7 +39,7 @@ export default function SuperuserList() {
 
   return (
     <DataTable
-      columns={columnsWithFilters}
+      columns={columns}
       controls={superuserControls}
       data={queries}
       defaultCellStyle="align-top"

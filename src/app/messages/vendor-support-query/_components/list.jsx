@@ -20,10 +20,7 @@ export default function List() {
     ...controls,
     searchableColumnHeaders: [
       { id: 'firstMessageContent', label: 'Query' },
-      { id: 'userId', label: 'User ID' },
-      { id: 'id', label: 'Query ID' },
       { id: 'queryType', label: 'Query Type' },
-      { id: 'status', label: 'Status' },
     ],
   }
 

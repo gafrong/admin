@@ -4,7 +4,32 @@ import { Badge } from '@/components/ui/badge'
 import { ifDate } from '@/lib/utils'
 import Link from 'next/link'
 
-// Components
+// Table filters
+// -----------------------------------------------------------------------------
+const filterFirstMessageContent = (row, id, value) => {
+  return row.original.messages[0].content
+    .toLowerCase()
+    .includes(value.toLowerCase())
+}
+
+const filterUser = (row, id, value) => {
+  const participants = row.original.participants
+  if (participants && participants.length > 0) {
+    const user = participants[0]
+    return (
+      (user?.name && user.name.toLowerCase().includes(value.toLowerCase())) ||
+      (user?.email && user.email.toLowerCase().includes(value.toLowerCase()))
+    )
+  }
+  return false
+}
+
+const filterQueryType = (row, id, value) => {
+  return row.original.queryType.toLowerCase().includes(value.toLowerCase())
+}
+
+// Table Components
+// -----------------------------------------------------------------------------
 export const CellUser = ({ row }) => {
   const user = row?.original?.participants[0] || {}
   return <ProfileMini user={user} />
@@ -32,6 +57,7 @@ export const getColumns = () => [
     accessorKey: 'participants',
     id: 'user',
     cell: CellUser,
+    filterFn: filterUser,
   },
   {
     accessorKey: 'queryType',
@@ -40,6 +66,7 @@ export const getColumns = () => [
     cell: ({ row }) => (
       <Badge variant="outline">{row.original.queryType}</Badge>
     ),
+    filterFn: filterQueryType,
   },
   {
     accessorKey: 'messageCount',
@@ -55,6 +82,7 @@ export const getColumns = () => [
       const messages = row.original.messages
       return messages.length > 0 ? messages[0].content : 'No messages'
     },
+    filterFn: filterFirstMessageContent,
   },
   {
     accessorKey: 'lastMessageAt',
@@ -95,13 +123,8 @@ export const getColumns = () => [
   },
 ]
 
-export const searchableColumnHeaders = [
-  { id: 'queryType', label: 'Query Type' },
-  { id: 'firstMessageContent', label: 'Query' },
-]
-
 export const controls = {
   isSearchAlwaysShown: true,
-  searchableColumnHeaders,
+  // searchableColumnHeaders,
   // columnVisibilityToggles: true,
 }
