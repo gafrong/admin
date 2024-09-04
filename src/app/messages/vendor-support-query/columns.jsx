@@ -23,7 +23,7 @@ const HeaderLastMessageContent = ({ column }) => (
 )
 
 const HeaderLastMessageTime = ({ column }) => (
-  <ButtonSortable column={column}>Last Message Time</ButtonSortable>
+  <ButtonSortable column={column}>Time</ButtonSortable>
 )
 
 export const getColumns = () => [
