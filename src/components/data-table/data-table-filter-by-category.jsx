@@ -1,5 +1,6 @@
 import { statuses } from '@/app/orders/manage/data/data'
 import baseURL from '@/assets/common/baseUrl'
+import { Badge } from "@/components/ui/badge"
 import { Button } from '@/components/ui/button'
 import { Label } from '@/components/ui/label'
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group'
@@ -86,6 +87,7 @@ export function DataTableFilterByCategory({
   categories,
   categoryHeader,
   isSearchBarOpen,
+  isIconHidden,
   orderItemIds,
   refetchTableData,
   rowSelectionIds,
@@ -142,14 +144,21 @@ export function DataTableFilterByCategory({
             <Label htmlFor={category.value}>{category.label}</Label>
           </div>
         ))}
-        <SearchBarButton
-          isSearchBarOpen={isSearchBarOpen}
-          setIsSearchBarOpen={setIsSearchBarOpen}
-        />
+        {
+          !isIconHidden && (
+            <SearchBarButton
+            isSearchBarOpen={isSearchBarOpen}
+            setIsSearchBarOpen={setIsSearchBarOpen}
+          />
+          )
+        }
+
       </RadioGroup>
 
       <div className="flex gap-4">
-        <div className="bold flex h-10 items-center">{value}</div>
+        <Badge variant="outline" className="h-10 px-4 flex items-center justify-center">
+          <div className="bold">{value}</div>
+        </Badge>
         {isRowSelected && nextStatus && (
           <UpdateOrderStatusButton
             updateOrderStatus={() => updateOrderStatus(nextStatus)}

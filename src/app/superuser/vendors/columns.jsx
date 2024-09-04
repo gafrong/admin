@@ -170,9 +170,10 @@ export const getColumns = (handleDeleteVendor) => [
 ]
 
 export const searchableColumnHeaders = [
-  { id: 'userId', label: 'user id' },
-  { id: 'id', label: 'vendor id' },
-  { id: 'Bank account name', label: 'bank account' },
+  { id: 'userId', label: 'User ID' },
+  { id: '_id', label: 'Vendor ID' },
+  { id: 'bank.accountName', label: 'Bank Account Name' },
+  { id: 'firstMessageContent', label: 'Query' },
 ]
 
 export const controls = {

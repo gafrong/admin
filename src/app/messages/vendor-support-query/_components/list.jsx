@@ -15,11 +15,22 @@ export default function List() {
   } = useVendorSupportQueries(session?.user?.id)
 
   const columns = getColumns()
-  console.log({ queries })
+
+  const listControls = {
+    ...controls,
+    searchableColumnHeaders: [
+      { id: 'firstMessageContent', label: 'Query' },
+      { id: 'userId', label: 'User ID' },
+      { id: 'id', label: 'Query ID' },
+      { id: 'queryType', label: 'Query Type' },
+      { id: 'status', label: 'Status' },
+    ],
+  }
+
   return (
     <DataTable
       columns={columns}
-      controls={controls}
+      controls={listControls}
       data={queries}
       defaultCellStyle="align-top"
       isLoading={isLoading}
