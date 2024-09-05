@@ -68,7 +68,6 @@ export const useFetchAuth = (path, options = {}) => {
     error,
     isLoading,
     mutate,
-    vendorId,
     executeRequest,
   }
 }
