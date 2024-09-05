@@ -7,13 +7,17 @@ export const useFetchAuth = (path, options = {}) => {
   const url = path ? `${baseURL}${path}` : null
   const { data: session } = useSession()
   const token = session?.token
-  const vendorId = session?.user?._id
+  const userId = session?.user?._id
+  const userRole = session?.user?.role
 
   const fetcher = async (url, method = 'GET', data = null) => {
     console.log(`useFetchAuth(): ${token ? 'A' : 'No'} token found for ${url}`)
     const headers = {
       'Content-Type': 'application/json',
       Authorization: `Bearer ${token}`,
+    }
+    if (userRole === 'superAdmin') {
+      headers['X-User-Role'] = 'superAdmin'
     }
     try {
       const config = {

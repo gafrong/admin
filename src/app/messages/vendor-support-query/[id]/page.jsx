@@ -19,6 +19,7 @@ const replySchema = z.object({
 export default function VendorSupportQueryDetails() {
   const { data: session } = useSession()
   const params = useParams()
+  const userRole = session?.user?.role
   const { data: query, error: queryError, isLoading: queryLoading, mutate: mutateQuery } = useVendorSupportQuery(params.id)
   const { data: messages, error: messagesError, isLoading: messagesLoading, mutate: mutateMessages } = useVendorSupportQueryMessages(params.id)
 
@@ -31,10 +32,14 @@ export default function VendorSupportQueryDetails() {
 
   const onSubmit = async (values) => {
     try {
-      await addMessageToVendorSupportQuery(params.id, {
+      const messageData = {
         senderId: session.user.id,
         ...values,
-      }, session.token)
+      }
+      if (userRole === 'superAdmin') {
+        messageData.isAdminReply = true
+      }
+      await addMessageToVendorSupportQuery(params.id, messageData, session.token)
       form.reset()
       mutateMessages() // Refresh the messages
     } catch (error) {
