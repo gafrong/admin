@@ -33,13 +33,13 @@ export default function VendorSupportQueryDetails() {
   const onSubmit = async (values) => {
     try {
       const messageData = {
-        senderId: session.user.id,
+        senderId: session?.user?.id, // Use optional chaining here
         ...values,
       }
       if (userRole === 'superAdmin') {
         messageData.isAdminReply = true
       }
-      await addMessageToVendorSupportQuery(params.id, messageData, session.token)
+      await addMessageToVendorSupportQuery(params.id, messageData, session?.token) // Use optional chaining here
       form.reset()
       mutateMessages() // Refresh the messages
     } catch (error) {
