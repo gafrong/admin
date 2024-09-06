@@ -7,17 +7,12 @@ export const useFetchAuth = (path, options = {}) => {
   const url = path ? `${baseURL}${path}` : null
   const { data: session } = useSession()
   const token = session?.token
-  const userId = session?.user?._id
-  const userRole = session?.user?.role
 
   const fetcher = async (url, method = 'GET', data = null) => {
     console.log(`useFetchAuth(): ${token ? 'A' : 'No'} token found for ${url}`)
     const headers = {
       'Content-Type': 'application/json',
       Authorization: `Bearer ${token}`,
-    }
-    if (userRole === 'superAdmin') {
-      headers['X-User-Role'] = 'superAdmin'
     }
     try {
       const config = {
@@ -45,22 +40,11 @@ export const useFetchAuth = (path, options = {}) => {
     {
       revalidateOnFocus: false,
       ...options,
-    }
+    },
   )
 
   if (error) {
     console.error('useFetchAuth() error:', { error, url })
-  }
-
-  const executeRequest = async (method, data) => {
-    try {
-      const result = await fetcher(url, method, data)
-      mutate()
-      return result
-    } catch (error) {
-      console.error('executeRequest error:', error)
-      throw error
-    }
   }
 
   return {
@@ -68,6 +52,5 @@ export const useFetchAuth = (path, options = {}) => {
     error,
     isLoading,
     mutate,
-    executeRequest,
   }
 }
