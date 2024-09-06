@@ -30,7 +30,6 @@ const replySchema = z.object({
 export default function VendorSupportQueryDetails() {
   const { data: session } = useSession()
   const params = useParams()
-  const userRole = session?.user?.role
   const {
     data: query,
     error: queryError,
