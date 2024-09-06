@@ -14,7 +14,6 @@ import { Textarea } from '@/components/ui/textarea'
 import {
   addMessageToVendorSupportQuery,
   useVendorSupportQuery,
-  useVendorSupportQueryMessages,
 } from '@/lib/api'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useSession } from 'next-auth/react'
@@ -36,12 +35,6 @@ export default function VendorSupportQueryDetails() {
     isLoading: queryLoading,
     mutate: mutateQuery,
   } = useVendorSupportQuery(params.id)
-  const {
-    data: messages,
-    error: messagesError,
-    isLoading: messagesLoading,
-    mutate: mutateMessages,
-  } = useVendorSupportQueryMessages(params.id)
 
   const form = useForm({
     resolver: zodResolver(replySchema),
@@ -62,18 +55,18 @@ export default function VendorSupportQueryDetails() {
         session?.token,
       )
       form.reset()
-      mutateMessages() // Refresh the messages
+      mutateQuery() // Refresh the query data including messages
     } catch (error) {
       console.error('Error submitting reply:', error)
     }
   }
 
-  if (queryLoading || messagesLoading) {
+  if (queryLoading) {
     return <div>Loading...</div>
   }
 
-  if (queryError || messagesError) {
-    return <div>Error: {queryError?.message || messagesError?.message}</div>
+  if (queryError) {
+    return <div>Error: {queryError.message}</div>
   }
 
   return (
@@ -94,9 +87,9 @@ export default function VendorSupportQueryDetails() {
           </p>
         </div>
         <h3 className="mb-2 text-lg font-semibold">Messages</h3>
-        {messages?.length > 0 ?
+        {query.messages?.length > 0 ?
           <ul className="mb-4 space-y-2">
-            {messages.map((message, index) => (
+            {query.messages.map((message, index) => (
               <li key={index} className="rounded bg-gray-100 p-2">
                 <p>
                   <strong>
