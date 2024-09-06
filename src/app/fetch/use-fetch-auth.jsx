@@ -7,6 +7,7 @@ export const useFetchAuth = (path, options = {}) => {
   const url = path ? `${baseURL}${path}` : null
   const { data: session } = useSession()
   const token = session?.token
+  const vendorId = session?.user?._id
 
   const fetcher = async (url, method = 'GET', data = null) => {
     console.log(`useFetchAuth(): ${token ? 'A' : 'No'} token found for ${url}`)
@@ -52,5 +53,6 @@ export const useFetchAuth = (path, options = {}) => {
     error,
     isLoading,
     mutate,
+    vendorId,
   }
 }
