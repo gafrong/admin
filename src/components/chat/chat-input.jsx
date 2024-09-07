@@ -32,8 +32,10 @@ export function ChatInput({ queryId, onSendMessage, mutateQuery }) {
   const [message, setMessage] = useState('')
   const { data: session } = useSession()
 
+  console.log('ChatInput props:', { queryId, onSendMessage, mutateQuery })
+
   const handleSend = async () => {
-    if (message.trim()) {
+    if (message.trim() && queryId) {
       try {
         const messageData = {
           senderId: session?.user?.id,
