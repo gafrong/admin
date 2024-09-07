@@ -1,18 +1,27 @@
+import awsURL from '@/assets/common/awsUrl'
+import { IMG } from '@/assets/common/urls'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { ScrollArea } from '@/components/ui/scroll-area'
 import { useSession } from 'next-auth/react'
 
 function formatMessageTime(timestamp) {
-  const messageDate = new Date(timestamp);
-  const now = new Date();
-  const diffInHours = (now - messageDate) / (1000 * 60 * 60);
+  const messageDate = new Date(timestamp)
+  const now = new Date()
+  const diffInHours = (now - messageDate) / (1000 * 60 * 60)
 
   if (diffInHours < 24) {
-    return messageDate.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+    return messageDate.toLocaleTimeString([], {
+      hour: '2-digit',
+      minute: '2-digit',
+    })
   } else if (diffInHours < 48) {
-    return 'Yesterday';
+    return 'Yesterday'
   } else {
-    return messageDate.toLocaleDateString([], { year: 'numeric', month: 'short', day: 'numeric' });
+    return messageDate.toLocaleDateString([], {
+      year: 'numeric',
+      month: 'short',
+      day: 'numeric',
+    })
   }
 }
 
@@ -33,6 +42,7 @@ export function ChatMessages({ messages }) {
         <Message
           className="mb-4 last:mb-0"
           content={message.content}
+          image={message.sender.image}
           isOutgoing={message.sender.id === session?.user?._id}
           key={index}
           sender={message.sender.name}
@@ -43,12 +53,18 @@ export function ChatMessages({ messages }) {
   )
 }
 
-function Message({ sender, content, time, isOutgoing, className }) {
+function Message({ sender, content, image, time, isOutgoing, className }) {
+  const imgSrc = image ? awsURL + image : IMG.profile
+
   return (
-    <div className={`flex items-end gap-2 ${isOutgoing ? 'justify-end' : ''} ${className}`}>
+    <div
+      className={`flex items-end gap-2 ${
+        isOutgoing ? 'justify-end' : ''
+      } ${className}`}
+    >
       {!isOutgoing && (
         <Avatar className="h-8 w-8 border">
-          <AvatarImage src="/placeholder-user.jpg" alt={sender} />
+          <AvatarImage src={imgSrc} alt={sender} />
           <AvatarFallback>
             {sender
               ?.split(' ')
