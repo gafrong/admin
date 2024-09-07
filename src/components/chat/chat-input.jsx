@@ -28,12 +28,12 @@ import { useState, useRef, useEffect } from 'react'
 import { useSession } from 'next-auth/react'
 import { addMessageToVendorSupportQuery } from '@/lib/api'
 
-export function ChatInput({ queryId, onSendMessage, mutateQuery }) {
+export function ChatInput({ queryId, onSendMessage, refetchQuery }) {
+
+  console.log('ChatInput props:', { queryId, onSendMessage, refetchQuery })
   const [message, setMessage] = useState('')
   const { data: session } = useSession()
   const textareaRef = useRef(null)
-
-  console.log('ChatInput props:', { queryId, onSendMessage, mutateQuery })
 
   useEffect(() => {
     if (textareaRef.current) {
@@ -55,8 +55,8 @@ export function ChatInput({ queryId, onSendMessage, mutateQuery }) {
         if (onSendMessage) {
           await onSendMessage(message.trim())
         }
-        if (mutateQuery) {
-          mutateQuery()
+        if (refetchQuery) {
+          refetchQuery()
         }
         if (textareaRef.current) {
           textareaRef.current.focus()

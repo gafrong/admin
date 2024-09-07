@@ -36,19 +36,29 @@ export function ChatMessages({ messages, currentUserId }) {
   return (
     <ScrollArea className="flex-1 p-4">
       {messages.map((message, index) => (
+        // <>
+        // <h1>Message {index}</h1>
+        // <pre>{JSON.stringify(message, null, 2)}</pre>
+        // </>
         <Message
           className="mb-4 last:mb-0"
           content={message.content}
-          image={message.sender.image}
-          isOutgoing={message.sender._id === currentUserId}
+          image={message?.sender?.image}
+          isOutgoing={message.sender?._id === currentUserId}
           key={message._id || index}
-          sender={message.sender.name}
+          sender={message.sender?.name}
           time={formatMessageTime(message.timestamp)}
         />
       ))}
     </ScrollArea>
   )
 }
+
+const getInitials = (name) =>
+  name
+    ?.split(' ')
+    .map((n) => n[0])
+    .join('')
 
 function Message({ sender, content, image, time, isOutgoing, className }) {
   const imgSrc = image ? awsURL + image : IMG.profile
@@ -62,12 +72,7 @@ function Message({ sender, content, image, time, isOutgoing, className }) {
       {!isOutgoing && (
         <Avatar className="h-8 w-8 border">
           <AvatarImage src={imgSrc} alt={sender} />
-          <AvatarFallback>
-            {sender
-              ?.split(' ')
-              .map((n) => n[0])
-              .join('')}
-          </AvatarFallback>
+          <AvatarFallback>{getInitials(sender)}</AvatarFallback>
         </Avatar>
       )}
       <div
