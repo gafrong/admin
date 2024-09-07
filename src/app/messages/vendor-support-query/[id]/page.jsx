@@ -1,5 +1,6 @@
 'use client'
 
+import { Chat } from '@/components/chat/chat'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import {
@@ -70,6 +71,8 @@ export default function VendorSupportQueryDetails() {
   }
 
   return (
+    <>
+    <Chat></Chat>
     <Card>
       <CardHeader>
         <CardTitle>Query Details</CardTitle>
@@ -124,5 +127,6 @@ export default function VendorSupportQueryDetails() {
         </Form>
       </CardContent>
     </Card>
+    </>
   )
 }
