@@ -17,12 +17,12 @@ export function ChatMessages({ messages }) {
     <ScrollArea className="flex-1 p-4">
       {messages.map((message, index) => (
         <Message
+          className="mb-4 last:mb-0"
+          content={message.content}
+          isOutgoing={message.sender.id === session?.user?._id}
           key={index}
           sender={message.sender.name}
-          content={message.content}
           time={new Date(message.timestamp).toLocaleTimeString()}
-          isOutgoing={message.sender.id === session?.user?._id}
-          className="mb-4 last:mb-0"
         />
       ))}
     </ScrollArea>
