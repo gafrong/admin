@@ -2,7 +2,6 @@ import awsURL from '@/assets/common/awsUrl'
 import { IMG } from '@/assets/common/urls'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { ScrollArea } from '@/components/ui/scroll-area'
-import { useSession } from 'next-auth/react'
 
 function formatMessageTime(timestamp) {
   const messageDate = new Date(timestamp)
@@ -25,9 +24,7 @@ function formatMessageTime(timestamp) {
   }
 }
 
-export function ChatMessages({ messages }) {
-  const { data: session } = useSession()
-
+export function ChatMessages({ messages, currentUserId }) {
   if (!messages || messages.length === 0) {
     return (
       <ScrollArea className="flex-1 p-4">
@@ -43,8 +40,8 @@ export function ChatMessages({ messages }) {
           className="mb-4 last:mb-0"
           content={message.content}
           image={message.sender.image}
-          isOutgoing={message.sender.id === session?.user?._id}
-          key={index}
+          isOutgoing={message.sender._id === currentUserId}
+          key={message._id || index}
           sender={message.sender.name}
           time={formatMessageTime(message.timestamp)}
         />
