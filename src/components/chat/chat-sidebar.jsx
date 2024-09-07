@@ -126,11 +126,12 @@ export function ChatSidebar() {
               <ChatItem
                 key={query._id}
                 id={query._id}
-                name={query.user?.name || 'Unknown User'}
+                name={query.participants[0]?.name || 'Unknown User'}
                 message={query.messages && query.messages.length > 0
                   ? query.messages[0].content
                   : 'No messages'}
-                time={new Date(query.createdAt).toLocaleString()}
+                time={new Date(query.lastMessageAt || query.createdAt).toLocaleString()}
+                queryType={query.queryType}
               />
             ))
           ) : (
@@ -142,7 +143,7 @@ export function ChatSidebar() {
   )
 }
 
-function ChatItem({ id, name, message, time }) {
+function ChatItem({ id, name, message, time, queryType }) {
   return (
     <Link
       href={`/messages/vendor-support-query/${id}`}
@@ -159,10 +160,13 @@ function ChatItem({ id, name, message, time }) {
         </AvatarFallback>
       </Avatar>
       <div className="flex-1 truncate">
-        <div className="truncate font-medium">{name}</div>
+        <div className="flex items-center justify-between">
+          <span className="truncate font-medium">{name}</span>
+          <span className="text-xs text-muted-foreground">{time}</span>
+        </div>
         <div className="truncate text-sm text-muted-foreground">{message}</div>
+        <div className="text-xs text-muted-foreground">{queryType}</div>
       </div>
-      <div className="text-xs text-muted-foreground">{time}</div>
     </Link>
   )
 }
