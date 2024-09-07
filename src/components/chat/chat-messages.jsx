@@ -16,13 +16,15 @@ export function ChatMessages({ messages }) {
   return (
     <ScrollArea className="flex-1 space-y-4 p-4">
       {messages.map((message, index) => (
-        <Message
-          key={index}
-          sender={message.sender.name}
-          content={message.content}
-          time={new Date(message.timestamp).toLocaleTimeString()}
-          isOutgoing={message.senderId === session?.user?.id}
-        />
+        <>
+          <Message
+            key={index}
+            sender={message.sender.name}
+            content={message.content}
+            time={new Date(message.timestamp).toLocaleTimeString()}
+            isOutgoing={message.sender.id === session?.user?._id}
+          />
+        </>
       ))}
     </ScrollArea>
   )
