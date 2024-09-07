@@ -2,6 +2,7 @@
 
 import awsURL from '@/assets/common/awsUrl'
 import baseURL from '@/assets/common/baseUrl'
+import { IMG } from '@/assets/common/urls'
 import LoadingSpinner, {
   LoadingSpinnerButton,
 } from '@/components/LoadingSpinner'
@@ -97,8 +98,7 @@ const fields = [
   },
 ]
 
-const fallbackImage =
-  'https://voutiq-app.s3.ap-northeast-2.amazonaws.com/000SiteImages/profile.png'
+const fallbackImage = IMG.profile
 
 export function FormGeneral() {
   const { data: session, update, status } = useSession()

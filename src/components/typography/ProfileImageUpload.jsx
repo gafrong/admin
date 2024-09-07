@@ -1,5 +1,6 @@
 'use client'
 
+import { IMG } from '@/assets/common/urls'
 import Image from 'next/image'
 import React from 'react'
 import { FiCamera } from 'react-icons/fi'
@@ -25,8 +26,7 @@ const imageFileSchema = z.object({
 export const srcDefaultImageDocs =
   'https://voutiq-app.s3.ap-northeast-2.amazonaws.com/000SiteImages/docs.jpg'
 
-const srcDefaultImage =
-  'https://voutiq-app.s3.ap-northeast-2.amazonaws.com/000SiteImages/profile.png'
+const srcDefaultImage = IMG.profile
 
 export const ProfileImageUpload = ({
   className = '',

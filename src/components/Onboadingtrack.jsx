@@ -4,6 +4,7 @@ import React, { useEffect, useState } from 'react'
 import StepProgressBar from 'react-step-progress'
 import 'react-step-progress/dist/index.css'
 import baseURL from '@/assets/common/baseUrl'
+import { IMG } from '@/assets/common/urls'
 import axios from 'axios'
 import { useSession } from 'next-auth/react'
 import { useRouter } from 'next/navigation'
@@ -33,8 +34,7 @@ const Onboardingtrack = () => {
   const step2Validator = () => banknameCheck?.length && bankaccountCheck?.length
 
   // step 1 contents
-  const srcDefaultImage =
-    'https://voutiq-app.s3.ap-northeast-2.amazonaws.com/000SiteImages/profile.png'
+  const srcDefaultImage = IMG.profile
   const imageMimeType = /image\/(png|jpg|jpeg)/i
   const regex = { imageMimeType }
 

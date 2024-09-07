@@ -2,6 +2,7 @@
 
 import { useFetchAuth } from '@/app/fetch/use-fetch-auth'
 import awsURL from '@/assets/common/awsUrl'
+import { IMG } from '@/assets/common/urls'
 import { DataTable } from '@/components/data-table/data-table'
 import { ButtonSortable } from '@/components/data-table/data-table-button-sorting'
 import { ImageProfile } from '@/components/image-profile'
@@ -9,9 +10,6 @@ import { PageContainer, PageTitle } from '@/components/typography/PageTitle'
 import { cn } from '@/lib/utils'
 import Link from 'next/link'
 import React from 'react'
-
-const srcDefaultProfileImage =
-  'https://voutiq-app.s3.ap-northeast-2.amazonaws.com/000SiteImages/profile.png'
 
 export const CellUser = ({ row }) => {
   const { image, name, username } = row?.original || {}
@@ -49,7 +47,7 @@ const HeaderIsSubmitted = ({ column }) => (
 export const ProfileMini = ({ user }) => {
   if (!user) return null
   const isImage = user.image && user.image.trim() !== ''
-  const imageUrl = isImage ? `${awsURL}${user.image}` : srcDefaultProfileImage
+  const imageUrl = isImage ? `${awsURL}${user.image}` : IMG.profile
 
   return (
     <div className="flex gap-4">
