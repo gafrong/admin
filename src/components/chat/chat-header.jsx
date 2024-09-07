@@ -1,10 +1,8 @@
-import { MoveHorizontalIcon, PhoneIcon, VideoIcon } from '@/components/Icons'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { Button } from '@/components/ui/button'
 import awsURL from '@/assets/common/awsUrl'
 import { IMG } from '@/assets/common/urls'
-import { AiOutlineDelete } from "react-icons/ai";
-{/* <AiOutlineDelete /> */}
+import { AiOutlineDelete } from "react-icons/ai"
 export function ChatHeader({ participant }) {
   const imgSrc = participant.image ? awsURL + participant.image : IMG.profile
   const initials = participant.name
@@ -26,16 +24,8 @@ export function ChatHeader({ participant }) {
       </div>
       <div className="ml-auto flex items-center gap-2">
         <Button variant="ghost" size="icon">
-          <PhoneIcon className="h-5 w-5" />
-          <span className="sr-only">Call</span>
-        </Button>
-        <Button variant="ghost" size="icon">
-          <VideoIcon className="h-5 w-5" />
-          <span className="sr-only">Video call</span>
-        </Button>
-        <Button variant="ghost" size="icon">
-          <MoveHorizontalIcon className="h-5 w-5" />
-          <span className="sr-only">More options</span>
+          <AiOutlineDelete className="h-5 w-5" />
+          <span className="sr-only">Delete vendor support query</span>
         </Button>
       </div>
     </div>
