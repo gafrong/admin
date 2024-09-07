@@ -21,10 +21,10 @@
 //     </div>
 //   )
 // }
-import { useState } from 'react'
 import { SendIcon } from '@/components/Icons'
 import { Button } from '@/components/ui/button'
 import { Textarea } from '@/components/ui/textarea'
+import { useState } from 'react'
 
 export function ChatInput({ onSendMessage }) {
   const [message, setMessage] = useState('')
@@ -39,7 +39,7 @@ export function ChatInput({ onSendMessage }) {
   return (
     <div className="flex items-center gap-2 border-t p-4">
       <Textarea
-        className="flex-1"
+        className="min-h-[40px] flex-1"
         placeholder="Type a message"
         rows={1}
         value={message}
