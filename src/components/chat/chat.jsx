@@ -5,7 +5,7 @@ import { ChatSidebar } from './chat-sidebar'
 
 export function Chat({ messages }) {
   return (
-    <div className="mx-auto flex h-screen w-full max-w-4xl">
+    <div className="mx-auto flex min-h-[calc(100vh-80px)]  w-full max-w-4xl">
       <ChatSidebar />
       <div className="flex flex-1 flex-col">
         <ChatHeader />
