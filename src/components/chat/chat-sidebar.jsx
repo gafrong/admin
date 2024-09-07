@@ -117,10 +117,12 @@ export function ChatSidebar() {
     <div className="flex w-[300px] flex-col border-r bg-muted/20 p-4">
       <div className="mb-4 flex items-center justify-between">
         <div className="text-lg font-medium">Chats</div>
-        <Button variant="ghost" size="icon" className="rounded-full">
-          <PlusIcon className="h-5 w-5" />
-          <span className="sr-only">New chat</span>
-        </Button>
+        <Link href="/messages/vendor-support-query/new">
+          <Button variant="ghost" size="icon" className="rounded-full">
+            <PlusIcon className="h-5 w-5" />
+            <span className="sr-only">New chat</span>
+          </Button>
+        </Link>
       </div>
       <div className="relative mb-4">
         <SearchIcon className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
