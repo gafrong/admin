@@ -85,6 +85,7 @@ import { ScrollArea } from '@/components/ui/scroll-area'
 import Link from 'next/link'
 import { useVendorSupportQueries } from '@/lib/api'
 import { useSession } from 'next-auth/react'
+import { useState, useMemo } from 'react'
 
 export function ChatSidebar() {
   const { data: session } = useSession()
@@ -95,15 +96,22 @@ export function ChatSidebar() {
     isLoading,
   } = useVendorSupportQueries(isSuperAdmin)
 
+  const [searchQuery, setSearchQuery] = useState('')
+
+  const filteredQueries = useMemo(() => {
+    if (!queries) return []
+    return queries.filter((query) =>
+      query.messages[0].content.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      query.participants[0]?.name.toLowerCase().includes(searchQuery.toLowerCase())
+    )
+  }, [queries, searchQuery])
+
   if (isLoading) {
     return <div className="w-[300px] border-r p-4">Loading...</div>
   }
 
   return (
     <div className="flex w-[300px] flex-col border-r bg-muted/20 p-4">
-      {/* <pre> */}
-        {/* {JSON.stringify(queries[0], null, 2)} */}
-      {/* </pre> */}
       <div className="mb-4 flex items-center justify-between">
         <div className="text-lg font-medium">Chats</div>
         <Button variant="ghost" size="icon" className="rounded-full">
@@ -117,12 +125,14 @@ export function ChatSidebar() {
           type="search"
           placeholder="Search chats"
           className="h-9 pl-9 text-sm"
+          value={searchQuery}
+          onChange={(e) => setSearchQuery(e.target.value)}
         />
       </div>
       <ScrollArea className="flex-1">
         <div className="space-y-2">
-          {queries && queries.length > 0 ? (
-            queries.map((query) => (
+          {filteredQueries && filteredQueries.length > 0 ? (
+            filteredQueries.map((query) => (
               <ChatItem
                 key={query._id}
                 id={query._id}
