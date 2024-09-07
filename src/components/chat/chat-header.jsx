@@ -3,7 +3,8 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { Button } from '@/components/ui/button'
 import awsURL from '@/assets/common/awsUrl'
 import { IMG } from '@/assets/common/urls'
-
+import { AiOutlineDelete } from "react-icons/ai";
+{/* <AiOutlineDelete /> */}
 export function ChatHeader({ participant }) {
   const imgSrc = participant.image ? awsURL + participant.image : IMG.profile
   const initials = participant.name
