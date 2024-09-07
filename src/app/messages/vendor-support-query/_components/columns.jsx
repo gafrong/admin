@@ -116,10 +116,6 @@ export const getColumns = () => [
       <Link
         className="text-blue-500 underline"
         href={`/messages/vendor-support-query/${row.original._id}`}
-        onClick={(e) => {
-          e.preventDefault();
-          alert("You don't have permission to view this query.");
-        }}
       >
         View
       </Link>
