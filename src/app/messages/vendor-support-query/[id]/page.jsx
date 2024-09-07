@@ -75,6 +75,9 @@ export default function VendorSupportQueryDetails() {
         <CardTitle>Query Details</CardTitle>
       </CardHeader>
       <CardContent>
+        <pre>
+          <code>{JSON.stringify(query, null, 2)}</code>
+        </pre>
         <div className="mb-4">
           <p>
             <strong>Subject:</strong> {query.subject}
@@ -92,13 +95,10 @@ export default function VendorSupportQueryDetails() {
             {query.messages.map((message, index) => (
               <li key={index} className="rounded bg-gray-100 p-2">
                 <p>
-                  <strong>
-                    {message.senderId === session.user.id ? 'You' : 'Admin'}:
-                  </strong>{' '}
-                  {message.content}
+                  <strong>{message.sender.name}:</strong> {message.content}
                 </p>
                 <p className="text-sm text-gray-500">
-                  {new Date(message.createdAt).toLocaleString()}
+                  {new Date(message.timestamp).toLocaleString()}
                 </p>
               </li>
             ))}
