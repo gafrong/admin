@@ -21,3 +21,40 @@ export function ChatInput() {
     </div>
   )
 }
+import { useState } from 'react'
+import { PaperPlaneIcon } from '@/components/Icons'
+import { Button } from '@/components/ui/button'
+import { Textarea } from '@/components/ui/textarea'
+
+export function ChatInput({ onSendMessage }) {
+  const [message, setMessage] = useState('')
+
+  const handleSend = () => {
+    if (message.trim()) {
+      onSendMessage(message.trim())
+      setMessage('')
+    }
+  }
+
+  return (
+    <div className="flex items-center gap-2 border-t p-4">
+      <Textarea
+        className="flex-1"
+        placeholder="Type a message"
+        rows={1}
+        value={message}
+        onChange={(e) => setMessage(e.target.value)}
+        onKeyPress={(e) => {
+          if (e.key === 'Enter' && !e.shiftKey) {
+            e.preventDefault()
+            handleSend()
+          }
+        }}
+      />
+      <Button size="icon" onClick={handleSend}>
+        <PaperPlaneIcon className="h-5 w-5" />
+        <span className="sr-only">Send</span>
+      </Button>
+    </div>
+  )
+}
