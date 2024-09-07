@@ -101,6 +101,9 @@ export function ChatSidebar() {
 
   return (
     <div className="flex w-[300px] flex-col border-r bg-muted/20 p-4">
+      {/* <pre> */}
+        {/* {JSON.stringify(queries[0], null, 2)} */}
+      {/* </pre> */}
       <div className="mb-4 flex items-center justify-between">
         <div className="text-lg font-medium">Chats</div>
         <Button variant="ghost" size="icon" className="rounded-full">
