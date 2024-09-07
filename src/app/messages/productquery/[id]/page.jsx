@@ -27,7 +27,7 @@ export default function Page({ params }) {
   const sellerId = session?.user?._id
   const token = session?.token
   const url = `questions/vendor/${sellerId}`
-  const { data: questions, mutate } = useFetchAuth(url)
+  const { data: questions, mutate: refetchQuery } = useFetchAuth(url)
   const selectedUserQuestion = findBy({
     arr: questions,
     key: '_id',

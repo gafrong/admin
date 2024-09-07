@@ -65,7 +65,7 @@ export function ChatInput({ queryId, onSendMessage, refetchQuery }) {
 
         // Refetch query after API call
         if (refetchQuery) {
-          refetchQuery()
+          await refetchQuery()
         }
       } catch (error) {
         console.error('Error sending message:', error)
