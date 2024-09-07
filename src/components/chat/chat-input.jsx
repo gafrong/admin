@@ -47,13 +47,14 @@ export function ChatInput({ queryId, onSendMessage, refetchQuery }) {
         const messageData = {
           senderId: session?.user?.id,
           content: message.trim(),
+          timestamp: new Date().toISOString(),
         }
         if (queryId) {
           await addMessageToVendorSupportQuery(queryId, messageData, session?.token)
         }
         setMessage('')
         if (onSendMessage) {
-          await onSendMessage(message.trim())
+          await onSendMessage(messageData)
         }
         if (refetchQuery) {
           refetchQuery()

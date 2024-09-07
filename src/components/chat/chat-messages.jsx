@@ -35,21 +35,24 @@ export function ChatMessages({ messages, currentUserId }) {
 
   return (
     <ScrollArea className="flex-1 p-4">
-      {messages.map((message, index) => (
-        // <>
-        // <h1>Message {index}</h1>
-        // <pre>{JSON.stringify(message, null, 2)}</pre>
-        // </>
-        <Message
-          className="mb-4 last:mb-0"
-          content={message.content}
-          image={message?.sender?.image}
-          isOutgoing={message.sender?._id === currentUserId}
-          key={message._id || index}
-          sender={message.sender?.name}
-          time={formatMessageTime(message.timestamp)}
-        />
-      ))}
+      {messages.map((message, index) => {
+        // Skip rendering if essential data is missing
+        if (!message.content || !message.sender) {
+          return null;
+        }
+
+        return (
+          <Message
+            className="mb-4 last:mb-0"
+            content={message.content}
+            image={message.sender?.image}
+            isOutgoing={message.sender?._id === currentUserId}
+            key={message._id || index}
+            sender={message.sender?.name || 'Unknown'}
+            time={message.timestamp ? formatMessageTime(message.timestamp) : 'Just now'}
+          />
+        );
+      })}
     </ScrollArea>
   )
 }
