@@ -8,7 +8,7 @@ export function Chat({ messages }) {
     <div className="mx-auto flex min-h-[calc(100vh-80px)]  w-full max-w-4xl">
       <ChatSidebar />
       <div className="flex flex-1 flex-col">
-        <ChatHeader />
+        {/* <ChatHeader /> */}
         <ChatMessages messages={messages} />
         <ChatInput />
       </div>
