@@ -86,6 +86,9 @@ import Link from 'next/link'
 import { useVendorSupportQueries } from '@/lib/api'
 import { useSession } from 'next-auth/react'
 import { useState, useMemo } from 'react'
+import { getInitials } from '@/utils/helpers'
+import { IMG } from '@/assets/common/urls'
+import awsURL from '@/assets/common/awsUrl'
 
 export function ChatSidebar() {
   const { data: session } = useSession()
@@ -137,6 +140,7 @@ export function ChatSidebar() {
                 key={query._id}
                 id={query._id}
                 name={query.participants[0]?.name || 'Unknown User'}
+                image={query.participants[0]?.image}
                 message={query.messages && query.messages.length > 0
                   ? query.messages[0].content
                   : 'No messages'}
@@ -153,7 +157,10 @@ export function ChatSidebar() {
   )
 }
 
-function ChatItem({ id, name, message, time, queryType }) {
+function ChatItem({ id, name, image, message, time, queryType }) {
+  const imgSrc = image ? awsURL + image : IMG.profile
+  const initials = getInitials(name)
+
   return (
     <Link
       href={`/messages/vendor-support-query/${id}`}
@@ -161,13 +168,8 @@ function ChatItem({ id, name, message, time, queryType }) {
       prefetch={false}
     >
       <Avatar className="h-10 w-10 border">
-        <AvatarImage src="/placeholder-user.jpg" alt="Image" />
-        <AvatarFallback>
-          {name
-            .split(' ')
-            .map((n) => n[0])
-            .join('')}
-        </AvatarFallback>
+        <AvatarImage src={imgSrc} alt={name} />
+        <AvatarFallback>{initials}</AvatarFallback>
       </Avatar>
       <div className="flex-1 truncate">
         <div className="flex items-center justify-between">
