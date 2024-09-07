@@ -165,7 +165,7 @@ function ChatItem({ id, name, message, time, queryType }) {
           <span className="text-xs text-muted-foreground">{time}</span>
         </div>
         <div className="truncate text-sm text-muted-foreground">{message}</div>
-        <div className="text-xs text-muted-foreground">{queryType}</div>
+        {/* <div className="text-xs text-muted-foreground">{queryType}</div> */}
       </div>
     </Link>
   )
