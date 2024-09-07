@@ -1,17 +1,25 @@
 import { MoveHorizontalIcon, PhoneIcon, VideoIcon } from '@/components/Icons'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { Button } from '@/components/ui/button'
+import awsURL from '@/assets/common/awsUrl'
+import { IMG } from '@/assets/common/urls'
 
-export function ChatHeader() {
+export function ChatHeader({ participant }) {
+  const imgSrc = participant.image ? awsURL + participant.image : IMG.profile
+  const initials = participant.name
+    .split(' ')
+    .map((n) => n[0])
+    .join('')
+
   return (
     <div className="flex items-center gap-3 border-b p-4">
       <Avatar className="h-10 w-10 border">
-        <AvatarImage src="/placeholder-user.jpg" alt="Image" />
-        <AvatarFallback>JD</AvatarFallback>
+        <AvatarImage src={imgSrc} alt={participant.name} />
+        <AvatarFallback>{initials}</AvatarFallback>
       </Avatar>
       <div>
-        <div className="font-medium">John Doe</div>
-        <div className="text-xs text-muted-foreground">Online</div>
+        <div className="font-medium">{participant.name}</div>
+        <div className="text-xs text-muted-foreground">{participant.status}</div>
       </div>
       <div className="ml-auto flex items-center gap-2">
         <Button variant="ghost" size="icon">
