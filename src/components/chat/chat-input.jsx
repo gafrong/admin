@@ -29,10 +29,15 @@ import { useState } from 'react'
 export function ChatInput({ onSendMessage }) {
   const [message, setMessage] = useState('')
 
-  const handleSend = () => {
+  const handleSend = async () => {
     if (message.trim()) {
-      onSendMessage(message.trim())
-      setMessage('')
+      try {
+        await onSendMessage(message.trim())
+        setMessage('')
+      } catch (error) {
+        console.error('Error sending message:', error)
+        // You might want to show an error message to the user here
+      }
     }
   }
 
