@@ -25,15 +25,28 @@ import { SendIcon } from '@/components/Icons'
 import { Button } from '@/components/ui/button'
 import { Textarea } from '@/components/ui/textarea'
 import { useState } from 'react'
+import { useSession } from 'next-auth/react'
+import { addMessageToVendorSupportQuery } from '@/lib/api'
 
-export function ChatInput({ onSendMessage }) {
+export function ChatInput({ queryId, onSendMessage, mutateQuery }) {
   const [message, setMessage] = useState('')
+  const { data: session } = useSession()
 
   const handleSend = async () => {
     if (message.trim()) {
       try {
-        await onSendMessage(message.trim())
+        const messageData = {
+          senderId: session?.user?.id,
+          content: message.trim(),
+        }
+        await addMessageToVendorSupportQuery(queryId, messageData, session?.token)
         setMessage('')
+        if (onSendMessage) {
+          await onSendMessage(message.trim())
+        }
+        if (mutateQuery) {
+          mutateQuery()
+        }
       } catch (error) {
         console.error('Error sending message:', error)
         // You might want to show an error message to the user here
