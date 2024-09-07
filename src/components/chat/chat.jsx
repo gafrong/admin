@@ -1,7 +1,7 @@
-import { ChatHeader } from './ChatHeader'
-import { ChatInput } from './ChatInput'
-import { ChatMessages } from './ChatMessages'
-import { ChatSidebar } from './ChatSidebar'
+import { ChatHeader } from './chat-header'
+import { ChatInput } from './chat-input'
+import { ChatMessages } from './chat-messages'
+import { ChatSidebar } from './chat-sidebar'
 
 export function Chat() {
   return (

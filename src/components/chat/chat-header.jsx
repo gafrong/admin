@@ -1,6 +1,6 @@
+import { MoveHorizontalIcon, PhoneIcon, VideoIcon } from '@/components/Icons'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { Button } from '@/components/ui/button'
-import { PhoneIcon, VideoIcon, MoveHorizontalIcon } from '@/components/Icons'
 
 export function ChatHeader() {
   return (

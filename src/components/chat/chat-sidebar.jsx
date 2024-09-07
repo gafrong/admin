@@ -1,9 +1,9 @@
+import { PlusIcon, SearchIcon } from '@/components/Icons'
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { ScrollArea } from '@/components/ui/scroll-area'
 import Link from 'next/link'
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
-import { PlusIcon, SearchIcon } from '@/components/Icons'
 
 export function ChatSidebar() {
   return (
@@ -60,13 +60,16 @@ function ChatItem({ name, message, time }) {
     >
       <Avatar className="h-10 w-10 border">
         <AvatarImage src="/placeholder-user.jpg" alt="Image" />
-        <AvatarFallback>{name.split(' ').map(n => n[0]).join('')}</AvatarFallback>
+        <AvatarFallback>
+          {name
+            .split(' ')
+            .map((n) => n[0])
+            .join('')}
+        </AvatarFallback>
       </Avatar>
       <div className="flex-1 truncate">
         <div className="truncate font-medium">{name}</div>
-        <div className="truncate text-sm text-muted-foreground">
-          {message}
-        </div>
+        <div className="truncate text-sm text-muted-foreground">{message}</div>
       </div>
       <div className="text-xs text-muted-foreground">{time}</div>
     </Link>

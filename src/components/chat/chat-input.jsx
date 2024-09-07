@@ -1,6 +1,6 @@
+import { PaperclipIcon, SendIcon } from '@/components/Icons'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
-import { PaperclipIcon, SendIcon } from '@/components/Icons'
 
 export function ChatInput() {
   return (

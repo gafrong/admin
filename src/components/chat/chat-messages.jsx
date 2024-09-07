@@ -1,5 +1,5 @@
-import { ScrollArea } from '@/components/ui/scroll-area'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
+import { ScrollArea } from '@/components/ui/scroll-area'
 
 export function ChatMessages() {
   return (
@@ -36,10 +36,19 @@ function Message({ sender, content, time, isOutgoing }) {
       {!isOutgoing && (
         <Avatar className="h-8 w-8 border">
           <AvatarImage src="/placeholder-user.jpg" alt="Image" />
-          <AvatarFallback>{sender?.split(' ').map(n => n[0]).join('')}</AvatarFallback>
+          <AvatarFallback>
+            {sender
+              ?.split(' ')
+              .map((n) => n[0])
+              .join('')}
+          </AvatarFallback>
         </Avatar>
       )}
-      <div className={`max-w-[65%] rounded-lg p-3 text-sm ${isOutgoing ? 'bg-primary text-primary-foreground' : 'bg-muted'}`}>
+      <div
+        className={`max-w-[65%] rounded-lg p-3 text-sm ${
+          isOutgoing ? 'bg-primary text-primary-foreground' : 'bg-muted'
+        }`}
+      >
         {content}
       </div>
       <div className="text-xs text-muted-foreground">{time}</div>
