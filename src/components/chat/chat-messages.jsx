@@ -2,6 +2,20 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { ScrollArea } from '@/components/ui/scroll-area'
 import { useSession } from 'next-auth/react'
 
+function formatMessageTime(timestamp) {
+  const messageDate = new Date(timestamp);
+  const now = new Date();
+  const diffInHours = (now - messageDate) / (1000 * 60 * 60);
+
+  if (diffInHours < 24) {
+    return messageDate.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+  } else if (diffInHours < 48) {
+    return 'Yesterday';
+  } else {
+    return messageDate.toLocaleDateString([], { year: 'numeric', month: 'short', day: 'numeric' });
+  }
+}
+
 export function ChatMessages({ messages }) {
   const { data: session } = useSession()
 
@@ -22,7 +36,7 @@ export function ChatMessages({ messages }) {
           isOutgoing={message.sender.id === session?.user?._id}
           key={index}
           sender={message.sender.name}
-          time={new Date(message.timestamp).toLocaleTimeString()}
+          time={formatMessageTime(message.timestamp)}
         />
       ))}
     </ScrollArea>
