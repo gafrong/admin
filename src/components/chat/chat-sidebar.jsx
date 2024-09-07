@@ -86,7 +86,7 @@ import Link from 'next/link'
 import { useVendorSupportQueries } from '@/lib/api'
 import { useSession } from 'next-auth/react'
 import { useState, useMemo } from 'react'
-import { getInitials } from '@/utils/helpers'
+// import { getInitials } from '@/utils/helpers'
 import { IMG } from '@/assets/common/urls'
 import awsURL from '@/assets/common/awsUrl'
 
@@ -159,7 +159,7 @@ export function ChatSidebar() {
 
 function ChatItem({ id, name, image, message, time, queryType }) {
   const imgSrc = image ? awsURL + image : IMG.profile
-  const initials = getInitials(name)
+  const initials = ''//getInitials(name)
 
   return (
     <Link
