@@ -16,22 +16,22 @@ export function ChatMessages({ messages }) {
   return (
     <ScrollArea className="flex-1 p-4">
       {messages.map((message, index) => (
-        <div key={index} className="mb-4 last:mb-0">
-          <Message
-            sender={message.sender.name}
-            content={message.content}
-            time={new Date(message.timestamp).toLocaleTimeString()}
-            isOutgoing={message.sender.id === session?.user?._id}
-          />
-        </div>
+        <Message
+          key={index}
+          sender={message.sender.name}
+          content={message.content}
+          time={new Date(message.timestamp).toLocaleTimeString()}
+          isOutgoing={message.sender.id === session?.user?._id}
+          className="mb-4 last:mb-0"
+        />
       ))}
     </ScrollArea>
   )
 }
 
-function Message({ sender, content, time, isOutgoing }) {
+function Message({ sender, content, time, isOutgoing, className }) {
   return (
-    <div className={`flex items-end gap-2 ${isOutgoing ? 'justify-end' : ''}`}>
+    <div className={`flex items-end gap-2 ${isOutgoing ? 'justify-end' : ''} ${className}`}>
       {!isOutgoing && (
         <Avatar className="h-8 w-8 border">
           <AvatarImage src="/placeholder-user.jpg" alt={sender} />
