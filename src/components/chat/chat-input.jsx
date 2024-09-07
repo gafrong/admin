@@ -22,7 +22,7 @@
 //   )
 // }
 import { useState } from 'react'
-import { PaperPlaneIcon } from '@/components/Icons'
+import { SendIcon } from '@/components/Icons'
 import { Button } from '@/components/ui/button'
 import { Textarea } from '@/components/ui/textarea'
 
@@ -52,7 +52,7 @@ export function ChatInput({ onSendMessage }) {
         }}
       />
       <Button size="icon" onClick={handleSend}>
-        <PaperPlaneIcon className="h-5 w-5" />
+        <SendIcon className="h-5 w-5" />
         <span className="sr-only">Send</span>
       </Button>
     </div>
