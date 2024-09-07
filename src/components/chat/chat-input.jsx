@@ -43,28 +43,37 @@ export function ChatInput({ queryId, onSendMessage, refetchQuery }) {
 
   const handleSend = async () => {
     if (message.trim()) {
+      const messageData = {
+        senderId: session?.user?.id,
+        content: message.trim(),
+        timestamp: new Date().toISOString(),
+      }
+
+      // Clear the input immediately
+      setMessage('')
+
+      // Update UI immediately
+      if (onSendMessage) {
+        onSendMessage(messageData)
+      }
+
       try {
-        const messageData = {
-          senderId: session?.user?.id,
-          content: message.trim(),
-          timestamp: new Date().toISOString(),
-        }
         if (queryId) {
+          // Send message to API
           await addMessageToVendorSupportQuery(queryId, messageData, session?.token)
         }
-        setMessage('')
-        if (onSendMessage) {
-          await onSendMessage(messageData)
-        }
+
+        // Refetch query after API call
         if (refetchQuery) {
           refetchQuery()
-        }
-        if (textareaRef.current) {
-          textareaRef.current.focus()
         }
       } catch (error) {
         console.error('Error sending message:', error)
         // You might want to show an error message to the user here
+      }
+
+      if (textareaRef.current) {
+        textareaRef.current.focus()
       }
     }
   }
