@@ -3,7 +3,7 @@ import { useSession } from 'next-auth/react'
 import { ChatHeader } from './chat-header'
 import { ChatInput } from './chat-input'
 import { ChatMessages } from './chat-messages'
-import { ChatSidebar } from './chat-sidebar'
+import { ChatSidebar } from '@/components/chat/chat-sidebar'
 
 export function Chat({ initialQuery }) {
   const { data: session } = useSession()

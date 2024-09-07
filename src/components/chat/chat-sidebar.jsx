@@ -75,3 +75,52 @@ function ChatItem({ name, message, time }) {
     </Link>
   )
 }
+'use client'
+
+import { useVendorSupportQueries } from '@/lib/api'
+import { useSession } from 'next-auth/react'
+import { ScrollArea } from '@/components/ui/scroll-area'
+import { Button } from '@/components/ui/button'
+import Link from 'next/link'
+
+export function ChatSidebar() {
+  const { data: session } = useSession()
+  const isSuperAdmin = session?.user?.role === 'superAdmin'
+
+  const {
+    data: queries,
+    isLoading,
+  } = useVendorSupportQueries(isSuperAdmin)
+
+  if (isLoading) {
+    return <div className="w-64 border-r p-4">Loading...</div>
+  }
+
+  return (
+    <div className="w-64 border-r">
+      <ScrollArea className="h-[calc(100vh-80px)]">
+        <div className="p-4">
+          <h2 className="mb-4 text-lg font-semibold">Queries</h2>
+          {queries && queries.length > 0 ? (
+            queries.map((query) => (
+              <Link href={`/messages/vendor-support-query/${query._id}`} key={query._id}>
+                <Button
+                  variant="ghost"
+                  className="mb-2 w-full justify-start text-left"
+                >
+                  <div className="truncate">
+                    {query.messages && query.messages.length > 0
+                      ? query.messages[0].content
+                      : 'No messages'}
+                  </div>
+                </Button>
+              </Link>
+            ))
+          ) : (
+            <p className="text-sm text-muted-foreground">No queries available.</p>
+          )}
+        </div>
+      </ScrollArea>
+    </div>
+  )
+}
