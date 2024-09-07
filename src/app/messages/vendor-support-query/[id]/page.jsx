@@ -72,7 +72,7 @@ export default function VendorSupportQueryDetails() {
 
   return (
     <>
-    <Chat></Chat>
+    <Chat messages={query.messages} />
     <Card>
       <CardHeader>
         <CardTitle>Query Details</CardTitle>

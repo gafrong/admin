@@ -1,31 +1,29 @@
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { ScrollArea } from '@/components/ui/scroll-area'
+import { useSession } from 'next-auth/react'
 
-export function ChatMessages() {
+export function ChatMessages({ messages }) {
+  const { data: session } = useSession()
+
+  if (!messages || messages.length === 0) {
+    return (
+      <ScrollArea className="flex-1 p-4">
+        <p className="text-center text-muted-foreground">No messages yet.</p>
+      </ScrollArea>
+    )
+  }
+
   return (
     <ScrollArea className="flex-1 space-y-4 p-4">
-      <Message
-        sender="John Doe"
-        content="Hey, how's it going? I wanted to check in and see if you had any updates on the project."
-        time="3:45 PM"
-        isOutgoing={false}
-      />
-      <Message
-        content="The project is going well! I've made some good progress on the design and I'm ready to share an update with the team."
-        time="3:47 PM"
-        isOutgoing={true}
-      />
-      <Message
-        sender="John Doe"
-        content="Great, let's schedule a meeting to discuss the updates. I'm free this afternoon if that works for you."
-        time="3:50 PM"
-        isOutgoing={false}
-      />
-      <Message
-        content="Sounds good, let's meet at 4pm. I'll send a calendar invite."
-        time="3:51 PM"
-        isOutgoing={true}
-      />
+      {messages.map((message, index) => (
+        <Message
+          key={index}
+          sender={message.sender.name}
+          content={message.content}
+          time={new Date(message.timestamp).toLocaleTimeString()}
+          isOutgoing={message.senderId === session?.user?.id}
+        />
+      ))}
     </ScrollArea>
   )
 }
@@ -35,7 +33,7 @@ function Message({ sender, content, time, isOutgoing }) {
     <div className={`flex items-end gap-2 ${isOutgoing ? 'justify-end' : ''}`}>
       {!isOutgoing && (
         <Avatar className="h-8 w-8 border">
-          <AvatarImage src="/placeholder-user.jpg" alt="Image" />
+          <AvatarImage src="/placeholder-user.jpg" alt={sender} />
           <AvatarFallback>
             {sender
               ?.split(' ')
