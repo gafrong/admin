@@ -24,30 +24,42 @@
 import { SendIcon } from '@/components/Icons'
 import { Button } from '@/components/ui/button'
 import { Textarea } from '@/components/ui/textarea'
-import { useState } from 'react'
+import { useState, useRef, useEffect } from 'react'
 import { useSession } from 'next-auth/react'
 import { addMessageToVendorSupportQuery } from '@/lib/api'
 
 export function ChatInput({ queryId, onSendMessage, mutateQuery }) {
   const [message, setMessage] = useState('')
   const { data: session } = useSession()
+  const textareaRef = useRef(null)
 
   console.log('ChatInput props:', { queryId, onSendMessage, mutateQuery })
 
+  useEffect(() => {
+    if (textareaRef.current) {
+      textareaRef.current.focus()
+    }
+  }, [])
+
   const handleSend = async () => {
-    if (message.trim() && queryId) {
+    if (message.trim()) {
       try {
         const messageData = {
           senderId: session?.user?.id,
           content: message.trim(),
         }
-        await addMessageToVendorSupportQuery(queryId, messageData, session?.token)
+        if (queryId) {
+          await addMessageToVendorSupportQuery(queryId, messageData, session?.token)
+        }
         setMessage('')
         if (onSendMessage) {
           await onSendMessage(message.trim())
         }
         if (mutateQuery) {
           mutateQuery()
+        }
+        if (textareaRef.current) {
+          textareaRef.current.focus()
         }
       } catch (error) {
         console.error('Error sending message:', error)
@@ -59,6 +71,7 @@ export function ChatInput({ queryId, onSendMessage, mutateQuery }) {
   return (
     <div className="flex items-center gap-2 border-t p-4">
       <Textarea
+        ref={textareaRef}
         className="min-h-[40px] flex-1"
         placeholder="Type a message"
         rows={1}
@@ -71,7 +84,7 @@ export function ChatInput({ queryId, onSendMessage, mutateQuery }) {
           }
         }}
       />
-      <Button size="icon" onClick={handleSend}>
+      <Button size="icon" onClick={handleSend} disabled={!message.trim()}>
         <SendIcon className="h-5 w-5" />
         <span className="sr-only">Send</span>
       </Button>
