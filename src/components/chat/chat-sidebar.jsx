@@ -131,10 +131,10 @@ function ChatItem({ id, name, image, message, time, queryType }) {
       prefetch={false}
     >
       <ProfileImageSideBar image={imgSrc} name={name} />
-      <div className="flex-1 truncate">
+      <div className="flex-1 min-w-0">
         <div className="flex items-center justify-between">
-          <span className="truncate font-medium">{name}</span>
-          <span className="text-xs text-muted-foreground">{time}</span>
+          <span className="truncate font-medium max-w-[70%]">{name}</span>
+          <span className="text-xs text-muted-foreground flex-shrink-0">{time}</span>
         </div>
         <div className="truncate text-sm text-muted-foreground">{message}</div>
         {/* <div className="text-xs text-muted-foreground">{queryType}</div> */}
