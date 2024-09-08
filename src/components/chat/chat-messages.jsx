@@ -2,6 +2,7 @@ import awsURL from '@/assets/common/awsUrl'
 import { IMG } from '@/assets/common/urls'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { ScrollArea } from '@/components/ui/scroll-area'
+import { useEffect, useRef } from 'react'
 
 function formatMessageTime(timestamp) {
   const messageDate = new Date(timestamp)
@@ -25,16 +26,27 @@ function formatMessageTime(timestamp) {
 }
 
 export function ChatMessages({ messages, currentUserId }) {
+  const scrollAreaRef = useRef(null);
+
+  useEffect(() => {
+    if (scrollAreaRef.current) {
+      const scrollContainer = scrollAreaRef.current.querySelector('[data-radix-scroll-area-viewport]');
+      if (scrollContainer) {
+        scrollContainer.scrollTop = scrollContainer.scrollHeight;
+      }
+    }
+  }, [messages]);
+
   if (!messages || messages.length === 0) {
     return (
-      <ScrollArea className="flex-1 p-4">
+      <ScrollArea className="flex-1 p-4" ref={scrollAreaRef}>
         <p className="text-center text-muted-foreground">No messages yet.</p>
       </ScrollArea>
     )
   }
 
   return (
-    <ScrollArea className="flex-1 p-4">
+    <ScrollArea className="flex-1 p-4" ref={scrollAreaRef}>
       {messages.map((message, index) => {
         // Skip rendering if essential data is missing
         if (!message.content || !message.sender) {
