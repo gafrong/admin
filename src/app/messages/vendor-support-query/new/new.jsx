@@ -71,7 +71,7 @@ export default function NewVendorSupportQuery() {
         return
       }
       await createVendorSupportQuery(data, session.token)
-      router.push('/messages/vendor-support-query/list')
+      router.push('/messages/vendor-support-query')
     } catch (error) {
       console.error('Error submitting query:', error)
       console.error('Error details:', error.response?.data)
