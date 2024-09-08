@@ -8,10 +8,12 @@ import { useParams } from 'next/navigation'
 export default function VendorSupportQueryDetails() {
   const { data: session } = useSession()
   const params = useParams()
+  const queryId = params.id
   const {
     data: query,
     error: queryError,
     isLoading: queryLoading,
+    mutate: refetchQuery,
   } = useVendorSupportQuery(params.id)
 
   if (queryLoading) {
@@ -21,8 +23,8 @@ export default function VendorSupportQueryDetails() {
   if (queryError) {
     return <div>Error: {queryError.message}</div>
   }
-
+  console.log('VendorSupportQueryDetails()::: ', { query })
   return (
-    <Chat initialQuery={query} />
+    <Chat initialQuery={query} queryId={queryId} refetchQuery={refetchQuery} />
   )
 }
