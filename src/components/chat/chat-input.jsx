@@ -44,7 +44,11 @@ export function ChatInput({ queryId, onSendMessage, refetchQuery }) {
   const handleSend = async () => {
     if (message.trim()) {
       const messageData = {
-        senderId: session?.user?.id,
+        sender: {
+          _id: session?.user?.id,
+          name: session?.user?.name,
+          image: session?.user?.image
+        },
         content: message.trim(),
         timestamp: new Date().toISOString(),
       }
@@ -52,15 +56,15 @@ export function ChatInput({ queryId, onSendMessage, refetchQuery }) {
       // Clear the input immediately
       setMessage('')
 
-      // Update UI immediately
-      if (onSendMessage) {
-        onSendMessage(messageData)
-      }
-
       try {
         if (queryId) {
           // Send message to API
           await addMessageToVendorSupportQuery(queryId, messageData, session?.token)
+        }
+
+        // Update UI immediately
+        if (onSendMessage) {
+          await onSendMessage(messageData)
         }
 
         // Refetch query after API call
