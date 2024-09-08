@@ -54,13 +54,14 @@ export default function Page({ params }) {
         <ReplyEditing
           isExistingReply={isExistingReply}
           isReplyEditingActive={isReplyEditingActive}
-          mutate={mutate}
+          mutate={refetchQuery}
           replyText={replyText}
           selectedUserQuestion={selectedUserQuestion}
           setReplyEditingActive={setReplyEditingActive}
           setReplyText={setReplyText}
           token={token}
         />
+        <ChatInput queryId={params.id} onSendMessage={handleSendMessage} refetchQuery={refetchQuery} />
       </div>
     </PageContainer>
   )
