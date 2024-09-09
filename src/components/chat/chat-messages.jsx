@@ -3,6 +3,7 @@ import { IMG } from '@/assets/common/urls'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { ScrollArea } from '@/components/ui/scroll-area'
 import { useEffect, useRef } from 'react'
+import { getInitials } from './chat-header'
 
 export function formatChatMessageTime(timestamp) {
   const messageDate = new Date(timestamp)
@@ -55,8 +56,9 @@ export function ChatMessages({ messages, currentUserId }) {
           return null
         }
 
-        const senderId = message.sender?._id;
-        const isOutgoing = senderId ? String(senderId) === String(currentUserId) : true;
+        const senderId = message.sender?._id
+        const isOutgoing =
+          senderId ? String(senderId) === String(currentUserId) : true
 
         return (
           <Message
@@ -77,12 +79,6 @@ export function ChatMessages({ messages, currentUserId }) {
     </ScrollArea>
   )
 }
-
-const getInitials = (name) =>
-  name
-    ?.split(' ')
-    .map((n) => n[0])
-    .join('')
 
 function Message({ sender, content, image, time, isOutgoing, className }) {
   const imgSrc = image ? awsURL + image : IMG.profile

@@ -1,12 +1,14 @@
 'use client'
 
 import awsURL from '@/assets/common/awsUrl'
+import { IMG } from '@/assets/common/urls'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { signOut, useSession } from 'next-auth/react'
 import Image from 'next/image'
 import Link from 'next/link'
 import React from 'react'
 import { FiBell, FiSettings } from 'react-icons/fi'
+import { getInitials } from './chat/chat-header'
 import { Button } from './ui/button'
 
 const Navbar = () => {
@@ -19,6 +21,7 @@ const Navbar = () => {
     await signOut({ callbackUrl: `/` })
   }
 
+  const initials = getInitials(user?.name || user?.username)
   return (
     <div className="fixed z-30 flex h-20 w-full items-center justify-between border-b border-t-transparent  bg-white py-4">
       <Link href="/" className="">
@@ -42,9 +45,10 @@ const Navbar = () => {
 
           <Link href="/profile">
             <Avatar className="h-[30px] w-[30px]">
-              <AvatarImage src={awsURL + image} />
-              <AvatarFallback>CN</AvatarFallback>
+              <AvatarImage src={image ? awsURL + image : IMG.profile} />
+              <AvatarFallback>{initials || '?'}</AvatarFallback>
             </Avatar>
+            <h1>{image}</h1>
           </Link>
           <Link href="#">
             <FiBell />
