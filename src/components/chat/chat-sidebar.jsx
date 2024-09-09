@@ -72,7 +72,7 @@ export function ChatSidebar() {
   }
 
   return (
-    <div className="flex flex-col border-r bg-muted/20 p-4 w-[400px] blue">
+    <div className="flex w-96 flex-col border-r bg-muted/20 p-4">
       <div className="mb-4 flex items-center justify-between">
         <div className="text-lg font-medium">Chats</div>
         <NewChatButton />
@@ -81,7 +81,7 @@ export function ChatSidebar() {
 
       <ScrollArea className="flex-1">
         <div className="space-y-2">
-          {filteredQueries && filteredQueries.length > 0 ? (
+          {filteredQueries && filteredQueries.length > 0 ?
             filteredQueries.map((query) => (
               <ChatItem
                 key={query._id}
@@ -89,9 +89,9 @@ export function ChatSidebar() {
                 name={query.participants[0]?.name || 'Unknown User'}
                 image={query.participants[0]?.image}
                 message={
-                  query.messages && query.messages.length > 0
-                    ? query.messages[0].content
-                    : 'No messages'
+                  query.messages && query.messages.length > 0 ?
+                    query.messages[0].content
+                  : 'No messages'
                 }
                 time={formatChatMessageTime(
                   query.lastMessageAt || query.createdAt,
@@ -99,9 +99,7 @@ export function ChatSidebar() {
                 queryType={query.queryType}
               />
             ))
-          ) : (
-            <Empty />
-          )}
+          : <Empty />}
         </div>
       </ScrollArea>
     </div>
@@ -109,7 +107,7 @@ export function ChatSidebar() {
 }
 
 const ProfileImageSideBar = ({ image, name }) => {
-  const initials = getInitials(name||'?')
+  const initials = getInitials(name || '?')
   return (
     <Avatar className="h-10 w-10 border">
       <AvatarImage src={image} alt={name} />
@@ -125,16 +123,20 @@ function ChatItem({ id, name, image, message, time, queryType }) {
   return (
     <Link
       href={`/messages/vendor-support-query/${id}`}
-      className="flex items-start gap-3 rounded-md p-2 hover:bg-muted/50 w-full"
+      className="flex w-full items-start gap-3 rounded-md p-2 hover:bg-muted/50"
       prefetch={false}
     >
       <ProfileImageSideBar image={imgSrc} name={name} />
-      <div className="flex-1 min-w-0">
+      <div className="min-w-0 flex-1">
         <div className="flex items-center justify-between">
-          <span className="font-medium truncate mr-2">{name}</span>
-          <span className="text-xs text-muted-foreground whitespace-nowrap">{time}</span>
+          <span className="mr-2 truncate font-medium">{name}</span>
+          <span className="whitespace-nowrap text-xs text-muted-foreground">
+            {time}
+          </span>
         </div>
-        <div className="text-sm text-muted-foreground line-clamp-2">{message}</div>
+        <div className="line-clamp-2 text-sm text-muted-foreground">
+          {message}
+        </div>
         {/* <div className="text-xs text-muted-foreground">{queryType}</div> */}
       </div>
     </Link>

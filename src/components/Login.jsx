@@ -29,9 +29,9 @@ const Login = () => {
           callbackUrl: '/dashboard',
           email,
           password,
-          redirect: false,
+          redirect: true,
         })) || {}
-      console.log('Login response:', response);
+      console.log('Login response:', response)
       if (response.error) {
         console.error('Login page signIn error:', { response })
         setError(response.error)
@@ -53,8 +53,10 @@ const Login = () => {
         }
       }
     } catch (error) {
-      console.error('Login error:', error);
-      setError(error.message || 'An unexpected error occurred. Please try again.')
+      console.error('Login error:', error)
+      setError(
+        error.message || 'An unexpected error occurred. Please try again.',
+      )
     } finally {
       setIsLoading(false)
     }
@@ -116,9 +118,12 @@ const Login = () => {
             {error && (
               <div>
                 <p className="text-red-600">
-                  {error === 'User not found. Please check your email and try again.'
-                    ? '사용자를 찾을 수 없습니다. 이메일을 확인하고 다시 시도해주세요.'
-                    : '로그인에 문제가 있습니다. 다시 시도해보세요'}
+                  {(
+                    error ===
+                    'User not found. Please check your email and try again.'
+                  ) ?
+                    '사용자를 찾을 수 없습니다. 이메일을 확인하고 다시 시도해주세요.'
+                  : '로그인에 문제가 있습니다. 다시 시도해보세요'}
                 </p>
               </div>
             )}

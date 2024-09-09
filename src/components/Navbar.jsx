@@ -48,7 +48,6 @@ const Navbar = () => {
               <AvatarImage src={image ? awsURL + image : IMG.profile} />
               <AvatarFallback>{initials || '?'}</AvatarFallback>
             </Avatar>
-            <h1>{image}</h1>
           </Link>
           <Link href="#">
             <FiBell />

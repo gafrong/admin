@@ -52,9 +52,11 @@ export const ProfileMini = ({ user }) => {
   return (
     <div className="flex gap-4">
       <ImageProfile size={48} src={imageUrl} />
-      <div className="mr-4">
-        <p>{user.name}</p>
-        <p className="mt-1 text-xs text-gray-500">@{user.username}</p>
+      <div className="-mt-[5px] flex flex-col">
+        <p className="bold text-md">{user.name || 'Unkown User'}</p>
+        <p className="mt-1 text-xs text-gray-500">
+          {user.username && `@${user.username}`}
+        </p>
       </div>
     </div>
   )
