@@ -29,7 +29,10 @@ const credentialsConfig = CredentialsProvider({
         console.error('Error status:', error.response.status);
         console.error('Error headers:', error.response.headers);
       }
-      throw new Error(error.response ? error.response.data : 'Failed to login')
+      if (error.response && error.response.status === 400 && error.response.data === 'The user not found') {
+        throw new Error('User not found. Please check your email and try again.')
+      }
+      throw new Error(error.response ? error.response.data : 'Failed to login. Please try again later.')
     }
   },
 })

@@ -29,30 +29,32 @@ const Login = () => {
           callbackUrl: '/dashboard',
           email,
           password,
-          redirect: true,
+          redirect: false,
         })) || {}
+      console.log('Login response:', response);
       if (response.error) {
         console.error('Login page signIn error:', { response })
         setError(response.error)
-      }
-
-      if (!user) {
-        console.log('no user')
+        setIsLoading(false)
         return
       }
-      if (user?.isAdmin) {
-        console.log('user is admin', { user, status })
-        router.push('/dashboard')
-      } else if (user?.submitted) {
-        console.log('user is submitted')
-        router.push('/welcome')
-      } else if (status === 'authenticated') {
-        // new user, applying to be a vendor/seller
-        console.log('user is authenticated')
-        router.push('/onboarding')
+
+      if (response.ok) {
+        if (user?.isAdmin) {
+          console.log('user is admin', { user, status })
+          router.push('/dashboard')
+        } else if (user?.submitted) {
+          console.log('user is submitted')
+          router.push('/welcome')
+        } else {
+          // new user, applying to be a vendor/seller
+          console.log('user is authenticated')
+          router.push('/onboarding')
+        }
       }
     } catch (error) {
-      setError(error.message)
+      console.error('Login error:', error);
+      setError(error.message || 'An unexpected error occurred. Please try again.')
     } finally {
       setIsLoading(false)
     }
@@ -114,7 +116,9 @@ const Login = () => {
             {error && (
               <div>
                 <p className="text-red-600">
-                  로그인에 문제가 있습니다. 다시 시도해보세요
+                  {error === 'User not found. Please check your email and try again.'
+                    ? '사용자를 찾을 수 없습니다. 이메일을 확인하고 다시 시도해주세요.'
+                    : '로그인에 문제가 있습니다. 다시 시도해보세요'}
                 </p>
               </div>
             )}
