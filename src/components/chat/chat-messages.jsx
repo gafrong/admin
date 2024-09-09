@@ -4,7 +4,7 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { ScrollArea } from '@/components/ui/scroll-area'
 import { useEffect, useRef } from 'react'
 
-function formatMessageTime(timestamp) {
+export function formatChatMessageTime(timestamp) {
   const messageDate = new Date(timestamp)
   const now = new Date()
   const diffInHours = (now - messageDate) / (1000 * 60 * 60)
@@ -61,7 +61,7 @@ export function ChatMessages({ messages, currentUserId }) {
             isOutgoing={message.sender?._id === currentUserId}
             key={message._id || index}
             sender={message.sender?.name || 'Unknown'}
-            time={message.timestamp ? formatMessageTime(message.timestamp) : 'Just now'}
+            time={message.timestamp ? formatChatMessageTime(message.timestamp) : 'Just now'}
           />
         );
       })}
