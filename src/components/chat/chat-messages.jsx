@@ -55,14 +55,16 @@ export function ChatMessages({ messages, currentUserId }) {
 
         console.log('Message sender ID:', message.sender?._id, 'Current user ID:', currentUserId);
 
+        const isOutgoing = message.sender ? String(message.sender._id) === String(currentUserId) : true;
+
         return (
           <Message
             className="mb-4 last:mb-0"
             content={message.content}
             image={message.sender?.image}
-            isOutgoing={String(message.sender?._id) === String(currentUserId)}
+            isOutgoing={isOutgoing}
             key={message._id || index}
-            sender={message.sender?.name || 'Unknown'}
+            sender={message.sender?.name || 'You'}
             time={message.timestamp ? formatChatMessageTime(message.timestamp) : 'Just now'}
           />
         );
