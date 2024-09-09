@@ -3,6 +3,7 @@ import awsURL from '@/assets/common/awsUrl'
 import { IMG } from '@/assets/common/urls'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { Button } from '@/components/ui/button'
+import { Badge } from '@/components/ui/badge'
 import { AiOutlineDelete } from 'react-icons/ai'
 
 export const getInitials = (name) =>
@@ -19,11 +20,11 @@ export function ChatHeader({ participant }) {
 
   return (
     <div className="flex items-start gap-3 border-b p-4">
-      <div className="flex items-start">
+      <div className="flex flex-col items-start">
         <ProfileMini user={participant} />
-        <div className="mt-1 text-xs text-muted-foreground">
+        <Badge variant="secondary" className="mt-1">
           {participant.role || 'User'}
-        </div>
+        </Badge>
       </div>
       <div className="ml-auto flex items-center gap-2">
         <Button variant="ghost" size="icon">
