@@ -11,7 +11,7 @@ export default function ListVendorSupportQueryPage() {
   const router = useRouter()
 
   React.useEffect(() => {
-    if (status === 'loading') return // Do nothing while loading
+    if (status === 'loading') return
     if (!session) {
       router.push('/') // Redirect to home if not logged in
     }

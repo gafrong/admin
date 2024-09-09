@@ -1,35 +1,11 @@
-// import { PaperclipIcon, SendIcon } from '@/components/Icons'
-// import { Button } from '@/components/ui/button'
-// import { Input } from '@/components/ui/input'
-
-// export function ChatInput() {
-//   return (
-//     <div className="flex items-center gap-2 border-t p-3">
-//       <Button variant="ghost" size="icon">
-//         <PaperclipIcon className="h-5 w-5" />
-//         <span className="sr-only">Attach file</span>
-//       </Button>
-//       <Input
-//         type="text"
-//         placeholder="Type your message..."
-//         className="flex-1"
-//       />
-//       <Button variant="ghost" size="icon">
-//         <SendIcon className="h-5 w-5" />
-//         <span className="sr-only">Send message</span>
-//       </Button>
-//     </div>
-//   )
-// }
-import { SendIcon } from '@/components/Icons'
+import { PaperclipIcon, SendIcon } from '@/components/Icons'
 import { Button } from '@/components/ui/button'
 import { Textarea } from '@/components/ui/textarea'
-import { useState, useRef, useEffect } from 'react'
-import { useSession } from 'next-auth/react'
 import { addMessageToVendorSupportQuery } from '@/lib/api'
+import { useSession } from 'next-auth/react'
+import { useEffect, useRef, useState } from 'react'
 
 export function ChatInput({ queryId, onSendMessage, refetchQuery }) {
-
   console.log('ChatInput props:', { queryId, onSendMessage, refetchQuery })
   const [message, setMessage] = useState('')
   const { data: session } = useSession()
@@ -47,7 +23,7 @@ export function ChatInput({ queryId, onSendMessage, refetchQuery }) {
         sender: {
           _id: session?.user?.id,
           name: session?.user?.name,
-          image: session?.user?.image
+          image: session?.user?.image,
         },
         content: message.trim(),
         timestamp: new Date().toISOString(),
@@ -59,7 +35,11 @@ export function ChatInput({ queryId, onSendMessage, refetchQuery }) {
       try {
         if (queryId) {
           // Send message to API
-          await addMessageToVendorSupportQuery(queryId, messageData, session?.token)
+          await addMessageToVendorSupportQuery(
+            queryId,
+            messageData,
+            session?.token,
+          )
         }
 
         // Update UI immediately
@@ -73,7 +53,7 @@ export function ChatInput({ queryId, onSendMessage, refetchQuery }) {
         }
       } catch (error) {
         console.error('Error sending message:', error)
-        // You might want to show an error message to the user here
+        // TODO: Show an error message to the user
       }
 
       if (textareaRef.current) {
@@ -84,6 +64,10 @@ export function ChatInput({ queryId, onSendMessage, refetchQuery }) {
 
   return (
     <div className="flex items-center gap-2 border-t p-4">
+      <Button variant="outline" size="icon">
+        <PaperclipIcon className="h-5 w-5" />
+        <span className="sr-only">Attach file</span>
+      </Button>
       <Textarea
         ref={textareaRef}
         className="min-h-[40px] flex-1"

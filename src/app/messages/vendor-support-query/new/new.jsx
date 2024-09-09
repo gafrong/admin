@@ -75,15 +75,12 @@ export default function NewVendorSupportQuery() {
     } catch (error) {
       console.error('Error submitting query:', error)
       console.error('Error details:', error.response?.data)
-      // You might want to show an error message to the user here
+      // TODO: Show an error message to the user
     }
   }
 
   return (
     <Card className="pt-4">
-      {/* <CardHeader>
-        <CardTitle>New Support Query</CardTitle>
-      </CardHeader> */}
       <CardContent>
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">

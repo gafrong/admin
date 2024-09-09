@@ -29,6 +29,8 @@ export const useFetchAuth = (path, options = {}) => {
     }
   }
 
+  // useSWR() uses isLoading, useSession uses status === 'loading'
+  // swr will not fetch if url is null, ie if token is not present
   const { data, error, isLoading, mutate } = useSWR(url, fetcher, {
     revalidateOnFocus: false,
     ...options,

@@ -16,6 +16,8 @@ import { useMemo, useState } from 'react'
 import { getInitials } from './chat-header'
 import { formatChatMessageTime } from './chat-messages'
 
+// import { PlusIcon } from '@radix-ui/react-icons'
+
 const SearchInput = ({ searchQuery, setSearchQuery }) => {
   return (
     <div className="relative mb-4">
