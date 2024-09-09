@@ -19,14 +19,14 @@ export function ChatHeader({ participant }) {
   const initials = getInitials(participant.name)
 
   return (
-    <div className="flex items-start gap-3 border-b p-4">
+    <div className="flex items-start justify-between border-b p-4">
       <div className="flex flex-col items-start space-y-2">
         <ProfileMini user={participant} />
         <Badge variant="secondary">
           {participant.role || 'User'}
         </Badge>
       </div>
-      <div className="ml-auto flex items-center gap-2">
+      <div className="flex items-center">
         <Button variant="ghost" size="icon">
           <AiOutlineDelete className="h-5 w-5" />
           <span className="sr-only">Delete vendor support query</span>
