@@ -11,18 +11,25 @@ const credentialsConfig = CredentialsProvider({
   },
   async authorize(credentials) {
     try {
+      console.log('Attempting login with credentials:', credentials);
       const response = await axios.post(`${baseURL}admin/login`, credentials, {
         headers: {
           Accept: 'application/json',
           'Content-Type': 'application/json',
         },
       })
+      console.log('Login response:', response.data);
       const data = response.data
       if (data.user) return data
+      console.error('Login failed: Invalid credentials');
       throw new Error('Invalid credentials')
     } catch (error) {
-      console.error('auth.js authorize() error:', error)
-      throw new Error('Failed to login')
+      console.error('auth.js authorize() error:', error.response ? error.response.data : error.message);
+      if (error.response) {
+        console.error('Error status:', error.response.status);
+        console.error('Error headers:', error.response.headers);
+      }
+      throw new Error(error.response ? error.response.data : 'Failed to login')
     }
   },
 })
