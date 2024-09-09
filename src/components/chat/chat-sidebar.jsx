@@ -2,9 +2,7 @@
 
 'use client'
 
-import { ProfileMini } from '@/app/superuser/users/page'
 import awsURL from '@/assets/common/awsUrl'
-// import { getInitials } from '@/utils/helpers'
 import { IMG } from '@/assets/common/urls'
 import { PlusIcon, SearchIcon } from '@/components/Icons'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
@@ -74,7 +72,7 @@ export function ChatSidebar() {
   }
 
   return (
-    <div className="flex w-[900px] flex-col border-r bg-muted/20 p-4">
+    <div className="flex w-[400px] flex-col border-r bg-muted/20 p-4">
       <div className="mb-4 flex items-center justify-between">
         <div className="text-lg font-medium">Chats</div>
         <NewChatButton />
@@ -111,11 +109,11 @@ export function ChatSidebar() {
 }
 
 const ProfileImageSideBar = ({ image, name }) => {
-  const initials = getInitials(name)
+  const initials = getInitials(name||'?')
   return (
     <Avatar className="h-10 w-10 border">
       <AvatarImage src={image} alt={name} />
-      <AvatarFallback>{initials}</AvatarFallback>
+      <AvatarFallback>UN</AvatarFallback>
     </Avatar>
   )
   return
@@ -133,7 +131,7 @@ function ChatItem({ id, name, image, message, time, queryType }) {
       <ProfileImageSideBar image={imgSrc} name={name} />
       <div className="flex-1 min-w-0">
         <div className="flex items-center justify-between">
-          <span className="truncate font-medium max-w-[70%]">{name}</span>
+          <span className="truncate font-medium max-w-[400px]">{name}</span>
           <span className="text-xs text-muted-foreground flex-shrink-0">{time}</span>
         </div>
         <div className="truncate text-sm text-muted-foreground">{message}</div>
