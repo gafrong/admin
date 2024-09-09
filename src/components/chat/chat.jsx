@@ -27,7 +27,7 @@ export function Chat({ initialQuery, queryId, refetchQuery }) {
     participants.find((p) => p._id !== session?.user?._id) || {}
 
   return (
-    <div className="mx-auto flex h-[calc(100vh-80px)] w-full max-w-4xl">
+    <div className="mx-auto flex h-[calc(100vh-80px)] w-full">
       <ChatSidebar />
       <div className="flex flex-1 flex-col">
         <ChatHeader participant={otherParticipant} />
