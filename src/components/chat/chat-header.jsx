@@ -1,3 +1,4 @@
+import { ProfileMini } from '@/app/superuser/users/page'
 import awsURL from '@/assets/common/awsUrl'
 import { IMG } from '@/assets/common/urls'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
@@ -5,26 +6,22 @@ import { Button } from '@/components/ui/button'
 import { AiOutlineDelete } from 'react-icons/ai'
 
 export const getInitials = (name) =>
-  name ?
-    name
-      .split(' ')
-      .map((n) => n[0])
-      .join('')
-  : ''
+  name
+    ? name
+        .split(' ')
+        .map((n) => n[0])
+        .join('')
+    : ''
 
 export function ChatHeader({ participant }) {
   const imgSrc = participant.image ? awsURL + participant.image : IMG.profile
   const initials = getInitials(participant.name)
 
   return (
-    <div className="flex items-center gap-3 border-b p-4">
-      <Avatar className="h-10 w-10 border">
-        <AvatarImage src={imgSrc} alt={participant.name} />
-        <AvatarFallback>{initials}</AvatarFallback>
-      </Avatar>
-      <div>
-        <div className="font-medium">{participant.name}</div>
-        <div className="text-xs text-muted-foreground">
+    <div className="flex items-start gap-3 border-b p-4">
+      <div className="flex items-start">
+        <ProfileMini user={participant} />
+        <div className="mt-1 text-xs text-muted-foreground">
           {participant.role || 'User'}
         </div>
       </div>
