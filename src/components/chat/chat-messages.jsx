@@ -26,16 +26,18 @@ export function formatChatMessageTime(timestamp) {
 }
 
 export function ChatMessages({ messages, currentUserId }) {
-  const scrollAreaRef = useRef(null);
+  const scrollAreaRef = useRef(null)
 
   useEffect(() => {
     if (scrollAreaRef.current) {
-      const scrollContainer = scrollAreaRef.current.querySelector('[data-radix-scroll-area-viewport]');
+      const scrollContainer = scrollAreaRef.current.querySelector(
+        '[data-radix-scroll-area-viewport]',
+      )
       if (scrollContainer) {
-        scrollContainer.scrollTop = scrollContainer.scrollHeight;
+        scrollContainer.scrollTop = scrollContainer.scrollHeight
       }
     }
-  }, [messages]);
+  }, [messages])
 
   if (!messages || messages.length === 0) {
     return (
@@ -50,12 +52,20 @@ export function ChatMessages({ messages, currentUserId }) {
       {messages.map((message, index) => {
         // Skip rendering if essential data is missing
         if (!message.content || !message.sender) {
-          return null;
+          return null
         }
 
-        console.log('Message sender ID:', message.sender?._id, 'Current user ID:', currentUserId);
+        console.log(
+          'Message sender:',
+          message.sender,
+          'Current user ID:',
+          currentUserId,
+        )
 
-        const isOutgoing = message.sender ? String(message.sender._id) === String(currentUserId) : true;
+        const isOutgoing =
+          message.sender ?
+            String(message.sender._id) === String(currentUserId)
+          : true
 
         return (
           <Message
@@ -65,9 +75,13 @@ export function ChatMessages({ messages, currentUserId }) {
             isOutgoing={isOutgoing}
             key={message._id || index}
             sender={message.sender?.name || 'You'}
-            time={message.timestamp ? formatChatMessageTime(message.timestamp) : 'Just now'}
+            time={
+              message.timestamp ?
+                formatChatMessageTime(message.timestamp)
+              : 'Just now'
+            }
           />
-        );
+        )
       })}
     </ScrollArea>
   )
