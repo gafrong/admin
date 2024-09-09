@@ -20,7 +20,7 @@ export function ChatHeader({ participant }) {
 
   return (
     <div className="flex items-start gap-3 border-b p-4">
-      <div className="flex flex-col items-start">
+      <div className="flex items-start red">
         <ProfileMini user={participant} />
         <Badge variant="secondary" className="mt-1">
           {participant.role || 'User'}
