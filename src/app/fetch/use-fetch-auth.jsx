@@ -9,20 +9,14 @@ export const useFetchAuth = (path, options = {}) => {
   const token = session?.token
   const vendorId = session?.user?._id
 
-  const fetcher = async (url, method = 'GET', data = null) => {
+  const fetcher = async (url) => {
     console.log(`useFetchAuth(): ${token ? 'A' : 'No'} token found for ${url}`)
     const headers = {
       'Content-Type': 'application/json',
       Authorization: `Bearer ${token}`,
     }
     try {
-      const config = {
-        method,
-        url,
-        headers,
-        data: data ? JSON.stringify(data) : undefined,
-      }
-      const response = await axios(config)
+      const response = await axios.get(url, { headers })
       return response.data
     } catch (error) {
       if (error.response && error.response.status === 401) {
@@ -35,14 +29,10 @@ export const useFetchAuth = (path, options = {}) => {
     }
   }
 
-  const { data, error, isLoading, mutate } = useSWR(
-    url ? [url, options.method, options.data] : null,
-    ([url, method, data]) => fetcher(url, method, data),
-    {
-      revalidateOnFocus: false,
-      ...options,
-    },
-  )
+  const { data, error, isLoading, mutate } = useSWR(url, fetcher, {
+    revalidateOnFocus: false,
+    ...options,
+  })
 
   if (error) {
     console.error('useFetchAuth() error:', { error, url })
