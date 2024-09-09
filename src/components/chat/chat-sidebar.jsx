@@ -72,7 +72,7 @@ export function ChatSidebar() {
   }
 
   return (
-    <div className="flex w-[400px] flex-col border-r bg-muted/20 p-4">
+    <div className="flex flex-col border-r bg-muted/20 p-4 w-[400px] blue">
       <div className="mb-4 flex items-center justify-between">
         <div className="text-lg font-medium">Chats</div>
         <NewChatButton />
@@ -125,7 +125,7 @@ function ChatItem({ id, name, image, message, time, queryType }) {
   return (
     <Link
       href={`/messages/vendor-support-query/${id}`}
-      className="flex items-center gap-3 rounded-md p-2 hover:bg-muted/50"
+      className="flex items-center gap-3 rounded-md p-2 hover:bg-muted/50 width-full green"
       prefetch={false}
     >
       <ProfileImageSideBar image={imgSrc} name={name} />
