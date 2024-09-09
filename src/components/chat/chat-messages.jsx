@@ -55,13 +55,6 @@ export function ChatMessages({ messages, currentUserId }) {
           return null
         }
 
-        console.log(
-          'Message sender:',
-          message.sender,
-          'Current user ID:',
-          currentUserId,
-        )
-
         const senderId = message.sender?._id;
         const isOutgoing = senderId ? String(senderId) === String(currentUserId) : true;
 
