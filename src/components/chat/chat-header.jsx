@@ -4,15 +4,8 @@ import { IMG } from '@/assets/common/urls'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
+import { getInitials } from '@/lib/utils'
 import { AiOutlineDelete } from 'react-icons/ai'
-
-export const getInitials = (name) =>
-  name ?
-    name
-      .split(' ')
-      .map((n) => n[0])
-      .join('')
-  : ''
 
 export function ChatHeader({ participant }) {
   return (

@@ -9,3 +9,10 @@ export function cn(...inputs) {
 export function ifDate(date, msg = '') {
   return date ? format(new Date(date), 'dd.MM.yyyy') : msg
 }
+export const getInitials = (name) =>
+  name
+    ? name
+        .split(' ')
+        .map((n) => n[0])
+        .join('')
+    : ''

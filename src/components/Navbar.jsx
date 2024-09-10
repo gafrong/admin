@@ -8,7 +8,7 @@ import Image from 'next/image'
 import Link from 'next/link'
 import React from 'react'
 import { FiBell, FiSettings } from 'react-icons/fi'
-import { getInitials } from './chat/chat-header'
+import { getInitials } from '@/lib/utils'
 import { Button } from './ui/button'
 
 const Navbar = () => {
