@@ -51,10 +51,13 @@ const Login = () => {
       } else if (user?.submitted) {
         console.log('user is submitted')
         router.push('/welcome')
-      } else {
+      } else if (status === 'authenticated') {
         // new user, applying to be a vendor/seller
         console.log('user is authenticated')
         router.push('/onboarding')
+      } else {
+        console.log('Unexpected state:', { user, status })
+        setError('An unexpected error occurred. Please try again.')
       }
     } catch (error) {
       console.error('Login error:', error)
