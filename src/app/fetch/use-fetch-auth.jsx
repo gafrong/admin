@@ -10,7 +10,9 @@ export const useFetchAuth = (path) => {
   const vendorId = session?.user?._id
 
   const fetcher = async (url) => {
-    console.log(`useFetchAuth(): ${token ? 'A' : 'No'} token found for ${url}`)
+    if (!token) {
+      return { error: 'useFetchAuth(): No token found' }
+    }
     const headers = {
       'Content-Type': 'application/json',
       Authorization: `Bearer ${token}`,

@@ -7,7 +7,7 @@ import React from 'react'
 import ListVendorSupportQueries from './_components/list'
 
 export default function ListVendorSupportQueryPage() {
-  const { data: session, status } = useSession()
+  const { status } = useSession()
   const router = useRouter()
 
   React.useEffect(() => {
