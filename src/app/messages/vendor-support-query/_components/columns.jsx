@@ -51,6 +51,27 @@ const HeaderLastMessageTime = ({ column }) => (
   <ButtonSortable column={column}>Time</ButtonSortable>
 )
 
+const cellLastMessageAt = ({ row }) => {
+  const lastMessageAt = row.original.lastMessageAt
+  if (lastMessageAt) {
+    try {
+      const date = new Date(lastMessageAt)
+      return (
+        <div>
+          <div>{ifDate(date)}</div>
+          <div className="text-xs text-gray-500">
+            {date.toLocaleTimeString()}
+          </div>
+        </div>
+      )
+    } catch (error) {
+      console.error('Error parsing date:', error)
+      return 'Invalid date'
+    }
+  }
+  return 'No messages'
+}
+
 export const getColumns = () => [
   {
     accessorKey: 'participants',
@@ -86,26 +107,7 @@ export const getColumns = () => [
   },
   {
     accessorKey: 'lastMessageAt',
-    cell: ({ row }) => {
-      const lastMessageAt = row.original.lastMessageAt
-      if (lastMessageAt) {
-        try {
-          const date = new Date(lastMessageAt)
-          return (
-            <div>
-              <div>{ifDate(date)}</div>
-              <div className="text-xs text-gray-500">
-                {date.toLocaleTimeString()}
-              </div>
-            </div>
-          )
-        } catch (error) {
-          console.error('Error parsing date:', error)
-          return 'Invalid date'
-        }
-      }
-      return 'No messages'
-    },
+    cell: cellLastMessageAt,
     header: HeaderLastMessageTime,
     id: 'lastMessageTime',
   },
