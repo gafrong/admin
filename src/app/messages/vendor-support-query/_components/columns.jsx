@@ -70,24 +70,22 @@ export const getColumns = () => [
   },
   {
     accessorKey: 'messageCount',
+    cell: ({ row }) => row.original.messages.length,
     header: HeaderMessageCount,
     id: 'messageCount',
-    cell: ({ row }) => row.original.messages.length,
   },
   {
     accessorKey: 'firstMessageContent',
-    header: HeaderFirstMessage,
-    id: 'firstMessageContent',
     cell: ({ row }) => {
       const messages = row.original.messages
       return messages.length > 0 ? messages[0].content : 'No messages'
     },
     filterFn: filterFirstMessageContent,
+    header: HeaderFirstMessage,
+    id: 'firstMessageContent',
   },
   {
     accessorKey: 'lastMessageAt',
-    header: HeaderLastMessageTime,
-    id: 'lastMessageTime',
     cell: ({ row }) => {
       const lastMessageAt = row.original.lastMessageAt
       if (lastMessageAt) {
@@ -108,10 +106,10 @@ export const getColumns = () => [
       }
       return 'No messages'
     },
+    header: HeaderLastMessageTime,
+    id: 'lastMessageTime',
   },
   {
-    id: 'actions',
-    header: 'Actions',
     cell: ({ row }) => (
       <Link
         className="text-blue-500 underline"
@@ -120,6 +118,8 @@ export const getColumns = () => [
         View
       </Link>
     ),
+    header: 'Actions',
+    id: 'actions',
   },
 ]
 
