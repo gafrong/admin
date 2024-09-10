@@ -41,10 +41,11 @@ export const useFetchAuth = (path) => {
     revalidateOnFocus: false,
   })
 
-  const error = swrError || data?.error || null
+  const apiError = data?.error || null
+  const error = swrError || apiError
 
   return {
-    data,
+    data: apiError ? null : data,
     error,
     isLoading,
     mutate,
