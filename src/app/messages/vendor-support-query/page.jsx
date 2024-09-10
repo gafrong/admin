@@ -11,16 +11,21 @@ export default function ListVendorSupportQueryPage() {
   const router = useRouter()
 
   React.useEffect(() => {
+    if (status === 'authenticated' && !session) {
+      // This condition checks if the status is authenticated but session is null
+      // which shouldn't happen in normal circumstances
+      console.error('Authenticated status but no session data')
+    }
     if (status === 'unauthenticated') {
       router.push('/') // Redirect to home if not logged in
     }
-  }, [status, router])
+  }, [status, session, router])
 
   if (status === 'loading') {
     return <div>Loading...</div>
   }
 
-  if (status === 'unauthenticated') {
+  if (status === 'unauthenticated' || !session) {
     return null // This will prevent any flash of content before redirect
   }
 
