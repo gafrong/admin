@@ -49,6 +49,11 @@ const Navbar = () => {
               <AvatarFallback>{initials || '?'}</AvatarFallback>
             </Avatar>
           </Link>
+          {user?.role === 'superAdmin' && (
+            <span className="bg-blue-500 text-white text-xs font-semibold px-2 py-1 rounded-full">
+              superAdmin
+            </span>
+          )}
           <Link href="#">
             <FiBell />
           </Link>
