@@ -5,26 +5,7 @@ import { ScrollArea } from '@/components/ui/scroll-area'
 import { useEffect, useRef } from 'react'
 import { getInitials } from './chat-header'
 
-export function formatChatMessageTime(timestamp) {
-  const messageDate = new Date(timestamp)
-  const now = new Date()
-  const diffInHours = (now - messageDate) / (1000 * 60 * 60)
-
-  if (diffInHours < 24) {
-    return messageDate.toLocaleTimeString([], {
-      hour: '2-digit',
-      minute: '2-digit',
-    })
-  } else if (diffInHours < 48) {
-    return 'Yesterday'
-  } else {
-    return messageDate.toLocaleDateString([], {
-      year: 'numeric',
-      month: 'short',
-      day: 'numeric',
-    })
-  }
-}
+import { formatChatMessageTime } from './chat-utils'
 
 export function ChatMessages({ messages, currentUserId }) {
   const scrollAreaRef = useRef(null)

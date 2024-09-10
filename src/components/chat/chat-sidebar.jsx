@@ -12,7 +12,7 @@ import { useSession } from 'next-auth/react'
 import Link from 'next/link'
 import { useMemo, useState } from 'react'
 import { getInitials } from './chat-header'
-import { formatChatMessageTime } from './chat-messages'
+import { formatChatMessageTime } from './chat-utils'
 
 // import { PlusIcon } from '@radix-ui/react-icons'
 
