@@ -4,7 +4,29 @@ import { cn, ifDate } from '@/lib/utils'
 import { Button } from '@/components/ui/button'
 import { ProfileMini } from '../users/page'
 
-// Components
+// Table filters
+// -----------------------------------------------------------------------------
+export function filterByBankAccountName(rows, id, filterValue) {
+  return rows.filter((row) => {
+    const accountName = row.values[id]
+    return accountName !== undefined
+      ? accountName.toLowerCase().includes(filterValue.toLowerCase())
+      : true
+  })
+}
+
+// Table Components: Header
+// -----------------------------------------------------------------------------
+const HeaderIsPending = ({ column }) => (
+  <ButtonSortable column={column}>Pending</ButtonSortable>
+)
+
+const HeaderUserId = ({ column }) => (
+  <ButtonSortable column={column}>User Id</ButtonSortable>
+)
+
+// Table Components: Cell
+// -----------------------------------------------------------------------------
 export const CellUser = ({ row }) => {
   const user = row?.original?.user || {}
   return <ProfileMini user={user} />
@@ -18,154 +40,160 @@ const BooleanDot = ({ isTrue }) => (
   </div>
 )
 
-const HeaderIsPending = ({ column }) => (
-  <ButtonSortable column={column}>Pending</ButtonSortable>
-)
-
-const HeaderUserId = ({ column }) => (
-  <ButtonSortable column={column}>User Id</ButtonSortable>
-)
-
-// Filters
-export function filterByBankAccountName(rows, id, filterValue) {
-  return rows.filter((row) => {
-    const accountName = row.values[id]
-    return accountName !== undefined
-      ? accountName.toLowerCase().includes(filterValue.toLowerCase())
-      : true
-  })
+const cellVendorId = ({ row }) => {
+  if (!row.original._id)
+    return <div className="text-red-900">Invalid vendor id</div>
+  return (
+    <Link
+      className="text-blue-500 underline"
+      href={`/superuser/vendor/${row.original.userId}`}
+    >
+      {row.original._id}
+    </Link>
+  )
 }
 
+const cellUserId = ({ row }) => {
+  if (!row.original.userId)
+    return <div className="text-red-900">Invalid user id</div>
+  return (
+    <Link
+      className="text-blue-500 underline"
+      href={`/superuser/user/${row.original.userId}`}
+    >
+      {row.original.userId}
+    </Link>
+  )
+}
+
+const cellIsPending = ({ row }) => {
+  return row.original.isPending ? (
+    <Link
+      href={`/superuser/vendor/pending/${row.original.userId}`}
+      className="text-blue-500 underline"
+    >
+      view pending
+    </Link>
+  ) : (
+    <BooleanDot isTrue={row.original.isPending} />
+  )
+}
+
+const cellSubmitted = ({ row }) => <BooleanDot isTrue={row.original.submitted} />
+
+const cellConfirmed = ({ row }) => <BooleanDot isTrue={row.original.confirmed} />
+
+const cellBankAccountName = ({ row }) => row.original.bank?.accountName
+
+const cellViewBusinessDetails = ({ row }) => (
+  <Link
+    href={`/superuser/vendor/pending/${row.original.userId}`}
+    className="text-blue-500 underline"
+  >
+    view
+  </Link>
+)
+
+const cellBankAccountNumber = ({ row }) => row.original.bank?.accountNumber
+
+const cellBankName = ({ row }) => row.original.bank?.bankName
+
+const cellBankUploadDate = ({ row }) => ifDate(row.original.bank?.uploadedAt)
+
+const cellBankApprovalDate = ({ bank }) => {
+  if (!(bank && bank.approvedAt)) return ''
+  return ifDate(bank.approvedAt)
+}
+
+const cellDelete = ({ row, handleDeleteVendor }) => (
+  <Button
+    onClick={() => handleDeleteVendor(row.original.userId)}
+    variant="destructive"
+    size="sm"
+  >
+    Delete
+  </Button>
+)
+
+// Column definitions
+// -----------------------------------------------------------------------------
 export const getColumns = (handleDeleteVendor) => [
   {
-    header: 'User',
     accessorKey: 'user',
-    id: 'user',
     cell: CellUser,
+    header: 'User',
+    id: 'user',
   },
   {
     accessorKey: '_id',
+    cell: cellVendorId,
     header: 'Vendor id',
     id: 'id',
-    cell: ({ row }) => {
-      if (!row.original._id)
-        return <div className="text-red-900">Invalid vendor id</div>
-      return (
-        <Link
-          className="text-blue-500 underline"
-          href={`/superuser/vendor/${row.original.userId}`}
-        >
-          {row.original._id}
-        </Link>
-      )
-    },
   },
   {
     accessorKey: 'userId',
-    id: 'userId',
+    cell: cellUserId,
     header: HeaderUserId,
-    cell: ({ row }) => {
-      if (!row.original.userId)
-        return <div className="text-red-900">Invalid user id</div>
-      return (
-        <Link
-          className="text-blue-500 underline"
-          href={`/superuser/user/${row.original.userId}`}
-        >
-          {row.original.userId}
-        </Link>
-      )
-    },
+    id: 'userId',
   },
   {
     accessorKey: 'isPending',
-    id: 'isPending',
+    cell: cellIsPending,
     header: HeaderIsPending,
-    cell: ({ row }) => {
-      return row.original.isPending ? (
-        <Link
-          href={`/superuser/vendor/pending/${row.original.userId}`}
-          className="text-blue-500 underline"
-        >
-          view pending
-        </Link>
-      ) : (
-        <BooleanDot isTrue={row.original.isPending} />
-      )
-    },
+    id: 'isPending',
   },
   {
     accessorKey: 'submitted',
-    id: 'submitted',
+    cell: cellSubmitted,
     header: 'submitted',
-    cell: ({ row }) => <BooleanDot isTrue={row.original.submitted} />,
+    id: 'submitted',
   },
   {
     accessorKey: 'confirmed',
-    id: 'confirmed',
+    cell: cellConfirmed,
     header: 'confirmed',
-    cell: ({ row }) => <BooleanDot isTrue={row.original.confirmed} />,
+    id: 'confirmed',
   },
   {
     accessorKey: 'bank.accountName',
-    id: 'Bank account name',
-    header: 'Bank Account Name',
-    cell: ({ row }) => row.original.bank?.accountName,
+    cell: cellBankAccountName,
     filter: filterByBankAccountName,
+    header: 'Bank Account Name',
+    id: 'Bank account name',
   },
   {
-    id: 'View Business Details',
-    header: 'View Business Details',
-    cell: ({ row }) => {
-      return (
-        <Link
-          href={`/superuser/vendor/pending/${row.original.userId}`}
-          className="text-blue-500 underline"
-        >
-          view
-        </Link>
-      )
-    },
+    cell: cellViewBusinessDetails,
     filter: filterByBankAccountName,
+    header: 'View Business Details',
+    id: 'View Business Details',
   },
   {
     accessorKey: 'bank.accountNumber',
-    id: 'Bank account number',
+    cell: cellBankAccountNumber,
     header: 'Bank Account Number',
-    cell: ({ row }) => row.original.bank?.accountNumber,
+    id: 'Bank account number',
   },
   {
     accessorKey: 'bank.bankName',
-    id: 'Bank name',
+    cell: cellBankName,
     header: 'Bank Name',
-    cell: ({ row }) => row.original.bank?.bankName,
+    id: 'Bank name',
   },
   {
     accessorKey: 'bank.uploadedAt',
-    id: 'bank upload date',
+    cell: cellBankUploadDate,
     header: 'Bank details Uploaded',
-    cell: ({ row }) => ifDate(row.original.bank?.uploadedAt),
+    id: 'bank upload date',
   },
   {
-    id: 'bank details approval Date',
+    accessor: cellBankApprovalDate,
     header: 'Bank Details Approved',
-    accessor: ({ bank }) => {
-      if (!(bank && bank.approvedAt)) return ''
-      return ifDate(bank.approvedAt)
-    },
+    id: 'bank details approval Date',
   },
   {
-    id: 'delete',
+    cell: ({ row }) => cellDelete({ row, handleDeleteVendor }),
     header: 'Delete',
-    cell: ({ row }) => (
-      <Button
-        onClick={() => handleDeleteVendor(row.original.userId)}
-        variant="destructive"
-        size="sm"
-      >
-        Delete
-      </Button>
-    ),
+    id: 'delete',
   },
 ]
 
