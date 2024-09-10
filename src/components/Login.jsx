@@ -39,18 +39,22 @@ const Login = () => {
         return
       }
 
-      if (response.ok) {
-        if (user?.isAdmin) {
-          console.log('user is admin', { user, status })
-          router.push('/dashboard')
-        } else if (user?.submitted) {
-          console.log('user is submitted')
-          router.push('/welcome')
-        } else {
-          // new user, applying to be a vendor/seller
-          console.log('user is authenticated')
-          router.push('/onboarding')
-        }
+      if (!response.ok) {
+        console.error('Login failed:', { response })
+        setError('Login failed. Please try again.')
+        return
+      }
+
+      if (user?.isAdmin) {
+        console.log('user is admin', { user, status })
+        router.push('/dashboard')
+      } else if (user?.submitted) {
+        console.log('user is submitted')
+        router.push('/welcome')
+      } else {
+        // new user, applying to be a vendor/seller
+        console.log('user is authenticated')
+        router.push('/onboarding')
       }
     } catch (error) {
       console.error('Login error:', error)
