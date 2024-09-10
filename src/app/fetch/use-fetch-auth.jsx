@@ -44,7 +44,7 @@ export const useFetchAuth = (path) => {
   const error = swrError || data?.error || null
 
   return {
-    data: error ? null : data,
+    data,
     error,
     isLoading,
     mutate,
