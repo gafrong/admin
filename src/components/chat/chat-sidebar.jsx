@@ -1,10 +1,8 @@
-// import { PlusIcon, SearchIcon } from '@/components/Icons'
-
 'use client'
 
 import awsURL from '@/assets/common/awsUrl'
 import { IMG } from '@/assets/common/urls'
-import { PlusIcon, SearchIcon } from '@/components/Icons'
+import { Plus as PlusIcon, Search as SearchIcon } from 'lucide-react'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
