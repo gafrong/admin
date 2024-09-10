@@ -18,13 +18,13 @@ import {
   SelectValue,
 } from '@/components/ui/select'
 import { Textarea } from '@/components/ui/textarea'
-import { createVendorSupportQuery } from '@/lib/api'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useSession } from 'next-auth/react'
 import { useRouter } from 'next/navigation'
 import React from 'react'
 import { useForm } from 'react-hook-form'
 import * as z from 'zod'
+import { createVendorSupportQuery } from '../api'
 
 const subjectOptions = [
   { value: 'Product', label: 'Product Query' },
