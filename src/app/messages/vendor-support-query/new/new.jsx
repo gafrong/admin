@@ -57,7 +57,7 @@ export default function NewVendorSupportQuery() {
   })
 
   const onSubmit = async (values) => {
-    if (!session || !session.user) {
+    if (!session?.user) {
       console.error('No session or user found')
       return
     }
