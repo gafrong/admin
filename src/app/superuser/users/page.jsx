@@ -2,6 +2,7 @@
 
 import { useFetchAuth } from '@/app/fetch/use-fetch-auth'
 import awsURL from '@/assets/common/awsUrl'
+import { IMG } from '@/assets/common/urls'
 import { DataTable } from '@/components/data-table/data-table'
 import { ButtonSortable } from '@/components/data-table/data-table-button-sorting'
 import { ImageProfile } from '@/components/image-profile'
@@ -9,9 +10,6 @@ import { PageContainer, PageTitle } from '@/components/typography/PageTitle'
 import { cn } from '@/lib/utils'
 import Link from 'next/link'
 import React from 'react'
-
-const srcDefaultProfileImage =
-  'https://voutiq-app.s3.ap-northeast-2.amazonaws.com/000SiteImages/profile.png'
 
 export const CellUser = ({ row }) => {
   const { image, name, username } = row?.original || {}
@@ -49,14 +47,16 @@ const HeaderIsSubmitted = ({ column }) => (
 export const ProfileMini = ({ user }) => {
   if (!user) return null
   const isImage = user.image && user.image.trim() !== ''
-  const imageUrl = isImage ? `${awsURL}${user.image}` : srcDefaultProfileImage
+  const imageUrl = isImage ? `${awsURL}${user.image}` : IMG.defaultProfile
 
   return (
     <div className="flex gap-4">
       <ImageProfile size={48} src={imageUrl} />
-      <div className="mr-4">
-        <p>{user.name}</p>
-        <p className="mt-1 text-xs">@{user.username}</p>
+      <div className="-mt-[5px] flex flex-col">
+        <p className="bold text-md">{user.name || 'Unkown User'}</p>
+        <p className="mt-1 text-xs text-gray-500">
+          {user.username && `@${user.username}`}
+        </p>
       </div>
     </div>
   )

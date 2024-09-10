@@ -31,15 +31,20 @@ const Login = () => {
           password,
           redirect: true,
         })) || {}
+      console.log('Login response:', response)
       if (response.error) {
         console.error('Login page signIn error:', { response })
         setError(response.error)
-      }
-
-      if (!user) {
-        console.log('no user')
+        setIsLoading(false)
         return
       }
+
+      if (!response.ok) {
+        console.error('Login failed:', { response })
+        setError('Login failed. Please try again.')
+        return
+      }
+
       if (user?.isAdmin) {
         console.log('user is admin', { user, status })
         router.push('/dashboard')
@@ -50,9 +55,15 @@ const Login = () => {
         // new user, applying to be a vendor/seller
         console.log('user is authenticated')
         router.push('/onboarding')
+      } else {
+        console.log('Unexpected state:', { user, status })
+        setError('An unexpected error occurred. Please try again.')
       }
     } catch (error) {
-      setError(error.message)
+      console.error('Login error:', error)
+      setError(
+        error.message || 'An unexpected error occurred. Please try again.',
+      )
     } finally {
       setIsLoading(false)
     }

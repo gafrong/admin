@@ -24,7 +24,8 @@ import {
 
 const Sidebar = () => {
   const { data: session } = useSession()
-  if (!session?.user?.isAdmin) return null
+  if (!session?.user?.isAdmin || !session?.user?.role === 'superAdmin')
+    return null
   return (
     <div className="fixed z-10 m-0 mt-20 h-full w-40 overflow-auto border-r border-slate-300 bg-white p-0">
       <Link
@@ -243,32 +244,39 @@ const Sidebar = () => {
             >
               users
             </Link>
+            <Link
+              href="/messages/vendor-support-query/superuser"
+              className="flex flex-col pb-3 pl-3 pt-3 hover:bg-slate-200"
+            >
+              vendor queries
+            </Link>
           </AccordionContent>
         </AccordionItem>
       </Accordion>
 
       <Accordion type="single" collapsible>
         <AccordionItem
-          value="item-enquiry"
+          value="item-vendor-support"
           className="block pl-5 pr-2 text-black"
         >
           <AccordionTrigger>
             <div className="flex flex-row">
-              <FiHelpCircle className="mr-2 mt-1" /> <div>1:1 문의</div>
+              <FiHelpCircle className="mr-2 mt-1" />
+              <div>1:1 문의</div>
             </div>
           </AccordionTrigger>
           <AccordionContent>
             <Link
-              href="/statistics/daily"
+              href="/messages/vendor-support-query/new"
               className="flex flex-col pb-3 pl-3 pt-3 hover:bg-slate-200"
             >
-              문의
+              New Query
             </Link>
             <Link
-              href="/statistics/weekly"
+              href="/messages/vendor-support-query"
               className="flex flex-col pb-3 pl-3 pt-3 hover:bg-slate-200"
             >
-              답변
+              List Queries
             </Link>
           </AccordionContent>
         </AccordionItem>

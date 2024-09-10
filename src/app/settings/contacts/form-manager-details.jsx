@@ -144,9 +144,9 @@ export function FormManagerDetails() {
       storeManagerPhone: store?.phone || '',
       customerServiceManagerName: customerService.name || '',
       customerServiceManagerContactNumber: customerService.contactNumber || '',
-      financeManagerName: finance.name || '',
-      financeManagerEmail: finance.email || '',
-      financeManagerMobile: finance.mobile || '',
+      financeManagerName: finance?.name || '',
+      financeManagerEmail: finance?.email || '',
+      financeManagerMobile: finance?.mobile || '',
       sameAsStoreManagerCS: isSameAsStoreManagerCS || false,
     })
   }, [vendor, form])

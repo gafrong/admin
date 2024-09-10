@@ -1,6 +1,6 @@
 'use client'
 
-import { useFetchAuth } from '@/app/orders/manage/use-fetch-auth'
+import { useFetchAuth } from '@/app/fetch/use-fetch-auth'
 import baseURL from '@/assets/common/baseUrl'
 import { ButtonLoader } from '@/components/LoadingSpinner'
 import { PageContainer, PageTitle } from '@/components/typography/PageTitle'
@@ -18,6 +18,7 @@ import axios from 'axios'
 import format from 'date-fns/format'
 import { useSession } from 'next-auth/react'
 import { useEffect, useState } from 'react'
+import { ChatMessages } from '@/components/chat/chat-messages'
 
 const findBy = ({ arr, key, value }) =>
   arr?.find((item) => item[key] === value) || null
@@ -27,7 +28,7 @@ export default function Page({ params }) {
   const sellerId = session?.user?._id
   const token = session?.token
   const url = `questions/vendor/${sellerId}`
-  const { data: questions, mutate } = useFetchAuth(url)
+  const { data: questions, mutate: refetchQuery } = useFetchAuth(url)
   const selectedUserQuestion = findBy({
     arr: questions,
     key: '_id',
@@ -38,10 +39,19 @@ export default function Page({ params }) {
     selectedUserQuestion?.replies?.[0]?.content || '',
   )
   const isExistingReply = Boolean(selectedUserQuestion?.replies?.[0])
+  const [messages, setMessages] = useState([])
 
   useEffect(() => {
     setReplyText(selectedUserQuestion?.replies?.[0]?.content || '')
+    if (selectedUserQuestion?.replies) {
+      setMessages(selectedUserQuestion.replies)
+    }
   }, [selectedUserQuestion])
+
+  const handleSendMessage = async (messageData) => {
+    setMessages(prevMessages => [...prevMessages, messageData])
+    await refetchQuery()
+  }
 
   if (!selectedUserQuestion) return null
 
@@ -51,16 +61,8 @@ export default function Page({ params }) {
 
       <div className="flex flex-col gap-4">
         <TableQuestionDetail selectedUserQuestion={selectedUserQuestion} />
-        <ReplyEditing
-          isExistingReply={isExistingReply}
-          isReplyEditingActive={isReplyEditingActive}
-          mutate={mutate}
-          replyText={replyText}
-          selectedUserQuestion={selectedUserQuestion}
-          setReplyEditingActive={setReplyEditingActive}
-          setReplyText={setReplyText}
-          token={token}
-        />
+        <ChatMessages messages={messages} currentUserId={session?.user?._id} />
+        <ChatInput queryId={params.id} onSendMessage={handleSendMessage} refetchQuery={refetchQuery} />
       </div>
     </PageContainer>
   )

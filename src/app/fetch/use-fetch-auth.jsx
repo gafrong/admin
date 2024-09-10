@@ -20,25 +20,32 @@ export const useFetchAuth = (path) => {
       return response.data
     } catch (error) {
       if (error.response && error.response.status === 401) {
-        // TODO: Handle 401 Unauthorized error, e.g., redirect to login or refresh token
         console.error('Authentication error. Please login again.')
+        // TODO: trigger a logout or token refresh here
+        return { error: 'Authentication failed' }
       } else {
         console.error('useFetchAuth() error:', { error, url })
+        return { error: 'An error occurred while fetching data' }
       }
-      return null
     }
   }
 
   // useSWR() uses isLoading, useSession uses status === 'loading'
   // swr will not fetch if url is null, ie if token is not present
-  const { data, error, isLoading, mutate } = useSWR(url, fetcher, {
+  const {
+    data,
+    error: swrError,
+    isLoading,
+    mutate,
+  } = useSWR(url, fetcher, {
     revalidateOnFocus: false,
   })
-  if (error) {
-    console.error('useFetchAuth() error:', { error, url })
-  }
+
+  const apiError = data?.error || null
+  const error = swrError || apiError
+
   return {
-    data,
+    data: apiError ? null : data,
     error,
     isLoading,
     mutate,

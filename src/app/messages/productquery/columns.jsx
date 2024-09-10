@@ -1,3 +1,4 @@
+import { ProfileMini } from '@/app/superuser/users/page'
 import awsURL from '@/assets/common/awsUrl'
 import { ButtonSortable } from '@/components/data-table/data-table-button-sorting'
 import { ProductImage } from '@/components/data-table/data-table-cell-components'
@@ -16,18 +17,10 @@ import React from 'react'
 // Table components
 // -----------------------------------------------------------------------------
 
-// Image
-const CellUser = ({ row }) => {
-  const user = row.original.userId // Access the original row data
-  return (
-    <div className="flex gap-4">
-      <ImageProfile size={48} src={awsURL + user.image} />
-      <div className="mr-4">
-        <p className="">{user.name}</p>
-        <p className="mt-1 text-xs">@{user.username}</p>
-      </div>
-    </div>
-  )
+// User
+export const CellUser = ({ row }) => {
+  const user = row.original.userId || {}
+  return <ProfileMini user={user} />
 }
 
 // Image
