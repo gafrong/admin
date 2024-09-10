@@ -98,7 +98,7 @@ const fields = [
   },
 ]
 
-const fallbackImage = IMG.profile
+const fallbackImage = IMG.defaultProfile
 
 export function FormGeneral() {
   const { data: session, update, status } = useSession()

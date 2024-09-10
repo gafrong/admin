@@ -47,7 +47,7 @@ const HeaderIsSubmitted = ({ column }) => (
 export const ProfileMini = ({ user }) => {
   if (!user) return null
   const isImage = user.image && user.image.trim() !== ''
-  const imageUrl = isImage ? `${awsURL}${user.image}` : IMG.profile
+  const imageUrl = isImage ? `${awsURL}${user.image}` : IMG.defaultProfile
 
   return (
     <div className="flex gap-4">

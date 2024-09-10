@@ -26,7 +26,7 @@ const imageFileSchema = z.object({
 export const srcDefaultImageDocs =
   'https://voutiq-app.s3.ap-northeast-2.amazonaws.com/000SiteImages/docs.jpg'
 
-const srcDefaultImage = IMG.profile
+const srcDefaultImage = IMG.defaultProfile
 
 export const ProfileImageUpload = ({
   className = '',

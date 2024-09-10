@@ -34,7 +34,7 @@ const Onboardingtrack = () => {
   const step2Validator = () => banknameCheck?.length && bankaccountCheck?.length
 
   // step 1 contents
-  const srcDefaultImage = IMG.profile
+  const srcDefaultImage = IMG.defaultProfile
   const imageMimeType = /image\/(png|jpg|jpeg)/i
   const regex = { imageMimeType }
 

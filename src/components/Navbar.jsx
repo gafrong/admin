@@ -45,7 +45,7 @@ const Navbar = () => {
 
           <Link href="/profile">
             <Avatar className="h-[30px] w-[30px]">
-              <AvatarImage src={image ? awsURL + image : IMG.profile} />
+              <AvatarImage src={image ? awsURL + image : IMG.defaultProfile} />
               <AvatarFallback>{initials || '?'}</AvatarFallback>
             </Avatar>
           </Link>

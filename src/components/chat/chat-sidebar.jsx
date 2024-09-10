@@ -120,7 +120,7 @@ const ProfileImageSideBar = ({ image, name }) => {
 }
 
 function ChatItem({ id, name, image, message, time, queryType }) {
-  const imgSrc = image ? awsURL + image : IMG.profile
+  const imgSrc = image ? awsURL + image : IMG.defaultProfile
 
   return (
     <Link

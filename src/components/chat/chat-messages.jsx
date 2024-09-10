@@ -81,7 +81,7 @@ export function ChatMessages({ messages, currentUserId }) {
 }
 
 function Message({ sender, content, image, time, isOutgoing, className }) {
-  const imgSrc = image ? awsURL + image : IMG.profile
+  const imgSrc = image ? awsURL + image : IMG.defaultProfile
 
   return (
     <div
