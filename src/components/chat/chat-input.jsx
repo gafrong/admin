@@ -1,5 +1,4 @@
-import { PaperclipIcon } from '@/components/Icons'
-import { Send as SendIcon } from 'lucide-react'
+import { Paperclip as PaperclipIcon, Send as SendIcon } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Textarea } from '@/components/ui/textarea'
 import { addMessageToVendorSupportQuery } from '@/lib/api'
