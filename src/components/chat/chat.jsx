@@ -14,13 +14,13 @@ export function Chat({ initialQuery, queryId, refetchQuery }) {
   )
 
   useEffect(() => {
-    // Here you would set up any real-time listeners or subscriptions
-    // For example, using WebSockets or GraphQL subscriptions
+    // TODO: set up any real-time subscriptions using WebSockets
   }, [])
 
   const addMessage = (newMessage) => {
     setMessages((prevMessages) => [...prevMessages, newMessage])
-    // Here you would also send the message to your backend
+    // Do not send the message to backend.
+    // The refreshQuery function will be called instead.
   }
 
   const otherParticipant =

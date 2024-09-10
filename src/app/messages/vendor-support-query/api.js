@@ -2,7 +2,8 @@ import { useFetchAuth } from '@/app/fetch/use-fetch-auth'
 import { authRequest } from '@/utils/authRequest'
 
 export const useVendorSupportQueries = (isSuperAdmin = false) => {
-  const endpoint = isSuperAdmin ? 'vendor-support-query/all' : 'vendor-support-query'
+  const endpoint =
+    isSuperAdmin ? 'vendor-support-query/all' : 'vendor-support-query'
   const { data, error } = useFetchAuth(endpoint)
   return { data: Array.isArray(data) ? data : data?.data || [], error }
 }

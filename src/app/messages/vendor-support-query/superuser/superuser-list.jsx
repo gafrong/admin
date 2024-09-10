@@ -1,7 +1,7 @@
 'use client'
 
+import { useVendorSupportQueries } from '@/app/messages/vendor-support-query/api'
 import { DataTable } from '@/components/data-table/data-table'
-import { useVendorSupportQueries } from '@/lib/api'
 import { useSession } from 'next-auth/react'
 import React from 'react'
 import { controls, getColumns } from '../_components/columns'

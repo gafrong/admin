@@ -1,20 +1,18 @@
 'use client'
 
+import { useVendorSupportQueries } from '@/app/messages/vendor-support-query/api'
 import awsURL from '@/assets/common/awsUrl'
 import { IMG } from '@/assets/common/urls'
-import { Plus as PlusIcon, Search as SearchIcon } from 'lucide-react'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { ScrollArea } from '@/components/ui/scroll-area'
-import { useVendorSupportQueries } from '@/lib/api'
+import { getInitials } from '@/lib/utils'
+import { Plus as PlusIcon, Search as SearchIcon } from 'lucide-react'
 import { useSession } from 'next-auth/react'
 import Link from 'next/link'
 import { useMemo, useState } from 'react'
-import { getInitials } from '@/lib/utils'
 import { formatChatMessageTime } from './chat-utils'
-
-// import { PlusIcon } from '@radix-ui/react-icons'
 
 const SearchInput = ({ searchQuery, setSearchQuery }) => {
   return (
@@ -137,7 +135,6 @@ function ChatItem({ id, name, image, message, time, queryType }) {
         <div className="line-clamp-2 text-sm text-muted-foreground">
           {message}
         </div>
-        {/* <div className="text-xs text-muted-foreground">{queryType}</div> */}
       </div>
     </Link>
   )

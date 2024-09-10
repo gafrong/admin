@@ -1,12 +1,11 @@
-import { Paperclip as PaperclipIcon, Send as SendIcon } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Textarea } from '@/components/ui/textarea'
 import { addMessageToVendorSupportQuery } from '@/lib/api'
+import { Paperclip as PaperclipIcon, Send as SendIcon } from 'lucide-react'
 import { useSession } from 'next-auth/react'
 import { useEffect, useRef, useState } from 'react'
 
 export function ChatInput({ queryId, onSendMessage, refetchQuery }) {
-  console.log('ChatInput props:', { queryId, onSendMessage, refetchQuery })
   const [message, setMessage] = useState('')
   const { data: session } = useSession()
   const textareaRef = useRef(null)
