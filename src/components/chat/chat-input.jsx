@@ -1,6 +1,6 @@
+import { addMessageToVendorSupportQuery } from '@/app/messages/vendor-support-query/api'
 import { Button } from '@/components/ui/button'
 import { Textarea } from '@/components/ui/textarea'
-import { addMessageToVendorSupportQuery } from '@/lib/api'
 import { Paperclip as PaperclipIcon, Send as SendIcon } from 'lucide-react'
 import { useSession } from 'next-auth/react'
 import { useEffect, useRef, useState } from 'react'

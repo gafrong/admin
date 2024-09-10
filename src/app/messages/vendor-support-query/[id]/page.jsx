@@ -1,28 +1,27 @@
 'use client'
 
 import { Chat } from '@/components/chat/chat'
-import { useVendorSupportQuery } from '@/lib/api'
-import { useSession } from 'next-auth/react'
 import { useParams } from 'next/navigation'
+import { useVendorSupportQuery } from '../api'
 
 export default function VendorSupportQueryDetails() {
-  const { data: session } = useSession()
   const params = useParams()
   const queryId = params.id
   const {
     data: query,
     error: queryError,
-    isLoading: queryLoading,
+    isLoading,
     mutate: refetchQuery,
   } = useVendorSupportQuery(params.id)
 
-  if (queryLoading) {
+  if (isLoading) {
     return <div>Loading...</div>
   }
 
   if (queryError) {
-    return <div>Error: {queryError.message}</div>
+    return <div>Query Error: {queryError.message}</div>
   }
+
   return (
     <Chat initialQuery={query} queryId={queryId} refetchQuery={refetchQuery} />
   )
