@@ -4,12 +4,12 @@ import awsURL from '@/assets/common/awsUrl'
 import { IMG } from '@/assets/common/urls'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { Badge } from '@/components/ui/badge'
+import { getInitials } from '@/lib/utils'
 import { signOut, useSession } from 'next-auth/react'
 import Image from 'next/image'
 import Link from 'next/link'
 import React from 'react'
 import { FiBell, FiSettings } from 'react-icons/fi'
-import { getInitials } from '@/lib/utils'
 import { Button } from './ui/button'
 
 const Navbar = () => {
@@ -44,17 +44,19 @@ const Navbar = () => {
             Sign out
           </Button>
 
+          {user?.role === 'superAdmin' && (
+            <Badge variant="secondary" className="ml-2">
+              superAdmin
+            </Badge>
+          )}
+
           <Link href="/profile">
             <Avatar className="h-[30px] w-[30px]">
               <AvatarImage src={image ? awsURL + image : IMG.defaultProfile} />
               <AvatarFallback>{initials || '?'}</AvatarFallback>
             </Avatar>
           </Link>
-          {user?.role === 'superAdmin' && (
-            <Badge variant="secondary" className="ml-2">
-              superAdmin
-            </Badge>
-          )}
+
           <Link href="#">
             <FiBell />
           </Link>
