@@ -2,9 +2,8 @@ import awsURL from '@/assets/common/awsUrl'
 import { IMG } from '@/assets/common/urls'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { ScrollArea } from '@/components/ui/scroll-area'
+import { getInitials } from '@/lib/utils'
 import { useEffect, useRef } from 'react'
-import { getInitials } from './chat-header'
-
 import { formatChatMessageTime } from './chat-utils'
 
 export function ChatMessages({ messages, currentUserId }) {
