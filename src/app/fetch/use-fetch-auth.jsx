@@ -34,16 +34,18 @@ export const useFetchAuth = (path) => {
   // swr will not fetch if url is null, ie if token is not present
   const {
     data,
-    error: errorSWR,
+    error: swrError,
     isLoading,
     mutate,
   } = useSWR(url, fetcher, {
     revalidateOnFocus: false,
   })
 
+  const error = swrError || data?.error || null
+
   return {
-    data: errorSWR ? null : data,
-    error: errorSWR || (data?.error ?? null),
+    data: error ? null : data,
+    error,
     isLoading,
     mutate,
     vendorId,
