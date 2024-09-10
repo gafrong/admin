@@ -28,9 +28,7 @@ const filterQueryType = (row, id, value) => {
   return row.original.queryType.toLowerCase().includes(value.toLowerCase())
 }
 
-// Table Components
-// -----------------------------------------------------------------------------
-// Table Components
+// Table Components: Header
 // -----------------------------------------------------------------------------
 const HeaderQueryType = ({ column }) => (
   <ButtonSortable column={column}>Query Type</ButtonSortable>
@@ -48,7 +46,7 @@ const HeaderLastMessageTime = ({ column }) => (
   <ButtonSortable column={column}>Time</ButtonSortable>
 )
 
-// Cell Functions
+// Table Components: Cell
 // -----------------------------------------------------------------------------
 export const CellUser = ({ row }) => {
   const user = row?.original?.participants[0] || {}

@@ -23,7 +23,6 @@ export default function VendorSupportQueryDetails() {
   if (queryError) {
     return <div>Error: {queryError.message}</div>
   }
-  console.log('VendorSupportQueryDetails()::: ', { query })
   return (
     <Chat initialQuery={query} queryId={queryId} refetchQuery={refetchQuery} />
   )
