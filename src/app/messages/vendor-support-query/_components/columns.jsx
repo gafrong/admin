@@ -30,11 +30,8 @@ const filterQueryType = (row, id, value) => {
 
 // Table Components
 // -----------------------------------------------------------------------------
-export const CellUser = ({ row }) => {
-  const user = row?.original?.participants[0] || {}
-  return <ProfileMini user={user} />
-}
-
+// Table Components
+// -----------------------------------------------------------------------------
 const HeaderQueryType = ({ column }) => (
   <ButtonSortable column={column}>Query Type</ButtonSortable>
 )
@@ -50,6 +47,24 @@ const HeaderFirstMessage = ({ column }) => (
 const HeaderLastMessageTime = ({ column }) => (
   <ButtonSortable column={column}>Time</ButtonSortable>
 )
+
+// Cell Functions
+// -----------------------------------------------------------------------------
+export const CellUser = ({ row }) => {
+  const user = row?.original?.participants[0] || {}
+  return <ProfileMini user={user} />
+}
+
+const cellQueryType = ({ row }) => (
+  <Badge variant="outline">{row.original.queryType}</Badge>
+)
+
+const cellMessageCount = ({ row }) => row.original.messages.length
+
+const cellFirstMessageContent = ({ row }) => {
+  const messages = row.original.messages
+  return messages.length > 0 ? messages[0].content : 'No messages'
+}
 
 const cellLastMessageAt = ({ row }) => {
   const lastMessageAt = row.original.lastMessageAt
@@ -72,6 +87,15 @@ const cellLastMessageAt = ({ row }) => {
   return 'No messages'
 }
 
+const cellActions = ({ row }) => (
+  <Link
+    className="text-blue-500 underline"
+    href={`/messages/vendor-support-query/${row.original._id}`}
+  >
+    View
+  </Link>
+)
+
 export const getColumns = () => [
   {
     accessorKey: 'participants',
@@ -82,25 +106,20 @@ export const getColumns = () => [
   },
   {
     accessorKey: 'queryType',
-    cell: ({ row }) => (
-      <Badge variant="outline">{row.original.queryType}</Badge>
-    ),
+    cell: cellQueryType,
     filterFn: filterQueryType,
     header: HeaderQueryType,
     id: 'queryType',
   },
   {
     accessorKey: 'messageCount',
-    cell: ({ row }) => row.original.messages.length,
+    cell: cellMessageCount,
     header: HeaderMessageCount,
     id: 'messageCount',
   },
   {
     accessorKey: 'firstMessageContent',
-    cell: ({ row }) => {
-      const messages = row.original.messages
-      return messages.length > 0 ? messages[0].content : 'No messages'
-    },
+    cell: cellFirstMessageContent,
     filterFn: filterFirstMessageContent,
     header: HeaderFirstMessage,
     id: 'firstMessageContent',
@@ -112,14 +131,7 @@ export const getColumns = () => [
     id: 'lastMessageTime',
   },
   {
-    cell: ({ row }) => (
-      <Link
-        className="text-blue-500 underline"
-        href={`/messages/vendor-support-query/${row.original._id}`}
-      >
-        View
-      </Link>
-    ),
+    cell: cellActions,
     header: 'Actions',
     id: 'actions',
   },
