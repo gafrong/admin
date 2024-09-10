@@ -3,6 +3,7 @@
 import awsURL from '@/assets/common/awsUrl'
 import { IMG } from '@/assets/common/urls'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
+import { Badge } from '@/components/ui/badge'
 import { signOut, useSession } from 'next-auth/react'
 import Image from 'next/image'
 import Link from 'next/link'
@@ -50,9 +51,9 @@ const Navbar = () => {
             </Avatar>
           </Link>
           {user?.role === 'superAdmin' && (
-            <span className="bg-blue-500 text-white text-xs font-semibold px-2 py-1 rounded-full">
+            <Badge variant="secondary" className="ml-2">
               superAdmin
-            </span>
+            </Badge>
           )}
           <Link href="#">
             <FiBell />
