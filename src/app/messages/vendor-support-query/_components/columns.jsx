@@ -53,20 +53,20 @@ const HeaderLastMessageTime = ({ column }) => (
 
 export const getColumns = () => [
   {
-    header: 'User',
     accessorKey: 'participants',
-    id: 'user',
     cell: CellUser,
     filterFn: filterUser,
+    header: 'User',
+    id: 'user',
   },
   {
     accessorKey: 'queryType',
-    header: HeaderQueryType,
-    id: 'queryType',
     cell: ({ row }) => (
       <Badge variant="outline">{row.original.queryType}</Badge>
     ),
     filterFn: filterQueryType,
+    header: HeaderQueryType,
+    id: 'queryType',
   },
   {
     accessorKey: 'messageCount',
