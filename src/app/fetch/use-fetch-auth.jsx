@@ -38,7 +38,7 @@ export const useFetchAuth = (path) => {
 
   return {
     data: error ? null : data,
-    error: error || (data && data.error ? data.error : null),
+    error: error || data?.error ?? null,
     isLoading,
     mutate,
     vendorId,
