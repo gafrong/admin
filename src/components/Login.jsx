@@ -24,37 +24,32 @@ const Login = () => {
     }
 
     try {
-      const response =
-        (await signIn('credentials', {
-          callbackUrl: '/dashboard',
-          email,
-          password,
-          redirect: true,
-        })) || {}
-        if (response?.error) {                                                            
-          console.error('Login failed:', { response })                                    
-          if (response.status === 403) {                                                  
-            setError('Access denied. You do not have permission to log in.')              
-          } else {                                                                        
-            setError('Invalid email or password. Please check your credentials and try again.')                                                                                
-          }                                                                               
-          setIsLoading(false)                                                             
-          return                                                                          
-        } 
+      const response = await signIn('credentials', {
+        callbackUrl: '/dashboard',
+        email,
+        password,
+        redirect: false,
+      });
 
-      if (user?.isAdmin) {
-        console.log('user is admin', { user, status })
-        router.push('/dashboard')
-      } else if (user?.submitted) {
-        console.log('user is submitted')
-        router.push('/welcome')
-      } else if (status === 'authenticated') {
-        // new user, applying to be a vendor/seller
-        console.log('user is authenticated')
-        router.push('/onboarding')
+      console.log('Login response:', response);
+
+      if (response?.error) {
+        console.error('Login failed:', { response });
+        if (response.status === 403) {
+          setError('Access denied. You do not have permission to log in.');
+        } else {
+          setError('Invalid email or password. Please check your credentials and try again.');
+        }
+        setIsLoading(false);
+        return;
+      }
+
+      if (response?.ok) {
+        console.log('Login successful');
+        router.push('/dashboard');
       } else {
-        console.log('Unexpected state:', { user, status })
-        setError('An unexpected error occurred. Please try again.')
+        console.log('Unexpected state:', { response, status });
+        setError('An unexpected error occurred. Please try again.');
       }
     } catch (error) {
       console.error('Login error:', error)
