@@ -32,16 +32,10 @@ const Login = () => {
           redirect: true,
         })) || {}
       console.log('Login response:', response)
-      if (response.error) {
-        console.error('Login page signIn error:', { response })
-        setError(response.error)
-        setIsLoading(false)
-        return
-      }
-
-      if (!response.ok) {
+      if (response.error || !response.ok) {
         console.error('Login failed:', { response })
-        setError('Login failed. Please try again.')
+        setError('Login failed. Please check your credentials and try again.')
+        setIsLoading(false)
         return
       }
 
@@ -61,8 +55,13 @@ const Login = () => {
       }
     } catch (error) {
       console.error('Login error:', error)
+      console.error('Login error details:', {
+        name: error.name,
+        message: error.message,
+        stack: error.stack,
+      })
       setError(
-        error.message || 'An unexpected error occurred. Please try again.',
+        'An unexpected error occurred. Please try again later or contact support.',
       )
     } finally {
       setIsLoading(false)
@@ -125,7 +124,10 @@ const Login = () => {
             {error && (
               <div>
                 <p className="text-red-600">
-                  로그인에 문제가 있습니다. 다시 시도해보세요
+                  {error}
+                </p>
+                <p className="text-sm text-gray-500 mt-2">
+                  If this problem persists, please contact support.
                 </p>
               </div>
             )}
