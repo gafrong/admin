@@ -31,7 +31,6 @@ const Login = () => {
           password,
           redirect: true,
         })) || {}
-      console.log('Login response:', response)
       if (response.error || !response.ok) {
         console.error('Login failed:', { response })
         setError('Login failed. Please check your credentials and try again.')
@@ -55,11 +54,6 @@ const Login = () => {
       }
     } catch (error) {
       console.error('Login error:', error)
-      console.error('Login error details:', {
-        name: error.name,
-        message: error.message,
-        stack: error.stack,
-      })
       setError(
         'An unexpected error occurred. Please try again later or contact support.',
       )
@@ -123,10 +117,8 @@ const Login = () => {
             </div>
             {error && (
               <div>
-                <p className="text-red-600">
-                  {error}
-                </p>
-                <p className="text-sm text-gray-500 mt-2">
+                <p className="text-red-600">{error}</p>
+                <p className="mt-2 text-sm text-gray-500">
                   If this problem persists, please contact support.
                 </p>
               </div>
