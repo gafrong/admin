@@ -36,9 +36,11 @@ const Login = () => {
       if (response?.error) {
         console.error('Login failed:', { response });
         if (response.status === 403) {
-          setError('Access denied. You do not have permission to log in.');
-        } else {
+          setError('Access denied. You do not have permission to log in or your account may be inactive.');
+        } else if (response.status === 401) {
           setError('Invalid email or password. Please check your credentials and try again.');
+        } else {
+          setError('An unexpected error occurred. Please try again later.');
         }
         setIsLoading(false);
         return;
@@ -49,10 +51,19 @@ const Login = () => {
         router.push('/dashboard');
       } else {
         console.log('Unexpected state:', { response, status });
-        setError('An unexpected error occurred. Please try again.');
+        setError('An unexpected error occurred. Please try again or contact support.');
       }
     } catch (error) {
       console.error('Login error:', error)
+      if (error.response) {
+        console.error('Error response:', error.response.data)
+        console.error('Error status:', error.response.status)
+        console.error('Error headers:', error.response.headers)
+      } else if (error.request) {
+        console.error('Error request:', error.request)
+      } else {
+        console.error('Error message:', error.message)
+      }
       setError(
         'An unexpected error occurred. Please try again later or contact support.',
       )
