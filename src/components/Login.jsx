@@ -29,44 +29,20 @@ const Login = () => {
         email,
         password,
         redirect: false,
-      });
-
-      console.log('Login response:', response);
+      })
 
       if (response?.error) {
-        console.error('Login failed:', { response });
-        if (response.status === 403) {
-          setError('Access denied. You do not have permission to log in or your account may be inactive.');
-        } else if (response.status === 401) {
-          setError('Invalid email or password. Please check your credentials and try again.');
-        } else {
-          setError('An unexpected error occurred. Please try again later.');
-        }
-        setIsLoading(false);
-        return;
+        setError('Invalid email or password')
+        setIsLoading(false)
+        return
       }
 
       if (response?.ok) {
-        console.log('Login successful');
-        router.push('/dashboard');
-      } else {
-        console.log('Unexpected state:', { response, status });
-        setError('An unexpected error occurred. Please try again or contact support.');
+        router.push('/dashboard')
       }
     } catch (error) {
       console.error('Login error:', error)
-      if (error.response) {
-        console.error('Error response:', error.response.data)
-        console.error('Error status:', error.response.status)
-        console.error('Error headers:', error.response.headers)
-      } else if (error.request) {
-        console.error('Error request:', error.request)
-      } else {
-        console.error('Error message:', error.message)
-      }
-      setError(
-        'An unexpected error occurred. Please try again later or contact support.',
-      )
+      setError('An unexpected error occurred')
     } finally {
       setIsLoading(false)
     }
@@ -125,14 +101,7 @@ const Login = () => {
                 />
               </div>
             </div>
-            {error && (
-              <div>
-                <p className="text-red-600">{error}</p>
-                <p className="mt-2 text-sm text-gray-500">
-                  If this problem persists, please contact support.
-                </p>
-              </div>
-            )}
+            {error && <p className="text-red-600">{error}</p>}
             <div>
               <Button
                 className="w-full"
