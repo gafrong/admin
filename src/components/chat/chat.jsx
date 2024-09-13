@@ -30,7 +30,7 @@ export function Chat({ initialQuery, queryId, refetchQuery }) {
     <div className="mx-auto flex h-[calc(100vh-80px)] w-full">
       <ChatSidebar />
       <div className="flex flex-1 flex-col">
-        <ChatHeader participant={otherParticipant} />
+        <ChatHeader participant={otherParticipant} queryId={queryId} />
         <ChatMessages messages={messages} currentUserId={session?.user?._id} />
         <ChatInput
           onSendMessage={addMessage}
