@@ -11,28 +11,41 @@ const credentialsConfig = CredentialsProvider({
   },
   async authorize(credentials) {
     try {
-      console.log('Attempting login with credentials:', credentials);
+      console.log('Attempting login with credentials:', credentials)
       const response = await axios.post(`${baseURL}admin/login`, credentials, {
         headers: {
           Accept: 'application/json',
           'Content-Type': 'application/json',
         },
       })
-      console.log('Login response:', response.data);
+      console.log('Login response:', response.data)
       const data = response.data
       if (data.user) return data
-      console.error('Login failed: Invalid credentials');
+      console.error('Login failed: Invalid credentials')
       throw new Error('Invalid credentials')
     } catch (error) {
-      console.error('auth.js authorize() error:', error.response ? error.response.data : error.message);
+      console.error(
+        'auth.js authorize() error:',
+        error.response ? error.response.data : error.message,
+      )
       if (error.response) {
-        console.error('Error status:', error.response.status);
-        console.error('Error headers:', error.response.headers);
+        console.error('Error status:', error.response.status)
+        console.error('Error headers:', error.response.headers)
       }
-      if (error.response && error.response.status === 400 && error.response.data === 'The user not found') {
-        throw new Error('User not found. Please check your email and try again.')
+      if (
+        error.response &&
+        error.response.status === 400 &&
+        error.response.data === 'The user not found'
+      ) {
+        throw new Error(
+          'User not found. Please check your email and try again.',
+        )
       }
-      throw new Error(error.response ? error.response.data : 'Failed to login. Please try again later.')
+      throw new Error(
+        error.response ?
+          error.response.data
+        : 'Failed to login. Please try again later.',
+      )
     }
   },
 })
@@ -50,6 +63,7 @@ const config = {
     async jwt({ token, user, trigger, session }) {
       if (user) {
         token.user = user.user
+        // store the user token taken from the backend and store it in the session
         token.token = user.token
       }
       // ***************************************************************

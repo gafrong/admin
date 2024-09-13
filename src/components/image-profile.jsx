@@ -9,7 +9,7 @@ export const ImageProfile = ({
   src,
 }) => (
   <div
-    className={`overflow-hidden rounded-full border ${className}`}
+    className={`overflow-hidden rounded-full ${className}`}
     style={{ width: size, height: size }}
   >
     <Image

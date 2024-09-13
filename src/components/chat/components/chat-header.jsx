@@ -1,14 +1,22 @@
+import { deleteVendorSupportQuery } from '@/app/messages/vendor-support-query/api'
 import { ProfileMini } from '@/app/superuser/users/page'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
-import { AiOutlineDelete } from 'react-icons/ai'
 import { useRouter } from 'next/navigation'
-import { useSession } from 'next-auth/react'
 import { useState } from 'react'
+import { AiOutlineDelete } from 'react-icons/ai'
 
-export function ChatHeader({ participant, queryId }) {
+const UserProfile = ({ user }) => {
+  return (
+    <>
+      <ProfileMini user={user} />
+      <Badge variant="secondary">{user.role || 'User'}</Badge>
+    </>
+  )
+}
+
+export function ChatHeader({ participants, queryId, session }) {
   const router = useRouter()
-  const { data: session } = useSession()
   const [isDeleting, setIsDeleting] = useState(false)
 
   const handleDelete = async () => {
@@ -19,18 +27,7 @@ export function ChatHeader({ participant, queryId }) {
 
     setIsDeleting(true)
     try {
-      const response = await fetch(`/api/v1/vendor-support-query/${queryId}`, {
-        method: 'DELETE',
-        headers: {
-          Authorization: `Bearer ${session.token}`,
-        },
-      })
-
-      if (!response.ok) {
-        const errorData = await response.json()
-        throw new Error(errorData.message || 'Failed to delete query')
-      }
-
+      await deleteVendorSupportQuery(queryId, session.token)
       router.push('/messages/vendor-support-query')
     } catch (error) {
       console.error('Error deleting query:', error)
@@ -39,12 +36,30 @@ export function ChatHeader({ participant, queryId }) {
       setIsDeleting(false)
     }
   }
+
+  // Check if there is only one participant (the current user)
+  const isOnlyCurrentUser =
+    participants.length === 1 &&
+    participants[0].user?._id === session?.user?._id
+
+  const otherParticipant = participants.find(
+    (p) => p.user?._id !== session?.user?._id,
+  )
+
   return (
     <div className="flex items-start justify-between border-b p-4">
-      <div className="flex items-start gap-4">
-        <ProfileMini user={participant} />
-        <Badge variant="secondary">{participant.role || 'User'}</Badge>
-      </div>
+      {
+        isOnlyCurrentUser ?
+          // If there is only the current user, show no other user
+          <></>
+          // Otherwise, display the other participant's information
+        : <div className="flex items-start gap-4">
+            {otherParticipant?.user && (
+              <UserProfile user={otherParticipant?.user} />
+            )}
+          </div>
+
+      }
       {session?.user?.role === 'superAdmin' && (
         <div className="flex items-center">
           <Button
