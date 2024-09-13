@@ -32,7 +32,7 @@ const Login = () => {
           password,
           redirect: true,
         })) || {}
-      
+
       if (!response) {
         console.log('waiting for signin')
       } else if (response.error) {
@@ -44,16 +44,16 @@ const Login = () => {
 
       if (user?.isAdmin) {
         console.log('user is admin', { user, status })
-        // router.push('/dashboard')
+        router.push('/dashboard')
       } else if (user?.submitted) {
         console.log('user is submitted')
-        // router.push('/welcome')
+        router.push('/welcome')
       } else if (status === 'authenticated') {
         // new user, applying to be a vendor/seller
         console.log('user is authenticated')
-        // router.push('/onboarding')
+        router.push('/onboarding')
       } else {
-        console.log('Unexpected state:', { user, status,response })
+        console.log('Unexpected state:', { user, status, response })
         setError('An unexpected error occurred. Please try again.')
       }
     } catch (error) {
