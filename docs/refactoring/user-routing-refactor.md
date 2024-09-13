@@ -1,10 +1,10 @@
-# User Routing Refactoring Plan
+# User Routing Clean-up Plan
 
 ## Current Situation
-We have identified legacy code in our authentication flow that is no longer being executed due to earlier redirects. This code contains valuable information about expected routing behavior based on user states.
+Dead code in our authentication flow that is no longer being executed due to earlier redirects. This code contains valuable routing logic.
 
-## Proposed Solution
-We propose refactoring this code to improve maintainability and preserve the routing logic for potential future use. The recommended approach combines creating a separate function for routing logic and using a configuration object for route mapping.
+## TODO
+
 
 ## Implementation Plan
 
@@ -42,12 +42,10 @@ function routeUser(user, status) {
 
 ## Benefits
 - Preserves routing logic for future use
-- Improves code organization and testability
 - Makes routing rules more declarative and easier to maintain
 - Allows for easy expansion of user states and routes
 
 ## Next Steps
-1. Review the proposed changes with the team
 2. Decide on the appropriate location for this new code (e.g., a new utility file)
 3. Implement the changes
 4. Update any affected components or middleware to use the new routing function
