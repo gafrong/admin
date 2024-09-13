@@ -16,6 +16,7 @@ const Login = () => {
   const router = useRouter()
 
   const handleSubmit = async (e) => {
+    console.log('Login form submitted')
     setIsLoading(true)
     e.preventDefault()
     if (!email || !password) {
@@ -32,8 +33,16 @@ const Login = () => {
           redirect: true,
         })) || {}
       console.log('Login response:', response)
-      if (response.error || !response.ok) {
-        console.error('Login failed:', { response })
+      if (!response) {
+        console.log('waiting for signin')
+      }  else if (response.error ) {
+        console.error('response error')
+        setError('Login failed. Please check your credentials and try again.')
+        setIsLoading(false)
+        return
+      }
+      else if (!response.ok) {
+        console.error('response not ok', { response })
         setError('Login failed. Please check your credentials and try again.')
         setIsLoading(false)
         return
@@ -123,10 +132,8 @@ const Login = () => {
             </div>
             {error && (
               <div>
-                <p className="text-red-600">
-                  {error}
-                </p>
-                <p className="text-sm text-gray-500 mt-2">
+                <p className="text-red-600">{error}</p>
+                <p className="mt-2 text-sm text-gray-500">
                   If this problem persists, please contact support.
                 </p>
               </div>
