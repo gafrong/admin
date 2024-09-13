@@ -24,25 +24,45 @@ const Login = () => {
     }
 
     try {
-      const response = await signIn('credentials', {
-        callbackUrl: '/dashboard',
-        email,
-        password,
-        redirect: false,
-      })
-
-      if (response?.error) {
-        setError('Invalid email or password')
+      const response =
+        (await signIn('credentials', {
+          callbackUrl: '/dashboard',
+          email,
+          password,
+          redirect: true,
+        })) || {}
+      console.log('Login response:', response)
+      if (response.error || !response.ok) {
+        console.error('Login failed:', { response })
+        setError('Login failed. Please check your credentials and try again.')
         setIsLoading(false)
         return
       }
 
-      if (response?.ok) {
+      if (user?.isAdmin) {
+        console.log('user is admin', { user, status })
         router.push('/dashboard')
+      } else if (user?.submitted) {
+        console.log('user is submitted')
+        router.push('/welcome')
+      } else if (status === 'authenticated') {
+        // new user, applying to be a vendor/seller
+        console.log('user is authenticated')
+        router.push('/onboarding')
+      } else {
+        console.log('Unexpected state:', { user, status })
+        setError('An unexpected error occurred. Please try again.')
       }
     } catch (error) {
       console.error('Login error:', error)
-      setError('An unexpected error occurred')
+      console.error('Login error details:', {
+        name: error.name,
+        message: error.message,
+        stack: error.stack,
+      })
+      setError(
+        'An unexpected error occurred. Please try again later or contact support.',
+      )
     } finally {
       setIsLoading(false)
     }
@@ -101,7 +121,16 @@ const Login = () => {
                 />
               </div>
             </div>
-            {error && <p className="text-red-600">{error}</p>}
+            {error && (
+              <div>
+                <p className="text-red-600">
+                  {error}
+                </p>
+                <p className="text-sm text-gray-500 mt-2">
+                  If this problem persists, please contact support.
+                </p>
+              </div>
+            )}
             <div>
               <Button
                 className="w-full"
