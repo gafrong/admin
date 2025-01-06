@@ -3,6 +3,24 @@ import NextAuth from 'next-auth'
 import CredentialsProvider from 'next-auth/providers/credentials'
 import baseURL from './assets/common/baseUrl'
 
+const isDevelopment = process.env.NODE_ENV === 'development'
+
+const LOG_PREFIX = {
+  AUTH_ERROR: 'auth.js authorize() error:',
+  HTTP_ERROR: 'HTTP Error:',
+  UNKNOWN_ERROR: 'Unknown authentication error:',
+}
+
+const AUTH_ERRORS = {
+  INVALID_CREDENTIALS: 'Invalid credentials',
+  USER_NOT_FOUND: 'User not found. Please check your email and try again.',
+  BACKEND_NOT_RUNNING_DEV:
+    'Backend server is not running. Please start the backend server and try again.',
+  BACKEND_NOT_RUNNING_PROD:
+    'Authentication service is temporarily unavailable. Please try again later.',
+  AUTHENTICATION_FAILED: 'Authentication failed. Please try again later.',
+}
+
 const credentialsConfig = CredentialsProvider({
   name: 'Credentials',
   credentials: {
@@ -11,28 +29,46 @@ const credentialsConfig = CredentialsProvider({
   },
   async authorize(credentials) {
     try {
-      console.log('Attempting login with credentials:', credentials);
+      console.log('Attempting login with credentials:', credentials)
       const response = await axios.post(`${baseURL}admin/login`, credentials, {
         headers: {
           Accept: 'application/json',
           'Content-Type': 'application/json',
         },
       })
-      console.log('Login response:', response.data);
+      console.log('Login response:', response.data)
       const data = response.data
       if (data.user) return data
-      console.error('Login failed: Invalid credentials');
-      throw new Error('Invalid credentials')
+      throw new Error(AUTH_ERRORS.INVALID_CREDENTIALS)
     } catch (error) {
-      console.error('auth.js authorize() error:', error.response ? error.response.data : error.message);
+      console.error(LOG_PREFIX.AUTH_ERROR, error.message)
+
+      // Axios specific error when server is unreachable
+      if (axios.isAxiosError(error) && !error.response) {
+        const message =
+          isDevelopment ?
+            AUTH_ERRORS.BACKEND_NOT_RUNNING_DEV
+          : AUTH_ERRORS.BACKEND_NOT_RUNNING_PROD
+        throw new Error(message)
+      }
+
+      if (error.response?.data === 'The user not found') {
+        throw new Error(AUTH_ERRORS.USER_NOT_FOUND)
+      }
+
       if (error.response) {
-        console.error('Error status:', error.response.status);
-        console.error('Error headers:', error.response.headers);
+        console.error(LOG_PREFIX.HTTP_ERROR, {
+          status: error.response.status,
+          data: error.response.data,
+        })
+        throw new Error(
+          error.response.data || AUTH_ERRORS.AUTHENTICATION_FAILED,
+        )
       }
-      if (error.response && error.response.status === 400 && error.response.data === 'The user not found') {
-        throw new Error('User not found. Please check your email and try again.')
-      }
-      throw new Error(error.response ? error.response.data : 'Failed to login. Please try again later.')
+
+      // Generic fallback error
+      console.error(LOG_PREFIX.UNKNOWN_ERROR, error)
+      throw new Error(AUTH_ERRORS.AUTHENTICATION_FAILED)
     }
   },
 })
