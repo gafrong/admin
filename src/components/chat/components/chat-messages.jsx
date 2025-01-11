@@ -5,46 +5,9 @@ import { ScrollArea } from '@/components/ui/scroll-area'
 import { getInitials } from '@/lib/utils'
 import { useEffect, useRef } from 'react'
 import { formatChatMessageTime } from '../utils/chat-utils'
-import { LoadingEllipsis } from './loading-ellipsis'
 
-const TypingIndicator = ({ initialQuery, otherTypingUsers }) => {
-  return (
-    <>
-      {otherTypingUsers.map((typingUser) => {
-        const participant = initialQuery.participants.find(
-          (p) => p.user?._id === typingUser.userId,
-        )
-        if (!participant) return null
-
-        const image = participant?.user?.image
-
-        return (
-          <Message
-            key={typingUser.userId}
-            content={<LoadingEllipsis />}
-            isOutgoing={false}
-            sender={typingUser.name}
-            time=""
-            image={image}
-          />
-        )
-      })}
-    </>
-  )
-}
-
-export function ChatMessages({
-  messages,
-  currentUserId,
-  typingUsers,
-  initialQuery,
-}) {
+export function ChatMessages({ messages, currentUserId, initialQuery }) {
   const scrollAreaRef = useRef(null)
-
-  // Filter out the current user's userId from the typingUsers array
-  const otherTypingUsers = typingUsers.filter(
-    (user) => user.userId !== currentUserId,
-  )
 
   useEffect(() => {
     if (scrollAreaRef.current) {
@@ -55,7 +18,7 @@ export function ChatMessages({
         scrollContainer.scrollTop = scrollContainer.scrollHeight
       }
     }
-  }, [messages, typingUsers])
+  }, [messages])
 
   if (!messages || messages.length === 0) {
     return (
@@ -66,6 +29,7 @@ export function ChatMessages({
       </>
     )
   }
+
   const formattedTime = (time) =>
     time ? formatChatMessageTime(time) : 'Just now'
 
@@ -93,10 +57,6 @@ export function ChatMessages({
           />
         )
       })}
-      <TypingIndicator
-        initialQuery={initialQuery}
-        otherTypingUsers={otherTypingUsers}
-      />
     </ScrollArea>
   )
 }

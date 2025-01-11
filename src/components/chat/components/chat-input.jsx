@@ -1,16 +1,18 @@
 import { Button } from '@/components/ui/button'
 import { Textarea } from '@/components/ui/textarea'
+import { authRequest } from '@/utils/authRequest'
 import {
   Paperclip as PaperclipIcon,
   RefreshCcw,
   Send as SendIcon,
 } from 'lucide-react'
+import { useSession } from 'next-auth/react'
 import { useEffect, useRef, useState } from 'react'
 
-export const ChatInput = ({ roomId, user, socket, refetchQuery }) => {
+export const ChatInput = ({ roomId, user, refetchQuery }) => {
   const [inputMessage, setInputMessage] = useState('')
   const textareaRef = useRef(null)
-  const [isTyping, setIsTyping] = useState(false)
+  const { data: session } = useSession()
 
   useEffect(() => {
     if (textareaRef.current) {
@@ -18,11 +20,10 @@ export const ChatInput = ({ roomId, user, socket, refetchQuery }) => {
     }
   }, [])
 
-  const handleSendMessage = () => {
-    console.log('handleSendMessage():')
-    if (inputMessage.trim() && socket && user) {
+  const handleSendMessage = async () => {
+    if (inputMessage.trim() && user) {
       const messageData = {
-        queryId: roomId, // Assuming you have access to the roomId prop
+        queryId: roomId,
         content: inputMessage.trim(),
         sender: {
           _id: user._id,
@@ -32,9 +33,20 @@ export const ChatInput = ({ roomId, user, socket, refetchQuery }) => {
         timestamp: new Date().toISOString(),
       }
 
-      // Emit the message to the server
-      socket.emit('client:chatMessage', messageData)
-      setInputMessage('')
+      try {
+        await authRequest('vendor-support-query/message', {
+          method: 'POST',
+          data: messageData,
+          headers: {
+            Authorization: `Bearer ${session?.token}`,
+          },
+        })
+
+        setInputMessage('')
+        refetchQuery()
+      } catch (error) {
+        console.error('Chat input failed:', error)
+      }
     }
   }
 
@@ -42,20 +54,6 @@ export const ChatInput = ({ roomId, user, socket, refetchQuery }) => {
     if (e.key === 'Enter' && !e.shiftKey) {
       e.preventDefault()
       handleSendMessage()
-    }
-  }
-
-  const handleTypingIndicator = (e) => {
-    const isUserTyping = e.target.value.trim().length > 0
-    setIsTyping(isUserTyping)
-    if (!user) return
-
-    if (isUserTyping) {
-      socket.emit('client:typing', { queryId: roomId, userId: user._id })
-    }
-
-    if (!isUserTyping) {
-      socket.emit('client:stopTyping', { userId: user._id })
     }
   }
 
@@ -77,10 +75,7 @@ export const ChatInput = ({ roomId, user, socket, refetchQuery }) => {
         placeholder="Type a message..."
         rows={1}
         value={inputMessage}
-        onChange={(e) => {
-          setInputMessage(e.target.value)
-          handleTypingIndicator(e)
-        }}
+        onChange={(e) => setInputMessage(e.target.value)}
         onKeyPress={handleReturnKey}
       />
 

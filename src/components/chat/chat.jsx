@@ -5,19 +5,11 @@ import { ChatHeader } from './components/chat-header'
 import { ChatInput } from './components/chat-input'
 import { ChatMessages } from './components/chat-messages'
 import { ChatSidebar } from './components/chat-sidebar'
-import { useWebSocket } from './utils/use-web-socket'
 
 export function Chat({ initialQuery, refetchQuery, session }) {
   const { messages, _id: queryId, participants } = initialQuery
-
-  const { user = {}, token } = session || {}
+  const { user = {} } = session || {}
   const userId = user?._id
-  const { socket, typingUsers } = useWebSocket({
-    queryId,
-    refetchQuery,
-    token,
-    userId,
-  })
 
   return (
     <div className="mx-auto flex h-[calc(100vh-80px)] w-full">
@@ -31,15 +23,9 @@ export function Chat({ initialQuery, refetchQuery, session }) {
         <ChatMessages
           currentUserId={userId}
           messages={messages}
-          typingUsers={typingUsers}
           initialQuery={initialQuery}
         />
-        <ChatInput
-          refetchQuery={refetchQuery}
-          roomId={queryId}
-          socket={socket}
-          user={user}
-        />
+        <ChatInput refetchQuery={refetchQuery} roomId={queryId} user={user} />
       </div>
     </div>
   )
