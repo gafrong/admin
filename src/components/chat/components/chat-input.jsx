@@ -1,6 +1,6 @@
+import { sendMessage } from '@/app/messages/vendor-support-query/api'
 import { Button } from '@/components/ui/button'
 import { Textarea } from '@/components/ui/textarea'
-import { authRequest } from '@/utils/authRequest'
 import {
   Paperclip as PaperclipIcon,
   RefreshCcw,
@@ -33,20 +33,9 @@ export const ChatInput = ({ roomId, user, refetchQuery }) => {
         timestamp: new Date().toISOString(),
       }
 
-      try {
-        await authRequest('vendor-support-query/message', {
-          method: 'POST',
-          data: messageData,
-          headers: {
-            Authorization: `Bearer ${session?.token}`,
-          },
-        })
-
-        setInputMessage('')
-        refetchQuery()
-      } catch (error) {
-        console.error('Chat input failed:', error)
-      }
+      await sendMessage(messageData, session?.token)
+      setInputMessage('')
+      refetchQuery()
     }
   }
 
@@ -60,7 +49,6 @@ export const ChatInput = ({ roomId, user, refetchQuery }) => {
   const doubleRefetch = async () => {
     console.log('doubleRefetch...')
     await refetchQuery()
-    refetchQuery()
   }
 
   return (
@@ -87,6 +75,7 @@ export const ChatInput = ({ roomId, user, refetchQuery }) => {
         <SendIcon className="h-5 w-5" />
         <span className="sr-only">Send</span>
       </Button>
+
       <Button size="icon" onClick={doubleRefetch}>
         <RefreshCcw className="h-5 w-5" />
         <span className="sr-only">Refresh</span>

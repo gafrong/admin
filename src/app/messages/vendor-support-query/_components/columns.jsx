@@ -1,4 +1,3 @@
-import { ProfileMini } from '@/app/superuser/users/page'
 import awsURL from '@/assets/common/awsUrl'
 import { IMG } from '@/assets/common/urls'
 import { ButtonSortable } from '@/components/data-table/data-table-button-sorting'
@@ -109,46 +108,49 @@ const cellActions = ({ row }) => (
   </Link>
 )
 
-export const getColumns = () => [
-  {
-    accessorKey: 'participants',
-    cell: CellUser,
-    filterFn: filterUser,
-    header: 'User',
-    id: 'user',
-  },
-  {
-    accessorKey: 'queryType',
-    cell: cellQueryType,
-    filterFn: filterQueryType,
-    header: HeaderQueryType,
-    id: 'queryType',
-  },
-  {
-    accessorKey: 'messageCount',
-    cell: cellMessageCount,
-    header: HeaderMessageCount,
-    id: 'messageCount',
-  },
-  {
-    accessorKey: 'firstMessageContent',
-    cell: cellFirstMessageContent,
-    filterFn: filterFirstMessageContent,
-    header: HeaderFirstMessage,
-    id: 'firstMessageContent',
-  },
-  {
-    accessorKey: 'lastMessageAt',
-    cell: cellLastMessageAt,
-    header: HeaderLastMessageTime,
-    id: 'lastMessageTime',
-  },
-  {
-    cell: cellActions,
-    header: 'Actions',
-    id: 'actions',
-  },
-]
+export const getColumns = (options = { showUser: false }) =>
+  [
+    options.showUser ?
+      {
+        accessorKey: 'participants',
+        cell: CellUser,
+        filterFn: filterUser,
+        header: 'User',
+        id: 'user',
+      }
+    : null,
+    {
+      accessorKey: 'queryType',
+      cell: cellQueryType,
+      filterFn: filterQueryType,
+      header: HeaderQueryType,
+      id: 'queryType',
+    },
+    {
+      accessorKey: 'messageCount',
+      cell: cellMessageCount,
+      header: HeaderMessageCount,
+      id: 'messageCount',
+    },
+    {
+      accessorKey: 'firstMessageContent',
+      cell: cellFirstMessageContent,
+      filterFn: filterFirstMessageContent,
+      header: HeaderFirstMessage,
+      id: 'firstMessageContent',
+    },
+    {
+      accessorKey: 'lastMessageAt',
+      cell: cellLastMessageAt,
+      header: HeaderLastMessageTime,
+      id: 'lastMessageTime',
+    },
+    {
+      cell: cellActions,
+      header: 'Actions',
+      id: 'actions',
+    },
+  ].filter(Boolean)
 
 export const controls = {
   isSearchAlwaysShown: true,

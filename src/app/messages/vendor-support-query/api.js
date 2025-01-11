@@ -20,10 +20,7 @@ export const createVendorSupportQuery = async (data, token) => {
     const response = await authRequest('vendor-support-query/', {
       method: 'POST',
       data,
-      headers: {
-        Authorization: `Bearer ${token}`,
-        'Content-Type': 'application/json',
-      },
+      token,
     })
     return response
   } catch (error) {
@@ -43,6 +40,14 @@ export const createVendorSupportQuery = async (data, token) => {
 export const deleteVendorSupportQuery = async (queryId, token) => {
   return authRequest(`vendor-support-query/${queryId}`, {
     method: 'DELETE',
-    headers: { Authorization: `Bearer ${token}` },
+    token,
+  })
+}
+
+export const sendMessage = async (messageData, token) => {
+  return authRequest('vendor-support-query/message', {
+    method: 'POST',
+    data: messageData,
+    token,
   })
 }

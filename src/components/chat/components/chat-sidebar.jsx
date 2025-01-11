@@ -8,6 +8,7 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { ScrollArea } from '@/components/ui/scroll-area'
 import { getInitials } from '@/lib/utils'
+import { isSuperAdmin } from '@/utils/user-utils'
 import { Plus as PlusIcon, Search as SearchIcon } from 'lucide-react'
 import Link from 'next/link'
 import { useMemo, useState } from 'react'
@@ -44,9 +45,9 @@ const Empty = () => {
 }
 
 export function ChatSidebar({ user }) {
-  const isSuperAdmin = user?.role === 'superAdmin'
-
-  const { data: queries, isLoading } = useVendorSupportQueries(isSuperAdmin)
+  const { data: queries, isLoading } = useVendorSupportQueries(
+    isSuperAdmin(user),
+  )
 
   const [searchQuery, setSearchQuery] = useState('')
 

@@ -6,6 +6,7 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from '@/components/ui/accordion'
+import { isSuperAdmin } from '@/utils/user-utils'
 import { useSession } from 'next-auth/react'
 import Link from 'next/link'
 import {
@@ -220,39 +221,41 @@ const Sidebar = () => {
         </AccordionItem>
       </Accordion>
 
-      <Accordion type="single" collapsible>
-        <AccordionItem
-          value="item-super-user"
-          className="block pl-5 pr-2 text-black"
-        >
-          <AccordionTrigger>
-            <div className="flex flex-row">
-              <FiSettings className="mr-2 mt-1" />
-              <div>Superuser</div>
-            </div>
-          </AccordionTrigger>
-          <AccordionContent>
-            <Link
-              href="/superuser/vendors"
-              className="flex flex-col pb-3 pl-3 pt-3 hover:bg-slate-200"
-            >
-              vendors
-            </Link>
-            <Link
-              href="/superuser/users"
-              className="flex flex-col pb-3 pl-3 pt-3 hover:bg-slate-200"
-            >
-              users
-            </Link>
-            <Link
-              href="/messages/vendor-support-query/superuser"
-              className="flex flex-col pb-3 pl-3 pt-3 hover:bg-slate-200"
-            >
-              vendor queries
-            </Link>
-          </AccordionContent>
-        </AccordionItem>
-      </Accordion>
+      {isSuperAdmin(session?.user) && (
+        <Accordion type="single" collapsible>
+          <AccordionItem
+            value="item-super-user"
+            className="block pl-5 pr-2 text-black"
+          >
+            <AccordionTrigger>
+              <div className="flex flex-row">
+                <FiSettings className="mr-2 mt-1" />
+                <div>Superuser</div>
+              </div>
+            </AccordionTrigger>
+            <AccordionContent>
+              <Link
+                href="/superuser/vendors"
+                className="flex flex-col pb-3 pl-3 pt-3 hover:bg-slate-200"
+              >
+                vendors
+              </Link>
+              <Link
+                href="/superuser/users"
+                className="flex flex-col pb-3 pl-3 pt-3 hover:bg-slate-200"
+              >
+                users
+              </Link>
+              <Link
+                href="/messages/vendor-support-query/superuser"
+                className="flex flex-col pb-3 pl-3 pt-3 hover:bg-slate-200"
+              >
+                vendor queries
+              </Link>
+            </AccordionContent>
+          </AccordionItem>
+        </Accordion>
+      )}
 
       <Accordion type="single" collapsible>
         <AccordionItem
