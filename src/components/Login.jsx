@@ -128,7 +128,7 @@ const Login = () => {
               <div>
                 <p className="text-red-600">{error}</p>
                 <p className="mt-2 text-sm text-gray-500">
-                  If this problem persists, please contact support.
+                  로그인에 문제가 있습니다. 다시 시도해보세요
                 </p>
               </div>
             )}

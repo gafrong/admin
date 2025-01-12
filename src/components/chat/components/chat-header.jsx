@@ -2,6 +2,7 @@ import { deleteVendorSupportQuery } from '@/app/messages/vendor-support-query/ap
 import { ProfileMini } from '@/app/superuser/users/page'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
+import { isSuperAdmin } from '@/utils/user-utils'
 import { useRouter } from 'next/navigation'
 import { useState } from 'react'
 import { AiOutlineDelete } from 'react-icons/ai'
@@ -20,7 +21,7 @@ export function ChatHeader({ participants, queryId, session }) {
   const [isDeleting, setIsDeleting] = useState(false)
 
   const handleDelete = async () => {
-    if (!session?.token || session.user.role !== 'superAdmin') {
+    if (!session?.token || !isSuperAdmin(session.user)) {
       console.error('Unauthorized: Only superAdmin can delete support queries')
       return
     }
