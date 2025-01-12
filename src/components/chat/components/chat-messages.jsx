@@ -22,11 +22,9 @@ export function ChatMessages({ messages, currentUserId, initialQuery }) {
 
   if (!messages || messages.length === 0) {
     return (
-      <>
-        <ScrollArea className="flex-1 px-4" ref={scrollAreaRef}>
-          <p className="text-center text-muted-foreground">No messages yet.</p>
-        </ScrollArea>
-      </>
+      <ScrollArea className="flex-1 px-4" ref={scrollAreaRef}>
+        <p className="text-center text-muted-foreground">No messages yet.</p>
+      </ScrollArea>
     )
   }
 
@@ -64,6 +62,11 @@ export function ChatMessages({ messages, currentUserId, initialQuery }) {
 function Message({ sender, content, image, time, isOutgoing, className }) {
   const imgSrc = image ? awsURL + image : IMG.defaultProfile
 
+  const incomingMessageStyles =
+    'mb-4 max-w-[65%] rounded-3xl border border-gray-300 p-3 px-5 text-sm shadow-sm rounded-bl-none bg-white'
+  const outgoingMessageStyles =
+    'mb-4 max-w-[65%] rounded-3xl border border-gray-300 p-3 px-5 text-sm shadow-sm rounded-br-none bg-[#DCF7C5]'
+
   return (
     <div
       className={`flex items-end gap-2 ${
@@ -77,11 +80,7 @@ function Message({ sender, content, image, time, isOutgoing, className }) {
         </Avatar>
       )}
       <div
-        className={`mb-4 max-w-[65%] rounded-3xl border border-gray-300 p-3 px-5 text-sm shadow-sm ${
-          isOutgoing ?
-            'rounded-br-none bg-[#DCF7C5]'
-          : 'rounded-bl-none bg-white '
-        }`}
+        className={isOutgoing ? outgoingMessageStyles : incomingMessageStyles}
       >
         {content}
       </div>

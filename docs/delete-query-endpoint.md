@@ -1,6 +1,6 @@
 # Delete Query Endpoint Documentation
 
-This document provides instructions for front-end developers on how to use the new delete query endpoint for vendor support queries.
+Description: delete query endpoint for vendor support queries.
 
 ## Endpoint Details
 
@@ -94,6 +94,4 @@ const deleteQuery = async (queryId) => {
 
 ## Notes
 
-- Ensure that only users with superAdmin role have access to this functionality in your front-end application.
-- After successful deletion, make sure to update your UI accordingly (e.g., remove the deleted query from the list of queries).
-- Handle errors gracefully and provide appropriate feedback to the user.
+- Only users with superAdmin role have access to this functionality.

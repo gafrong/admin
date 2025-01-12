@@ -61,7 +61,7 @@ export function ChatHeader({ participants, queryId, session }) {
           </div>
 
       }
-      {session?.user?.role === 'superAdmin' && (
+      {isSuperAdmin(session?.user) && (
         <div className="flex items-center">
           <Button
             variant="ghost"

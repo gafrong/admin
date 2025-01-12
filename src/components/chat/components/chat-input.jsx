@@ -46,8 +46,7 @@ export const ChatInput = ({ roomId, user, refetchQuery }) => {
     }
   }
 
-  const doubleRefetch = async () => {
-    console.log('doubleRefetch...')
+  const refreshMessages = async () => {
     await refetchQuery()
   }
 
@@ -76,7 +75,7 @@ export const ChatInput = ({ roomId, user, refetchQuery }) => {
         <span className="sr-only">Send</span>
       </Button>
 
-      <Button size="icon" onClick={doubleRefetch}>
+      <Button size="icon" onClick={refreshMessages}>
         <RefreshCcw className="h-5 w-5" />
         <span className="sr-only">Refresh</span>
       </Button>

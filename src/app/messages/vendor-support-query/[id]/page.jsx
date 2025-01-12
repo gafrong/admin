@@ -27,12 +27,6 @@ export default function VendorSupportQueryDetails() {
   }
 
   return (
-    <>
-      <Chat
-        initialQuery={query}
-        refetchQuery={refetchQuery}
-        session={session}
-      />
-    </>
+    <Chat initialQuery={query} refetchQuery={refetchQuery} session={session} />
   )
 }
