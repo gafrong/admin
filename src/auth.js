@@ -26,15 +26,14 @@ const credentialsConfig = CredentialsProvider({
     } catch (error) {
       console.error(
         'auth.js authorize() error:',
-        error.response ? error.response.data : error.message,
+        error.response?.data ?? error.message,
       )
       if (error.response) {
         console.error('Error status:', error.response.status)
         console.error('Error headers:', error.response.headers)
       }
       if (
-        error.response &&
-        error.response.status === 400 &&
+        error?.response?.status === 400 &&
         error.response.data === 'The user not found'
       ) {
         throw new Error(
@@ -42,9 +41,7 @@ const credentialsConfig = CredentialsProvider({
         )
       }
       throw new Error(
-        error.response ?
-          error.response.data
-        : 'Failed to login. Please try again later.',
+        error.response?.data ?? 'Failed to login. Please try again later.',
       )
     }
   },
