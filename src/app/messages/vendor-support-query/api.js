@@ -4,8 +4,11 @@ import { authRequest } from '@/utils/authRequest'
 export const useVendorSupportQueries = (isSuperAdmin = false) => {
   const endpoint =
     isSuperAdmin ? 'vendor-support-query/all' : 'vendor-support-query'
-  const { data, error } = useFetchAuth(endpoint)
-  return { data: Array.isArray(data) ? data : data?.data || [], error }
+  const { data, error, isLoading } = useFetchAuth(endpoint)
+
+  const processedData = Array.isArray(data) ? data : data?.data || []
+
+  return { data: processedData, error, isLoading }
 }
 
 export const useVendorSupportQuery = (queryId) => {
@@ -17,10 +20,7 @@ export const createVendorSupportQuery = async (data, token) => {
     const response = await authRequest('vendor-support-query/', {
       method: 'POST',
       data,
-      headers: {
-        Authorization: `Bearer ${token}`,
-        'Content-Type': 'application/json',
-      },
+      token,
     })
     return response
   } catch (error) {
@@ -37,27 +37,17 @@ export const createVendorSupportQuery = async (data, token) => {
   }
 }
 
-// not used
-export const updateVendorSupportQuery = async (queryId, data, token) => {
-  return authRequest(`vendor-support-query/${queryId}`, {
-    method: 'PUT',
-    data,
-    headers: { Authorization: `Bearer ${token}` },
-  })
-}
-
-// not used
 export const deleteVendorSupportQuery = async (queryId, token) => {
   return authRequest(`vendor-support-query/${queryId}`, {
     method: 'DELETE',
-    headers: { Authorization: `Bearer ${token}` },
+    token,
   })
 }
 
-export const addMessageToVendorSupportQuery = async (queryId, data, token) => {
-  return authRequest(`vendor-support-query/${queryId}`, {
+export const sendMessage = async (messageData, token) => {
+  return authRequest('vendor-support-query/message', {
     method: 'POST',
-    data,
-    headers: { Authorization: `Bearer ${token}` },
+    data: messageData,
+    token,
   })
 }

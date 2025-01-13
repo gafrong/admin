@@ -86,6 +86,7 @@ const config = {
     async jwt({ token, user, trigger, session }) {
       if (user) {
         token.user = user.user
+        // store the user token taken from the backend and store it in the session
         token.token = user.token
       }
       // ***************************************************************

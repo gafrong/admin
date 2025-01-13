@@ -7,21 +7,20 @@ import React from 'react'
 import ListVendorSupportQueries from './_components/list'
 
 export default function ListVendorSupportQueryPage() {
-  const { data: session, status } = useSession()
+  const { status } = useSession()
   const router = useRouter()
 
   React.useEffect(() => {
-    if (status === 'loading') return
-    if (!session) {
+    if (status === 'unauthenticated') {
       router.push('/') // Redirect to home if not logged in
     }
-  }, [session, status, router])
+  }, [status, router])
 
   if (status === 'loading') {
     return <div>Loading...</div>
   }
 
-  if (!session) {
+  if (status === 'unauthenticated') {
     return null // This will prevent any flash of content before redirect
   }
 

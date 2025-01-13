@@ -4,9 +4,9 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { ScrollArea } from '@/components/ui/scroll-area'
 import { getInitials } from '@/lib/utils'
 import { useEffect, useRef } from 'react'
-import { formatChatMessageTime } from './chat-utils'
+import { formatChatMessageTime } from '../utils/chat-utils'
 
-export function ChatMessages({ messages, currentUserId }) {
+export function ChatMessages({ messages, currentUserId, initialQuery }) {
   const scrollAreaRef = useRef(null)
 
   useEffect(() => {
@@ -22,37 +22,36 @@ export function ChatMessages({ messages, currentUserId }) {
 
   if (!messages || messages.length === 0) {
     return (
-      <ScrollArea className="flex-1 p-4" ref={scrollAreaRef}>
+      <ScrollArea className="flex-1 px-4" ref={scrollAreaRef}>
         <p className="text-center text-muted-foreground">No messages yet.</p>
       </ScrollArea>
     )
   }
 
+  const formattedTime = (time) =>
+    time ? formatChatMessageTime(time) : 'Just now'
+
   return (
-    <ScrollArea className="flex-1 p-4" ref={scrollAreaRef}>
+    <ScrollArea className="flex-1 bg-muted px-4" ref={scrollAreaRef}>
       {messages.map((message, index) => {
-        // Skip rendering if essential data is missing
         if (!message.content || !message.sender) {
           return null
         }
 
-        const senderId = message.sender?._id
-        const isOutgoing =
-          senderId ? String(senderId) === String(currentUserId) : true
+        const senderParticipant = initialQuery.participants.find(
+          (p) => p.user?._id === message.sender?._id,
+        )
+        const senderImage = senderParticipant?.user?.image
+        const isOutgoing = String(message.sender?._id) === String(currentUserId)
 
         return (
           <Message
-            className="mb-4 last:mb-0"
             content={message.content}
-            image={message.sender?.image}
+            image={senderImage}
             isOutgoing={isOutgoing}
             key={message._id || index}
             sender={message.sender?.name || 'You'}
-            time={
-              message.timestamp ?
-                formatChatMessageTime(message.timestamp)
-              : 'Just now'
-            }
+            time={formattedTime(message.timestamp)}
           />
         )
       })}
@@ -62,6 +61,11 @@ export function ChatMessages({ messages, currentUserId }) {
 
 function Message({ sender, content, image, time, isOutgoing, className }) {
   const imgSrc = image ? awsURL + image : IMG.defaultProfile
+
+  const incomingMessageStyles =
+    'mb-4 max-w-[65%] rounded-3xl border border-gray-300 p-3 px-5 text-sm shadow-sm rounded-bl-none bg-white'
+  const outgoingMessageStyles =
+    'mb-4 max-w-[65%] rounded-3xl border border-gray-300 p-3 px-5 text-sm shadow-sm rounded-br-none bg-[#DCF7C5]'
 
   return (
     <div
@@ -76,13 +80,13 @@ function Message({ sender, content, image, time, isOutgoing, className }) {
         </Avatar>
       )}
       <div
-        className={`max-w-[65%] rounded-lg p-3 text-sm ${
-          isOutgoing ? 'bg-primary text-primary-foreground' : 'bg-muted'
-        }`}
+        className={isOutgoing ? outgoingMessageStyles : incomingMessageStyles}
       >
         {content}
       </div>
-      <div className="text-xs text-muted-foreground">{time}</div>
+      {content !== '...' && (
+        <div className="text-xs text-muted-foreground">{time}</div>
+      )}
     </div>
   )
 }

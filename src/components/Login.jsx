@@ -16,6 +16,7 @@ const Login = () => {
   const router = useRouter()
 
   const handleSubmit = async (e) => {
+    console.log('Login form submitted')
     setIsLoading(true)
     e.preventDefault()
     if (!email || !password) {
@@ -31,17 +32,13 @@ const Login = () => {
           password,
           redirect: true,
         })) || {}
-      console.log('Login response:', response)
-      if (response.error) {
-        console.error('Login page signIn error:', { response })
-        setError(response.error)
-        setIsLoading(false)
-        return
-      }
 
-      if (!response.ok) {
-        console.error('Login failed:', { response })
-        setError('Login failed. Please try again.')
+      if (!response) {
+        console.log('waiting for signin')
+      } else if (response.error) {
+        console.error('response error')
+        setError('Login failed. Please check your credentials and try again.')
+        setIsLoading(false)
         return
       }
 
@@ -56,13 +53,18 @@ const Login = () => {
         console.log('user is authenticated')
         router.push('/onboarding')
       } else {
-        console.log('Unexpected state:', { user, status })
+        console.log('Unexpected state:', { user, status, response })
         setError('An unexpected error occurred. Please try again.')
       }
     } catch (error) {
       console.error('Login error:', error)
+      console.error('Login error details:', {
+        name: error.name,
+        message: error.message,
+        stack: error.stack,
+      })
       setError(
-        error.message || 'An unexpected error occurred. Please try again.',
+        'An unexpected error occurred. Please try again later or contact support.',
       )
     } finally {
       setIsLoading(false)
@@ -124,7 +126,8 @@ const Login = () => {
             </div>
             {error && (
               <div>
-                <p className="text-red-600">
+                <p className="text-red-600">{error}</p>
+                <p className="mt-2 text-sm text-gray-500">
                   로그인에 문제가 있습니다. 다시 시도해보세요
                 </p>
               </div>

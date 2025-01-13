@@ -2,6 +2,7 @@
 
 import { useVendorSupportQueries } from '@/app/messages/vendor-support-query/api'
 import { DataTable } from '@/components/data-table/data-table'
+import { isSuperAdmin } from '@/utils/user-utils'
 import { useSession } from 'next-auth/react'
 import React from 'react'
 import { controls, getColumns } from '../_components/columns'
@@ -17,15 +18,14 @@ const queryTypes = [
 
 export default function SuperuserList() {
   const { data: session } = useSession()
-  const isSuperAdmin = session?.user?.role === 'superAdmin'
 
   const {
     data: queries,
     isLoading,
     mutate: refetchQueries,
-  } = useVendorSupportQueries(isSuperAdmin)
+  } = useVendorSupportQueries(isSuperAdmin(session?.user))
 
-  const columns = getColumns()
+  const columns = getColumns({ showUser: true })
 
   const superuserControls = {
     ...controls,

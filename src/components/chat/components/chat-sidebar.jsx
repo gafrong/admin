@@ -8,11 +8,11 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { ScrollArea } from '@/components/ui/scroll-area'
 import { getInitials } from '@/lib/utils'
+import { isSuperAdmin } from '@/utils/user-utils'
 import { Plus as PlusIcon, Search as SearchIcon } from 'lucide-react'
-import { useSession } from 'next-auth/react'
 import Link from 'next/link'
 import { useMemo, useState } from 'react'
-import { formatChatMessageTime } from './chat-utils'
+import { formatChatMessageTime } from '../utils/chat-utils'
 
 const SearchInput = ({ searchQuery, setSearchQuery }) => {
   return (
@@ -44,11 +44,10 @@ const Empty = () => {
   return <p className="text-sm text-muted-foreground">No queries available.</p>
 }
 
-export function ChatSidebar() {
-  const { data: session } = useSession()
-  const isSuperAdmin = session?.user?.role === 'superAdmin'
-
-  const { data: queries, isLoading } = useVendorSupportQueries(isSuperAdmin)
+export function ChatSidebar({ user }) {
+  const { data: queries, isLoading } = useVendorSupportQueries(
+    isSuperAdmin(user),
+  )
 
   const [searchQuery, setSearchQuery] = useState('')
 
@@ -56,12 +55,12 @@ export function ChatSidebar() {
     if (!queries) return []
     return queries.filter(
       (query) =>
-        query.messages[0].content
+        query.messages[0]?.content
           .toLowerCase()
           .includes(searchQuery.toLowerCase()) ||
-        query.participants[0]?.name
-          .toLowerCase()
-          .includes(searchQuery.toLowerCase()),
+        query.participants[0]?.user?.name
+          ?.toLowerCase()
+          ?.includes(searchQuery.toLowerCase()),
     )
   }, [queries, searchQuery])
 
@@ -84,13 +83,9 @@ export function ChatSidebar() {
               <ChatItem
                 key={query._id}
                 id={query._id}
-                name={query.participants[0]?.name || 'Unknown User'}
-                image={query.participants[0]?.image}
-                message={
-                  query.messages && query.messages.length > 0 ?
-                    query.messages[0].content
-                  : 'No messages'
-                }
+                name={query.participants[0]?.user?.name || 'Unknown User'}
+                image={query.participants[0]?.user?.image}
+                message={query.messages?.[0]?.content || 'No messages'}
                 time={formatChatMessageTime(
                   query.lastMessageAt || query.createdAt,
                 )}
@@ -109,14 +104,13 @@ const ProfileImageSideBar = ({ image, name }) => {
   return (
     <Avatar className="h-10 w-10 border">
       <AvatarImage src={image} alt={name} />
-      <AvatarFallback>UN</AvatarFallback>
+      <AvatarFallback>{initials}</AvatarFallback>
     </Avatar>
   )
-  return
 }
 
 function ChatItem({ id, name, image, message, time, queryType }) {
-  const imgSrc = image ? awsURL + image : IMG.defaultProfile
+  const imgSrc = image ? `${awsURL}${image}` : IMG.defaultProfile
 
   return (
     <Link

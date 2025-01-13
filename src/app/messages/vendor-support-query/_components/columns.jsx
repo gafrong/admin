@@ -1,7 +1,9 @@
-import { ProfileMini } from '@/app/superuser/users/page'
+import awsURL from '@/assets/common/awsUrl'
+import { IMG } from '@/assets/common/urls'
 import { ButtonSortable } from '@/components/data-table/data-table-button-sorting'
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { Badge } from '@/components/ui/badge'
-import { ifDate } from '@/lib/utils'
+import { getInitials, ifDate } from '@/lib/utils'
 import Link from 'next/link'
 
 // Table filters
@@ -15,7 +17,7 @@ const filterFirstMessageContent = (row, id, value) => {
 const filterUser = (row, id, value) => {
   const participants = row.original.participants
   if (participants && participants.length > 0) {
-    const user = participants[0]
+    const user = participants[0].user
     return (
       (user?.name && user.name.toLowerCase().includes(value.toLowerCase())) ||
       (user?.email && user.email.toLowerCase().includes(value.toLowerCase()))
@@ -49,8 +51,20 @@ const HeaderLastMessageTime = ({ column }) => (
 // Table Components: Cell
 // -----------------------------------------------------------------------------
 export const CellUser = ({ row }) => {
-  const user = row?.original?.participants[0] || {}
-  return <ProfileMini user={user} />
+  const user = row?.original?.participants[0]?.user || {}
+  const name = user.name || 'Unknown User'
+  const imgSrc = user.image ? `${awsURL}${user.image}` : IMG.defaultProfile
+  const initials = getInitials(name)
+
+  return (
+    <div className="flex items-center space-x-2">
+      <Avatar className="h-8 w-8 border">
+        <AvatarImage src={imgSrc} alt={name} />
+        <AvatarFallback>{initials}</AvatarFallback>
+      </Avatar>
+      <span>{name}</span>
+    </div>
+  )
 }
 
 const cellQueryType = ({ row }) => (
@@ -94,46 +108,49 @@ const cellActions = ({ row }) => (
   </Link>
 )
 
-export const getColumns = () => [
-  {
-    accessorKey: 'participants',
-    cell: CellUser,
-    filterFn: filterUser,
-    header: 'User',
-    id: 'user',
-  },
-  {
-    accessorKey: 'queryType',
-    cell: cellQueryType,
-    filterFn: filterQueryType,
-    header: HeaderQueryType,
-    id: 'queryType',
-  },
-  {
-    accessorKey: 'messageCount',
-    cell: cellMessageCount,
-    header: HeaderMessageCount,
-    id: 'messageCount',
-  },
-  {
-    accessorKey: 'firstMessageContent',
-    cell: cellFirstMessageContent,
-    filterFn: filterFirstMessageContent,
-    header: HeaderFirstMessage,
-    id: 'firstMessageContent',
-  },
-  {
-    accessorKey: 'lastMessageAt',
-    cell: cellLastMessageAt,
-    header: HeaderLastMessageTime,
-    id: 'lastMessageTime',
-  },
-  {
-    cell: cellActions,
-    header: 'Actions',
-    id: 'actions',
-  },
-]
+export const getColumns = (options = { showUser: false }) =>
+  [
+    options.showUser ?
+      {
+        accessorKey: 'participants',
+        cell: CellUser,
+        filterFn: filterUser,
+        header: 'User',
+        id: 'user',
+      }
+    : null,
+    {
+      accessorKey: 'queryType',
+      cell: cellQueryType,
+      filterFn: filterQueryType,
+      header: HeaderQueryType,
+      id: 'queryType',
+    },
+    {
+      accessorKey: 'messageCount',
+      cell: cellMessageCount,
+      header: HeaderMessageCount,
+      id: 'messageCount',
+    },
+    {
+      accessorKey: 'firstMessageContent',
+      cell: cellFirstMessageContent,
+      filterFn: filterFirstMessageContent,
+      header: HeaderFirstMessage,
+      id: 'firstMessageContent',
+    },
+    {
+      accessorKey: 'lastMessageAt',
+      cell: cellLastMessageAt,
+      header: HeaderLastMessageTime,
+      id: 'lastMessageTime',
+    },
+    {
+      cell: cellActions,
+      header: 'Actions',
+      id: 'actions',
+    },
+  ].filter(Boolean)
 
 export const controls = {
   isSearchAlwaysShown: true,
