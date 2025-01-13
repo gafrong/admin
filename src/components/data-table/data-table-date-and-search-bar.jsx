@@ -11,29 +11,40 @@ const SearchBarRadioItems = ({
   handleSearchChange,
   searchableColumnHeaders,
 }) => {
+  if (!searchableColumnHeaders?.length || !searchableColumnHeaders[0]?.id) {
+    console.warn(
+      'SearchBarRadioItems: searchableColumnHeaders must not be empty and must have an id',
+    )
+    return null
+  }
+
   return (
     <RadioGroup
       className="flex w-full flex-wrap gap-8 rounded-md p-4"
-      defaultValue={searchableColumnHeaders?.[0]}
-      onValueChange={handleSearchChange}
+      defaultValue={searchableColumnHeaders[0].id}
+      onValueChange={(id) =>
+        handleSearchChange(searchableColumnHeaders.find((h) => h.id === id))
+      }
     >
       {searchableColumnHeaders?.map((header) => (
         <div
           className="flex items-center space-x-2 whitespace-nowrap"
           key={header.id}
         >
-          <RadioGroupItem value={header} id={header.id} />
+          <RadioGroupItem value={header.id} id={header.id} />
           <Label htmlFor={header.id}>{header.label}</Label>
         </div>
       ))}
     </RadioGroup>
   )
 }
+
 export const DateAndSearchBar = ({
   controls,
   getSearchPlaceHolder,
   handleSearchUpdate,
   isSearchBarOpen,
+  onResetRef,
   searchableColumnHeaders,
   setSearchColumn,
   table,
@@ -46,6 +57,12 @@ export const DateAndSearchBar = ({
   isRendered = controls?.isDateAndSearchBarHidden ? false : isRendered
 
   const resetRef = React.useRef(null)
+
+  React.useEffect(() => {
+    if (onResetRef) {
+      onResetRef.current = () => resetRef.current?.()
+    }
+  }, [onResetRef])
 
   const handleSearchChange = (header) => {
     searchableColumnHeaders.forEach((column) => {

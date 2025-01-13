@@ -144,6 +144,8 @@ export function DataTable({
   const isNoData = !isDataLoaded && !isLoading
   const isBooleanOrColumnsFilterActive =
     controls?.columnVisibilityToggles || controls?.columnBooleanFilterToggle
+  const searchResetRef = React.useRef(null)
+
   return (
     <div className={cn('w-full space-y-4', className)}>
       <DateAndSearchBar
@@ -151,6 +153,7 @@ export function DataTable({
         getSearchPlaceHolder={getSearchPlaceHolder}
         handleSearchUpdate={handleSearchUpdate}
         isSearchBarOpen={isSearchBarOpen}
+        onResetRef={searchResetRef}
         searchableColumnHeaders={searchableColumnHeaders}
         searchColumn={searchColumn}
         setSearchColumn={setSearchColumn}
@@ -166,6 +169,7 @@ export function DataTable({
           orderItemIds={rowSelectionIds}
           refetchTableData={refetchTableData}
           rowSelectionIds={rowSelectionIds}
+          searchResetRef={searchResetRef}
           setIsSearchBarOpen={setIsSearchBarOpen}
           table={table}
           useSelectedCategory={useSelectedCategory}

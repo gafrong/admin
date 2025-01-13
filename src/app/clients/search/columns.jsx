@@ -14,11 +14,20 @@ export const searchableColumnHeaders = [
   { id: 'phone', label: 'Phone #' },
 ]
 
-const filterEmail = (row, id, value) => row.original.email.includes(value)
-const filterPhone = (row, id, value) => row.original.phone.includes(value)
-const filterId = (row, id, value) => row.original._id.includes(value)
-const filterUserName = (row, id, value) => row.original.username.includes(value)
-const filterName = (row, id, value) => row.original.name.includes(value)
+const filterEmail = (row, id, value) =>
+  row.original.email?.toLowerCase().includes(value.toLowerCase())
+
+const filterPhone = (row, id, value) =>
+  row.original.phone?.toLowerCase().includes(value.toLowerCase())
+
+const filterId = (row, id, value) =>
+  row.original._id?.toLowerCase().includes(value.toLowerCase())
+
+const filterUserName = (row, id, value) =>
+  row.original.username?.toLowerCase().includes(value.toLowerCase())
+
+const filterName = (row, id, value) =>
+  row.original.name?.toLowerCase().includes(value.toLowerCase())
 
 // Table components
 // -----------------------------------------------------------------------------

@@ -15,15 +15,13 @@ const filterFirstMessageContent = (row, id, value) => {
 }
 
 const filterUser = (row, id, value) => {
-  const participants = row.original.participants
-  if (participants && participants.length > 0) {
-    const user = participants[0].user
-    return (
-      (user?.name && user.name.toLowerCase().includes(value.toLowerCase())) ||
-      (user?.email && user.email.toLowerCase().includes(value.toLowerCase()))
-    )
-  }
-  return false
+  const user = row.original.participants?.[0]?.user
+  const searchValue = value.toLowerCase()
+
+  return (
+    user?.name?.toLowerCase()?.includes(searchValue) ||
+    user?.username?.toLowerCase()?.includes(searchValue)
+  )
 }
 
 const filterQueryType = (row, id, value) => {
@@ -53,6 +51,7 @@ const HeaderLastMessageTime = ({ column }) => (
 export const CellUser = ({ row }) => {
   const user = row?.original?.participants[0]?.user || {}
   const name = user.name || 'Unknown User'
+  const username = user.username || 'No Username'
   const imgSrc = user.image ? `${awsURL}${user.image}` : IMG.defaultProfile
   const initials = getInitials(name)
 
@@ -62,7 +61,10 @@ export const CellUser = ({ row }) => {
         <AvatarImage src={imgSrc} alt={name} />
         <AvatarFallback>{initials}</AvatarFallback>
       </Avatar>
-      <span>{name}</span>
+      <div className="flex flex-col">
+        <span className="text-sm font-medium">{name}</span>
+        <span className="text-xs text-gray-500">@{username}</span>
+      </div>
     </div>
   )
 }
@@ -108,18 +110,16 @@ const cellActions = ({ row }) => (
   </Link>
 )
 
-export const getColumns = (options = { showUser: false }) =>
+export const getColumns = (options = { isSuperAdminView: false }) =>
   [
-    options.showUser ?
-      {
-        accessorKey: 'participants',
-        cell: CellUser,
-        filterFn: filterUser,
-        header: 'User',
-        id: 'user',
-      }
-    : null,
-    {
+    options.isSuperAdminView && {
+      accessorKey: 'participants',
+      cell: CellUser,
+      filterFn: filterUser,
+      header: 'User',
+      id: 'user',
+    },
+    options.isSuperAdminView && {
       accessorKey: 'queryType',
       cell: cellQueryType,
       filterFn: filterQueryType,

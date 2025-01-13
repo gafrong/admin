@@ -25,7 +25,7 @@ export default function SuperuserList() {
     mutate: refetchQueries,
   } = useVendorSupportQueries(isSuperAdmin(session?.user))
 
-  const columns = getColumns({ showUser: true })
+  const columns = getColumns({ isSuperAdminView: true })
 
   const superuserControls = {
     ...controls,
@@ -37,7 +37,6 @@ export default function SuperuserList() {
     searchableColumnHeaders: [
       { id: 'firstMessageContent', label: 'Query' },
       { id: 'user', label: 'User' },
-      { id: 'queryType', label: 'Query Type' },
     ],
   }
 
