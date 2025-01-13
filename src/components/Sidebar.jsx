@@ -25,7 +25,7 @@ import {
 
 const Sidebar = () => {
   const { data: session } = useSession()
-  if (!session?.user?.isAdmin || !isSuperAdmin(session?.user)) return null
+  if (!session?.user?.isAdmin && !isSuperAdmin(session?.user)) return null
   return (
     <div className="fixed z-10 m-0 mt-20 h-full w-40 overflow-auto border-r border-slate-300 bg-white p-0">
       <Link
