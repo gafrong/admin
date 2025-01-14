@@ -4,6 +4,7 @@ import { ButtonSortable } from '@/components/data-table/data-table-button-sortin
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { Badge } from '@/components/ui/badge'
 import { getInitials, ifDate } from '@/lib/utils'
+import cn from 'classnames'
 import Link from 'next/link'
 
 // Table filters
@@ -50,13 +51,20 @@ const HeaderLastMessageTime = ({ column }) => (
 // -----------------------------------------------------------------------------
 export const CellUser = ({ row }) => {
   const user = row?.original?.participants[0]?.user || {}
+  const messages = row.original.messages
+  const lastMessage = messages[messages.length - 1]
+  const needsReply = lastMessage?.sender?.role === 'admin'
+
   const name = user.name || 'Unknown User'
   const username = user.username || 'No Username'
   const imgSrc = user.image ? `${awsURL}${user.image}` : IMG.defaultProfile
   const initials = getInitials(name)
 
   return (
-    <div className="flex items-center space-x-2">
+    <div className="relative flex items-center gap-2">
+      {needsReply && (
+        <div className="absolute -bottom-4 -left-4 -top-4 w-1 bg-red-500" />
+      )}
       <Avatar className="h-8 w-8 border">
         <AvatarImage src={imgSrc} alt={name} />
         <AvatarFallback>{initials}</AvatarFallback>
@@ -131,6 +139,7 @@ export const getColumns = (options = { isSuperAdminView: false }) =>
       cell: cellMessageCount,
       header: HeaderMessageCount,
       id: 'messageCount',
+      size: 50,
     },
     {
       accessorKey: 'firstMessageContent',
@@ -143,12 +152,12 @@ export const getColumns = (options = { isSuperAdminView: false }) =>
       accessorKey: 'lastMessageAt',
       cell: cellLastMessageAt,
       header: HeaderLastMessageTime,
-      id: 'lastMessageTime',
+      id: 'lastMessageAt',
     },
     {
-      cell: cellActions,
-      header: 'Actions',
       id: 'actions',
+      cell: cellActions,
+      size: 50,
     },
   ].filter(Boolean)
 

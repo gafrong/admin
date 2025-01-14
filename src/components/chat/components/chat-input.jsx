@@ -9,7 +9,7 @@ import {
 import { useSession } from 'next-auth/react'
 import { useEffect, useRef, useState } from 'react'
 
-export const ChatInput = ({ roomId, user, refetchQuery }) => {
+export const ChatInput = ({ roomId, user, refetchQueries }) => {
   const [inputMessage, setInputMessage] = useState('')
   const textareaRef = useRef(null)
   const { data: session } = useSession()
@@ -35,7 +35,7 @@ export const ChatInput = ({ roomId, user, refetchQuery }) => {
 
       await sendMessage(messageData, session?.token)
       setInputMessage('')
-      refetchQuery()
+      refetchQueries()
     }
   }
 
@@ -44,10 +44,6 @@ export const ChatInput = ({ roomId, user, refetchQuery }) => {
       e.preventDefault()
       handleSendMessage()
     }
-  }
-
-  const refreshMessages = async () => {
-    await refetchQuery()
   }
 
   return (
@@ -75,7 +71,7 @@ export const ChatInput = ({ roomId, user, refetchQuery }) => {
         <span className="sr-only">Send</span>
       </Button>
 
-      <Button size="icon" onClick={refreshMessages}>
+      <Button size="icon" onClick={refetchQueries}>
         <RefreshCcw className="h-5 w-5" />
         <span className="sr-only">Refresh</span>
       </Button>

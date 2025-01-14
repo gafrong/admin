@@ -1,5 +1,7 @@
 'use client'
 
+import { useVendorSupportQueries } from '@/app/messages/vendor-support-query/api'
+import { isSuperAdmin } from '@/utils/user-utils'
 import React from 'react'
 import { ChatHeader } from './components/chat-header'
 import { ChatInput } from './components/chat-input'
@@ -10,6 +12,7 @@ export function Chat({ initialQuery, refetchQuery, session }) {
   const { messages, _id: queryId, participants } = initialQuery
   const { user = {} } = session || {}
   const userId = user?._id
+  const { mutate: refetchQueries } = useVendorSupportQueries(isSuperAdmin(user))
 
   return (
     <div className="mx-auto flex h-[calc(100vh-80px)] w-full">
@@ -25,7 +28,11 @@ export function Chat({ initialQuery, refetchQuery, session }) {
           messages={messages}
           initialQuery={initialQuery}
         />
-        <ChatInput refetchQuery={refetchQuery} roomId={queryId} user={user} />
+        <ChatInput
+          roomId={queryId}
+          user={user}
+          refetchQueries={refetchQueries}
+        />
       </div>
     </div>
   )

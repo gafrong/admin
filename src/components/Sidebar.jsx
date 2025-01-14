@@ -1,5 +1,6 @@
 'use client'
 
+import { useVendorSupportQueries } from '@/app/messages/vendor-support-query/api'
 import {
   Accordion,
   AccordionContent,
@@ -22,9 +23,13 @@ import {
   FiUsers,
   FiVideo,
 } from 'react-icons/fi'
+import UnreadBadge from './UnreadBadge'
 
 const Sidebar = () => {
   const { data: session } = useSession()
+  const { unreadCount, mutate: refetchQueries } = useVendorSupportQueries(
+    isSuperAdmin(session?.user),
+  )
   if (!session?.user?.isAdmin && !isSuperAdmin(session?.user)) return null
   return (
     <div className="fixed z-10 m-0 mt-20 h-full w-40 overflow-auto border-r border-slate-300 bg-white p-0">
@@ -230,6 +235,7 @@ const Sidebar = () => {
               <div className="flex flex-row">
                 <FiSettings className="mr-2 mt-1" />
                 <div>Superuser</div>
+                <UnreadBadge count={unreadCount} />
               </div>
             </AccordionTrigger>
             <AccordionContent>
@@ -247,9 +253,10 @@ const Sidebar = () => {
               </Link>
               <Link
                 href="/messages/vendor-support-query/superuser"
-                className="flex flex-col pb-3 pl-3 pt-3 hover:bg-slate-200"
+                className="flex flex-row items-center pb-3 pl-3 pt-3 hover:bg-slate-200"
               >
-                vendor queries
+                <span>vendor queries</span>
+                <UnreadBadge count={unreadCount} />
               </Link>
             </AccordionContent>
           </AccordionItem>
