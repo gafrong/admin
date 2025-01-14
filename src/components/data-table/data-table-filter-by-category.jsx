@@ -94,6 +94,7 @@ export function DataTableFilterByCategory({
   setIsSearchBarOpen,
   table,
   useSelectedCategory,
+  searchResetRef,
 }) {
   const [value, setValue] = useSelectedCategory
   const column = table.getColumn(categoryHeader)
@@ -108,6 +109,11 @@ export function DataTableFilterByCategory({
     setValue(value)
     const newValue = value === 'All' ? undefined : value
     column?.setFilterValue(String(newValue))
+
+    // Reset search when filter is set to "All"
+    if (value === 'All' && searchResetRef?.current) {
+      searchResetRef.current()
+    }
   }
 
   function getAdjacentStatuses(currentStatus, statuses) {

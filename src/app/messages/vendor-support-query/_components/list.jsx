@@ -18,10 +18,7 @@ export default function List() {
 
   const listControls = {
     ...controls,
-    searchableColumnHeaders: [
-      { id: 'firstMessageContent', label: 'Query' },
-      { id: 'queryType', label: 'Query Type' },
-    ],
+    searchableColumnHeaders: [{ id: 'firstMessageContent', label: 'Query' }],
   }
 
   return (
