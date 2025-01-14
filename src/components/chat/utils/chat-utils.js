@@ -1,3 +1,5 @@
+import { format } from 'date-fns'
+
 export function formatChatMessageTime(timestamp) {
   const messageDate = new Date(timestamp)
   const now = new Date()
@@ -17,4 +19,9 @@ export function formatChatMessageTime(timestamp) {
       day: 'numeric',
     })
   }
+}
+
+export function formatTableDate(timestamp) {
+  if (!timestamp) return 'no date'
+  return format(new Date(timestamp), 'yyyy.MM.dd')
 }

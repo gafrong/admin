@@ -1,17 +1,14 @@
 'use client'
 
-import awsURL from '@/assets/common/awsUrl'
-import { IMG } from '@/assets/common/urls'
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { Badge } from '@/components/ui/badge'
-import { getInitials } from '@/lib/utils'
-import { isSuperAdmin } from '@/utils/user-utils'
+import { hasSuperAdminRole } from '@/utils/user-utils'
 import { signOut, useSession } from 'next-auth/react'
 import Image from 'next/image'
 import Link from 'next/link'
 import React from 'react'
 import { FiBell, FiSettings } from 'react-icons/fi'
 import { Button } from './ui/button'
+import { UserAvatar } from './user-avatar'
 
 const AdminBadge = () => (
   <Badge variant="secondary" className="ml-2">
@@ -23,13 +20,12 @@ const Navbar = () => {
   const { data: session, status } = useSession()
   const isLoading = status === 'loading'
   const user = session?.user
-  const image = user?.image
+  const isSuperAdmin = hasSuperAdminRole(user)
 
   const handleSignOut = async () => {
     await signOut({ callbackUrl: `/` })
   }
 
-  const initials = getInitials(user?.name || user?.username)
   return (
     <div className="fixed z-30 flex h-20 w-full items-center justify-between border-b border-t-transparent  bg-white py-4">
       <Link href="/" className="">
@@ -51,19 +47,16 @@ const Navbar = () => {
             Sign out
           </Button>
 
-          {isSuperAdmin(user) && <AdminBadge />}
+          {isSuperAdmin && <AdminBadge />}
 
           <Link href="/profile">
-            <Avatar className="h-[30px] w-[30px]">
-              <AvatarImage src={image ? awsURL + image : IMG.defaultProfile} />
-              <AvatarFallback>{initials || '?'}</AvatarFallback>
-            </Avatar>
+            <UserAvatar image={user?.image} name={user?.name} />
           </Link>
 
           <Link href="#">
             <FiBell />
           </Link>
-          <Link href="/setting">
+          <Link href="/settings">
             <FiSettings />
           </Link>
         </div>

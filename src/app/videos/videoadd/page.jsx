@@ -1,6 +1,5 @@
 'use client'
 
-import { protectRoute } from '@/app/(auth)/_components/protect-route'
 import awsURL from '@/assets/common/awsUrl'
 import baseURL from '@/assets/common/baseUrl'
 import LoadingSpinner from '@/components/LoadingSpinner'
@@ -358,4 +357,4 @@ function Page() {
   )
 }
 
-export default protectRoute(Page, 'videoadd')
+export default Page

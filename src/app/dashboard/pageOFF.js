@@ -1,20 +1,25 @@
 'use client'
 
+import { useFetchAuth } from '@/app/fetch/use-fetch-auth'
 import awsURL from '@/assets/common/awsUrl'
-import baseURL from '@/assets/common/baseUrl'
 import LoadingSpinner from '@/components/LoadingSpinner'
-import axios from 'axios'
 import { useSession } from 'next-auth/react'
-import { useEffect, useState } from 'react'
 import { v4 as uuidv4 } from 'uuid'
-import { protectRoute } from '../(auth)/_components/protect-route'
 
 function classNames(...classes) {
   return classes.filter(Boolean).join(' ')
 }
+
 function Page() {
-  const [loading, setLoading] = useState(false)
-  const [totalSales, setTotalSales] = useState({})
+  const { data: session } = useSession()
+  const userId = session?.user?.id
+
+  const {
+    data: totalSales,
+    error,
+    isLoading,
+  } = useFetchAuth(userId ? `orders/seller/${userId}/totalSales` : null)
+
   const today = totalSales?.totalDailySale
   const yday = totalSales?.totalPreviousDaySale
   const twoDaysAgo = totalSales?.totalDayBeforeYesterdaySale
@@ -24,10 +29,6 @@ function Page() {
   const sixDaysAgo = totalSales?.totalPrevious6DaySale
   const weeklySale = totalSales?.totalWeeklySale
   const monthlySale = totalSales?.totalMonthlySale
-
-  const { data: session } = useSession()
-  const { token, user } = session || {}
-  const userId = user?._id
 
   const stats = [
     {
@@ -52,31 +53,18 @@ function Page() {
     },
   ]
 
-  useEffect(() => {
-    if (!userId) {
-      return
-    }
-    setLoading(true)
-    axios
-      .get(`${baseURL}orders/seller/${userId}/totalSales`, {
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${token}`,
-        },
-      })
-      .then((res) => {
-        setTotalSales(res.data)
-        setLoading(false)
-      })
-      .catch((error) => {
-        console.log('서버 연결에 문제가 있습니다:', error.message)
-        setLoading(false)
-      })
-  }, [userId, token])
+  if (!userId) {
+    console.log('No user ID available')
+    return null
+  }
+
+  if (error) {
+    console.log('서버 연결에 문제가 있습니다:', error.message)
+  }
 
   return (
     <>
-      {loading ?
+      {isLoading ?
         <LoadingSpinner />
       : <main>
           <div className="relative isolate overflow-hidden">
@@ -252,4 +240,4 @@ function Page() {
   )
 }
 
-export default protectRoute(Page, 'dashboard')
+export default Page

@@ -1,38 +1,22 @@
 'use client'
 
-import { useVendorSupportQueries } from '@/app/messages/vendor-support-query/api'
-import { isSuperAdmin } from '@/utils/user-utils'
-import React from 'react'
-import { ChatHeader } from './components/chat-header'
 import { ChatInput } from './components/chat-input'
 import { ChatMessages } from './components/chat-messages'
-import { ChatSidebar } from './components/chat-sidebar'
+import { QuestionHeader } from './components/question-header'
 
-export function Chat({ initialQuery, refetchQuery, session }) {
-  const { messages, _id: queryId, participants } = initialQuery
+export function Chat({ superadminQuestion, onMessageSent, session }) {
+  const { answers, _id } = superadminQuestion
   const { user = {} } = session || {}
-  const userId = user?._id
-  const { mutate: refetchQueries } = useVendorSupportQueries(isSuperAdmin(user))
 
   return (
-    <div className="mx-auto flex h-[calc(100vh-80px)] w-full">
-      <ChatSidebar user={user} />
-      <div className="flex flex-1 flex-col">
-        <ChatHeader
-          participants={participants}
-          queryId={queryId}
+    <div className="h-[calc(100vh-80px)] w-full">
+      <div className="flex flex-1 flex-col gap-4">
+        <QuestionHeader
+          superadminQuestion={superadminQuestion}
           session={session}
         />
-        <ChatMessages
-          currentUserId={userId}
-          messages={messages}
-          initialQuery={initialQuery}
-        />
-        <ChatInput
-          roomId={queryId}
-          user={user}
-          refetchQueries={refetchQueries}
-        />
+        <ChatMessages messages={answers} />
+        <ChatInput questionId={_id} user={user} onMessageSent={onMessageSent} />
       </div>
     </div>
   )

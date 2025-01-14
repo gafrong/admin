@@ -1,6 +1,5 @@
 'use client'
 
-import { protectRoute } from '@/app/(auth)/_components/protect-route'
 import { useFetchAuth } from '@/app/fetch/use-fetch-auth'
 import baseURL from '@/assets/common/baseUrl'
 import { DataTable } from '@/components/data-table/data-table'
@@ -50,4 +49,4 @@ function Page() {
   )
 }
 
-export default protectRoute(Page, 'videomanage')
+export default Page

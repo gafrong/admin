@@ -1,30 +1,27 @@
 'use client'
 
-import { useVendorSupportQueries } from '@/app/messages/vendor-support-query/api'
+import { useSuperadminQuestions } from '@/app/messages/superadmin-questions/api'
 import { DataTable } from '@/components/data-table/data-table'
+import { hasSuperAdminRole } from '@/utils/user-utils'
 import { useSession } from 'next-auth/react'
-import React from 'react'
 import { controls, getColumns } from './columns'
 
-export default function List() {
+export function SuperadminQuestionList() {
   const { data: session } = useSession()
+  const isSuperAdmin = hasSuperAdminRole(session?.user)
   const {
     data: queries,
+    error,
     isLoading,
     mutate: refetchQueries,
-  } = useVendorSupportQueries(session?.user?.id)
+  } = useSuperadminQuestions(isSuperAdmin)
 
-  const columns = getColumns()
-
-  const listControls = {
-    ...controls,
-    searchableColumnHeaders: [{ id: 'firstMessageContent', label: 'Query' }],
-  }
+  const columns = getColumns(isSuperAdmin)
 
   return (
     <DataTable
       columns={columns}
-      controls={listControls}
+      controls={controls}
       data={queries}
       defaultCellStyle="align-top"
       isLoading={isLoading}

@@ -1,6 +1,5 @@
 'use client'
 
-import { protectRoute } from '@/app/(auth)/_components/protect-route'
 import { PageContainer, PageTitle } from '@/components/typography/PageTitle'
 import { Button } from '@/components/ui/button'
 import { useRouter } from 'next/navigation'
@@ -35,4 +34,4 @@ function Page() {
   )
 }
 
-export default protectRoute(Page, 'productquery')
+export default Page

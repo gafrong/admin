@@ -1,15 +1,32 @@
 'use client'
 
-const UnreadBadge = ({ count }) => {
-  if (!count || count === 0) return null
+import { cn } from '@/lib/utils'
+
+const BadgeCounter = ({ count = 0, color = 'yellow' }) => {
+  if (count === 0) return null
 
   return (
-    <div className="ml-2 inline-flex items-center justify-center">
-      <div className="flex h-5 w-5 items-center justify-center rounded-full bg-red-600 text-xs text-white">
-        {count}
-      </div>
+    <div
+      className={cn(
+        'flex h-5 w-5 items-center justify-center rounded-full text-xs text-white',
+        {
+          'bg-yellow-500': color === 'yellow',
+          'bg-red-500': color === 'red',
+        },
+      )}
+    >
+      {count}
     </div>
   )
 }
 
-export default UnreadBadge
+export const UnreadBadge = ({ needsReplyCount = 0, unreadCount = 0 }) => {
+  if (needsReplyCount === 0 && unreadCount === 0) return null
+
+  return (
+    <div className="flex flex-col gap-1">
+      <BadgeCounter count={needsReplyCount} color="red" />
+      <BadgeCounter count={unreadCount} color="yellow" />
+    </div>
+  )
+}

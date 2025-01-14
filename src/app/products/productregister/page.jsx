@@ -1,6 +1,5 @@
 'use client'
 
-import awsURL from '@/assets/common/awsUrl'
 import { Button } from '@/components/ui/button'
 import {
   DropdownMenu,
@@ -21,7 +20,6 @@ import styles from './productregister.module.css'
 import 'react-datetime-picker/dist/DateTimePicker.css'
 import 'react-calendar/dist/Calendar.css'
 import 'react-clock/dist/Clock.css'
-import { protectRoute } from '@/app/(auth)/_components/protect-route'
 import baseURL from '@/assets/common/baseUrl'
 import LoadingSpinner from '@/components/LoadingSpinner'
 import axios from 'axios'
@@ -1552,4 +1550,4 @@ function Page() {
   )
 }
 
-export default protectRoute(Page, 'productregister')
+export default Page
