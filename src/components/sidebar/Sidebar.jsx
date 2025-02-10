@@ -1,12 +1,13 @@
 'use client'
 
+import { useSuperadminQuestions } from '@/app/messages/superadmin-questions/api'
 import {
   Accordion,
   AccordionContent,
   AccordionItem,
   AccordionTrigger,
 } from '@/components/ui/accordion'
-import { isSuperAdmin } from '@/utils/user-utils'
+import { hasAdminLevel, hasSuperAdminRole } from '@/utils/user-utils'
 import { useSession } from 'next-auth/react'
 import Link from 'next/link'
 import {
@@ -15,17 +16,29 @@ import {
   FiGift,
   FiHelpCircle,
   FiHome,
-  FiLayout,
   FiMessageCircle,
   FiSettings,
   FiShoppingCart,
   FiUsers,
   FiVideo,
 } from 'react-icons/fi'
+import { UnreadBadge } from '../UnreadBadge'
+import { getQuestionCounts } from './utils'
 
-const Sidebar = () => {
+export const Sidebar = () => {
   const { data: session } = useSession()
-  if (!session?.user?.isAdmin && !isSuperAdmin(session?.user)) return null
+  const isSuperAdmin = hasSuperAdminRole(session?.user)
+  const { data: questions } = useSuperadminQuestions(isSuperAdmin)
+
+  if (!hasAdminLevel(session?.user)) {
+    return null
+  }
+
+  const { needsReplyCount, readNeedsReplyCount } = getQuestionCounts(
+    questions,
+    isSuperAdmin,
+  )
+
   return (
     <div className="fixed z-10 m-0 mt-20 h-full w-40 overflow-auto border-r border-slate-300 bg-white p-0">
       <Link
@@ -220,7 +233,7 @@ const Sidebar = () => {
         </AccordionItem>
       </Accordion>
 
-      {isSuperAdmin(session?.user) && (
+      {isSuperAdmin && (
         <Accordion type="single" collapsible>
           <AccordionItem
             value="item-super-user"
@@ -230,6 +243,10 @@ const Sidebar = () => {
               <div className="flex flex-row">
                 <FiSettings className="mr-2 mt-1" />
                 <div>Superuser</div>
+                <UnreadBadge
+                  needsReplyCount={needsReplyCount}
+                  unreadCount={readNeedsReplyCount}
+                />
               </div>
             </AccordionTrigger>
             <AccordionContent>
@@ -246,47 +263,48 @@ const Sidebar = () => {
                 users
               </Link>
               <Link
-                href="/messages/vendor-support-query/superuser"
-                className="flex flex-col pb-3 pl-3 pt-3 hover:bg-slate-200"
+                href="/messages/superadmin-questions"
+                className="flex flex-row items-center pb-3 pl-3 pt-3 hover:bg-slate-200"
               >
-                vendor queries
+                <span>superadmin questions</span>
+                <UnreadBadge needsReplyCount={0} unreadCount={0} />
               </Link>
             </AccordionContent>
           </AccordionItem>
         </Accordion>
       )}
 
-      {!isSuperAdmin(session?.user) && (
-        <Accordion type="single" collapsible>
-          <AccordionItem
-            value="item-vendor-support"
-            className="block pl-5 pr-2 text-black"
-          >
-            <AccordionTrigger>
-              <div className="flex flex-row">
-                <FiHelpCircle className="mr-2 mt-1" />
-                <div>1:1 문의</div>
-              </div>
-            </AccordionTrigger>
-            <AccordionContent>
-              <Link
-                href="/messages/vendor-support-query/new"
-                className="flex flex-col pb-3 pl-3 pt-3 hover:bg-slate-200"
-              >
-                New Query
-              </Link>
-              <Link
-                href="/messages/vendor-support-query"
-                className="flex flex-col pb-3 pl-3 pt-3 hover:bg-slate-200"
-              >
-                List Queries
-              </Link>
-            </AccordionContent>
-          </AccordionItem>
-        </Accordion>
+      {!isSuperAdmin && (
+        <>
+          <Accordion type="single" collapsible>
+            <AccordionItem
+              value="item-superadmin-questions"
+              className="block pl-5 pr-2 text-black"
+            >
+              <AccordionTrigger>
+                <div className="flex flex-row">
+                  <FiHelpCircle className="mr-2 mt-1" />
+                  <div>1:1 문의</div>
+                </div>
+              </AccordionTrigger>
+              <AccordionContent>
+                <Link
+                  href="/messages/superadmin-questions/new"
+                  className="flex flex-col pb-3 pl-3 pt-3 hover:bg-slate-200"
+                >
+                  New Query
+                </Link>
+                <Link
+                  href="/messages/superadmin-questions"
+                  className="flex flex-col pb-3 pl-3 pt-3 hover:bg-slate-200"
+                >
+                  List Queries
+                </Link>
+              </AccordionContent>
+            </AccordionItem>
+          </Accordion>
+        </>
       )}
     </div>
   )
 }
-
-export default Sidebar

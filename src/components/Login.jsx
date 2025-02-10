@@ -1,10 +1,11 @@
 'use client'
 
+import LoadingSpinner from '@/components/LoadingSpinner'
 import { Button } from '@/components/ui/button'
-import { signIn, signOut, useSession } from 'next-auth/react'
+import { signIn, useSession } from 'next-auth/react'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 
 const Login = () => {
   const [email, setEmail] = useState('')
@@ -12,8 +13,15 @@ const Login = () => {
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState('')
   const { data: session, status } = useSession()
-  const user = session?.user
   const router = useRouter()
+  const isAuthenticated = Boolean(session?.user)
+
+  useEffect(() => {
+    if (isAuthenticated) {
+      // Use Next.js router.push which will trigger a server-side navigation
+      router.push('/dashboard')
+    }
+  }, [isAuthenticated, router])
 
   const handleSubmit = async (e) => {
     console.log('Login form submitted')
@@ -25,57 +33,37 @@ const Login = () => {
     }
 
     try {
-      const response =
-        (await signIn('credentials', {
-          callbackUrl: '/dashboard',
-          email,
-          password,
-          redirect: true,
-        })) || {}
+      const response = await signIn('credentials', {
+        email,
+        password,
+        redirect: false,
+      })
 
       if (!response) {
-        console.log('waiting for signin')
+        setError('Login failed. Please try again.')
       } else if (response.error) {
-        console.error('response error')
+        console.error('Login error:', response.error)
         setError('Login failed. Please check your credentials and try again.')
-        setIsLoading(false)
-        return
-      }
-
-      if (user?.isAdmin) {
-        console.log('user is admin', { user, status })
-        router.push('/dashboard')
-      } else if (user?.submitted) {
-        console.log('user is submitted')
-        router.push('/welcome')
-      } else if (status === 'authenticated') {
-        // new user, applying to be a vendor/seller
-        console.log('user is authenticated')
-        router.push('/onboarding')
       } else {
-        console.log('Unexpected state:', { user, status, response })
-        setError('An unexpected error occurred. Please try again.')
+        // Use Next.js router for navigation after successful login
+        router.push('/dashboard')
       }
     } catch (error) {
       console.error('Login error:', error)
-      console.error('Login error details:', {
-        name: error.name,
-        message: error.message,
-        stack: error.stack,
-      })
-      setError(
-        'An unexpected error occurred. Please try again later or contact support.',
-      )
+      setError('An unexpected error occurred. Please try again later.')
     } finally {
       setIsLoading(false)
     }
   }
 
-  if (!!session?.user) return <YouAreAuthenticated user={session.user} />
+  // Show loading spinner while checking auth or redirecting
+  if (status === 'loading' || isLoading || isAuthenticated) {
+    return <LoadingSpinner />
+  }
 
   return (
     <div className="w-80 px-6 text-center lg:px-8">
-      <div className="flex min-h-full flex-1 flex-col justify-center  ">
+      <div className="flex min-h-full flex-1 flex-col justify-center">
         <div className="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
           <form className="space-y-6" onSubmit={handleSubmit}>
             <div>
@@ -165,15 +153,3 @@ const Login = () => {
 }
 
 export default Login
-
-const handleSignOut = async () => {
-  await signOut({ callbackUrl: `/` })
-}
-
-const YouAreAuthenticated = ({ user }) => (
-  <div className="flex flex-col gap-4">
-    <p>You are logged in</p>
-    <Button onClick={handleSignOut}>Sign out</Button>
-    <p>{user?.email}</p>
-  </div>
-)

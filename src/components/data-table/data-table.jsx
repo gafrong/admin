@@ -187,7 +187,13 @@ export function DataTable({
               <TableRow key={headerGroup.id}>
                 {headerGroup.headers.map((header) => {
                   return (
-                    <TableHead key={header.id}>
+                    <TableHead
+                      key={header.id}
+                      className={cn(
+                        'h-12 px-4 text-left align-middle font-medium text-muted-foreground [&:has([role=checkbox])]:pr-0',
+                        header.column.columnDef.className,
+                      )}
+                    >
                       {header.isPlaceholder ? null : (
                         flexRender(
                           header.column.columnDef.header,
@@ -212,7 +218,10 @@ export function DataTable({
                   {row.getVisibleCells().map((cell) => (
                     <TableCell
                       key={cell.id}
-                      className={defaultCellStyle}
+                      className={cn(
+                        defaultCellStyle,
+                        cell.column.columnDef.className,
+                      )}
                       onClick={
                         cell?.column?.id !== 'memo' ?
                           () => handleRowClick({ row })

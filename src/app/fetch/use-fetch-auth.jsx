@@ -4,53 +4,38 @@ import { useSession } from 'next-auth/react'
 import useSWR from 'swr'
 
 export const useFetchAuth = (path) => {
-  const url = path ? `${baseURL}${path}` : null
   const { data: session } = useSession()
   const token = session?.token
-  const vendorId = session?.user?._id
+  const url = path ? `${baseURL}${path}` : null
 
   const fetcher = async (url) => {
     if (!token) {
-      return { error: 'useFetchAuth(): No token found' }
+      throw new Error('No authentication token found')
     }
+
     const headers = {
       'Content-Type': 'application/json',
       Authorization: `Bearer ${token}`,
     }
+
     try {
       const response = await axios.get(url, { headers })
       return response.data
     } catch (error) {
-      if (error.response && error.response.status === 401) {
-        console.error('Authentication error. Please login again.')
-        // TODO: trigger a logout or token refresh here
-        return { error: 'Authentication failed' }
-      } else {
-        console.error('useFetchAuth() error:', { error, url })
-        return { error: 'An error occurred while fetching data' }
+      if (error.response?.status === 401) {
+        throw new Error('Authentication required')
       }
+      // Only log in development
+      if (process.env.NODE_ENV === 'development') {
+        console.error('Request error:', error.message)
+      }
+      throw error
     }
   }
 
   // useSWR() uses isLoading, useSession uses status === 'loading'
-  // swr will not fetch if url is null, ie if token is not present
-  const {
-    data,
-    error: swrError,
-    isLoading,
-    mutate,
-  } = useSWR(url, fetcher, {
+  return useSWR(url, fetcher, {
     revalidateOnFocus: false,
+    shouldRetryOnError: false,
   })
-
-  const apiError = data?.error || null
-  const error = swrError || apiError
-
-  return {
-    data: apiError ? null : data,
-    error,
-    isLoading,
-    mutate,
-    vendorId,
-  }
 }

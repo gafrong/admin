@@ -1,16 +1,15 @@
-import { sendMessage } from '@/app/messages/vendor-support-query/api'
+import { addMessage } from '@/app/messages/superadmin-questions/api'
+import { ButtonLoader } from '@/components/LoadingSpinner'
 import { Button } from '@/components/ui/button'
+import { Label } from '@/components/ui/label'
 import { Textarea } from '@/components/ui/textarea'
-import {
-  Paperclip as PaperclipIcon,
-  RefreshCcw,
-  Send as SendIcon,
-} from 'lucide-react'
+import { Paperclip } from 'lucide-react'
 import { useSession } from 'next-auth/react'
 import { useEffect, useRef, useState } from 'react'
 
-export const ChatInput = ({ roomId, user, refetchQuery }) => {
+export const ChatInput = ({ questionId, user, onMessageSent }) => {
   const [inputMessage, setInputMessage] = useState('')
+  const [isSending, setIsSending] = useState(false)
   const textareaRef = useRef(null)
   const { data: session } = useSession()
 
@@ -21,21 +20,17 @@ export const ChatInput = ({ roomId, user, refetchQuery }) => {
   }, [])
 
   const handleSendMessage = async () => {
-    if (inputMessage.trim() && user) {
-      const messageData = {
-        queryId: roomId,
-        content: inputMessage.trim(),
-        sender: {
-          _id: user._id,
-          name: user.name,
-          image: user.image,
-        },
-        timestamp: new Date().toISOString(),
+    if (inputMessage.trim() && !isSending) {
+      setIsSending(true)
+      try {
+        await addMessage(questionId, inputMessage.trim(), user?.id)
+        setInputMessage('')
+        onMessageSent()
+      } catch (error) {
+        console.error('Error sending message:', error)
+      } finally {
+        setIsSending(false)
       }
-
-      await sendMessage(messageData, session?.token)
-      setInputMessage('')
-      refetchQuery()
     }
   }
 
@@ -46,39 +41,40 @@ export const ChatInput = ({ roomId, user, refetchQuery }) => {
     }
   }
 
-  const refreshMessages = async () => {
-    await refetchQuery()
-  }
-
   return (
-    <div className="flex items-center gap-2 border-t p-4">
-      <Button variant="outline" size="icon">
-        <PaperclipIcon className="h-5 w-5" />
-        <span className="sr-only">Attach file</span>
-      </Button>
+    <div className="m-4 mb-16 flex flex-col gap-4 rounded border p-4">
+      <div className="flex justify-end gap-2">
+        <Label htmlFor="messageInput" className="mr-auto">
+          Reply
+        </Label>
+        <Button
+          variant="outline"
+          size="icon"
+          className="shrink-0"
+          // TODO: Implement screenshot upload functionality
+          disabled
+          title="Upload Screenshot"
+        >
+          <Paperclip className="h-5 w-5" />
+          <span className="sr-only">Upload Screenshot</span>
+        </Button>
+        <ButtonLoader
+          disabled={!inputMessage.trim() || isSending}
+          isLoading={isSending}
+          onClick={handleSendMessage}
+        >
+          Send
+        </ButtonLoader>
+      </div>
       <Textarea
+        id="messageInput"
         ref={textareaRef}
-        className="min-h-[40px] flex-1"
-        placeholder="Type a message..."
-        rows={1}
         value={inputMessage}
         onChange={(e) => setInputMessage(e.target.value)}
-        onKeyPress={handleReturnKey}
+        onKeyDown={handleReturnKey}
+        placeholder="Type your message..."
+        className="flex-1"
       />
-
-      <Button
-        size="icon"
-        onClick={handleSendMessage}
-        disabled={!inputMessage.trim() || !user}
-      >
-        <SendIcon className="h-5 w-5" />
-        <span className="sr-only">Send</span>
-      </Button>
-
-      <Button size="icon" onClick={refreshMessages}>
-        <RefreshCcw className="h-5 w-5" />
-        <span className="sr-only">Refresh</span>
-      </Button>
     </div>
   )
 }

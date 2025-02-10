@@ -1,6 +1,5 @@
 'use client'
 
-import { protectRoute } from '@/app/(auth)/_components/protect-route'
 import { PageContainer, PageTitle } from '@/components/typography/PageTitle'
 import { TableClients } from './table-clients'
 
@@ -13,4 +12,4 @@ function Page() {
   )
 }
 
-export default protectRoute(Page, 'clients/search')
+export default Page

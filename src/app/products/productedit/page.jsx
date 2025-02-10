@@ -1,6 +1,5 @@
 'use client'
 
-import { protectRoute } from '@/app/(auth)/_components/protect-route'
 import { DataTable } from '@/components/data-table/data-table'
 import { PageContainer, PageTitle } from '@/components/typography/PageTitle'
 import React from 'react'
@@ -26,4 +25,4 @@ function Page() {
   )
 }
 
-export default protectRoute(Page, 'products/productedit')
+export default Page

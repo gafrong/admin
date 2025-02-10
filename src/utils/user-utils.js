@@ -1,6 +1,10 @@
-/**
- * Checks if a user has superAdmin role
- * @param {Object} user - User object that may contain a role property
- * @returns {boolean} - True if user exists and is a superAdmin, false otherwise
- */
-export const isSuperAdmin = (user) => user && user?.role === 'superAdmin'
+export const hasSuperAdminRole = (user) => user && user?.role === 'superAdmin'
+
+export const hasAdminRole = (user) =>
+  user && user?.role === 'admin' && user?.isAdmin === true
+
+export const hasAdminLevel = (user) =>
+  hasSuperAdminRole(user) || hasAdminRole(user)
+
+export const hasPendingAdmin = (user) =>
+  user && user?.role === 'admin' && !user?.isAdmin
